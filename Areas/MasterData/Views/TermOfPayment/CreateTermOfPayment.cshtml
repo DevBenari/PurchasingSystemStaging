@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Add Term Of Payment";
+    Layout = "~/Views/Shared/_TopNavbarMasterData.cshtml";
+}
+
+@using Microsoft.AspNetCore.Identity;
+@using PurchasingSystemApps.Models;
+@using PurchasingSystemApps.Areas.MasterData.ViewModels;
+
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
+@model TermOfPaymentViewModel
+
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="~/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12 bg-white">
+            <div class="card-header bg-cyan">
+                <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
+            </div>
+
+            <form enctype="multipart/form-data" asp-controller="TermOfPayment" asp-action="CreateTermOfPayment" method="post" class="form-horizontal">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="TermOfPaymentCode">TermOfPayment Code</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="TermOfPaymentCode" class="form-control form-control-border border-width-2" id="" placeholder="TermOfPayment Code" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="TermOfPaymentName">TermOfPayment Name</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="TermOfPaymentName" class="form-control form-control-border border-width-2" id="" placeholder="TermOfPayment Name">
+                        </div>
+                    </div>                    
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
+                        <div class="col-sm-9">
+                            <input maxlength="250" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="" placeholder="Note">
+                        </div>
+                    </div>
+                </div>
+                <!-- start button footer -->
+                <div class="card card-orange">
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold"><div style="color:#ffffff">Save</div></button>
+                        <a class="btn btn-default" asp-action="Index" asp-controller="TermOfPayment">Cancel</a>
+                    </div>
+                </div>
+                <!-- /.end button footer -->
+                @section Scripts {
+                    <script>
+                        $(function () {
+                            //Initialize Select2 Elements
+                            $('.select2bs4').select2({
+                                theme: 'bootstrap4'
+                            })
+                        })
+                    </script>                    
+                }
+            </form>
+        </div>
+        @if (TempData["WarningMessage"] != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    swal("Failed !", '@TempData["WarningMessage"]', "warning");
+                };
+            </script>
+        }
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->

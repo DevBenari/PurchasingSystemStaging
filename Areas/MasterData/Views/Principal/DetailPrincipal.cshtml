@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Detail Principal";
+    Layout = "~/Views/Shared/_TopNavbarMasterData.cshtml";
+}
+
+@using Microsoft.AspNetCore.Identity;
+@using PurchasingSystemApps.Areas.MasterData.ViewModels;
+
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
+@model PrincipalViewModel
+
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="~/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12 bg-white">
+            <div class="card-header bg-cyan">
+                <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
+            </div>
+
+            <form enctype="multipart/form-data" asp-controller="Principal" asp-action="DetailPrincipal" method="post" class="form-horizontal">
+                <div class="card-body">
+                    <input hidden asp-for="PrincipalId" />
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="PrincipalCode">Principal Code</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="PrincipalCode" class="form-control form-control-border border-width-2" id="PrincipalCode" placeholder="Principal Code" readonly disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="PrincipalName">Principal Name</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="PrincipalName" class="form-control form-control-border border-width-2" id="PrincipalName" placeholder="Principal Name" disabled>
+                        </div>
+                    </div>                    
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="Address">Address</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="Address" placeholder="Address" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="Handphone">Handphone</label>
+                        <div class="col-sm-9 input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            </div>
+                            <input asp-for="Handphone" autocomplete="off" type="text" class="form-control form-control-border border-width-2" id="Handphone" data-inputmask='"mask": "(9999) - 9999-9999-9"' data-mask-hp disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="Email">Email</label>
+                        <div class="col-sm-9 input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            </div>
+                            <input maxlength="100" autofocus autocomplete="off" asp-for="Email" type="email" class="form-control form-control-border border-width-2" id="Email" placeholder="Email" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                        </div>
+                    </div>
+                </div>
+                <!-- start button footer -->
+                <div class="card card-orange">
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnsimpan"><div style="color:#ffffff">Save</div></button>&nbsp;
+                        <a class="btn bg-indigo" id="btnubah">Change</a>
+                        <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
+                        <a class="btn btn-danger" asp-action="DeletePrincipal" asp-controller="Principal" asp-area="MasterData" asp-route-id="@Model.PrincipalId" id="btnhapus">Delete</a>
+                        <a class="btn btn-default" asp-action="Index" asp-controller="Principal" asp-area="MasterData" id="btnbatal">Cancel</a>
+                    </div>
+                </div>
+                <!-- /.end button footer -->
+                @section Scripts {
+                    <script>
+                        $(function () {
+                            //Initialize Select2 Elements
+                            $('.select2bs4').select2({
+                                theme: 'bootstrap4'
+                            })
+                        })
+                    </script>
+
+                    <script>
+                        $(function () {
+                            $("#btnsimpan").hide();
+                            $("#btnbatalubah").hide();
+
+                            $("#btnubah").click(function () {
+                                $("#btnubah").hide();
+                                $("#btnhapus").hide();
+                                $("#btnbatal").hide();
+                                $("#btnsimpan").show();
+                                $("#btnbatalubah").show();
+
+                                document.getElementById("PrincipalCode").disabled = false;
+                                document.getElementById("PrincipalName").disabled = false;
+                                document.getElementById("Address").disabled = false;
+                                document.getElementById("Handphone").disabled = false;
+                                document.getElementById("Email").disabled = false;
+                                document.getElementById("Note").disabled = false;
+                            })
+
+                            $("#btnbatalubah").click(function () {
+                                $("#btnubah").show();
+                                $("#btnhapus").show();
+                                $("#btnbatal").show();
+                                $("#btnsimpan").hide();
+                                $("#btnbatalubah").hide();
+
+                                document.getElementById("PrincipalCode").disabled = true;
+                                document.getElementById("PrincipalName").disabled = true;
+                                document.getElementById("Address").disabled = true;
+                                document.getElementById("Handphone").disabled = true;
+                                document.getElementById("Email").disabled = true;
+                                document.getElementById("Note").disabled = true;
+                            })
+                        })
+                    </script>
+
+                    <script>
+                        $(function () {
+                            //Data-Mask-Identitas
+                            $('[data-mask-identitas]').inputmask()
+
+                            //Data-Mask-Hp
+                            $('[data-mask-hp]').inputmask()
+
+                            //Tanggal Lahir
+                            $('#tanggallahir').datetimepicker({
+                                format: 'DD/MM/yyyy'
+                            })
+                        })
+                    </script>
+                }
+            </form>
+        </div>
+        @if (TempData["WarningMessage"] != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    swal("Failed", '@TempData["WarningMessage"]', "warning");
+                };
+            </script>
+        }
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->

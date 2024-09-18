@@ -1,0 +1,266 @@
+﻿@{
+    ViewData["Title"] = "Detail Product";
+    Layout = "~/Views/Shared/_TopNavbarMasterData.cshtml";
+}
+
+@using Microsoft.AspNetCore.Identity;
+@using PurchasingSystemApps.Areas.MasterData.ViewModels;
+
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
+@model ProductViewModel
+
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="~/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12 bg-white">
+            <div class="card-header bg-cyan">
+                <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
+            </div>
+
+            <form enctype="multipart/form-data" asp-controller="Product" asp-action="DetailProduct" method="post" class="form-horizontal">
+                <div class="card-body">
+                    <input hidden asp-for="ProductId" />
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="ProductCode">Product Code</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="ProductCode" class="form-control form-control-border border-width-2" id="ProductCode" placeholder="Product Code" readonly disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="ProductName">Product Name</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="ProductName" class="form-control form-control-border border-width-2" id="ProductName" placeholder="Product Name" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="PrincipalId">
+                            Principal
+                        </label>
+                        <div class="col-sm-9">
+                            <select asp-for="PrincipalId" asp-items="@ViewBag.Principal" class="form-control select2bs4" style="width: 100%;" id="Principal" disabled>
+                                <option value="" hidden disabled selected>--Choice Principal--</option>
+                            </select>
+                            <span asp-validation-for="PrincipalId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="CategoryId">
+                            Category
+                        </label>
+                        <div class="col-sm-9">
+                            <select asp-for="CategoryId" asp-items="@ViewBag.Category" class="form-control select2bs4" style="width: 100%;" id="Category" disabled>
+                                <option value="" hidden disabled selected>--Choice Category--</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="MeasurementId">
+                            Measure
+                        </label>
+                        <div class="col-sm-9">
+                            <select asp-for="MeasurementId" asp-items="@ViewBag.Measurement" class="form-control select2bs4" style="width: 100%;" id="Measurement" disabled>
+                                <option value="" hidden disabled selected>--Choice Measure--</option>
+                            </select>
+                            <span asp-validation-for="MeasurementId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="DiscountId">
+                            Discount
+                        </label>
+                        <div class="col-sm-9">
+                            <select asp-for="DiscountId" asp-items="@ViewBag.Discount" class="form-control select2bs4" style="width: 100%;" id="Discount" disabled>
+                                <option value="" hidden disabled selected>--Choice Discount--</option>
+                            </select>
+                            <span asp-validation-for="DiscountId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="WarehouseLocationId">
+                            Warehouse Location
+                        </label>
+                        <div class="col-sm-9">
+                            <select asp-for="WarehouseLocationId" asp-items="@ViewBag.Warehouse" class="form-control select2bs4" style="width: 100%;" id="WarehouseLocation" disabled>
+                                <option value="" hidden disabled selected>--Choice Warehouse Location--</option>
+                            </select>
+                            <span asp-validation-for="WarehouseLocationId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="MinStock">Min Stock</label>
+                        <div class="col-sm-9">
+                            <input maxlength="75" autocomplete="off" type="number" asp-for="MinStock" class="form-control form-control-border border-width-2" id="MinStock" placeholder="Min Stock" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="MaxStock">Max Stock</label>
+                        <div class="col-sm-9">
+                            <input maxlength="75" autocomplete="off" type="number" asp-for="MaxStock" class="form-control form-control-border border-width-2" id="MaxStock" placeholder="Max Stock" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="BufferStock">Buffer Stock</label>
+                        <div class="col-sm-9">
+                            <input maxlength="75" autocomplete="off" type="number" asp-for="BufferStock" class="form-control form-control-border border-width-2" id="BufferStock" placeholder="Buffer Stock" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="Stock">Stock</label>
+                        <div class="col-sm-9">
+                            <input maxlength="75" autocomplete="off" type="number" asp-for="Stock" class="form-control form-control-border border-width-2" id="Stock" placeholder="Stock" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="Cogs">Cogs</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="number" asp-for="Cogs" class="form-control form-control-border border-width-2" id="Cogs" placeholder="Cogs" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="BuyPrice">Buy Price</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="number" asp-for="BuyPrice" class="form-control form-control-border border-width-2" id="BuyPrice" placeholder="Buy Price" disabled>
+                            <span asp-validation-for="BuyPrice" class="text-danger"></span>
+                        </div>                        
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="RetailPrice">Retail Price</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="number" asp-for="RetailPrice" class="form-control form-control-border border-width-2" id="RetailPrice" placeholder="Retail Price" disabled>
+                            <span asp-validation-for="RetailPrice" class="text-danger"></span>
+                        </div>                        
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="StorageLocation">Storage Location</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="StorageLocation" class="form-control form-control-border border-width-2" id="StorageLocation" placeholder="Storage Location" disabled>
+                            <span asp-validation-for="StorageLocation" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="RackNumber">Rack Number</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="RackNumber" class="form-control form-control-border border-width-2" id="RackNumber" placeholder="Rack Number" disabled>
+                            <span asp-validation-for="RackNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
+                        <div class="col-sm-9">
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                        </div>
+                    </div>
+                </div>
+                <!-- start button footer -->
+                <div class="card card-orange">
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnsimpan"><div style="color:#ffffff">Save</div></button>&nbsp;
+                        <a class="btn bg-indigo" id="btnubah">Change</a>
+                        <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
+                        <a class="btn btn-danger" asp-action="DeleteProduct" asp-controller="Product" asp-area="MasterData" asp-route-id="@Model.ProductId" id="btnhapus">Delete</a>
+                        <a class="btn btn-default" asp-action="Index" asp-controller="Product" asp-area="MasterData" id="btnbatal">Cancel</a>
+                    </div>
+                </div>
+                <!-- /.end button footer -->
+                @section Scripts {
+                    <script>
+                        $(function () {
+                            //Initialize Select2 Elements
+                            $('.select2bs4').select2({
+                                theme: 'bootstrap4'
+                            })
+                        })
+                    </script>
+
+                    <script>
+                        $(function () {
+                            $("#btnsimpan").hide();
+                            $("#btnbatalubah").hide();
+
+                            $("#btnubah").click(function () {
+                                $("#btnubah").hide();
+                                $("#btnhapus").hide();
+                                $("#btnbatal").hide();
+                                $("#btnsimpan").show();
+                                $("#btnbatalubah").show();
+
+                                document.getElementById("ProductCode").disabled = false;
+                                document.getElementById("ProductName").disabled = false;
+                                document.getElementById("Principal").disabled = false;
+                                document.getElementById("Category").disabled = false;
+                                document.getElementById("Measurement").disabled = false;
+                                document.getElementById("Discount").disabled = false;
+                                document.getElementById("WarehouseLocation").disabled = false;
+                                document.getElementById("MinStock").disabled = true;
+                                document.getElementById("MaxStock").disabled = true;
+                                document.getElementById("BufferStock").disabled = true;
+                                document.getElementById("Stock").disabled = true;
+                                document.getElementById("Cogs").disabled = true;
+                                document.getElementById("BuyPrice").disabled = false;
+                                document.getElementById("RetailPrice").disabled = false;
+                                document.getElementById("StorageLocation").disabled = false;
+                                document.getElementById("RackNumber").disabled = false;
+                                document.getElementById("Note").disabled = false;
+                            })
+
+                            $("#btnbatalubah").click(function () {
+                                $("#btnubah").show();
+                                $("#btnhapus").show();
+                                $("#btnbatal").show();
+                                $("#btnsimpan").hide();
+                                $("#btnbatalubah").hide();
+
+                                document.getElementById("ProductCode").disabled = true;
+                                document.getElementById("ProductName").disabled = true;
+                                document.getElementById("Principal").disabled = true;
+                                document.getElementById("Category").disabled = true;
+                                document.getElementById("Measurement").disabled = true;
+                                document.getElementById("Discount").disabled = true;
+                                document.getElementById("WarehouseLocation").disabled = true;
+                                document.getElementById("MinStock").disabled = true;
+                                document.getElementById("MaxStock").disabled = true;
+                                document.getElementById("BufferStock").disabled = true;
+                                document.getElementById("Stock").disabled = true;
+                                document.getElementById("Cogs").disabled = true;
+                                document.getElementById("BuyPrice").disabled = true;
+                                document.getElementById("RetailPrice").disabled = true;
+                                document.getElementById("StorageLocation").disabled = true;
+                                document.getElementById("RackNumber").disabled = true;
+                                document.getElementById("Note").disabled = true;
+                            })
+                        })
+                    </script>
+
+                    <script>
+                        $(function () {
+                            //Data-Mask-Identitas
+                            $('[data-mask-identitas]').inputmask()
+
+                            //Data-Mask-Hp
+                            $('[data-mask-hp]').inputmask()
+
+                            //Tanggal Lahir
+                            $('#tanggallahir').datetimepicker({
+                                format: 'DD/MM/yyyy'
+                            })
+                        })
+                    </script>
+                }
+            </form>
+        </div>
+        @if (TempData["WarningMessage"] != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    swal("Failed", '@TempData["WarningMessage"]', "warning");
+                };
+            </script>
+        }
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
