@@ -29,8 +29,8 @@
                     <input type="hidden" asp-for="UserAccessId" />
                     <input type="hidden" asp-for="UserApproveId" />
                     @*Jika dihilangkan tidak berjalan walaupun sudah ditampilkan dengan statement*@
-                    <input type="hidden" asp-for="ApproveTime" />
-                    <input type="hidden" asp-for="ApproveDate" />
+                    <input type="hidden" asp-for="ApprovalTime" />
+                    <input type="hidden" asp-for="ApprovalDate" />
                     <input type="hidden" asp-for="ApproveBy" />
                     <input type="hidden" asp-for="QtyTotal" />
                     <input type="hidden" asp-for="GrandTotal" />
@@ -160,19 +160,19 @@
                     <!-- start button footer -->
                     <div class="card card-orange">
                         <div class="card-body">
-                            @if (Model.ApproveStatusUser == "User1" && Model.Status == "Waiting Approval" && Model.UserApprove == User.Identity.Name)
+                            @if (Model.ApprovalStatusUser == "User1" && Model.Status == "Waiting Approval" && Model.UserApprove == User.Identity.Name)
                             {
                                 <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
                                 <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
                                 <a class="btn btn-default" asp-action="Index" asp-controller="Approval" asp-area="Order" id="btnbatal">Cancel</a>
                             }
-                            else if (Model.ApproveStatusUser == "User2" && Model.Status == "User1Approve" && Model.UserApprove == User.Identity.Name)
+                            else if (Model.ApprovalStatusUser == "User2" && Model.Status == "User1Approve" && Model.UserApprove == User.Identity.Name)
                             {
                                 <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
                                 <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
                                 <a class="btn btn-default" asp-action="Index" asp-controller="Approval" asp-area="Order" id="btnbatal">Cancel</a>
                             }
-                            else if (Model.ApproveStatusUser == "User3" && Model.Status == "User2Approve" && Model.UserApprove == User.Identity.Name)
+                            else if (Model.ApprovalStatusUser == "User3" && Model.Status == "User2Approve" && Model.UserApprove == User.Identity.Name)
                             {
                                 <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
                                 <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>

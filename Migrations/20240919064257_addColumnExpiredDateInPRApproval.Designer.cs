@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PurchasingSystemApps.Data;
 
@@ -11,9 +12,10 @@ using PurchasingSystemApps.Data;
 namespace PurchasingSystemApps.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240919064257_addColumnExpiredDateInPRApproval")]
+    partial class addColumnExpiredDateInPRApproval
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -984,16 +986,17 @@ namespace PurchasingSystemApps.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ApprovalDate")
+                    b.Property<string>("ApproveBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ApproveDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ApprovalStatusUser")
+                    b.Property<string>("ApproveStatusUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ApprovalTime")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApproveBy")
+                    b.Property<string>("ApproveTime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

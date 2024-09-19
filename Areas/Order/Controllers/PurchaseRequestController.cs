@@ -124,22 +124,33 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         {
             ViewBag.Active = "PurchaseRequest";
 
-            var countPurchaseRequest = _applicationDbContext.PurchaseRequests.Where(p => p.Status == "Waiting Approval").GroupBy(u => u.PurchaseRequestId).Select(y => new
-            {
-                PurchaseRequestId = y.Key,
-                CountOfPurchaseRequests = y.Count()
-            }).ToList();
-            ViewBag.CountPurchaseRequest = countPurchaseRequest.Count;
+            //var countPurchaseRequest = _applicationDbContext.PurchaseRequests.Where(p => p.Status == "Waiting Approval").GroupBy(u => u.PurchaseRequestId).Select(y => new
+            //{
+            //    PurchaseRequestId = y.Key,
+            //    CountOfPurchaseRequests = y.Count()
+            //}).ToList();
+            //ViewBag.CountPurchaseRequest = countPurchaseRequest.Count;
 
-            var countApproval = _applicationDbContext.Approvals.Where(p => p.Status == "Waiting Approval").GroupBy(u => u.PurchaseRequestId).Select(y => new
-            {
-                ApprovalId = y.Key,
-                CountOfApprovals = y.Count()
-            }).ToList();
-            ViewBag.CountApproval = countApproval.Count;
+            //var countApproval = _applicationDbContext.Approvals.Where(p => p.Status == "Waiting Approval").GroupBy(u => u.PurchaseRequestId).Select(y => new
+            //{
+            //    ApprovalId = y.Key,
+            //    CountOfApprovals = y.Count()
+            //}).ToList();
+            //ViewBag.CountApproval = countApproval.Count;
 
-            var data = _purchaseRequestRepository.GetAllPurchaseRequest();
-            return View(data);
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
+
+            if (getUserLogin.Id == "5f734880-f3d9-4736-8421-65a66d48020e")
+            {
+                var data = _purchaseRequestRepository.GetAllPurchaseRequest();
+                return View(data);
+            }
+            else
+            {
+                var data = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.CreateBy.ToString() == getUserLogin.Id).ToList();
+                return View(data);
+            }
         }
 
         [HttpPost]
@@ -208,8 +219,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         {
             ViewBag.Active = "PurchaseRequest";
 
-            var dateNow = DateTimeOffset.Now;
-            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
+            var dateNow = DateTime.Now;
+            var setDateNow = DateTime.Now.ToString("yyMMdd");
 
             var lastCode = _purchaseRequestRepository.GetAllPurchaseRequest().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.PurchaseRequestNumber).FirstOrDefault();
             if (lastCode == null)
@@ -253,13 +264,19 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     Position3Id = model.Position3Id,
                     UserApprove3Id = model.UserApprove3Id,
                     ApproveStatusUser3 = model.ApproveStatusUser3,
-                    DueDateId = model.DueDateId,
+                    DueDateId = model.DueDateId,                    
                     TermOfPaymentId = model.TermOfPaymentId,
                     Status = model.Status,
                     QtyTotal = model.QtyTotal,
                     GrandTotal = Math.Truncate(model.GrandTotal),
                     Note = model.Note,
-                };
+                };                
+
+                var findDueDate = _dueDateRepository.GetAllDueDate().Where(d => d.DueDateId == model.DueDateId).FirstOrDefault();
+
+                var Exp = DateTime.Now.Date.AddDays(Convert.ToDouble(findDueDate.Value));
+
+                purchaseRequest.ExpiredDate = Exp;
 
                 var ItemsList = new List<PurchaseRequestDetail>();
 
@@ -293,11 +310,12 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                         UserAccessId = getUser.Id.ToString(),
                         DueDateId = purchaseRequest.DueDateId,
+                        ExpiredDate = purchaseRequest.ExpiredDate,
                         UserApproveId = purchaseRequest.UserApprove1Id,
                         ApproveBy = "",
-                        ApproveTime = "",
-                        ApproveDate = DateTime.MinValue,
-                        ApproveStatusUser = "User1",
+                        ApprovalTime = "",
+                        ApprovalDate = DateTime.MinValue,
+                        ApprovalStatusUser = "User1",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
                     };
@@ -314,11 +332,12 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                         UserAccessId = getUser.Id.ToString(),
                         DueDateId = purchaseRequest.DueDateId,
+                        ExpiredDate = purchaseRequest.ExpiredDate,
                         UserApproveId = purchaseRequest.UserApprove2Id,
                         ApproveBy = "",
-                        ApproveTime = "",
-                        ApproveDate = DateTime.MinValue,
-                        ApproveStatusUser = "User2",
+                        ApprovalTime = "",
+                        ApprovalDate = DateTime.MinValue,
+                        ApprovalStatusUser = "User2",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
                     };
@@ -335,11 +354,12 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                         UserAccessId = getUser.Id.ToString(),
                         DueDateId = purchaseRequest.DueDateId,
+                        ExpiredDate = purchaseRequest.ExpiredDate,
                         UserApproveId = purchaseRequest.UserApprove3Id,
                         ApproveBy = "",
-                        ApproveTime = "",
-                        ApproveDate = DateTime.MinValue,
-                        ApproveStatusUser = "User3",
+                        ApprovalTime = "",
+                        ApprovalDate = DateTime.MinValue,
+                        ApprovalStatusUser = "User3",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
                     };
@@ -401,6 +421,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 UserApprove3Id = purchaseRequest.UserApprove3Id,
                 ApproveStatusUser3 = purchaseRequest.ApproveStatusUser3,
                 DueDateId = purchaseRequest.DueDateId,
+                ExpiredDate = purchaseRequest.ExpiredDate,
                 TermOfPaymentId = purchaseRequest.TermOfPaymentId,
                 Status = purchaseRequest.Status,
                 QtyTotal = purchaseRequest.QtyTotal,
@@ -420,6 +441,10 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 //DueDateId = purchaseRequest.DueDateId,
                 //Note = purchaseRequest.Note,
             };
+
+            // Rumus Pengurangan Tanggal
+            //var diffDate = (DateTime.Now.Date - purchaseRequest.CreateDateTime.Date);
+            //int day = diffDate.Days;
 
             var ItemsList = new List<PurchaseRequestDetail>();
 
@@ -468,6 +493,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         purchaseRequest.QtyTotal = model.QtyTotal;
                         purchaseRequest.GrandTotal = model.GrandTotal;
                         purchaseRequest.DueDateId = model.DueDateId;
+                        purchaseRequest.ExpiredDate = model.ExpiredDate;
                         purchaseRequest.Note = model.Note;
                         purchaseRequest.PurchaseRequestDetails = model.PurchaseRequestDetails;
 

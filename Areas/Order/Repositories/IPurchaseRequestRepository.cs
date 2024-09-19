@@ -50,12 +50,19 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
             {
                 var purchaseRequestDetail = new PurchaseRequest()
                 {
+                    CreateDateTime = purchaseRequest.CreateDateTime,
+                    CreateBy = purchaseRequest.CreateBy,
+                    UpdateDateTime = purchaseRequest.UpdateDateTime,
+                    UpdateBy = purchaseRequest.UpdateBy,
+                    DeleteDateTime = purchaseRequest.DeleteDateTime,
+                    DeleteBy = purchaseRequest.DeleteBy,
                     PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                     PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                     UserAccessId = purchaseRequest.UserAccessId,
                     ApplicationUser = purchaseRequest.ApplicationUser,
                     DueDateId = purchaseRequest.DueDateId,
                     DueDate = purchaseRequest.DueDate,
+                    ExpiredDate = purchaseRequest.ExpiredDate,
                     Department1Id = purchaseRequest.Department1Id,
                     Department1 = purchaseRequest.Department1,
                     Position1Id = purchaseRequest.Position1Id,
@@ -114,12 +121,19 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
         {
             return await _context.PurchaseRequests./*OrderBy(p => p.CreateDateTime).*/Select(purchaseRequest => new PurchaseRequest()
             {
+                CreateDateTime = purchaseRequest.CreateDateTime,
+                CreateBy = purchaseRequest.CreateBy,
+                UpdateDateTime = purchaseRequest.UpdateDateTime,
+                UpdateBy = purchaseRequest.UpdateBy,
+                DeleteDateTime = purchaseRequest.DeleteDateTime,
+                DeleteBy = purchaseRequest.DeleteBy,
                 PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                 PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                 UserAccessId = purchaseRequest.UserAccessId,
                 ApplicationUser = purchaseRequest.ApplicationUser,
                 DueDateId = purchaseRequest.DueDateId,
                 DueDate = purchaseRequest.DueDate,
+                ExpiredDate = purchaseRequest.ExpiredDate,
                 Department1Id = purchaseRequest.Department1Id,
                 Department1 = purchaseRequest.Department1,
                 Position1Id = purchaseRequest.Position1Id,

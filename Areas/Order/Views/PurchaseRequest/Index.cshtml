@@ -70,8 +70,9 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Create Date</th>
-                                        <th>Request By</th>
-                                        <th>Expired Order</th>
+                                        <th>Due Date</th>
+                                        <th>Expired Date</th>
+                                        <th>Create By</th>                                        
                                         <th>User Approve 1</th>
                                         <th>User Approve 2</th>
                                         <th>User Approve 3</th>
@@ -89,8 +90,9 @@
                                             <tr data-href="@Url.Action("DetailPurchaseRequest", "PurchaseRequest", new {id=pr.PurchaseRequestId})">
                                                 <td></td>
                                                 <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
-                                                <td>@pr.ApplicationUser.NamaUser</td>
-                                                <td>@pr.DueDate.Value</td>
+                                                <td>@pr.DueDate.Value day</td>
+                                                <td>@pr.ExpiredDate.ToString("dd MMMM yyyy")</td>
+                                                <td>@pr.ApplicationUser.NamaUser</td>                                                
                                                 @if (pr.ApproveStatusUser1 == "Approve")
                                                 {
                                                     <td><span class="badge bg-success"><b>@pr.UserApprove1.FullName</b></span></td>                                                    
@@ -137,8 +139,9 @@
                                             <tr data-href="@Url.Action("DetailPurchaseRequest", "PurchaseRequest", new {id=pr.PurchaseRequestId})">
                                                 <td></td>
                                                 <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
+                                                <td>@pr.DueDate.Value day</td>
+                                                <td>@pr.ExpiredDate.ToString("dd MMMM yyyy")</td>
                                                 <td>@pr.ApplicationUser.NamaUser</td>
-                                                <td>@pr.DueDate.Value</td>
                                                 @if (pr.ApproveStatusUser1 == "Approve")
                                                 {
                                                     <td><span class="badge bg-success"><b>@pr.UserApprove1.FullName</b></span></td>
@@ -184,8 +187,9 @@
                                             <tr data-href="@Url.Action("DetailPurchaseRequest", "PurchaseRequest", new {id=pr.PurchaseRequestId})">
                                                 <td></td>
                                                 <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
+                                                <td>@pr.DueDate.Value day</td>
+                                                <td>@pr.ExpiredDate.ToString("dd MMMM yyyy")</td>
                                                 <td>@pr.ApplicationUser.NamaUser</td>
-                                                <td>@pr.DueDate.Value</td>
                                                 <td>@pr.UserApprove1.FullName</td>
                                                 <td>@pr.UserApprove2.FullName</td>
                                                 <td>@pr.UserApprove3.FullName</td>

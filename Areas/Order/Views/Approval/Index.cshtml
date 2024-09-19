@@ -60,12 +60,12 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Create Date</th>
-                                        <th>Create By</th>                                        
-                                        <th>PR Number</th>
+                                        <th>Due Date</th>
+                                        <th>Expired Date</th>
+                                        <th>Create By</th>
+                                        <th>PR Number</th>                                        
                                         <th>Approve Name</th>
-                                        @*<th>Approve By</th>
-                                        <th>Approve Time</th>
-                                        <th>Approve Date</th>*@
+                                        <th>Approval Time</th>
                                         <th>Status</th>
                                 </thead>
                                 <tbody>
@@ -74,12 +74,12 @@
                                         <tr data-href="@Url.Action("DetailApproval", "Approval", new {id=pr.ApprovalId})">
                                             <th></th>
                                             <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
+                                            <td>@pr.DueDate.Value day</td>
+                                            <td>@pr.ExpiredDate.ToString("dd MMMM yyyy")</td>
                                             <td>@pr.ApplicationUser.NamaUser</td>
-                                            <td>@pr.PurchaseRequestNumber</td>
+                                            <td>@pr.PurchaseRequestNumber</td>                                            
                                             <td>@pr.UserApprove.FullName</td>
-                                            @*<td>@pr.ApproveByUser1</td>
-                                            <td>@pr.User1ApproveTime</td>
-                                            <td>@pr.User1ApproveDate</td>*@
+                                            <td>@pr.ApprovalTime</td>
                                             @if (pr.Status == "Waiting Approval")
                                             {
                                                 <td><span class="badge bg-yellow"><b>@pr.Status</b></span></td>
