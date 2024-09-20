@@ -249,9 +249,9 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
 
                 if (Supplier.IsActive == false && Supplier.IsPKS == true)
                 {
-                    var check = _supplierRepository.GetAllSupplierNonActive().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
+                    var checkDuplicate = _supplierRepository.GetAllSupplierNonActive().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
 
-                    if (check.Count == 0)
+                    if (checkDuplicate.Count == 0)
                     {
                         var data = _supplierRepository.GetAllSupplier().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
 

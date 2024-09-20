@@ -133,19 +133,28 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Note = vm.Note
                 };
 
-                var result = _departmentRepository.GetAllDepartment().Where(c => c.DepartmentName == vm.DepartmentName).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _departmentRepository.GetAllDepartment().Where(c => c.DepartmentName == vm.DepartmentName).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _departmentRepository.Tambah(Department);
-                    TempData["SuccessMessage"] = "Name " + vm.DepartmentName + " Saved";
-                    return RedirectToAction("Index", "Department");
+                    var result = _departmentRepository.GetAllDepartment().Where(c => c.DepartmentName == vm.DepartmentName).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _departmentRepository.Tambah(Department);
+                        TempData["SuccessMessage"] = "Name " + vm.DepartmentName + " Saved";
+                        return RedirectToAction("Index", "Department");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + vm.DepartmentName + " Already Exist !!!";
+                        return View(vm);
+                    }
                 }
-                else
+                else 
                 {
                     TempData["WarningMessage"] = "Name " + vm.DepartmentName + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
 
             return View();
@@ -182,23 +191,33 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Department = await _departmentRepository.GetDepartmentByIdNoTracking(viewModel.DepartmentId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _departmentRepository.GetAllDepartment().Where(d => d.DepartmentCode == viewModel.DepartmentCode).FirstOrDefault();
+                var checkDuplicate = _departmentRepository.GetAllDepartment().Where(d => d.DepartmentCode == viewModel.DepartmentCode).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    Department.UpdateDateTime = DateTime.Now;
-                    Department.UpdateBy = new Guid(getUser.Id);
-                    Department.DepartmentCode = viewModel.DepartmentCode;
-                    Department.DepartmentName = viewModel.DepartmentName;
-                    Department.Note = viewModel.Note;
+                    var data = _departmentRepository.GetAllDepartment().Where(d => d.DepartmentCode == viewModel.DepartmentCode).FirstOrDefault();
 
-                    _departmentRepository.Update(Department);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        Department.UpdateDateTime = DateTime.Now;
+                        Department.UpdateBy = new Guid(getUser.Id);
+                        Department.DepartmentCode = viewModel.DepartmentCode;
+                        Department.DepartmentName = viewModel.DepartmentName;
+                        Department.Note = viewModel.Note;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.DepartmentName + " Success Changes";
-                    return RedirectToAction("Index", "Department");
+                        _departmentRepository.Update(Department);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.DepartmentName + " Success Changes";
+                        return RedirectToAction("Index", "Department");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + viewModel.DepartmentName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
-                else
+                else 
                 {
                     TempData["WarningMessage"] = "Name " + viewModel.DepartmentName + " Already Exist !!!";
                     return View(viewModel);

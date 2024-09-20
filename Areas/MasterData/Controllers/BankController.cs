@@ -20,7 +20,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly IUserActiveRepository _userActiveRepository;
-        private readonly IBankRepository _BankRepository;
+        private readonly IBankRepository _bankRepository;
 
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -37,7 +37,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _applicationDbContext = applicationDbContext;
-            _BankRepository = BankRepository;
+            _bankRepository = BankRepository;
             _userActiveRepository = userActiveRepository;
 
             _hostingEnvironment = hostingEnvironment;
@@ -48,7 +48,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
-            var data = _BankRepository.GetAllBank();
+            var data = _bankRepository.GetAllBank();
             return View(data);
         }
 
@@ -60,7 +60,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
             ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
 
-            var data = _BankRepository.GetAllBank().Where(r => r.CreateDateTime.Date >= tglAwalPencarian && r.CreateDateTime.Date <= tglAkhirPencarian).ToList();
+            var data = _bankRepository.GetAllBank().Where(r => r.CreateDateTime.Date >= tglAwalPencarian && r.CreateDateTime.Date <= tglAkhirPencarian).ToList();
             return View(data);
         }
 
@@ -73,7 +73,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             var dateNow = DateTimeOffset.Now;
             var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
 
-            var lastCode = _BankRepository.GetAllBank().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.BankCode).FirstOrDefault();
+            var lastCode = _bankRepository.GetAllBank().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.BankCode).FirstOrDefault();
             if (lastCode == null)
             {
                 user.BankCode = "BNK" + setDateNow + "0001";
@@ -102,7 +102,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             var dateNow = DateTimeOffset.Now;
             var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
 
-            var lastCode = _BankRepository.GetAllBank().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.BankCode).FirstOrDefault();
+            var lastCode = _bankRepository.GetAllBank().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.BankCode).FirstOrDefault();
             if (lastCode == null)
             {
                 vm.BankCode = "BNK" + setDateNow + "0001";
@@ -137,19 +137,28 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Note = vm.Note
                 };
 
-                var result = _BankRepository.GetAllBank().Where(c => c.BankName == vm.BankName).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _bankRepository.GetAllBank().Where(c => c.BankName == vm.BankName).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _BankRepository.Tambah(Bank);
-                    TempData["SuccessMessage"] = "Name " + vm.BankName + " Saved";
-                    return RedirectToAction("Index", "Bank");
+                    var result = _bankRepository.GetAllBank().Where(c => c.BankName == vm.BankName).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _bankRepository.Tambah(Bank);
+                        TempData["SuccessMessage"] = "Name " + vm.BankName + " Saved";
+                        return RedirectToAction("Index", "Bank");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + vm.BankName + " Already Exist !!!";
+                        return View(vm);
+                    }
                 }
-                else
+                else 
                 {
                     TempData["WarningMessage"] = "Name " + vm.BankName + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
 
             return View();
@@ -160,7 +169,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         public async Task<IActionResult> DetailBank(Guid Id)
         {
             ViewBag.Active = "MasterData";
-            var Bank = await _BankRepository.GetBankById(Id);
+            var Bank = await _bankRepository.GetBankById(Id);
 
             if (Bank == null)
             {
@@ -186,27 +195,37 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         {
             if (ModelState.IsValid)
             {
-                var Bank = await _BankRepository.GetBankByIdNoTracking(viewModel.BankId);
+                var Bank = await _bankRepository.GetBankByIdNoTracking(viewModel.BankId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _BankRepository.GetAllBank().Where(d => d.BankCode == viewModel.BankCode).FirstOrDefault();
+                var checkDuplicate = _bankRepository.GetAllBank().Where(d => d.BankCode == viewModel.BankCode).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    Bank.UpdateDateTime = DateTime.Now;
-                    Bank.UpdateBy = new Guid(getUser.Id);
-                    Bank.BankCode = viewModel.BankCode;
-                    Bank.BankName = viewModel.BankName;
-                    Bank.AccountNumber = viewModel.AccountNumber;
-                    Bank.CardHolderName = viewModel.CardHolderName;
-                    Bank.Note = viewModel.Note;
+                    var data = _bankRepository.GetAllBank().Where(d => d.BankCode == viewModel.BankCode).FirstOrDefault();
 
-                    _BankRepository.Update(Bank);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        Bank.UpdateDateTime = DateTime.Now;
+                        Bank.UpdateBy = new Guid(getUser.Id);
+                        Bank.BankCode = viewModel.BankCode;
+                        Bank.BankName = viewModel.BankName;
+                        Bank.AccountNumber = viewModel.AccountNumber;
+                        Bank.CardHolderName = viewModel.CardHolderName;
+                        Bank.Note = viewModel.Note;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.BankName + " Success Changes";
-                    return RedirectToAction("Index", "Bank");
+                        _bankRepository.Update(Bank);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.BankName + " Success Changes";
+                        return RedirectToAction("Index", "Bank");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + viewModel.BankName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
-                else
+                else 
                 {
                     TempData["WarningMessage"] = "Name " + viewModel.BankName + " Already Exist !!!";
                     return View(viewModel);
@@ -222,7 +241,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         public async Task<IActionResult> DeleteBank(Guid Id)
         {
             ViewBag.Active = "MasterData";
-            var Bank = await _BankRepository.GetBankById(Id);
+            var Bank = await _bankRepository.GetBankById(Id);
             if (Bank == null)
             {
                 Response.StatusCode = 404;

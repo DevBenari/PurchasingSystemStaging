@@ -137,19 +137,28 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Note = vm.Note
                 };
 
-                var result = _categoryRepository.GetAllCategory().Where(c => c.CategoryName == vm.CategoryName).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _categoryRepository.GetAllCategory().Where(c => c.CategoryName == vm.CategoryName).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _categoryRepository.Tambah(Category);
-                    TempData["SuccessMessage"] = "Name " + vm.CategoryName + " Saved";
-                    return RedirectToAction("Index", "Category");
+                    var result = _categoryRepository.GetAllCategory().Where(c => c.CategoryName == vm.CategoryName).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _categoryRepository.Tambah(Category);
+                        TempData["SuccessMessage"] = "Name " + vm.CategoryName + " Saved";
+                        return RedirectToAction("Index", "Category");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + vm.CategoryName + " Already Exist !!!";
+                        return View(vm);
+                    }
                 }
-                else
+                else 
                 {
                     TempData["WarningMessage"] = "Name " + vm.CategoryName + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
 
             return View();
@@ -186,23 +195,33 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Category = await _categoryRepository.GetCategoryByIdNoTracking(viewModel.CategoryId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _categoryRepository.GetAllCategory().Where(d => d.CategoryCode == viewModel.CategoryCode).FirstOrDefault();
+                var checkDuplicate = _categoryRepository.GetAllCategory().Where(d => d.CategoryCode == viewModel.CategoryCode).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    Category.UpdateDateTime = DateTime.Now;
-                    Category.UpdateBy = new Guid(getUser.Id);
-                    Category.CategoryCode = viewModel.CategoryCode;
-                    Category.CategoryName = viewModel.CategoryName;
-                    Category.Note = viewModel.Note;
+                    var data = _categoryRepository.GetAllCategory().Where(d => d.CategoryCode == viewModel.CategoryCode).FirstOrDefault();
 
-                    _categoryRepository.Update(Category);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        Category.UpdateDateTime = DateTime.Now;
+                        Category.UpdateBy = new Guid(getUser.Id);
+                        Category.CategoryCode = viewModel.CategoryCode;
+                        Category.CategoryName = viewModel.CategoryName;
+                        Category.Note = viewModel.Note;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.CategoryName + " Success Changes";
-                    return RedirectToAction("Index", "Category");
+                        _categoryRepository.Update(Category);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.CategoryName + " Success Changes";
+                        return RedirectToAction("Index", "Category");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + viewModel.CategoryName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
-                else
+                else 
                 {
                     TempData["WarningMessage"] = "Name " + viewModel.CategoryName + " Already Exist !!!";
                     return View(viewModel);
