@@ -36,14 +36,14 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="PrincipalId">
-                            Principal
+                        <label class="col-sm-3 col-form-label" asp-for="SupplierId">
+                            Supplier
                         </label>
                         <div class="col-sm-9">
-                            <select asp-for="PrincipalId" asp-items="@ViewBag.Principal" class="form-control select2bs4" style="width: 100%;" id="Principal" disabled>
-                                <option value="" hidden disabled selected>--Choice Principal--</option>
+                            <select asp-for="SupplierId" asp-items="@ViewBag.Supplier" class="form-control select2bs4" style="width: 100%;" id="Supplier" disabled>
+                                <option value="" hidden disabled selected>--Choice Supplier--</option>
                             </select>
-                            <span asp-validation-for="PrincipalId" class="text-danger"></span>
+                            <span asp-validation-for="SupplierId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -190,7 +190,7 @@
 
                                 document.getElementById("ProductCode").disabled = false;
                                 document.getElementById("ProductName").disabled = false;
-                                document.getElementById("Principal").disabled = false;
+                                document.getElementById("Supplier").disabled = false;
                                 document.getElementById("Category").disabled = false;
                                 document.getElementById("Measurement").disabled = false;
                                 document.getElementById("Discount").disabled = false;
@@ -216,7 +216,7 @@
 
                                 document.getElementById("ProductCode").disabled = true;
                                 document.getElementById("ProductName").disabled = true;
-                                document.getElementById("Principal").disabled = true;
+                                document.getElementById("Supplier").disabled = true;
                                 document.getElementById("Category").disabled = true;
                                 document.getElementById("Measurement").disabled = true;
                                 document.getElementById("Discount").disabled = true;

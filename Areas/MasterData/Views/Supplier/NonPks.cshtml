@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "List Product";
+    ViewData["Title"] = "List Supplier Non PKS";
     Layout = "~/Views/Shared/_TopNavbarMasterData.cshtml";
 }
 
@@ -8,7 +8,7 @@
 @using PurchasingSystemApps.Models;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
-@model IEnumerable<Product>
+@model IEnumerable<Supplier>
 
 <!-- Main content -->
 <section class="content">
@@ -20,13 +20,13 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form enctype="multipart/form-data" asp-action="Index" asp-controller="Product" method="post" class="form-horizontal">
+                    <form enctype="multipart/form-data" asp-action="Index" asp-controller="Supplier" method="post" class="form-horizontal">
                         <div class="row">
                             <div class="col-md-1">
                                 <div class="form-group">
                                     @if (signInManager.IsSignedIn(User))
                                     {
-                                        <a class="btn bg-indigo" asp-action="CreateProduct" asp-controller="Product" asp-area="MasterData">
+                                        <a class="btn bg-indigo" asp-action="CreateSupplier" asp-controller="Supplier" asp-area="MasterData">
                                             <div style="color:#ffffff">Add New</div>
                                         </a>
                                     }
@@ -72,33 +72,22 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Create Date</th>
-                                        <th>Product Name</th>
-                                        <th>Supplier</th>
-                                        <th>Category</th>
-                                        <th>Measure</th>
-                                        <th>Min Stock</th>
-                                        <th>Max Stock</th>
-                                        <th>Buffer Stock</th>
-                                        <th>Stock</th>
-                                        <th>Retail Price</th>
+                                        <th>Supplier Code</th>
+                                        <th>Supplier Name</th>
+                                        <th>Email</th>
+                                        <th>Address</th>                                       
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var Product in Model)
+                                    @foreach (var Supplier in Model)
                                     {
-
-                                        <tr data-href="@Url.Action("DetailProduct", "Product", new {id=Product.ProductId})">
+                                        <tr data-href="@Url.Action("DetailSupplier", "Supplier", new {id=Supplier.SupplierId})">
                                             <th></th>
-                                            <td>@Product.CreateDateTime.ToString("dd MMMM yyyy")</td>                                            
-                                            <td>@Product.ProductName</td>
-                                            <td>@Product.Supplier.SupplierName</td>
-                                            <td>@Product.Category.CategoryName</td>
-                                            <td>@Product.Measurement.MeasurementName</td>
-                                            <td>@Product.MinStock</td>
-                                            <td>@Product.MaxStock</td>
-                                            <td>@Product.BufferStock</td>
-                                            <td>@Product.Stock</td>
-                                            <td>@Math.Truncate(@Product.RetailPrice)</td>
+                                            <td>@Supplier.CreateDateTime.ToString("dd MMMM yyyy")</td>
+                                            <td>@Supplier.SupplierCode</td>
+                                            <td>@Supplier.SupplierName</td>
+                                            <td>@Supplier.Email</td>
+                                            <td>@Supplier.Address</td>                                            
                                         </tr>
                                     }
                                 </tbody>

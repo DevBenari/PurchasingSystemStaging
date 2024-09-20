@@ -52,7 +52,7 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public string ProductNumber { get; set; }
         public string ProductName { get; set; }
         public string Measurement { get; set; }
-        public string Principal { get; set; }
+        public string Supplier { get; set; }
         public int Qty { get; set; }
         public decimal Price { get; set; }
         public int Discount { get; set; }

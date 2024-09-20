@@ -17,7 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     #region Areas Master Data
     public DbSet<UserActive> UserActives { get; set; }
-    public DbSet<Principal> Principals { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Discount> Discounts { get; set; }
     public DbSet<Measurement> Measurements { get; set; }
     public DbSet<Category> Categories { get; set; }

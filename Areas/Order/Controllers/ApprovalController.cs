@@ -169,7 +169,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Measurement = item.Measurement,
                     Qty = item.Qty,
                     Price = Math.Truncate(item.Price),

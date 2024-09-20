@@ -119,7 +119,7 @@
                                             <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">No</div></th>
                                             <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Product Number</div></th>
                                             <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Product Name</div></th>
-                                            <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Principal</div></th>
+                                            <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Supplier</div></th>
                                             <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Measure</div></th>
                                             <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff">Qty</div></th>
                                             <th class="text-right" style="background-color:#7FB9EE"><div style="color:#ffffff">Price</div></th>
@@ -136,7 +136,7 @@
                                                 <td class="row-index text-center"><p>@no</p></td>
                                                 <td class="text-left row-productNumber"><input class="detkodeproduk" asp-for="@Model.PurchaseRequestDetails[i].ProductNumber" type="hidden" value="@Model.PurchaseRequestDetails[i].ProductNumber">@Model.PurchaseRequestDetails[i].ProductNumber</td>
                                                 <td class="text-left row-productName"><input class="detnamaproduk" asp-for="@Model.PurchaseRequestDetails[i].ProductName" type="hidden" value="@Model.PurchaseRequestDetails[i].ProductName">@Model.PurchaseRequestDetails[i].ProductName</td>
-                                                <td class="text-left"><input class="detprincipal" asp-for="@Model.PurchaseRequestDetails[i].Principal" type="hidden" value="@Model.PurchaseRequestDetails[i].Principal">@Model.PurchaseRequestDetails[i].Principal</td>
+                                                <td class="text-left"><input class="detsupplier" asp-for="@Model.PurchaseRequestDetails[i].Supplier" type="hidden" value="@Model.PurchaseRequestDetails[i].Supplier">@Model.PurchaseRequestDetails[i].Supplier</td>
                                                 <td class="text-left"><input class="detsatuan" asp-for="@Model.PurchaseRequestDetails[i].Measurement" type="hidden" value="@Model.PurchaseRequestDetails[i].Measurement">@Model.PurchaseRequestDetails[i].Measurement</td>
                                                 <td class="text-center row-qty"><input class="text-center detqty" asp-for="@Model.PurchaseRequestDetails[i].Qty" type="hidden" value="@Model.PurchaseRequestDetails[i].Qty">@Model.PurchaseRequestDetails[i].Qty</td>
                                                 <td class="text-right"><input class="detprice" asp-for="@Model.PurchaseRequestDetails[i].Price" type="hidden" value="@Model.PurchaseRequestDetails[i].Price">@Model.PurchaseRequestDetails[i].Price</td>

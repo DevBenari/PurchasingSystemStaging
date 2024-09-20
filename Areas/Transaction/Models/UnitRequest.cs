@@ -45,7 +45,7 @@ namespace PurchasingSystemApps.Areas.Transaction.Models
         public string ProductNumber { get; set; }
         public string ProductName { get; set; }
         public string Measurement { get; set; }
-        public string Principal { get; set; }
+        public string Supplier { get; set; }
         public int Qty { get; set; }
         public bool Checked { get; set; }
 

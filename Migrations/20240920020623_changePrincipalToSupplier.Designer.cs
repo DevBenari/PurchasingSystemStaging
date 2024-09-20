@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PurchasingSystemApps.Data;
 
@@ -11,9 +12,10 @@ using PurchasingSystemApps.Data;
 namespace PurchasingSystemApps.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240920020623_changePrincipalToSupplier")]
+    partial class changePrincipalToSupplier
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -719,20 +721,11 @@ namespace PurchasingSystemApps.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
-
-                    b.Property<bool>("IsPKS")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("LeadTimeId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -752,8 +745,6 @@ namespace PurchasingSystemApps.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("SupplierId");
-
-                    b.HasIndex("LeadTimeId");
 
                     b.ToTable("MstSupplier", "dbo");
                 });
@@ -2454,16 +2445,6 @@ namespace PurchasingSystemApps.Migrations
                     b.Navigation("Supplier");
 
                     b.Navigation("WarehouseLocation");
-                });
-
-            modelBuilder.Entity("PurchasingSystemApps.Areas.MasterData.Models.Supplier", b =>
-                {
-                    b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.LeadTime", "LeadTime")
-                        .WithMany()
-                        .HasForeignKey("LeadTimeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("LeadTime");
                 });
 
             modelBuilder.Entity("PurchasingSystemApps.Areas.MasterData.Models.UnitLocation", b =>

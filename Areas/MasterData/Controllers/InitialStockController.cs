@@ -25,7 +25,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IInitialStockRepository _initialStockRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IPrincipalRepository _principalRepository;
+        private readonly ISupplierRepository _SupplierRepository;
         private readonly ILeadTimeRepository _leadTimeRepository;
 
         private readonly IHostingEnvironment _hostingEnvironment;
@@ -37,7 +37,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             IInitialStockRepository InitialStockRepository,
             IUserActiveRepository userActiveRepository,
             IProductRepository productRepository,
-            IPrincipalRepository principalRepository,
+            ISupplierRepository SupplierRepository,
             ILeadTimeRepository leadTimeRepository,
 
             IHostingEnvironment hostingEnvironment
@@ -49,7 +49,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _initialStockRepository = InitialStockRepository;
             _userActiveRepository = userActiveRepository;
             _productRepository = productRepository;
-            _principalRepository = principalRepository;
+            _SupplierRepository = SupplierRepository;
             _leadTimeRepository = leadTimeRepository;
 
             _hostingEnvironment = hostingEnvironment;
@@ -83,7 +83,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             ViewBag.Active = "MasterData";
 
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-            ViewBag.Principal = new SelectList(await _principalRepository.GetPrincipals(), "PrincipalId", "PrincipalName", SortOrder.Ascending);
+            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
             ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
 
             var initialStock = new InitialStockViewModel();       
@@ -97,7 +97,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         {            
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var getProduct = _productRepository.GetAllProduct().Where(p => p.ProductId == vm.ProductId).FirstOrDefault();
-            var getPrincipal = _principalRepository.GetAllPrincipal().Where(p => p.PrincipalId == vm.PrincipalId).FirstOrDefault();
+            var getSupplier = _SupplierRepository.GetAllSupplier().Where(p => p.SupplierId == vm.SupplierId).FirstOrDefault();
 
             if (vm.ProductId != null)
             {
@@ -109,7 +109,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     InitialStockId = vm.InitialStockId,
                     ProductId = vm.ProductId,
                     ProductName = getProduct.ProductName,
-                    PrincipalId = vm.PrincipalId,
+                    SupplierId = vm.SupplierId,
                     LeadTimeId = vm.LeadTimeId,
                     CalculateBaseOn = vm.CalculateBaseOn,
                     MaxRequest = vm.MaxRequest,
@@ -148,7 +148,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(vm);
                 }
             }
-            else if (vm.PrincipalId != null)
+            else if (vm.SupplierId != null)
             {
                 var initialStock = new InitialStock
                 {
@@ -157,8 +157,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     GenerateBy = vm.GenerateBy,
                     InitialStockId = vm.InitialStockId,
                     ProductId = vm.ProductId,
-                    PrincipalId = vm.PrincipalId,
-                    PrincipalName = getPrincipal.PrincipalName,
+                    SupplierId = vm.SupplierId,
+                    SupplierName = getSupplier.SupplierName,
                     LeadTimeId = vm.LeadTimeId,
                     CalculateBaseOn = vm.CalculateBaseOn,
                     MaxRequest = vm.MaxRequest,
@@ -166,9 +166,9 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 };
 
                 var leadtime = _leadTimeRepository.GetAllLeadTime().Where(l => l.LeadTimeId == vm.LeadTimeId).FirstOrDefault();
-                var productPrincipal = _productRepository.GetAllProduct().Where(p => p.PrincipalId == vm.PrincipalId).ToList();                
+                var productSupplier = _productRepository.GetAllProduct().Where(p => p.SupplierId == vm.SupplierId).ToList();                
 
-                foreach (var data in productPrincipal)
+                foreach (var data in productSupplier)
                 {
                     var product = _productRepository.GetAllProduct().Where(p => p.ProductId == data.ProductId).FirstOrDefault();
 
@@ -205,9 +205,9 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             }
             else {
                 ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-                ViewBag.Principal = new SelectList(await _principalRepository.GetPrincipals(), "PrincipalId", "PrincipalName", SortOrder.Ascending);
+                ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
                 ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-                TempData["WarningMessage"] = "Please, select product or principal !!!";
+                TempData["WarningMessage"] = "Please, select product or Supplier !!!";
                 return View(vm);
             }            
         }        

@@ -12,8 +12,8 @@ namespace PurchasingSystemApps.Areas.MasterData.ViewModels
         public Guid? ProductId { get; set; }
         public string? ProductName { get; set; }
         [Required(ErrorMessage = "Sorry, please choose!")]
-        public Guid? PrincipalId { get; set; }
-        public string? PrincipalName { get; set; }
+        public Guid? SupplierId { get; set; }
+        public string? SupplierName { get; set; }
         [Required(ErrorMessage = "Sorry, please choose!")]
         public Guid? LeadTimeId { get; set; }
         public string CalculateBaseOn { get; set; }

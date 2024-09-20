@@ -9,7 +9,7 @@ namespace PurchasingSystemApps.Areas.MasterData.ViewModels
         [Required(ErrorMessage = "Sorry, please fill in!")]
         public string ProductName { get; set; }
         [Required(ErrorMessage = "Sorry, please choose!")]
-        public Guid? PrincipalId { get; set; }
+        public Guid? SupplierId { get; set; }
         [Required(ErrorMessage = "Sorry, please choose!")]
         public Guid? CategoryId { get; set; }
         [Required(ErrorMessage = "Sorry, please choose!")]

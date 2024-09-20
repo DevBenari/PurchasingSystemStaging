@@ -33,12 +33,12 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             }).ToList();
             ViewBag.CountUser = countUser.Count;
 
-            var countPrincipal = _applicationDbContext.Principals.GroupBy(u => u.PrincipalId).Select(y => new
+            var countSupplier = _applicationDbContext.Suppliers.GroupBy(u => u.SupplierId).Select(y => new
             {
-                PrincipalId = y.Key,
-                CountOfPrincipals = y.Count()
+                SupplierId = y.Key,
+                CountOfSuppliers = y.Count()
             }).ToList();
-            ViewBag.CountPrincipal = countPrincipal.Count;
+            ViewBag.CountSupplier = countSupplier.Count;
 
             var countProduct = _applicationDbContext.Products.GroupBy(u => u.ProductId).Select(y => new
             {

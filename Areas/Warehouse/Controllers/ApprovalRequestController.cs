@@ -149,7 +149,7 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
                 {
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Measurement = item.Measurement,
                     Qty = item.Qty,
                 });

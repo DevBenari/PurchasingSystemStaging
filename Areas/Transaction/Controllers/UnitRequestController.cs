@@ -79,7 +79,7 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
 
         public JsonResult LoadProduk(Guid Id)
         {
-            var produk = _applicationDbContext.Products.Include(p => p.Principal).Include(s => s.Measurement).Include(d => d.Discount).Where(p => p.ProductId == Id).FirstOrDefault();
+            var produk = _applicationDbContext.Products.Include(p => p.Supplier).Include(s => s.Measurement).Include(d => d.Discount).Where(p => p.ProductId == Id).FirstOrDefault();
             return new JsonResult(produk);
         }
 
@@ -210,7 +210,7 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
                         ProductNumber = item.ProductNumber,
                         ProductName = item.ProductName,
                         Measurement = item.Measurement,
-                        Principal = item.Principal,
+                        Supplier = item.Supplier,
                         Qty = item.Qty,
                     });
                 }
@@ -293,7 +293,7 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
                     Measurement = item.Measurement,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Qty = item.Qty,
                 });
             }
@@ -442,7 +442,7 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
                     CreateBy = new Guid(getUser.Id),
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Measurement = item.Measurement,
                     Qty = item.Qty
                 });
@@ -502,7 +502,7 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
                     CreateBy = new Guid(getUser.Id),
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Measurement = item.Measurement,
                     Qty = item.Qty,
                     Checked = item.Checked

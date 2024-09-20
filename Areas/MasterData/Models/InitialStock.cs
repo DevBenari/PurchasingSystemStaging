@@ -13,8 +13,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Models
         public string GenerateBy { get; set; }
         public Guid? ProductId { get; set; }
         public string? ProductName { get; set; }
-        public Guid? PrincipalId { get; set; }
-        public string? PrincipalName { get; set; }
+        public Guid? SupplierId { get; set; }
+        public string? SupplierName { get; set; }
         public Guid? LeadTimeId { get; set; }
         public string CalculateBaseOn { get; set; }
         public int MaxRequest { get; set; }
@@ -23,8 +23,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Models
         //Relationship        
         [ForeignKey("ProductId")]
         public Product? Product { get; set; }
-        [ForeignKey("PrincipalId")]
-        public Principal? Principal { get; set; }
+        [ForeignKey("SupplierId")]
+        public Supplier? Supplier { get; set; }
         [ForeignKey("LeadTimeId")]
         public LeadTime? LeadTime { get; set; }
     }

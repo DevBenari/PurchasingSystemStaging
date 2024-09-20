@@ -51,7 +51,7 @@ builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, Applica
 
 #region Areas Master Data
 builder.Services.AddScoped<IUserActiveRepository>();
-builder.Services.AddScoped<IPrincipalRepository>();
+builder.Services.AddScoped<ISupplierRepository>();
 builder.Services.AddScoped<IDiscountRepository>();
 builder.Services.AddScoped<IMeasurementRepository>();
 builder.Services.AddScoped<ICategoryRepository>();

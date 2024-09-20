@@ -29,7 +29,7 @@
                             <select asp-for="GenerateBy" class="form-control select2bs4" style="width: 100%;" id="generateby">
                                 <option value="" hidden disabled selected>--Choose Generate--</option>
                                 <option value="Product">Product</option>
-                                <option value="Principal">Principal</option>
+                                <option value="Supplier">Supplier</option>
                             </select>
                             <span asp-validation-for="GenerateBy" class="text-danger"></span>
                         </div>
@@ -45,15 +45,15 @@
                             <span asp-validation-for="ProductId" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-group row" id="listprincipal">
-                        <label class="col-sm-3 col-form-label" asp-for="PrincipalId">
-                            Principal
+                    <div class="form-group row" id="listSupplier">
+                        <label class="col-sm-3 col-form-label" asp-for="SupplierId">
+                            Supplier
                         </label>
                         <div class="col-sm-9">
-                            <select asp-for="PrincipalId" data-placeholder="--Choose Principal--" asp-items="@ViewBag.Principal" class="form-control select2bs4" style="width: 100%;" id="selectprincipal">
-                                <option value="" hidden disabled selected>--Choose Principal--</option>
+                            <select asp-for="SupplierId" data-placeholder="--Choose Supplier--" asp-items="@ViewBag.Supplier" class="form-control select2bs4" style="width: 100%;" id="selectSupplier">
+                                <option value="" hidden disabled selected>--Choose Supplier--</option>
                             </select>
-                            <span asp-validation-for="PrincipalId" class="text-danger"></span>
+                            <span asp-validation-for="SupplierId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -114,7 +114,7 @@
 
                     <script>
                         $("#listproduct").hide();
-                        $("#listprincipal").hide();
+                        $("#listSupplier").hide();
                         
                         $("#generateby").change(function () {
                             if ($(this).val() == "Product") {
@@ -126,12 +126,12 @@
                                 $("#selectproduct").data('placeholder');
                             }
 
-                            if ($(this).val() == "Principal") {
-                                $("#listprincipal").show();
+                            if ($(this).val() == "Supplier") {
+                                $("#listSupplier").show();
                             } else {
-                                $("#listprincipal").hide();
-                                $('#selectprincipal').select2('val', 'selectedIndex', 0);
-                                $("#selectprincipal").data('placeholder');
+                                $("#listSupplier").hide();
+                                $('#selectSupplier').select2('val', 'selectedIndex', 0);
+                                $("#selectSupplier").data('placeholder');
                             }
                         });
                     </script>

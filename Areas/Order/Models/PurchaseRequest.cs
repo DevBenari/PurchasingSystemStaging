@@ -59,7 +59,7 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public Position? Position3 { get; set; }
         [ForeignKey("UserApprove3Id")]
         public UserActive? UserApprove3 { get; set; }
-        [ForeignKey("DueDateId")]
+        [ForeignKey("DueDateId")]   
         public DueDate? DueDate { get; set; }
     }
 
@@ -72,7 +72,7 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public string ProductNumber { get; set; }
         public string ProductName { get; set; }        
         public string Measurement { get; set; }
-        public string Principal { get; set; }
+        public string Supplier { get; set; }
         public int Qty { get; set; }
         public decimal Price { get; set; }
         public int Discount { get; set; }

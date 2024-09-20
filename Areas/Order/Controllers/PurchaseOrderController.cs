@@ -75,7 +75,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
         public JsonResult LoadProduk(Guid Id)
         {
-            var produk = _applicationDbContext.Products.Include(p => p.Principal).Include(s => s.Measurement).Include(d => d.Discount).Where(p => p.ProductId == Id).FirstOrDefault();
+            var produk = _applicationDbContext.Products.Include(p => p.Supplier).Include(s => s.Measurement).Include(d => d.Discount).Where(p => p.ProductId == Id).FirstOrDefault();
             return new JsonResult(produk);
         }
 
@@ -161,7 +161,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Measurement = item.Measurement,
                     Qty = item.Qty,
                     Price = Math.Truncate(item.Price),
@@ -261,7 +261,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                                 CreateBy = new Guid(getUser.Id),
                                 ProductNumber = item.ProductNumber,
                                 ProductName = item.ProductName,
-                                Principal = item.Principal,
+                                Supplier = item.Supplier,
                                 Measurement = item.Measurement,
                                 Qty = item.Qty,
                                 Price = Math.Truncate(item.Price),
@@ -278,7 +278,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         CreateBy = new Guid(getUser.Id),
                         ProductNumber = item.ProductNumber,
                         ProductName = item.ProductName,
-                        Principal = item.Principal,
+                        Supplier = item.Supplier,
                         Measurement = item.Measurement,
                         Qty = item.Qty,
                         Price = Math.Truncate(item.Price),
@@ -350,7 +350,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     CreateBy = new Guid(getUser.Id),
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Measurement = item.Measurement,
                     Qty = item.Qty,
                     Price = Math.Truncate(item.Price),

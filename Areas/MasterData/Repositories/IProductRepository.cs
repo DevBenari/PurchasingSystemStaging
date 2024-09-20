@@ -25,7 +25,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
         public async Task<Product> GetProductById(Guid Id)
         {
             var Product = await _context.Products
-                .Include(p => p.Principal)
+                .Include(p => p.Supplier)
                 .Include(c => c.Category)
                 .Include(m => m.Measurement)
                 .Include(d => d.Discount)
@@ -39,7 +39,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
                     ProductId = Product.ProductId,
                     ProductCode = Product.ProductCode,
                     ProductName = Product.ProductName,
-                    PrincipalId = Product.PrincipalId,
+                    SupplierId = Product.SupplierId,
                     CategoryId = Product.CategoryId,
                     MeasurementId = Product.MeasurementId,
                     DiscountId = Product.DiscountId,
@@ -72,7 +72,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
                 ProductId = Product.ProductId,
                 ProductCode = Product.ProductCode,
                 ProductName = Product.ProductName,
-                PrincipalId = Product.PrincipalId,
+                SupplierId = Product.SupplierId,
                 CategoryId = Product.CategoryId,
                 MeasurementId = Product.MeasurementId,
                 DiscountId = Product.DiscountId,
@@ -93,7 +93,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
         public IEnumerable<Product> GetAllProduct()
         {
             return _context.Products.OrderByDescending(d => d.CreateDateTime)
-                .Include(p => p.Principal)
+                .Include(p => p.Supplier)
                 .Include(c => c.Category)
                 .Include(m => m.Measurement)
                 .Include(d => d.Discount)

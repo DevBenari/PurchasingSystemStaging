@@ -24,7 +24,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
         public async Task<InitialStock> GetInitialStockById(Guid Id)
         {
             var InitialStock = await _context.InitialStocks
-                .Include(p => p.Principal)
+                .Include(p => p.Supplier)
                 .Include(c => c.Product)
                 .Include(m => m.LeadTime)
                 .SingleOrDefaultAsync(i => i.InitialStockId == Id);
@@ -37,8 +37,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
                     GenerateBy = InitialStock.GenerateBy,
                     ProductId = InitialStock.ProductId,
                     ProductName = InitialStock.ProductName,
-                    PrincipalId = InitialStock.PrincipalId,
-                    PrincipalName = InitialStock.PrincipalName,
+                    SupplierId = InitialStock.SupplierId,
+                    SupplierName = InitialStock.SupplierName,
                     LeadTimeId = InitialStock.LeadTimeId,
                     CalculateBaseOn = InitialStock.CalculateBaseOn,
                     MaxRequest = InitialStock.MaxRequest,
@@ -62,8 +62,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
                 GenerateBy = InitialStock.GenerateBy,
                 ProductId = InitialStock.ProductId,
                 ProductName = InitialStock.ProductName,
-                PrincipalId = InitialStock.PrincipalId,
-                PrincipalName = InitialStock.PrincipalName,
+                SupplierId = InitialStock.SupplierId,
+                SupplierName = InitialStock.SupplierName,
                 LeadTimeId = InitialStock.LeadTimeId,
                 CalculateBaseOn = InitialStock.CalculateBaseOn,
                 MaxRequest = InitialStock.MaxRequest,
@@ -74,7 +74,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
         public IEnumerable<InitialStock> GetAllInitialStock()
         {
             return _context.InitialStocks.OrderByDescending(d => d.CreateDateTime)
-                .Include(p => p.Principal)
+                .Include(p => p.Supplier)
                 .Include(c => c.Product)
                 .Include(m => m.LeadTime)
                 .AsNoTracking();

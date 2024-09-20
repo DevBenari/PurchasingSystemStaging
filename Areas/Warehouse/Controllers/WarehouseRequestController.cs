@@ -143,7 +143,7 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
                     Measurement = item.Measurement,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Qty = item.Qty,
                     QtySent = item.QtySent,
                     Checked = item.Checked
@@ -229,7 +229,7 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
                     CreateBy = new Guid(getUser.Id),
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Measurement = item.Measurement,
                     Qty = item.Qty
                 });
@@ -307,7 +307,7 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
                     CreateBy = new Guid(getUser.Id),
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Principal = item.Principal,
+                    Supplier = item.Supplier,
                     Measurement = item.Measurement,
                     Qty = item.Qty,
                     QtySent = item.QtySent,

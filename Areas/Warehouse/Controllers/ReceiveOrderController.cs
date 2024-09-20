@@ -54,7 +54,7 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
 
         public JsonResult LoadProduk(Guid Id)
         {
-            var produk = _applicationDbContext.Products.Include(p => p.Principal).Include(s => s.Measurement).Include(d => d.Discount).Where(p => p.ProductId == Id).FirstOrDefault();
+            var produk = _applicationDbContext.Products.Include(p => p.Supplier).Include(s => s.Measurement).Include(d => d.Discount).Where(p => p.ProductId == Id).FirstOrDefault();
             return new JsonResult(produk);
         }
         public JsonResult LoadPurchaseOrder(Guid Id)

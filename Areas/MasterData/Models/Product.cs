@@ -11,7 +11,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Models
         public Guid ProductId { get; set; }
         public string ProductCode { get; set; }
         public string ProductName { get; set; }        
-        public Guid? PrincipalId { get; set; }
+        public Guid? SupplierId { get; set; }
         public Guid? CategoryId { get; set; }
         public Guid? MeasurementId { get; set; }
         public Guid? DiscountId { get; set; }
@@ -28,8 +28,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Models
         public string? Note { get; set; }
 
         //Relationship        
-        [ForeignKey("PrincipalId")]
-        public Principal? Principal { get; set; }
+        [ForeignKey("SupplierId")]
+        public Supplier? Supplier { get; set; }
         [ForeignKey("CategoryId")]
         public Category? Category { get; set; }
         [ForeignKey("MeasurementId")]

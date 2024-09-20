@@ -24,7 +24,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IProductRepository _productRepository;
 
-        private readonly IPrincipalRepository _principalRepository;
+        private readonly ISupplierRepository _SupplierRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMeasurementRepository _measurementRepository;
         private readonly IDiscountRepository _discountRepository;
@@ -39,7 +39,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             IProductRepository productRepository,
             IUserActiveRepository userActiveRepository,
             
-            IPrincipalRepository principalRepository,
+            ISupplierRepository SupplierRepository,
             ICategoryRepository categoryRepository,
             IMeasurementRepository measurementRepository,
             IDiscountRepository discountRepository,
@@ -54,7 +54,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _productRepository = productRepository;
             _userActiveRepository = userActiveRepository;
 
-            _principalRepository = principalRepository;
+            _SupplierRepository = SupplierRepository;
             _categoryRepository = categoryRepository;
             _measurementRepository = measurementRepository;
             _discountRepository = discountRepository;
@@ -90,7 +90,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         {
             ViewBag.Active = "MasterData";
 
-            ViewBag.Principal = new SelectList(await _principalRepository.GetPrincipals(), "PrincipalId", "PrincipalName", SortOrder.Ascending);
+            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
             ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
             ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
             ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
@@ -159,7 +159,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     ProductId = vm.ProductId,
                     ProductCode = vm.ProductCode,
                     ProductName = vm.ProductName,
-                    PrincipalId = vm.PrincipalId,
+                    SupplierId = vm.SupplierId,
                     CategoryId = vm.CategoryId,
                     MeasurementId = vm.MeasurementId,
                     DiscountId = vm.DiscountId,
@@ -185,7 +185,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else
                 {
-                    ViewBag.Principal = new SelectList(await _principalRepository.GetPrincipals(), "PrincipalId", "PrincipalName", SortOrder.Ascending);
+                    ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
                     ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
                     ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
                     ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
@@ -196,7 +196,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
 
             }
-            ViewBag.Principal = new SelectList(await _principalRepository.GetPrincipals(), "PrincipalId", "PrincipalName", SortOrder.Ascending);
+            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
             ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
             ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
             ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
@@ -210,7 +210,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         {
             ViewBag.Active = "MasterData";
 
-            ViewBag.Principal = new SelectList(await _principalRepository.GetPrincipals(), "PrincipalId", "PrincipalName", SortOrder.Ascending);
+            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
             ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
             ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
             ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
@@ -229,7 +229,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 ProductId = Product.ProductId,
                 ProductCode = Product.ProductCode,
                 ProductName = Product.ProductName,
-                PrincipalId = Product.PrincipalId,
+                SupplierId = Product.SupplierId,
                 CategoryId = Product.CategoryId,
                 MeasurementId = Product.MeasurementId,
                 DiscountId = Product.DiscountId,
@@ -264,7 +264,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Product.UpdateBy = new Guid(getUser.Id);
                     Product.ProductCode = viewModel.ProductCode;
                     Product.ProductName = viewModel.ProductName;
-                    Product.PrincipalId = viewModel.PrincipalId;
+                    Product.SupplierId = viewModel.SupplierId;
                     Product.CategoryId = viewModel.CategoryId;
                     Product.MeasurementId = viewModel.MeasurementId;
                     Product.DiscountId = viewModel.DiscountId;
@@ -288,7 +288,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else
                 {
-                    ViewBag.Principal = new SelectList(await _principalRepository.GetPrincipals(), "PrincipalId", "PrincipalName", SortOrder.Ascending);
+                    ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
                     ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
                     ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
                     ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
@@ -297,7 +297,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-            ViewBag.Principal = new SelectList(await _principalRepository.GetPrincipals(), "PrincipalId", "PrincipalName", SortOrder.Ascending);
+            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
             ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
             ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
             ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
