@@ -140,22 +140,33 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     LeadTimeValue = vm.LeadTimeValue
                 };
 
-                var result = _leadTimeRepository.GetAllLeadTime().Where(c => c.LeadTimeValue == vm.LeadTimeValue).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _leadTimeRepository.GetAllLeadTime().Where(c => c.LeadTimeValue == vm.LeadTimeValue).ToList();
+                
+                if (checkDuplicate.Count == 0)
                 {
-                    _leadTimeRepository.Tambah(LeadTime);
-                    TempData["SuccessMessage"] = "Name " + vm.LeadTimeValue + " Saved";
-                    return RedirectToAction("Index", "LeadTime");
+                    var result = _leadTimeRepository.GetAllLeadTime().Where(c => c.LeadTimeValue == vm.LeadTimeValue).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _leadTimeRepository.Tambah(LeadTime);
+                        TempData["SuccessMessage"] = "Name " + vm.LeadTimeValue + " Saved";
+                        return RedirectToAction("Index", "LeadTime");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + vm.LeadTimeValue + " Already Exist !!!";
+                        return View(vm);
+                    }
                 }
                 else
                 {
                     TempData["WarningMessage"] = "Name " + vm.LeadTimeValue + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
-
-            return View();
+            else
+            {               
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -188,20 +199,30 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var LeadTime = await _leadTimeRepository.GetLeadTimeByIdNoTracking(viewModel.LeadTimeId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _leadTimeRepository.GetAllLeadTime().Where(d => d.LeadTimeCode == viewModel.LeadTimeCode).FirstOrDefault();
+                var checkDuplicate = _leadTimeRepository.GetAllLeadTime().Where(d => d.LeadTimeValue == viewModel.LeadTimeValue).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    LeadTime.UpdateDateTime = DateTime.Now;
-                    LeadTime.UpdateBy = new Guid(getUser.Id);
-                    LeadTime.LeadTimeCode = viewModel.LeadTimeCode;
-                    LeadTime.LeadTimeValue = viewModel.LeadTimeValue;
+                    var data = _leadTimeRepository.GetAllLeadTime().Where(d => d.LeadTimeCode == viewModel.LeadTimeCode).FirstOrDefault();
 
-                    _leadTimeRepository.Update(LeadTime);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        LeadTime.UpdateDateTime = DateTime.Now;
+                        LeadTime.UpdateBy = new Guid(getUser.Id);
+                        LeadTime.LeadTimeCode = viewModel.LeadTimeCode;
+                        LeadTime.LeadTimeValue = viewModel.LeadTimeValue;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.LeadTimeValue + " Success Changes";
-                    return RedirectToAction("Index", "LeadTime");
+                        _leadTimeRepository.Update(LeadTime);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.LeadTimeValue + " Success Changes";
+                        return RedirectToAction("Index", "LeadTime");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + viewModel.LeadTimeValue + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
                 else
                 {
@@ -209,8 +230,10 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-
-            return View();
+            else
+            {
+                return View(viewModel);
+            }            
         }
 
         [HttpGet]

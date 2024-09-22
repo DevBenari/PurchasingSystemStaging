@@ -155,9 +155,11 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     TempData["WarningMessage"] = "Name " + vm.DepartmentName + " Already Exist !!!";
                     return View(vm);
                 }
+            } 
+            else
+            {
+                return View(vm);
             }
-
-            return View();
         }
 
         [HttpGet]
@@ -191,7 +193,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Department = await _departmentRepository.GetDepartmentByIdNoTracking(viewModel.DepartmentId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var checkDuplicate = _departmentRepository.GetAllDepartment().Where(d => d.DepartmentCode == viewModel.DepartmentCode).ToList();
+                var checkDuplicate = _departmentRepository.GetAllDepartment().Where(d => d.DepartmentName == viewModel.DepartmentName).ToList();
 
                 if (checkDuplicate.Count == 0)
                 {
@@ -223,8 +225,10 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-
-            return View();
+            else 
+            {
+                return View(viewModel);
+            }            
         }
 
         [HttpGet]

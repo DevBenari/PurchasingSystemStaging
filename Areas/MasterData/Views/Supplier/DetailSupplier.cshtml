@@ -24,68 +24,73 @@
                 <div class="card-body">
                     <input hidden asp-for="SupplierId" />
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="SupplierCode">Supplier Code</label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-6">
+                            <label asp-for="SupplierCode"></label>
                             <input type="text" asp-for="SupplierCode" class="form-control form-control-border border-width-2" id="SupplierCode" placeholder="Supplier Code" readonly disabled>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="SupplierName">Supplier Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="SupplierName" class="form-control form-control-border border-width-2" id="SupplierName" placeholder="Supplier Name" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="SupplierName"></label>
+                            <input type="text" asp-for="SupplierName" class="form-control form-control-border border-width-2" autofocus maxlength="250" autocomplete="off" id="SupplierName" placeholder="Supplier Name" disabled>
+                            <span asp-validation-for="SupplierName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="LeadTimeId">
-                            Lead Time
-                        </label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-6">
+                            <label asp-for="LeadTimeId"></label>
                             <select asp-for="LeadTimeId" asp-items="@ViewBag.LeadTime" class="form-control select2bs4" style="width: 100%;" id="LeadTime" disabled>
                                 <option value="" hidden disabled selected>--Choose Lead Time--</option>
                             </select>
                             <span asp-validation-for="LeadTimeId" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Address">Address</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="Address" placeholder="Address" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="Address"></label>
+                            <input type="text" asp-for="Address" class="form-control form-control-border border-width-2" maxlength="250" autocomplete="off" id="Address" placeholder="Address" disabled>
+                            <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Handphone">Handphone</label>
-                        <div class="col-sm-9 input-group">
+                        <div class="col-sm-6 input-group">
+                            <label class="input-group" asp-for="Handphone"></label>
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-phone"></i></span>
                             </div>
-                            <input asp-for="Handphone" autocomplete="off" type="text" class="form-control form-control-border border-width-2" id="Handphone" data-inputmask='"mask": "(9999) - 9999-9999-9"' data-mask-hp disabled>
+                            <input asp-for="Handphone" autocomplete="off" type="text" class="form-control form-control-border border-width-2" data-inputmask='"mask": "(9999) - 9999-9999-9"' data-mask-hp placeholder="Handphone" id="Handphone" disabled>
+                            <span asp-validation-for="Handphone" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Email">Email</label>
-                        <div class="col-sm-9 input-group">
+                        <div class="col-sm-6 input-group">
+                            <label class="input-group" asp-for="Email"></label>
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                             </div>
-                            <input maxlength="100" autofocus autocomplete="off" asp-for="Email" type="email" class="form-control form-control-border border-width-2" id="Email" placeholder="Email" disabled>
+                            <input maxlength="100" autocomplete="off" asp-for="Email" type="email" class="form-control form-control-border border-width-2" placeholder="Email" id="Email" disabled>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="Note"></label>
+                            <input asp-for="Note" autocomplete="off" type="text" class="form-control form-control-border border-width-2" maxlength="250" autocomplete="off" id="Note" placeholder="Note" disabled>
+                            <span asp-validation-for="Note" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="IsPKS">Is PKS?</label>
-                        <div class="col-sm-10">
-                            <input type="checkbox" asp-for="IsPKS" class="form-control form-control-border border-width-2" id="IsPKS" placeholder="IsPKS" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="IsActive">Is Active?</label>
-                        <div class="col-sm-10">
-                            <input type="checkbox" asp-for="IsActive" class="form-control form-control-border border-width-2" id="IsActive" placeholder="IsActive" disabled>
+                        <div class="col-sm-6">
+                            <div class="col-sm-3 input-group">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input asp-for="IsPKS" type="checkbox" id="IsPKS" disabled>
+                                        <label asp-for="IsPKS">Is PKS?</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 input-group">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-danger d-inline">
+                                        <input asp-for="IsActive" type="checkbox" id="IsActive" disabled>
+                                        <label asp-for="IsActive">Is Active?</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

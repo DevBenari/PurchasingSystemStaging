@@ -72,6 +72,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             return View(data);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> NonActive()
         {
             ViewBag.Active = "MasterData";
@@ -79,6 +81,20 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             return View(data);
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> NonActive(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
+        {
+            ViewBag.Active = "MasterData";
+            ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
+            ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
+
+            var data = _supplierRepository.GetAllSupplierNonActive().Where(r => r.CreateDateTime.Date >= tglAwalPencarian && r.CreateDateTime.Date <= tglAkhirPencarian).ToList();
+            return View(data);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> NonPks()
         {
             ViewBag.Active = "MasterData";
@@ -86,10 +102,15 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             return View(data);
         }
 
-        public async Task<IActionResult> NonPksNonActive()
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> NonPks(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
-            var data = _supplierRepository.GetAllSupplierNonPksNonActive();
+            ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
+            ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
+
+            var data = _supplierRepository.GetAllSupplierNonPks().Where(r => r.CreateDateTime.Date >= tglAwalPencarian && r.CreateDateTime.Date <= tglAkhirPencarian).ToList();
             return View(data);
         }
 
@@ -200,8 +221,11 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(vm);
                 }
             }
-            ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-            return View();
+            else
+            {
+                ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);               
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -247,13 +271,13 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var Supplier = await _supplierRepository.GetSupplierByIdNoTracking(viewModel.SupplierId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
 
-                if (Supplier.IsActive == false && Supplier.IsPKS == true)
+                if (Supplier.IsActive == false)
                 {
                     var checkDuplicate = _supplierRepository.GetAllSupplierNonActive().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
 
-                    if (checkDuplicate.Count == 0)
+                    if (checkDuplicate.Count == 1)
                     {
-                        var data = _supplierRepository.GetAllSupplier().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
+                        var data = _supplierRepository.GetAllSupplierNonActive().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
 
                         if (data != null)
                         {
@@ -273,7 +297,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                             _applicationDbContext.SaveChanges();
 
                             TempData["SuccessMessage"] = "Name " + viewModel.SupplierName + " Success Changes";
-                            return RedirectToAction("Index", "Supplier");
+                            return RedirectToAction("NonActive", "Supplier");
                         }
                         else
                         {
@@ -291,11 +315,11 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else if (Supplier.IsPKS == false && Supplier.IsActive == true)
                 {
-                    var check = _supplierRepository.GetAllSupplierNonPks().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
+                    var checkDuplicate = _supplierRepository.GetAllSupplierNonPks().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
 
-                    if (check.Count == 0)
+                    if (checkDuplicate.Count == 1)
                     {
-                        var data = _supplierRepository.GetAllSupplier().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
+                        var data = _supplierRepository.GetAllSupplierNonPks().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
 
                         if (data != null)
                         {
@@ -315,7 +339,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                             _applicationDbContext.SaveChanges();
 
                             TempData["SuccessMessage"] = "Name " + viewModel.SupplierName + " Success Changes";
-                            return RedirectToAction("Index", "Supplier");
+                            return RedirectToAction("NonPks", "Supplier");
                         }
                         else
                         {
@@ -330,54 +354,12 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                         TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " Already Exist !!!";
                         return View(viewModel);
                     }
-                }
-                else if (Supplier.IsActive == false && Supplier.IsPKS == false) 
-                {                    
-                    var check = _supplierRepository.GetAllSupplierNonPksNonActive().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
-
-                    if (check.Count == 0)
-                    {
-                        var data = _supplierRepository.GetAllSupplier().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
-
-                        if (data != null)
-                        {
-                            Supplier.UpdateDateTime = DateTime.Now;
-                            Supplier.UpdateBy = new Guid(getUser.Id);
-                            Supplier.SupplierCode = viewModel.SupplierCode;
-                            Supplier.SupplierName = viewModel.SupplierName;
-                            Supplier.LeadTimeId = viewModel.LeadTimeId;
-                            Supplier.Address = viewModel.Address;
-                            Supplier.Handphone = viewModel.Handphone;
-                            Supplier.Email = viewModel.Email;
-                            Supplier.Note = viewModel.Note;
-                            Supplier.IsPKS = viewModel.IsPKS;
-                            Supplier.IsActive = viewModel.IsActive;
-
-                            _supplierRepository.Update(Supplier);
-                            _applicationDbContext.SaveChanges();
-
-                            TempData["SuccessMessage"] = "Name " + viewModel.SupplierName + " Success Changes";
-                            return RedirectToAction("Index", "Supplier");
-                        }
-                        else
-                        {
-                            ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-                            TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " Already Exist !!!";
-                            return View(viewModel);
-                        }
-                    }
-                    else
-                    {
-                        ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-                        TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " Already Exist !!!";
-                        return View(viewModel);
-                    }
-                }
+                }                
                 else if (Supplier.IsActive == true && Supplier.IsPKS == true)
                 {
-                    var check = _supplierRepository.GetAllSupplier().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
+                    var checkDuplicate = _supplierRepository.GetAllSupplier().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
 
-                    if (check.Count == 0)
+                    if (checkDuplicate.Count == 1)
                     {
                         var data = _supplierRepository.GetAllSupplier().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
 
@@ -416,9 +398,14 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     }
                 }
             }
+            else
+            {
+                ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);                
+                return View(viewModel);
+            }
 
-            ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-            return View();
+            ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);                
+            return View(viewModel);
         }
 
         [HttpGet]

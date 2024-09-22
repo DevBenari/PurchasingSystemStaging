@@ -138,22 +138,33 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Note = vm.Note
                 };
 
-                var result = _discountRepository.GetAllDiscount().Where(c => c.DiscountValue == vm.DiscountValue).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _discountRepository.GetAllDiscount().Where(c => c.DiscountValue == vm.DiscountValue).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _discountRepository.Tambah(Discount);
-                    TempData["SuccessMessage"] = "Discount " + vm.DiscountValue + " % Saved";
-                    return RedirectToAction("Index", "Discount");
+                    var result = _discountRepository.GetAllDiscount().Where(c => c.DiscountValue == vm.DiscountValue).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _discountRepository.Tambah(Discount);
+                        TempData["SuccessMessage"] = "Discount " + vm.DiscountValue + " % Saved";
+                        return RedirectToAction("Index", "Discount");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Discount " + vm.DiscountValue + " % Already Exist !!!";
+                        return View(vm);
+                    }
                 }
-                else
+                else 
                 {
                     TempData["WarningMessage"] = "Discount " + vm.DiscountValue + " % Already Exist !!!";
                     return View(vm);
                 }
-
             }
-
-            return View();
+            else
+            {                
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -187,30 +198,42 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Discount = await _discountRepository.GetDiscountByIdNoTracking(viewModel.DiscountId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();                
-                var check = _discountRepository.GetAllDiscount().Where(d => d.DiscountCode == viewModel.DiscountCode).FirstOrDefault();
+                var checkDuplicate = _discountRepository.GetAllDiscount().Where(d => d.DiscountValue == viewModel.DiscountValue).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    Discount.UpdateDateTime = DateTime.Now;
-                    Discount.UpdateBy = new Guid(getUser.Id);
-                    Discount.DiscountCode = viewModel.DiscountCode;
-                    Discount.DiscountValue = viewModel.DiscountValue;
-                    Discount.Note = viewModel.Note;
+                    var data = _discountRepository.GetAllDiscount().Where(d => d.DiscountCode == viewModel.DiscountCode).FirstOrDefault();
 
-                    _discountRepository.Update(Discount);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        Discount.UpdateDateTime = DateTime.Now;
+                        Discount.UpdateBy = new Guid(getUser.Id);
+                        Discount.DiscountCode = viewModel.DiscountCode;
+                        Discount.DiscountValue = viewModel.DiscountValue;
+                        Discount.Note = viewModel.Note;
 
-                    TempData["SuccessMessage"] = "Discount " + viewModel.DiscountValue + " % Success Changes";
-                    return RedirectToAction("Index", "Discount");
+                        _discountRepository.Update(Discount);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Discount " + viewModel.DiscountValue + " % Success Changes";
+                        return RedirectToAction("Index", "Discount");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Discount " + viewModel.DiscountValue + " % Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
                 else
                 {
                     TempData["WarningMessage"] = "Discount " + viewModel.DiscountValue + " % Already Exist !!!";
                     return View(viewModel);
                 }
-            }
-
-            return View();
+            } 
+            else 
+            {
+                return View(viewModel);
+            }            
         }
 
         [HttpGet]

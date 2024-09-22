@@ -135,22 +135,33 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Note = vm.Note
                 };
 
-                var result = _TermOfPaymentRepository.GetAllTermOfPayment().Where(c => c.TermOfPaymentName == vm.TermOfPaymentName).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _TermOfPaymentRepository.GetAllTermOfPayment().Where(c => c.TermOfPaymentName == vm.TermOfPaymentName).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _TermOfPaymentRepository.Tambah(TermOfPayment);
-                    TempData["SuccessMessage"] = "Name " + vm.TermOfPaymentName + " Saved";
-                    return RedirectToAction("Index", "TermOfPayment");
-                }
-                else
+                    var result = _TermOfPaymentRepository.GetAllTermOfPayment().Where(c => c.TermOfPaymentName == vm.TermOfPaymentName).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _TermOfPaymentRepository.Tambah(TermOfPayment);
+                        TempData["SuccessMessage"] = "Name " + vm.TermOfPaymentName + " Saved";
+                        return RedirectToAction("Index", "TermOfPayment");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + vm.TermOfPaymentName + " Already Exist !!!";
+                        return View(vm);
+                    }
+                } 
+                else 
                 {
                     TempData["WarningMessage"] = "Name " + vm.TermOfPaymentName + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
-
-            return View();
+            else
+            {
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -184,21 +195,31 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var TermOfPayment = await _TermOfPaymentRepository.GetTermOfPaymentByIdNoTracking(viewModel.TermOfPaymentId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _TermOfPaymentRepository.GetAllTermOfPayment().Where(d => d.TermOfPaymentCode == viewModel.TermOfPaymentCode).FirstOrDefault();
+                var checkDuplicate = _TermOfPaymentRepository.GetAllTermOfPayment().Where(d => d.TermOfPaymentName == viewModel.TermOfPaymentName).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    TermOfPayment.UpdateDateTime = DateTime.Now;
-                    TermOfPayment.UpdateBy = new Guid(getUser.Id);
-                    TermOfPayment.TermOfPaymentCode = viewModel.TermOfPaymentCode;
-                    TermOfPayment.TermOfPaymentName = viewModel.TermOfPaymentName;
-                    TermOfPayment.Note = viewModel.Note;
+                    var data = _TermOfPaymentRepository.GetAllTermOfPayment().Where(d => d.TermOfPaymentCode == viewModel.TermOfPaymentCode).FirstOrDefault();
 
-                    _TermOfPaymentRepository.Update(TermOfPayment);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        TermOfPayment.UpdateDateTime = DateTime.Now;
+                        TermOfPayment.UpdateBy = new Guid(getUser.Id);
+                        TermOfPayment.TermOfPaymentCode = viewModel.TermOfPaymentCode;
+                        TermOfPayment.TermOfPaymentName = viewModel.TermOfPaymentName;
+                        TermOfPayment.Note = viewModel.Note;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.TermOfPaymentName + " Success Changes";
-                    return RedirectToAction("Index", "TermOfPayment");
+                        _TermOfPaymentRepository.Update(TermOfPayment);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.TermOfPaymentName + " Success Changes";
+                        return RedirectToAction("Index", "TermOfPayment");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + viewModel.TermOfPaymentName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
                 else
                 {
@@ -206,8 +227,10 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-
-            return View();
+            else
+            {                
+                return View(viewModel);
+            }
         }
 
         [HttpGet]

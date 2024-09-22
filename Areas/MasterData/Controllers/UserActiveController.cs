@@ -183,18 +183,30 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Foto = uniqueFileName
                 };
 
-                var passTglLahir = vm.DateOfBirth.ToString("ddMMMyyyy");
-
-                var resultPengguna = _userActiveRepository.GetAllUser().Where(c => c.FullName == vm.FullName).FirstOrDefault();
+                var passTglLahir = vm.DateOfBirth.ToString("ddMMMyyyy");                
                 var resultLogin = await _userManager.CreateAsync(userLogin, passTglLahir);
 
-                if (resultPengguna == null)
+                var checkDuplicatePengguna = _userActiveRepository.GetAllUser().Where(c => c.FullName == vm.FullName && c.DepartmentId == vm.DepartmentId).ToList();
+
+                if (checkDuplicatePengguna.Count == 0)
                 {
-                    if (resultLogin.Succeeded)
+                    var resultPengguna = _userActiveRepository.GetAllUser().Where(c => c.FullName == vm.FullName).FirstOrDefault();
+
+                    if (resultPengguna == null)
                     {
-                        _userActiveRepository.Tambah(user);
-                        TempData["SuccessMessage"] = "Account " + vm.FullName + " Saved";
-                        return RedirectToAction("Index", "UserActive");
+                        if (resultLogin.Succeeded)
+                        {
+                            _userActiveRepository.Tambah(user);
+                            TempData["SuccessMessage"] = "Account " + vm.FullName + " Saved";
+                            return RedirectToAction("Index", "UserActive");
+                        }
+                        else
+                        {
+                            ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+                            ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
+                            TempData["WarningMessage"] = "Account " + vm.FullName + " Already Exist !!!";
+                            return View(vm);
+                        }
                     }
                     else
                     {
@@ -211,12 +223,13 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     TempData["WarningMessage"] = "Account " + vm.FullName + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
-
-            ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
-            ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
-            return View();
+            else
+            {
+                ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+                ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);                
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -266,55 +279,71 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var user = await _userActiveRepository.GetUserByIdNoTracking(viewModel.UserActiveId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                 var userLogin = await _userManager.FindByNameAsync(viewModel.Email);
-                var check = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).FirstOrDefault();
+                var checkDuplicate = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    if (userLogin != null)
+                    var data = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).FirstOrDefault();
+
+                    if (data != null)
                     {
-                        user.UpdateDateTime = DateTime.Now;
-                        user.UpdateBy = new Guid(getUser.Id);
-                        user.UserActiveCode = viewModel.UserActiveCode;
-                        user.FullName = viewModel.FullName;
-                        user.IdentityNumber = viewModel.IdentityNumber;
-                        user.DepartmentId = viewModel.DepartmentId;
-                        user.PositionId = viewModel.PositionId;
-                        user.PlaceOfBirth = viewModel.PlaceOfBirth;
-                        user.DateOfBirth = viewModel.DateOfBirth;
-                        user.Gender = viewModel.Gender;
-                        user.Address = viewModel.Address;
-                        user.Handphone = viewModel.Handphone;
-                        user.Email = viewModel.Email;
-
-                        if (viewModel.Foto != null)
+                        if (userLogin != null)
                         {
-                            if (viewModel.UserPhotoPath != null)
+                            user.UpdateDateTime = DateTime.Now;
+                            user.UpdateBy = new Guid(getUser.Id);
+                            user.UserActiveCode = viewModel.UserActiveCode;
+                            user.FullName = viewModel.FullName;
+                            user.IdentityNumber = viewModel.IdentityNumber;
+                            user.DepartmentId = viewModel.DepartmentId;
+                            user.PositionId = viewModel.PositionId;
+                            user.PlaceOfBirth = viewModel.PlaceOfBirth;
+                            user.DateOfBirth = viewModel.DateOfBirth;
+                            user.Gender = viewModel.Gender;
+                            user.Address = viewModel.Address;
+                            user.Handphone = viewModel.Handphone;
+                            user.Email = viewModel.Email;
+
+                            if (viewModel.Foto != null)
                             {
-                                string filePath = Path.Combine(_hostingEnvironment.WebRootPath,
-                                    "UserPhoto", viewModel.UserPhotoPath);
-                                System.IO.File.Delete(filePath);
+                                if (viewModel.UserPhotoPath != null)
+                                {
+                                    string filePath = Path.Combine(_hostingEnvironment.WebRootPath,
+                                        "UserPhoto", viewModel.UserPhotoPath);
+                                    System.IO.File.Delete(filePath);
+                                }
+                                user.Foto = ProcessUploadFile(viewModel);
                             }
-                            user.Foto = ProcessUploadFile(viewModel);
+
+                            userLogin.NamaUser = viewModel.FullName;
+                            userLogin.UserName = viewModel.Email;
+                            userLogin.Email = viewModel.Email;                            
+
+                            var result = await _userManager.UpdateAsync(userLogin);
+
+                            if (result.Succeeded)
+                            {
+                                _userActiveRepository.Update(user);
+                                _applicationDbContext.SaveChanges();
+
+                                TempData["SuccessMessage"] = "Account " + viewModel.FullName + " Success Changes";
+                                return RedirectToAction("Index", "UserActive");
+                            }
                         }
-
-                        var result = await _userManager.UpdateAsync(userLogin);
-
-                        if (result.Succeeded)
+                        else
                         {
-                            _userActiveRepository.Update(user);
-                            _applicationDbContext.SaveChanges();
-
-                            TempData["SuccessMessage"] = "Account " + viewModel.FullName + " Success Changes";
-                            return RedirectToAction("Index", "UserActive");
+                            ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+                            ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
+                            TempData["WarningMessage"] = "Account " + viewModel.FullName + " Sorry, Data Failed !!!";
+                            return View(viewModel);
                         }
                     }
-                    else 
+                    else
                     {
                         ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
                         ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
-                        TempData["WarningMessage"] = "Account " + viewModel.FullName + " Sorry, Data Failed !!!";
+                        TempData["WarningMessage"] = "Account " + viewModel.FullName + " Already Exist !!!";
                         return View(viewModel);
-                    }                        
+                    }
                 }
                 else
                 {
@@ -324,10 +353,16 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
+            else
+            {
+                ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+                ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);                
+                return View(viewModel);
+            }
 
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
             ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
-            return View();
+            return View(viewModel);
         }
 
         [HttpGet]

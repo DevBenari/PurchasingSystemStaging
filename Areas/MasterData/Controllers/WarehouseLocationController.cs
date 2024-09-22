@@ -145,12 +145,23 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Address = vm.Address
                 };
 
-                var result = _warehouseLocationRepository.GetAllWarehouseLocation().Where(c => c.WarehouseLocationName == vm.WarehouseLocationName).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _warehouseLocationRepository.GetAllWarehouseLocation().Where(c => c.WarehouseLocationName == vm.WarehouseLocationName).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _warehouseLocationRepository.Tambah(WarehouseLocation);
-                    TempData["SuccessMessage"] = "Name " + vm.WarehouseLocationName + " Saved";
-                    return RedirectToAction("Index", "WarehouseLocation");
+                    var result = _warehouseLocationRepository.GetAllWarehouseLocation().Where(c => c.WarehouseLocationName == vm.WarehouseLocationName).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _warehouseLocationRepository.Tambah(WarehouseLocation);
+                        TempData["SuccessMessage"] = "Name " + vm.WarehouseLocationName + " Saved";
+                        return RedirectToAction("Index", "WarehouseLocation");
+                    }
+                    else
+                    {
+                        ViewBag.WarehouseManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
+                        TempData["WarningMessage"] = "Name " + vm.WarehouseLocationName + " Already Exist !!!";
+                        return View(vm);
+                    }
                 }
                 else
                 {
@@ -159,8 +170,11 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(vm);
                 }
             }
-            ViewBag.WarehouseManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
-            return View();
+            else
+            {
+                ViewBag.WarehouseManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);                
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -198,22 +212,33 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var WarehouseLocation = await _warehouseLocationRepository.GetWarehouseLocationByIdNoTracking(viewModel.WarehouseLocationId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _warehouseLocationRepository.GetAllWarehouseLocation().Where(d => d.WarehouseLocationCode == viewModel.WarehouseLocationCode).FirstOrDefault();
+                var checkDuplicate = _warehouseLocationRepository.GetAllWarehouseLocation().Where(d => d.WarehouseLocationName == viewModel.WarehouseLocationName).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    WarehouseLocation.UpdateDateTime = DateTime.Now;
-                    WarehouseLocation.UpdateBy = new Guid(getUser.Id);
-                    WarehouseLocation.WarehouseLocationCode = viewModel.WarehouseLocationCode;
-                    WarehouseLocation.WarehouseLocationName = viewModel.WarehouseLocationName;
-                    WarehouseLocation.WarehouseManagerId = viewModel.WarehouseManagerId;
-                    WarehouseLocation.Address = viewModel.Address;
+                    var data = _warehouseLocationRepository.GetAllWarehouseLocation().Where(d => d.WarehouseLocationCode == viewModel.WarehouseLocationCode).FirstOrDefault();
 
-                    _warehouseLocationRepository.Update(WarehouseLocation);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        WarehouseLocation.UpdateDateTime = DateTime.Now;
+                        WarehouseLocation.UpdateBy = new Guid(getUser.Id);
+                        WarehouseLocation.WarehouseLocationCode = viewModel.WarehouseLocationCode;
+                        WarehouseLocation.WarehouseLocationName = viewModel.WarehouseLocationName;
+                        WarehouseLocation.WarehouseManagerId = viewModel.WarehouseManagerId;
+                        WarehouseLocation.Address = viewModel.Address;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.WarehouseLocationName + " Success Changes";
-                    return RedirectToAction("Index", "WarehouseLocation");
+                        _warehouseLocationRepository.Update(WarehouseLocation);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.WarehouseLocationName + " Success Changes";
+                        return RedirectToAction("Index", "WarehouseLocation");
+                    }
+                    else
+                    {
+                        ViewBag.WarehouseManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
+                        TempData["WarningMessage"] = "Name " + viewModel.WarehouseLocationName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
                 else
                 {
@@ -222,8 +247,11 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-            ViewBag.WarehouseManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
-            return View();
+            else
+            {
+                ViewBag.WarehouseManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);                
+                return View(viewModel);
+            }
         }
 
         [HttpGet]
