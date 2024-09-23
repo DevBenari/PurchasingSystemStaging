@@ -24,6 +24,17 @@
             <form enctype="multipart/form-data" asp-controller="Department" asp-action="CreateDepartment" method="post" class="form-horizontal">
                 <div class="card-body">
                     <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="DepartmentCode"></label>
+                            <input type="text" asp-for="DepartmentCode" class="form-control form-control-border border-width-2" id="DepartmentCode" placeholder="Department Code" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="DepartmentName"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="DepartmentName" class="form-control form-control-border border-width-2" id="DepartmentName" placeholder="Department Name">
+                            <span asp-validation-for="DepartmentName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    @*<div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="DepartmentCode">Department Code</label>
                         <div class="col-sm-9">
                             <input type="text" asp-for="DepartmentCode" class="form-control form-control-border border-width-2" id="" placeholder="Department Code" readonly>
@@ -34,7 +45,7 @@
                         <div class="col-sm-9">
                             <input maxlength="100" autocomplete="off" type="text" asp-for="DepartmentName" class="form-control form-control-border border-width-2" id="" placeholder="Department Name">
                         </div>
-                    </div>
+                    </div>*@
                 </div>
                 <!-- start button footer -->
                 <div class="card card-orange">
