@@ -281,7 +281,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var userLogin = await _userManager.FindByNameAsync(viewModel.Email);
                 var checkDuplicate = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 1)
                 {
                     var data = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).FirstOrDefault();
 

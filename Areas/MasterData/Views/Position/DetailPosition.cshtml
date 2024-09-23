@@ -24,6 +24,27 @@
                 <div class="card-body">
                     <input hidden asp-for="PositionId" />
                     <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="PositionCode"></label>
+                            <input type="text" asp-for="PositionCode" class="form-control form-control-border border-width-2" id="PositionCode" placeholder="Position Code" readonly disabled>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="DepartmentId"></label>
+                            <select class="form-control select2bs4" autofocus style="width: 100%;" asp-for="DepartmentId" asp-items="@ViewBag.Department" disabled>
+                                <option value="" hidden disabled selected>--Choose Department--</option>
+                            </select>
+                            <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">                        
+                        <div class="col-sm-6">
+                            <label asp-for="PositionName"></label>
+                            <input type="text" asp-for="PositionName" class="form-control form-control-border border-width-2" maxlength="250" autocomplete="off" id="PositionName" placeholder="Position Name" disabled>
+                            <span asp-validation-for="PositionName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    @*<div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="PositionCode">Position Code</label>
                         <div class="col-sm-9">
                             <input type="text" asp-for="PositionCode" class="form-control form-control-border border-width-2" id="PositionCode" placeholder="Position Code" readonly disabled>
@@ -43,7 +64,7 @@
                             </select>
                             <span asp-validation-for="DepartmentId" class="text-danger"></span>
                         </div>
-                    </div>
+                    </div>*@
                 </div>
                 <!-- start button footer -->
                 <div class="card card-orange">

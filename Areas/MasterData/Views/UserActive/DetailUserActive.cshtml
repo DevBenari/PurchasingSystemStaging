@@ -26,105 +26,102 @@
                     <input hidden asp-for="UserActiveId" />
                     <input hidden asp-for="UserPhotoPath" />
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="UserActiveCode">User Code</label>
-                        <div class="col-sm-9">
-                            <input type="text" asp-for="UserActiveCode" class="form-control form-control-border border-width-2" id="useractivecode" placeholder="User Active Code" readonly disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="UserActiveCode"></label>
+                            <input type="text" asp-for="UserActiveCode" class="form-control form-control-border border-width-2" id="UserActiveCode" placeholder="UserActive Code" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="FullName"></label>
+                            <input type="text" asp-for="FullName" class="form-control form-control-border border-width-2" autofocus maxlength="250" autocomplete="off" id="FullName" placeholder="FullName" disabled>
+                            <span asp-validation-for="FullName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="FullName">FullName</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="FullName" class="form-control form-control-border border-width-2" id="fullname" placeholder="FullName" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="IdentityNumber">Identity Number</label>
-                        <div class="col-sm-9 input-group">
+                        <div class="col-sm-6 input-group">
+                            <label class="input-group" asp-for="IdentityNumber"></label>
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
                             </div>
-                            <input asp-for="IdentityNumber" type="text" class="form-control form-control-border border-width-2" autofocus autocomplete="off" id="identitynumber" placeholder="Identity Number" data-inputmask='"mask": "9999999999999999"' data-mask-identitas disabled>
+                            <input asp-for="IdentityNumber" autocomplete="off" type="text" class="form-control form-control-border border-width-2" id="IdentityNumber" placeholder="Identity Number" data-inputmask='"mask": "9999999999999999"' data-mask-identitas disabled>
+                            <span asp-validation-for="IdentityNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="Gender"></label>
+                            <select asp-for="Gender" class="form-control select2bs4" style="width: 100%;" id="Gender" data-placeholder="--Choose Gender--" disabled>
+                                <option value="" hidden disabled selected>--Choose Gender--</option>
+                                <option value="Laki-Laki">Laki-Laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label asp-for="DepartmentId" class="col-sm-3 col-form-label">Department Name</label>
-                        <div class="col-sm-9">
-                            <select id="DepartmentList" class="form-control select2bs4" style="width: 100%;" asp-for="DepartmentId" asp-items="@ViewBag.Department" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="DepartmentId"></label>
+                            <select id="DepartmentList" class="form-control select2bs4" style="width: 100%;" asp-for="DepartmentId" asp-items="@ViewBag.Department" data-placeholder="--Choose Department--" disabled>
                                 <option value="" hidden disabled selected>--Choose Department--</option>
                             </select>
                             <span asp-validation-for="DepartmentId" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label asp-for="PositionId" class="col-sm-3 col-form-label">Position Name</label>
-                        <div class="col-sm-9">
-                            <select id="PositionList" class="form-control select2bs4" style="width: 100%;" asp-for="PositionId" asp-items="@ViewBag.Position" disabled>
-                                <option value="" hidden disabled selected>--Choose Position--</option>
+                        <div class="col-sm-6">
+                            <label asp-for="PositionId"></label>
+                            <select id="PositionList" class="form-control select2bs4" style="width: 100%;" asp-for="PositionId" asp-items="@ViewBag.Position" data-placeholder="--Please select a position--" disabled>
+                                <option value="" hidden disabled selected>--Please select a position--</option>
                             </select>
                             <span asp-validation-for="PositionId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="PlaceOfBirth">Place Of Birth</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="PlaceOfBirth" class="form-control form-control-border border-width-2" id="placeofbirth" placeholder="Place Of Birth" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="PlaceOfBirth"></label>
+                            <input type="text" asp-for="PlaceOfBirth" class="form-control form-control-border border-width-2" id="PlaceOfBirth" placeholder="Place Of Birth" disabled>
+                            <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="DateOfBirth">Date Of Birth</label>
-                        <div class="col-sm-9 input-group date" id="tanggallahir" data-target-input="nearest">
+                        <div class="col-sm-6 input-group" id="tanggallahir" data-target-input="nearest">
+                            <label class="input-group" asp-for="DateOfBirth"></label>
                             <div class="input-group-append" data-target="#tanggallahir" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
-                            <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#tanggallahir" id="dateofbirth" placeholder="Date Of Birth" disabled />
+                            <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#tanggallahir" placeholder="Date Of Birth" id="DateOfBirth" disabled />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Gender">Gender</label>
-                        <div class="col-sm-9">
-                            <select asp-for="Gender" class="form-control select2bs4" style="width: 100%;" id="gender" disabled>
-                                <option value="" hidden disabled selected>--Chioce Gender--</option>
-                                <option value="Laki-Laki">Laki-Laki</option>
-                                <option value="Perempuan">Perempuan</option>
-                            </select>
+                        <div class="col-sm-6">
+                            <label asp-for="Address"></label>
+                            <input maxlength="250" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="Address" placeholder="Address" disabled>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Address">Address</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="address" placeholder="Address" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Handphone">Handphone</label>
-                        <div class="col-sm-9 input-group">
+                        <div class="col-sm-6 input-group">
+                            <label class="input-group" asp-for="Handphone"></label>
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-phone"></i></span>
                             </div>
-                            <input asp-for="Handphone" autocomplete="off" type="text" class="form-control form-control-border border-width-2" id="handphone" data-inputmask='"mask": "(9999) - 9999-9999-9"' data-mask-hp disabled>
+                            <input asp-for="Handphone" autocomplete="off" type="text" class="form-control form-control-border border-width-2" id="Handphone" data-inputmask='"mask": "(9999) - 9999-9999-9"' data-mask-hp disabled>
+                            <span asp-validation-for="Handphone" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Email">Email</label>
-                        <div class="col-sm-9 input-group">
+                        <div class="col-sm-6 input-group">
+                            <label class="input-group" asp-for="Email"></label>
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                             </div>
-                            <input maxlength="100" autofocus autocomplete="off" asp-for="Email" type="email" class="form-control form-control-border border-width-2" id="email" placeholder="Email" disabled>
+                            <input asp-for="Email" autocomplete="off" type="text" class="form-control form-control-border border-width-2" id="Email" placeholder="Email" disabled>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Foto">Photo</label>
-                        <div class="col-sm-9">
+                    <div class="form-group row">                        
+                        <div class="col-sm-6">
+                            <label asp-for="Foto"></label>
                             <div class="col-sm-9">
                                 <img src="@photoPath" asp-append-version="true" width="300" height="300" />
                             </div>
-                            <div class="col-sm-9">
-                                <div class="custom-file">
-                                    <input asp-for="Foto" class="form-control custom-file-input" id="foto" disabled>
-                                    <label class="custom-file-label">Change Photos...</label>
-                                </div>
+                            <div class="custom-file">
+                                <input asp-for="Foto" class="form-control custom-file-input" id="Foto" disabled>
+                                <label class="custom-file-label">Choose Photos...</label>
                             </div>
+                            <span asp-validation-for="Foto" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -150,9 +147,7 @@
                     </script>
 
                     <script>
-                        $(document).ready(function () {
-                            $("#PositionList").empty().append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
-
+                        $(document).ready(function () {                           
                             $("#DepartmentList").change(function () {
                                 $("#PositionList").empty();
                                 $.ajax({
@@ -187,18 +182,18 @@
                                 $("#btnsimpan").show();
                                 $("#btnbatalubah").show();
 
-                                document.getElementById("useractivecode").disabled = false;
-                                document.getElementById("fullname").disabled = false;
-                                document.getElementById("identitynumber").disabled = false;
+                                document.getElementById("UserActiveCode").disabled = false;
+                                document.getElementById("FullName").disabled = false;
+                                document.getElementById("IdentityNumber").disabled = false;
                                 document.getElementById("DepartmentList").disabled = false;
                                 document.getElementById("PositionList").disabled = false;
-                                document.getElementById("placeofbirth").disabled = false;
-                                document.getElementById("dateofbirth").disabled = false;
-                                document.getElementById("gender").disabled = false;
-                                document.getElementById("address").disabled = false;
-                                document.getElementById("handphone").disabled = false;
-                                document.getElementById("email").disabled = false;
-                                document.getElementById("foto").disabled = false;
+                                document.getElementById("DateOfBirth").disabled = false;
+                                document.getElementById("PlaceOfBirth").disabled = false;
+                                document.getElementById("Gender").disabled = false;
+                                document.getElementById("Address").disabled = false;
+                                document.getElementById("Handphone").disabled = false;
+                                document.getElementById("Email").disabled = false;
+                                document.getElementById("Foto").disabled = false;
                             })
 
                             $("#btnbatalubah").click(function () {
@@ -208,18 +203,18 @@
                                 $("#btnsimpan").hide();
                                 $("#btnbatalubah").hide();
 
-                                document.getElementById("useractivecode").disabled = true;
-                                document.getElementById("fullname").disabled = true;
-                                document.getElementById("identitynumber").disabled = true;
-                                document.getElementById("DepartmentId").disabled = true;
-                                document.getElementById("PositionId").disabled = true;
-                                document.getElementById("placeofbirth").disabled = true;
-                                document.getElementById("dateofbirth").disabled = true;
-                                document.getElementById("gender").disabled = true;
-                                document.getElementById("address").disabled = true;
-                                document.getElementById("handphone").disabled = true;
-                                document.getElementById("email").disabled = true;
-                                document.getElementById("foto").disabled = true;
+                                document.getElementById("UserActiveCode").disabled = true;
+                                document.getElementById("FullName").disabled = true;
+                                document.getElementById("IdentityNumber").disabled = true;
+                                document.getElementById("DepartmentList").disabled = true;
+                                document.getElementById("PositionList").disabled = true;
+                                document.getElementById("DateOfBirth").disabled = true;
+                                document.getElementById("PlaceOfBirth").disabled = true;
+                                document.getElementById("Gender").disabled = true;
+                                document.getElementById("Address").disabled = true;
+                                document.getElementById("Handphone").disabled = true;
+                                document.getElementById("Email").disabled = true;
+                                document.getElementById("Foto").disabled = true;
                             })
                         })
                     </script>
