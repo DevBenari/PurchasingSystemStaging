@@ -160,8 +160,10 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(vm);
                 }
             }
-
-            return View();
+            else
+            {                
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -195,7 +197,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Category = await _categoryRepository.GetCategoryByIdNoTracking(viewModel.CategoryId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var checkDuplicate = _categoryRepository.GetAllCategory().Where(d => d.CategoryCode == viewModel.CategoryCode).ToList();
+                var checkDuplicate = _categoryRepository.GetAllCategory().Where(d => d.CategoryName == viewModel.CategoryName).ToList();
 
                 if (checkDuplicate.Count == 0)
                 {
@@ -227,8 +229,10 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-
-            return View();
+            else
+            {
+                return View(viewModel);
+            }            
         }
 
         [HttpGet]

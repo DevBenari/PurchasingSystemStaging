@@ -143,12 +143,23 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     DepartmentId = vm.DepartmentId,
                 };
 
-                var result = _positionRepository.GetAllPosition().Where(c => c.PositionName == vm.PositionName && c.DepartmentId == vm.DepartmentId).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _positionRepository.GetAllPosition().Where(c => c.PositionName == vm.PositionName && c.DepartmentId == vm.DepartmentId).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _positionRepository.Tambah(Position);
-                    TempData["SuccessMessage"] = "Name " + vm.PositionName + " Saved";
-                    return RedirectToAction("Index", "Position");
+                    var result = _positionRepository.GetAllPosition().Where(c => c.PositionName == vm.PositionName && c.DepartmentId == vm.DepartmentId).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _positionRepository.Tambah(Position);
+                        TempData["SuccessMessage"] = "Name " + vm.PositionName + " Saved";
+                        return RedirectToAction("Index", "Position");
+                    }
+                    else
+                    {
+                        ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+                        TempData["WarningMessage"] = "Name " + vm.PositionName + " Already Exist !!!";
+                        return View(vm);
+                    }
                 }
                 else
                 {
@@ -156,10 +167,12 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     TempData["WarningMessage"] = "Name " + vm.PositionName + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
-
-            return View();
+            else 
+            {
+                ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -198,21 +211,32 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Position = await _positionRepository.GetPositionByIdNoTracking(viewModel.PositionId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _positionRepository.GetAllPosition().Where(d => d.PositionCode == viewModel.PositionCode).FirstOrDefault();
+                var checkDuplicate = _positionRepository.GetAllPosition().Where(d => d.PositionName == viewModel.PositionName && d.DepartmentId == viewModel.DepartmentId).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    Position.UpdateDateTime = DateTime.Now;
-                    Position.UpdateBy = new Guid(getUser.Id);
-                    Position.PositionCode = viewModel.PositionCode;
-                    Position.PositionName = viewModel.PositionName;
-                    Position.DepartmentId = viewModel.DepartmentId;
+                    var check = _positionRepository.GetAllPosition().Where(d => d.PositionCode == viewModel.PositionCode).FirstOrDefault();
 
-                    _positionRepository.Update(Position);
-                    _applicationDbContext.SaveChanges();
+                    if (check != null)
+                    {
+                        Position.UpdateDateTime = DateTime.Now;
+                        Position.UpdateBy = new Guid(getUser.Id);
+                        Position.PositionCode = viewModel.PositionCode;
+                        Position.PositionName = viewModel.PositionName;
+                        Position.DepartmentId = viewModel.DepartmentId;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.PositionName + " Success Changes";
-                    return RedirectToAction("Index", "Position");
+                        _positionRepository.Update(Position);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.PositionName + " Success Changes";
+                        return RedirectToAction("Index", "Position");
+                    }
+                    else
+                    {
+                        ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+                        TempData["WarningMessage"] = "Name " + viewModel.PositionName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
                 else
                 {
@@ -221,8 +245,11 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-
-            return View();
+            else
+            {
+                ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);               
+                return View(viewModel);
+            }
         }
 
         [HttpGet]

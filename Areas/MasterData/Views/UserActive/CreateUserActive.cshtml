@@ -24,6 +24,100 @@
             <form enctype="multipart/form-data" asp-controller="UserActive" asp-action="CreateUserActive" method="post" class="form-horizontal">
                 <div class="card-body">
                     <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="UserActiveCode"></label>
+                            <input type="text" asp-for="UserActiveCode" class="form-control form-control-border border-width-2" id="UserActiveCode" placeholder="UserActive Code" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="FullName"></label>
+                            <input type="text" asp-for="FullName" class="form-control form-control-border border-width-2" autofocus maxlength="250" autocomplete="off" id="FullName" placeholder="FullName">
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 input-group">
+                            <label class="input-group" asp-for="IdentityNumber"></label>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                            </div>
+                            <input asp-for="IdentityNumber" autocomplete="off" type="text" class="form-control form-control-border border-width-2" placeholder="Identity Number" data-inputmask='"mask": "9999999999999999"' data-mask-identitas>                            
+                            <span asp-validation-for="IdentityNumber" class="text-danger"></span>
+                        </div>                        
+                        <div class="col-sm-6">
+                            <label asp-for="Gender"></label>
+                            <select asp-for="Gender" class="form-control select2bs4" style="width: 100%;" id="Gender" data-placeholder="--Choose Gender--">
+                                <option value="" hidden disabled selected>--Choose Gender--</option>
+                                <option value="Laki-Laki">Laki-Laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>                        
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="DepartmentId"></label>
+                            <select id="DepartmentList" class="form-control select2bs4" style="width: 100%;" asp-for="DepartmentId" asp-items="@ViewBag.Department" data-placeholder="--Choose Department--">
+                                <option value="" hidden disabled selected>--Choose Department--</option>
+                            </select>
+                            <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="PositionId"></label>
+                            <select id="PositionList" class="form-control select2bs4" style="width: 100%;" asp-for="PositionId" asp-items="@ViewBag.Position" data-placeholder="--Please select a department--">
+                                <option value="" hidden disabled selected>--Please select a department--</option>
+                            </select>
+                            <span asp-validation-for="PositionId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="PlaceOfBirth"></label>
+                            <input type="text" asp-for="PlaceOfBirth" class="form-control form-control-border border-width-2" id="PlaceOfBirth" placeholder="Place Of Birth">
+                            <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6 input-group" id="tanggallahir" data-target-input="nearest">
+                            <label class="input-group" asp-for="DateOfBirth"></label>
+                            <div class="input-group-append" data-target="#tanggallahir" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                            <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#tanggallahir" placeholder="Date Of Birth" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">                        
+                        <div class="col-sm-6">
+                            <label asp-for="Address"></label>
+                            <input maxlength="250" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="Address" placeholder="Address">
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6 input-group">
+                            <label class="input-group" asp-for="Handphone"></label>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            </div>
+                            <input asp-for="Handphone" autocomplete="off" type="text" class="form-control form-control-border border-width-2" id="Handphone" data-inputmask='"mask": "(9999) - 9999-9999-9"' data-mask-hp>
+                            <span asp-validation-for="Handphone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 input-group">
+                            <label class="input-group" asp-for="Email"></label>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            </div>
+                            <input asp-for="Email" autocomplete="off" type="text" class="form-control form-control-border border-width-2" placeholder="Email">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="Foto"></label>
+                            <div class="custom-file">
+                                <input asp-for="Foto" class="form-control custom-file-input">
+                                <label class="custom-file-label">Choose Photos...</label>
+                            </div>
+                            <span asp-validation-for="Foto" class="text-danger"></span>
+                        </div>
+                    </div>
+                    @* <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="UserActiveCode">User Code</label>
                         <div class="col-sm-9">
                             <input type="text" asp-for="UserActiveCode" class="form-control form-control-border border-width-2" id="" placeholder="User Code" readonly>
@@ -34,8 +128,8 @@
                         <div class="col-sm-9">
                             <input maxlength="100" autocomplete="off" type="text" asp-for="FullName" class="form-control form-control-border border-width-2" id="" placeholder="FullName">
                         </div>
-                    </div>
-                    <div class="form-group row">
+                    </div> *@
+                    @* <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="IdentityNumber">Identity Number</label>
                         <div class="col-sm-9 input-group">
                             <div class="input-group-prepend">
@@ -43,8 +137,8 @@
                             </div>
                             <input asp-for="IdentityNumber" type="text" class="form-control form-control-border border-width-2" autofocus autocomplete="off" placeholder="Identity Number" data-inputmask='"mask": "9999999999999999"' data-mask-identitas>
                         </div>
-                    </div>
-                    <div class="form-group row">
+                    </div> *@
+                    @* <div class="form-group row">
                         <label asp-for="DepartmentId" class="col-sm-3 col-form-label">Department Name</label>
                         <div class="col-sm-9">
                             <select id="DepartmentList" class="form-control select2bs4" style="width: 100%;" asp-for="DepartmentId" asp-items="@ViewBag.Department">
@@ -61,8 +155,8 @@
                             </select>
                             <span asp-validation-for="PositionId" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
+                    </div> *@
+                   @*  <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="PlaceOfBirth">Place Of Birth</label>
                         <div class="col-sm-9">
                             <input maxlength="100" autocomplete="off" type="text" asp-for="PlaceOfBirth" class="form-control form-control-border border-width-2" id="" placeholder="Place Of Birth">
@@ -76,8 +170,8 @@
                             </div>
                             <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#tanggallahir" placeholder="Date Of Birth" />
                         </div>
-                    </div>
-                    <div class="form-group row">
+                    </div> *@
+                   @*  <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="Gender">Gender</label>
                         <div class="col-sm-9">
                             <select asp-for="Gender" class="form-control select2bs4" style="width: 100%;">
@@ -86,8 +180,8 @@
                                 <option value="Perempuan">Perempuan</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group row">
+                    </div> *@
+                    @* <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="Address">Address</label>
                         <div class="col-sm-9">
                             <input maxlength="250" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="" placeholder="Address">
@@ -101,8 +195,8 @@
                             </div>
                             <input asp-for="Handphone" autocomplete="off" type="text" class="form-control form-control-border border-width-2" data-inputmask='"mask": "(9999) - 9999-9999-9"' data-mask-hp>
                         </div>
-                    </div>
-                    <div class="form-group row">
+                    </div> *@
+                    @* <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="Email">Email</label>
                         <div class="col-sm-9 input-group">
                             <div class="input-group-prepend">
@@ -119,7 +213,7 @@
                                 <label class="custom-file-label">Choose Photos...</label>
                             </div>
                         </div>
-                    </div>
+                    </div> *@
                 </div>
                 <!-- start button footer -->
                 <div class="card card-orange">
@@ -136,6 +230,10 @@
                             $('.select2bs4').select2({
                                 theme: 'bootstrap4'
                             })
+
+                            $("#Gender").data('placeholder');
+                            $("#DepartmentList").data('placeholder');
+                            $("#PositionList").data('placeholder');
                         })
                     </script>
 
@@ -164,8 +262,8 @@
                     </script>
 
                     <script>
-                        $(document).ready(function () {                            
-                            $("#PositionList").empty().append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
+                        $(document).ready(function () {
+                            $("#PositionList").empty();
 
                             $("#DepartmentList").change(function () {
                                 $("#PositionList").empty();
@@ -174,8 +272,7 @@
                                     url: '@Url.Action("LoadPosition")',
                                     dataType: 'json',
                                     data: { id: $("#DepartmentList").val() },
-                                    success: function (positions) {
-                                        $("#PositionList").append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
+                                    success: function (positions) {                                        
                                         $.each(positions, function (i, position) {
                                             $("#PositionList").append('<option value = "' + position.value + '">' + position.text + '</option>');
                                         });

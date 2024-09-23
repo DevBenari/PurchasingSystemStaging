@@ -43,6 +43,7 @@
                             <ul class="dropdown-menu dropdown-menu-dark">
                                 <li><a class="dropdown-item" asp-action="Index" asp-controller="Supplier" asp-area="MasterData">Supplier PKS</a></li>
                                 <li><a class="dropdown-item" asp-action="NonPks" asp-controller="Supplier" asp-area="MasterData">Supplier Non-PKS</a></li>
+                                <li><a class="dropdown-item" asp-action="NonActive" asp-controller="Supplier" asp-area="MasterData">Supplier Non-Active</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -89,16 +90,7 @@
                             <a class="btn btn-orange" style="color:#ffffff" asp-action="Index" asp-controller="DueDate" asp-area="MasterData">
                                 Date Expired
                             </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <button class="btn btn-orange dropdown-toggle" style="color:#ffffff" data-bs-toggle="dropdown" aria-expanded="false">
-                                Other
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-dark">
-                                <li><a class="dropdown-item" asp-action="NonActive" asp-controller="Supplier" asp-area="MasterData">Supplier Non-Active</a></li>                                
-                                <li><a class="dropdown-item" asp-action="NonPksNonActive" asp-controller="Supplier" asp-area="MasterData">Supplier Non-PKS & Non-Active</a></li>
-                            </ul>
-                        </li>
+                        </li>                        
                     </ul>
                 </div>
             </div>

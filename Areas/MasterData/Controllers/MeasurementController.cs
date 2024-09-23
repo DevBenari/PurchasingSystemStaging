@@ -139,22 +139,33 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Note = vm.Note
                 };
 
-                var result = _MeasurementRepository.GetAllMeasurement().Where(c => c.MeasurementName == vm.MeasurementName).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _MeasurementRepository.GetAllMeasurement().Where(c => c.MeasurementName == vm.MeasurementName).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _MeasurementRepository.Tambah(Measurement);
-                    TempData["SuccessMessage"] = "Name " + vm.MeasurementName + " Saved";
-                    return RedirectToAction("Index", "Measurement");
+                    var result = _MeasurementRepository.GetAllMeasurement().Where(c => c.MeasurementName == vm.MeasurementName).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _MeasurementRepository.Tambah(Measurement);
+                        TempData["SuccessMessage"] = "Name " + vm.MeasurementName + " Saved";
+                        return RedirectToAction("Index", "Measurement");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + vm.MeasurementName + " Already Exist !!!";
+                        return View(vm);
+                    }
                 }
                 else
                 {
                     TempData["WarningMessage"] = "Name " + vm.MeasurementName + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
-
-            return View();
+            else
+            {               
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -188,30 +199,42 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Measurement = await _MeasurementRepository.GetMeasurementByIdNoTracking(viewModel.MeasurementId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _MeasurementRepository.GetAllMeasurement().Where(d => d.MeasurementCode == viewModel.MeasurementCode).FirstOrDefault();
+                var checkDuplicate = _MeasurementRepository.GetAllMeasurement().Where(d => d.MeasurementName == viewModel.MeasurementName).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    Measurement.UpdateDateTime = DateTime.Now;
-                    Measurement.UpdateBy = new Guid(getUser.Id);
-                    Measurement.MeasurementCode = viewModel.MeasurementCode;
-                    Measurement.MeasurementName = viewModel.MeasurementName;
-                    Measurement.Note = viewModel.Note;
+                    var data = _MeasurementRepository.GetAllMeasurement().Where(d => d.MeasurementCode == viewModel.MeasurementCode).FirstOrDefault();
 
-                    _MeasurementRepository.Update(Measurement);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        Measurement.UpdateDateTime = DateTime.Now;
+                        Measurement.UpdateBy = new Guid(getUser.Id);
+                        Measurement.MeasurementCode = viewModel.MeasurementCode;
+                        Measurement.MeasurementName = viewModel.MeasurementName;
+                        Measurement.Note = viewModel.Note;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.MeasurementName + " Success Changes";
-                    return RedirectToAction("Index", "Measurement");
+                        _MeasurementRepository.Update(Measurement);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.MeasurementName + " Success Changes";
+                        return RedirectToAction("Index", "Measurement");
+                    }
+                    else
+                    {
+                        TempData["WarningMessage"] = "Name " + viewModel.MeasurementName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
                 else
                 {
                     TempData["WarningMessage"] = "Name " + viewModel.MeasurementName + " Already Exist !!!";
                     return View(viewModel);
                 }
-            }
-
-            return View();
+            } 
+            else
+            {
+                return View(viewModel);
+            }            
         }
 
         [HttpGet]

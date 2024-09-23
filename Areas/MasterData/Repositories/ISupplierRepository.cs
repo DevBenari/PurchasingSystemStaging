@@ -89,7 +89,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
 
         public IEnumerable<Supplier> GetAllSupplierNonActive()
         {
-            return _context.Suppliers.OrderByDescending(d => d.CreateDateTime).Where(s => s.IsActive == false && s.IsPKS == true)
+            return _context.Suppliers.OrderByDescending(d => d.CreateDateTime).Where(s => s.IsActive == false)
                 .Include(l => l.LeadTime)
                 .AsNoTracking();
         }
@@ -97,13 +97,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
         public IEnumerable<Supplier> GetAllSupplierNonPks()
         {
             return _context.Suppliers.OrderByDescending(d => d.CreateDateTime).Where(s => s.IsPKS == false && s.IsActive == true)
-                .Include(l => l.LeadTime)
-                .AsNoTracking();
-        }
-
-        public IEnumerable<Supplier> GetAllSupplierNonPksNonActive()
-        {
-            return _context.Suppliers.OrderByDescending(d => d.CreateDateTime).Where(s => s.IsPKS == false && s.IsActive == false)
                 .Include(l => l.LeadTime)
                 .AsNoTracking();
         }

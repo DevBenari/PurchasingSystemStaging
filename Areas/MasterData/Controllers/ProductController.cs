@@ -176,14 +176,30 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Note = vm.Note
                 };
 
-                var result = _productRepository.GetAllProduct().Where(c => c.ProductName == vm.ProductName).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _productRepository.GetAllProduct().Where(c => c.ProductName == vm.ProductName).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _productRepository.Tambah(Product);
-                    TempData["SuccessMessage"] = "Name " + vm.ProductName + " Saved";
-                    return RedirectToAction("Index", "Product");
-                }
-                else
+                    var result = _productRepository.GetAllProduct().Where(c => c.ProductName == vm.ProductName).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _productRepository.Tambah(Product);
+                        TempData["SuccessMessage"] = "Name " + vm.ProductName + " Saved";
+                        return RedirectToAction("Index", "Product");
+                    }
+                    else
+                    {
+                        ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
+                        ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
+                        ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
+                        ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
+                        ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
+
+                        TempData["WarningMessage"] = "Name " + vm.ProductName + " Already Exist !!!";
+                        return View(vm);
+                    }
+                } 
+                else 
                 {
                     ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
                     ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
@@ -194,14 +210,17 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     TempData["WarningMessage"] = "Name " + vm.ProductName + " Already Exist !!!";
                     return View(vm);
                 }
-
-            }
-            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-            ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-            ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-            ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-            ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
-            return View(vm);
+            } 
+            else 
+            {
+                ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
+                ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
+                ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
+                ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
+                ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
+                
+                return View(vm);
+            }                       
         }
 
         [HttpGet]
@@ -256,36 +275,51 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Product = await _productRepository.GetProductByIdNoTracking(viewModel.ProductId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _productRepository.GetAllProduct().Where(d => d.ProductCode == viewModel.ProductCode).FirstOrDefault();
+                var checkDuplicate = _productRepository.GetAllProduct().Where(d => d.ProductName == viewModel.ProductName && d.SupplierId == viewModel.SupplierId).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    Product.UpdateDateTime = DateTime.Now;
-                    Product.UpdateBy = new Guid(getUser.Id);
-                    Product.ProductCode = viewModel.ProductCode;
-                    Product.ProductName = viewModel.ProductName;
-                    Product.SupplierId = viewModel.SupplierId;
-                    Product.CategoryId = viewModel.CategoryId;
-                    Product.MeasurementId = viewModel.MeasurementId;
-                    Product.DiscountId = viewModel.DiscountId;
-                    Product.WarehouseLocationId = viewModel.WarehouseLocationId;
-                    Product.MinStock = viewModel.MinStock;
-                    Product.MaxStock = viewModel.MaxStock;
-                    Product.BufferStock = viewModel.BufferStock;
-                    Product.Stock = viewModel.Stock;
-                    Product.Cogs = viewModel.Cogs;
-                    Product.BuyPrice = viewModel.BuyPrice;
-                    Product.RetailPrice = viewModel.RetailPrice;
-                    Product.StorageLocation = viewModel.StorageLocation;
-                    Product.RackNumber = viewModel.RackNumber;
-                    Product.Note = viewModel.Note;
+                    var data = _productRepository.GetAllProduct().Where(d => d.ProductCode == viewModel.ProductCode).FirstOrDefault();
 
-                    _productRepository.Update(Product);
-                    _applicationDbContext.SaveChanges();
+                    if (data != null)
+                    {
+                        Product.UpdateDateTime = DateTime.Now;
+                        Product.UpdateBy = new Guid(getUser.Id);
+                        Product.ProductCode = viewModel.ProductCode;
+                        Product.ProductName = viewModel.ProductName;
+                        Product.SupplierId = viewModel.SupplierId;
+                        Product.CategoryId = viewModel.CategoryId;
+                        Product.MeasurementId = viewModel.MeasurementId;
+                        Product.DiscountId = viewModel.DiscountId;
+                        Product.WarehouseLocationId = viewModel.WarehouseLocationId;
+                        Product.MinStock = viewModel.MinStock;
+                        Product.MaxStock = viewModel.MaxStock;
+                        Product.BufferStock = viewModel.BufferStock;
+                        Product.Stock = viewModel.Stock;
+                        Product.Cogs = viewModel.Cogs;
+                        Product.BuyPrice = viewModel.BuyPrice;
+                        Product.RetailPrice = viewModel.RetailPrice;
+                        Product.StorageLocation = viewModel.StorageLocation;
+                        Product.RackNumber = viewModel.RackNumber;
+                        Product.Note = viewModel.Note;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.ProductName + " Success Changes";
-                    return RedirectToAction("Index", "Product");
-                }
+                        _productRepository.Update(Product);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.ProductName + " Success Changes";
+                        return RedirectToAction("Index", "Product");
+                    }
+                    else
+                    {
+                        ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
+                        ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
+                        ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
+                        ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
+                        ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
+                        TempData["WarningMessage"] = "Name " + viewModel.ProductName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
+                } 
                 else
                 {
                     ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);

@@ -144,12 +144,23 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Address = vm.Address
                 };
 
-                var result = _UnitLocationRepository.GetAllUnitLocation().Where(c => c.UnitLocationName == vm.UnitLocationName).FirstOrDefault();
-                if (result == null)
+                var checkDuplicate = _UnitLocationRepository.GetAllUnitLocation().Where(c => c.UnitLocationName == vm.UnitLocationName).ToList();
+
+                if (checkDuplicate.Count == 0)
                 {
-                    _UnitLocationRepository.Tambah(UnitLocation);
-                    TempData["SuccessMessage"] = "Name " + vm.UnitLocationName + " Saved";
-                    return RedirectToAction("Index", "UnitLocation");
+                    var result = _UnitLocationRepository.GetAllUnitLocation().Where(c => c.UnitLocationName == vm.UnitLocationName).FirstOrDefault();
+                    if (result == null)
+                    {
+                        _UnitLocationRepository.Tambah(UnitLocation);
+                        TempData["SuccessMessage"] = "Name " + vm.UnitLocationName + " Saved";
+                        return RedirectToAction("Index", "UnitLocation");
+                    }
+                    else
+                    {
+                        ViewBag.UnitManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
+                        TempData["WarningMessage"] = "Name " + vm.UnitLocationName + " Already Exist !!!";
+                        return View(vm);
+                    }
                 }
                 else
                 {
@@ -157,10 +168,12 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     TempData["WarningMessage"] = "Name " + vm.UnitLocationName + " Already Exist !!!";
                     return View(vm);
                 }
-
             }
-            ViewBag.UnitManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
-            return View();
+            else
+            {
+                ViewBag.UnitManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);                
+                return View(vm);
+            }
         }
 
         [HttpGet]
@@ -198,22 +211,34 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var UnitLocation = await _UnitLocationRepository.GetUnitLocationByIdNoTracking(viewModel.UnitLocationId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var check = _UnitLocationRepository.GetAllUnitLocation().Where(d => d.UnitLocationCode == viewModel.UnitLocationCode).FirstOrDefault();
+                var checkDuplicate = _UnitLocationRepository.GetAllUnitLocation().Where(d => d.UnitLocationCode == viewModel.UnitLocationCode).ToList();
 
-                if (check != null)
+                if (checkDuplicate.Count == 0)
                 {
-                    UnitLocation.UpdateDateTime = DateTime.Now;
-                    UnitLocation.UpdateBy = new Guid(getUser.Id);
-                    UnitLocation.UnitLocationCode = viewModel.UnitLocationCode;
-                    UnitLocation.UnitLocationName = viewModel.UnitLocationName;
-                    UnitLocation.UnitManagerId = viewModel.UnitManagerId;
-                    UnitLocation.Address = viewModel.Address;
+                    var check = _UnitLocationRepository.GetAllUnitLocation().Where(d => d.UnitLocationCode == viewModel.UnitLocationCode).FirstOrDefault();
 
-                    _UnitLocationRepository.Update(UnitLocation);
-                    _applicationDbContext.SaveChanges();
+                    if (check != null)
+                    {
+                        UnitLocation.UpdateDateTime = DateTime.Now;
+                        UnitLocation.UpdateBy = new Guid(getUser.Id);
+                        UnitLocation.UnitLocationCode = viewModel.UnitLocationCode;
+                        UnitLocation.UnitLocationName = viewModel.UnitLocationName;
+                        UnitLocation.UnitManagerId = viewModel.UnitManagerId;
+                        UnitLocation.Address = viewModel.Address;
 
-                    TempData["SuccessMessage"] = "Name " + viewModel.UnitLocationName + " Success Changes";
-                    return RedirectToAction("Index", "UnitLocation");
+                        _UnitLocationRepository.Update(UnitLocation);
+                        _applicationDbContext.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Name " + viewModel.UnitLocationName + " Success Changes";
+                        return RedirectToAction("Index", "UnitLocation");
+                    }
+                    else
+                    {
+                        ViewBag.UnitManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
+
+                        TempData["WarningMessage"] = "Name " + viewModel.UnitLocationName + " Already Exist !!!";
+                        return View(viewModel);
+                    }
                 }
                 else
                 {
@@ -223,8 +248,11 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-            ViewBag.UnitManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
-            return View();
+            else
+            {
+                ViewBag.UnitManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);               
+                return View(viewModel);
+            }
         }
 
         [HttpGet]

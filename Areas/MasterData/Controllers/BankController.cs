@@ -159,9 +159,11 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     TempData["WarningMessage"] = "Name " + vm.BankName + " Already Exist !!!";
                     return View(vm);
                 }
-            }
-
-            return View();
+            } 
+            else
+            {
+                return View(vm);
+            }            
         }
 
         [HttpGet]
@@ -197,7 +199,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             {
                 var Bank = await _bankRepository.GetBankByIdNoTracking(viewModel.BankId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var checkDuplicate = _bankRepository.GetAllBank().Where(d => d.BankCode == viewModel.BankCode).ToList();
+                var checkDuplicate = _bankRepository.GetAllBank().Where(d => d.BankName == viewModel.BankName).ToList();
 
                 if (checkDuplicate.Count == 0)
                 {
@@ -231,8 +233,10 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     return View(viewModel);
                 }
             }
-
-            return View();
+            else
+            {                
+                return View(viewModel);
+            }
         }
 
         [HttpGet]
