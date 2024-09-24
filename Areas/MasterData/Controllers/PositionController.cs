@@ -164,7 +164,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 else
                 {
                     ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
-                    TempData["WarningMessage"] = "Name " + vm.PositionName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + vm.PositionName + " There is duplicate data !!!";
                     return View(vm);
                 }
             }
@@ -213,7 +213,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                 var checkDuplicate = _positionRepository.GetAllPosition().Where(d => d.PositionName == viewModel.PositionName && d.DepartmentId == viewModel.DepartmentId).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var check = _positionRepository.GetAllPosition().Where(d => d.PositionCode == viewModel.PositionCode).FirstOrDefault();
 
@@ -241,7 +241,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 else
                 {
                     ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
-                    TempData["WarningMessage"] = "Name " + viewModel.PositionName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + viewModel.PositionName + " There is duplicate data !!!";
                     return View(viewModel);
                 }
             }

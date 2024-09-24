@@ -207,7 +207,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
                     ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
 
-                    TempData["WarningMessage"] = "Name " + vm.ProductName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + vm.ProductName + " There is duplicate data !!!";
                     return View(vm);
                 }
             } 
@@ -277,7 +277,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                 var checkDuplicate = _productRepository.GetAllProduct().Where(d => d.ProductName == viewModel.ProductName && d.SupplierId == viewModel.SupplierId).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var data = _productRepository.GetAllProduct().Where(d => d.ProductCode == viewModel.ProductCode).FirstOrDefault();
 
@@ -327,7 +327,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
                     ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
                     ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
-                    TempData["WarningMessage"] = "Name " + viewModel.ProductName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + viewModel.ProductName + " There is duplicate data !!!";
                     return View(viewModel);
                 }
             }

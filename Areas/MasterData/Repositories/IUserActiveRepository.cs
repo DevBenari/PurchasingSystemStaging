@@ -45,7 +45,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
                     Address = user.Address,
                     Handphone = user.Handphone,
                     Email = user.Email,
-                    Foto = user.Foto
+                    Foto = user.Foto,
+                    IsActive = user.IsActive
                 };
                 return userDetail;
             }
@@ -73,7 +74,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
                 Address = user.Address,
                 Handphone = user.Handphone,
                 Email = user.Email,
-                Foto = user.Foto
+                Foto = user.Foto,
+                IsActive = user.IsActive
             }).ToListAsync();
         }
 

@@ -40,6 +40,22 @@
     @*<div class="text-center pt-1 mb-1 pb-1">
         <a href="#" onclick="forgot()" id="forgotPassword">Pusat Bantuan</a>
     </div>*@
+    @if (TempData["WarningMessage"] != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                swal("Failed !", '@TempData["WarningMessage"]', "warning");
+            };
+        </script>
+    }
+    else if (TempData["UserActiveMessage"] != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                swal("Oops...", '@TempData["UserActiveMessage"]', "error");
+            };
+        </script>
+    }
 </div>
 
 @section Scripts {

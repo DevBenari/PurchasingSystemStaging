@@ -156,7 +156,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else 
                 {
-                    TempData["WarningMessage"] = "Name " + vm.BankName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + vm.BankName + " There is duplicate data !!!";
                     return View(vm);
                 }
             } 
@@ -201,7 +201,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                 var checkDuplicate = _bankRepository.GetAllBank().Where(d => d.BankName == viewModel.BankName).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var data = _bankRepository.GetAllBank().Where(d => d.BankCode == viewModel.BankCode).FirstOrDefault();
 
@@ -229,7 +229,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else 
                 {
-                    TempData["WarningMessage"] = "Name " + viewModel.BankName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + viewModel.BankName + " There is duplicate data !!!";
                     return View(viewModel);
                 }
             }

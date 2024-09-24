@@ -24,33 +24,32 @@
             <form enctype="multipart/form-data" asp-controller="Bank" asp-action="CreateBank" method="post" class="form-horizontal">
                 <div class="card-body">
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="BankCode">Bank Code</label>
-                        <div class="col-sm-9">
-                            <input type="text" asp-for="BankCode" class="form-control form-control-border border-width-2" id="" placeholder="Bank Code" readonly>
+                        <div class="col-sm-6">
+                            <label asp-for="BankCode"></label>
+                            <input type="text" asp-for="BankCode" class="form-control form-control-border border-width-2" id="BankCode" placeholder="Bank Code" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="BankName"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="BankName" class="form-control form-control-border border-width-2" id="BankName" placeholder="Bank Name">
+                            <span asp-validation-for="BankName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="BankName">Bank Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="BankName" class="form-control form-control-border border-width-2" id="" placeholder="Bank Name">
+                        <div class="col-sm-6">
+                            <label asp-for="AccountNumber"></label>
+                            <input type="text" asp-for="AccountNumber" class="form-control form-control-border border-width-2" id="AccountNumber" placeholder="Account Number">
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="CardHolderName"></label>
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="CardHolderName" class="form-control form-control-border border-width-2" id="CardHolderName" placeholder="Card Holder Name">
+                            <span asp-validation-for="CardHolderName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="AccountNumber">Account Number</label>
-                        <div class="col-sm-9">
-                            <input maxlength="250" autocomplete="off" type="number" asp-for="AccountNumber" class="form-control form-control-border border-width-2" id="" placeholder="Account Number">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="CardHolderName">CardHolder Name</label>
-                        <div class="col-sm-9">
-                            <input asp-for="CardHolderName" autocomplete="off" type="text" class="form-control form-control-border border-width-2" placeholder="CardHolder Name">
-                        </div>
-                    </div>                    
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
-                        <div class="col-sm-9">
-                            <input maxlength="250" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="" placeholder="Note">
+                        <div class="col-sm-6">
+                            <label asp-for="Note"></label>
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note">
+                            <span asp-validation-for="Note" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

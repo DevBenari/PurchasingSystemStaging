@@ -22,6 +22,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Models
         public string Handphone { get; set; }
         public string Email { get; set; }
         public string? Foto { get; set; }
+        public bool IsActive { get; set; }
 
         //Relationship
         [ForeignKey("DepartmentId")]

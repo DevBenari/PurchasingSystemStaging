@@ -24,21 +24,21 @@
                 <div class="card-body">
                     <input hidden asp-for="TermOfPaymentId" />
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="TermOfPaymentCode">TermOfPayment Code</label>
-                        <div class="col-sm-9">
-                            <input type="text" asp-for="TermOfPaymentCode" class="form-control form-control-border border-width-2" id="TermOfPaymentCode" placeholder="TermOfPayment Code" readonly disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="TermOfPaymentCode"></label>
+                            <input type="text" asp-for="TermOfPaymentCode" class="form-control form-control-border border-width-2" id="TermOfPaymentCode" placeholder="Term Of Payment Code" readonly disabled>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="TermOfPaymentName"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="TermOfPaymentName" class="form-control form-control-border border-width-2" id="TermOfPaymentName" placeholder="Term Of Payment Name" disabled>
+                            <span asp-validation-for="TermOfPaymentName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="TermOfPaymentName">TermOfPayment Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="TermOfPaymentName" class="form-control form-control-border border-width-2" id="TermOfPaymentName" placeholder="TermOfPayment Name" disabled>
-                        </div>
-                    </div>                    
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-6">
+                            <label asp-for="Note"></label>
                             <input maxlength="100" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                            <span asp-validation-for="Note" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

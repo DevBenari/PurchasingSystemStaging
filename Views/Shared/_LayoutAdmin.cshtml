@@ -79,8 +79,18 @@
                 <!-- Navbar Search -->
                 @if (signInManager.IsSignedIn(User))
                 {
+                    var user = await signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+
                     <li class="nav-item dropdown">
-                        <a class="nav-link" href="#" role="button">
+                        <a class="nav-link" role="button">
+                            @if (user.IsOnline == true)
+                            {
+                                <p><i class='fas fa-certificate' style='color:greenyellow'></i> Online</p>
+                            }
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" role="button">                            
                             <p>Halo, @(User.FindFirst("UserNamaDepan").Value)</p>
                         </a>
                     </li>

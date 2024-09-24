@@ -156,7 +156,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else 
                 {
-                    TempData["WarningMessage"] = "Name " + vm.CategoryName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + vm.CategoryName + " There is duplicate data !!!";
                     return View(vm);
                 }
             }
@@ -199,7 +199,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                 var checkDuplicate = _categoryRepository.GetAllCategory().Where(d => d.CategoryName == viewModel.CategoryName).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var data = _categoryRepository.GetAllCategory().Where(d => d.CategoryCode == viewModel.CategoryCode).FirstOrDefault();
 
@@ -225,7 +225,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else 
                 {
-                    TempData["WarningMessage"] = "Name " + viewModel.CategoryName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + viewModel.CategoryName + " There is duplicate data !!!";
                     return View(viewModel);
                 }
             }

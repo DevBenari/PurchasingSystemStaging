@@ -12,16 +12,19 @@ namespace PurchasingSystemApps.Controllers
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private ILogger<AccountController> _logger;
         private readonly ApplicationDbContext _applicationDbContext;
 
-        public AccountController(UserManager<ApplicationUser> userManager,
+        public AccountController(
+            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext applicationDbContext,
             ILogger<AccountController> logger)
         {
             _applicationDbContext = applicationDbContext;
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -54,49 +57,64 @@ namespace PurchasingSystemApps.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
+                    TempData["WarningMessage"] = "Sorry, Username & Password Not Registered !";
                     return View(model);
                 }
-
-                var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-                if (result.Succeeded)
+                else if (user.IsActive == true) 
                 {
-                    var claims = new List<Claim>
+                    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                    if (result.Succeeded)
+                    {
+                        var claims = new List<Claim>
                     {
                         new Claim("amr", "pwd"),
                     };
 
-                    var roles = await _signInManager.UserManager.GetRolesAsync(user);
+                        var roles = await _signInManager.UserManager.GetRolesAsync(user);
 
-                    if (roles.Any())
+                        if (roles.Any())
+                        {
+                            var roleClaim = string.Join(",", roles);
+                            claims.Add(new Claim("Roles", roleClaim));
+                        }
+
+                        await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
+
+                        user.IsOnline = true;
+
+                        await _userManager.UpdateAsync(user);
+
+                        _logger.LogInformation("User logged in.");
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else if (result.RequiresTwoFactor)
                     {
-                        var roleClaim = string.Join(",", roles);
-                        claims.Add(new Claim("Roles", roleClaim));
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, model.RememberMe });
                     }
 
-                    await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);                    
-
-                    _logger.LogInformation("User logged in.");
-                    return RedirectToAction("Index", "Home");
-                }
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User Loggin in.");
-                    return RedirectToAction("Index", "Home");
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, model.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    else if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account locked out.");
+                        return RedirectToPage("./Lockout");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        TempData["WarningMessage"] = "Sorry, Wrong Password !";
+                        return View(model);
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    TempData["UserActiveMessage"] = "Sorry, your user is not active !";
                     return View(model);
                 }
+                
+                //if (result.Succeeded)
+                //{
+                //    _logger.LogInformation("User Loggin in.");
+                //    return RedirectToAction("Index", "Home");
+                //}                
             }
             return View(model);
         }

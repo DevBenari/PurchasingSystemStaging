@@ -6,7 +6,9 @@ using PurchasingSystemApps.Areas.MasterData.ViewModels;
 using PurchasingSystemApps.Data;
 using PurchasingSystemApps.Models;
 using PurchasingSystemApps.Repositories;
+using PurchasingSystemApps.ViewModels;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace PurchasingSystemApps.Controllers
 {
@@ -121,6 +123,15 @@ namespace PurchasingSystemApps.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
+
+            if (user != null)
+            {
+                user.IsOnline = false;
+                await _userManager.UpdateAsync(user);
+            }
+
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }

@@ -17,11 +17,18 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12 bg-white">
-            <div class="card-header bg-cyan">
-                <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
-            </div>
-
             <form enctype="multipart/form-data" asp-controller="UserActive" asp-action="CreateUserActive" method="post" class="form-horizontal">
+                <div class="card-header bg-cyan">
+                    <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
+
+                    <div class="card-tools">                        
+                        <div class="icheck-success d-inline">
+                            <input asp-for="IsActive" type="checkbox" id="IsActive" disabled>
+                            <label asp-for="IsActive">Is Active?</label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-sm-6">

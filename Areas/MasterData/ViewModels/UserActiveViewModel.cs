@@ -18,5 +18,6 @@
         public string Email { get; set; }
         public IFormFile? Foto { get; set; }
         public string? UserPhotoPath { get; set; }
+        public bool IsActive { get; set; }
     }
 }

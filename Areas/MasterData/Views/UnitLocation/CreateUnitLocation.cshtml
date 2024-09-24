@@ -24,31 +24,28 @@
             <form enctype="multipart/form-data" asp-controller="UnitLocation" asp-action="CreateUnitLocation" method="post" class="form-horizontal">
                 <div class="card-body">
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="UnitLocationCode">Unit Code</label>
-                        <div class="col-sm-9">
-                            <input type="text" asp-for="UnitLocationCode" class="form-control form-control-border border-width-2" id="" placeholder="Unit Code" readonly>
+                        <div class="col-sm-6">
+                            <label asp-for="UnitLocationCode"></label>
+                            <input type="text" asp-for="UnitLocationCode" class="form-control form-control-border border-width-2" id="UnitLocationCode" placeholder="Unit Location Code" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="UnitLocationName"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="UnitLocationName" class="form-control form-control-border border-width-2" id="UnitLocationName" placeholder="Unit Location Name">
+                            <span asp-validation-for="UnitLocationName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="UnitLocationName">Unit Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="UnitLocationName" class="form-control form-control-border border-width-2" id="" placeholder="Unit Name">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="UnitManagerId">
-                            Unit Manager
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="UnitManagerId" asp-items="@ViewBag.UnitManager" class="form-control select2bs4" style="width: 100%;">
+                        <div class="col-sm-6">
+                            <label asp-for="UnitManagerId"></label>
+                            <select asp-for="UnitManagerId" asp-items="@ViewBag.UnitManager" class="form-control select2bs4" id="UnitManagerId" style="width: 100%;">
                                 <option value="" hidden disabled selected>--Choice Unit Manager--</option>
                             </select>
+                            <span asp-validation-for="UnitManagerId" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Address">Address</label>
-                        <div class="col-sm-9">
-                            <input maxlength="250" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="" placeholder="Address">
+                        <div class="col-sm-6">
+                            <label asp-for="Address"></label>
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="Address" placeholder="Address">
+                            <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

@@ -157,7 +157,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else 
                 {
-                    TempData["WarningMessage"] = "Discount " + vm.DiscountValue + " % Already Exist !!!";
+                    TempData["WarningMessage"] = "Discount " + vm.DiscountValue + " % There is duplicate data !!!";
                     return View(vm);
                 }
             }
@@ -200,7 +200,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();                
                 var checkDuplicate = _discountRepository.GetAllDiscount().Where(d => d.DiscountValue == viewModel.DiscountValue).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var data = _discountRepository.GetAllDiscount().Where(d => d.DiscountCode == viewModel.DiscountCode).FirstOrDefault();
 
@@ -226,7 +226,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 }
                 else
                 {
-                    TempData["WarningMessage"] = "Discount " + viewModel.DiscountValue + " % Already Exist !!!";
+                    TempData["WarningMessage"] = "Discount " + viewModel.DiscountValue + " % There is duplicate data !!!";
                     return View(viewModel);
                 }
             } 

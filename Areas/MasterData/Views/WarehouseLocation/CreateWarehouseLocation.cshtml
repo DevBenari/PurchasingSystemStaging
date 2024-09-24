@@ -24,33 +24,30 @@
             <form enctype="multipart/form-data" asp-controller="WarehouseLocation" asp-action="CreateWarehouseLocation" method="post" class="form-horizontal">
                 <div class="card-body">
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="WarehouseLocationCode">Warehouse Code</label>
-                        <div class="col-sm-9">
-                            <input type="text" asp-for="WarehouseLocationCode" class="form-control form-control-border border-width-2" id="" placeholder="Warehouse Code" readonly>
+                        <div class="col-sm-6">
+                            <label asp-for="WarehouseLocationCode"></label>
+                            <input type="text" asp-for="WarehouseLocationCode" class="form-control form-control-border border-width-2" id="WarehouseLocationCode" placeholder="Warehouse Location Code" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="WarehouseLocationName"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="WarehouseLocationName" class="form-control form-control-border border-width-2" id="WarehouseLocationName" placeholder="Warehouse Location Name">
+                            <span asp-validation-for="WarehouseLocationName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="WarehouseLocationName">Warehouse Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="WarehouseLocationName" class="form-control form-control-border border-width-2" id="" placeholder="Warehouse Name">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="WarehouseManagerId">
-                            Warehouse Manager
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="WarehouseManagerId" asp-items="@ViewBag.WarehouseManager" class="form-control select2bs4" style="width: 100%;">
+                        <div class="col-sm-6">
+                            <label asp-for="WarehouseManagerId"></label>
+                            <select asp-for="WarehouseManagerId" asp-items="@ViewBag.WarehouseManager" class="form-control select2bs4" id="WarehouseManagerId" style="width: 100%;">
                                 <option value="" hidden disabled selected>--Choice Warehouse Manager--</option>
                             </select>
+                            <span asp-validation-for="WarehouseManagerId" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="Address"></label>
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="Address" placeholder="Address">
+                            <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Address">Address</label>
-                        <div class="col-sm-9">
-                            <input maxlength="250" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="" placeholder="Address">
-                        </div>
-                    </div>                    
                 </div>
                 <!-- start button footer -->
                 <div class="card card-orange">

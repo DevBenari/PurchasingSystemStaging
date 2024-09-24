@@ -24,134 +24,115 @@
                 <div class="card-body">
                     <input hidden asp-for="ProductId" />
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="ProductCode">Product Code</label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-6">
+                            <label asp-for="ProductCode"></label>
                             <input type="text" asp-for="ProductCode" class="form-control form-control-border border-width-2" id="ProductCode" placeholder="Product Code" readonly disabled>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="ProductName">Product Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="ProductName" class="form-control form-control-border border-width-2" id="ProductName" placeholder="Product Name" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="ProductName"></label>
+                            <input maxlength="100" autofocus autocomplete="off" type="text" asp-for="ProductName" class="form-control form-control-border border-width-2" id="ProductName" placeholder="Product Name" disabled>
+                            <span asp-validation-for="ProductName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="SupplierId">
-                            Supplier
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="SupplierId" asp-items="@ViewBag.Supplier" class="form-control select2bs4" style="width: 100%;" id="Supplier" disabled>
-                                <option value="" hidden disabled selected>--Choice Supplier--</option>
+                        <div class="col-sm-6">
+                            <label asp-for="SupplierId"></label>
+                            <select class="form-control select2bs4" style="width: 100%;" asp-for="SupplierId" id="SupplierId" asp-items="@ViewBag.Supplier" disabled>
+                                <option value="" hidden disabled selected>--Choose Supplier--</option>
                             </select>
                             <span asp-validation-for="SupplierId" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="CategoryId">
-                            Category
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="CategoryId" asp-items="@ViewBag.Category" class="form-control select2bs4" style="width: 100%;" id="Category" disabled>
-                                <option value="" hidden disabled selected>--Choice Category--</option>
+                        <div class="col-sm-6">
+                            <label asp-for="CategoryId"></label>
+                            <select class="form-control select2bs4" style="width: 100%;" asp-for="CategoryId" id="CategoryId" asp-items="@ViewBag.Category" disabled>
+                                <option value="" hidden disabled selected>--Choose Category--</option>
                             </select>
                             <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="MeasurementId">
-                            Measure
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="MeasurementId" asp-items="@ViewBag.Measurement" class="form-control select2bs4" style="width: 100%;" id="Measurement" disabled>
-                                <option value="" hidden disabled selected>--Choice Measure--</option>
+                        <div class="col-sm-6">
+                            <label asp-for="MeasurementId"></label>
+                            <select class="form-control select2bs4" style="width: 100%;" asp-for="MeasurementId" id="MeasurementId" asp-items="@ViewBag.Measurement" disabled>
+                                <option value="" hidden disabled selected>--Choose Measurement--</option>
                             </select>
                             <span asp-validation-for="MeasurementId" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="DiscountId">
-                            Discount
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="DiscountId" asp-items="@ViewBag.Discount" class="form-control select2bs4" style="width: 100%;" id="Discount" disabled>
-                                <option value="" hidden disabled selected>--Choice Discount--</option>
+                        <div class="col-sm-6">
+                            <label asp-for="DiscountId"></label>
+                            <select class="form-control select2bs4" style="width: 100%;" asp-for="DiscountId" id="DiscountId" asp-items="@ViewBag.Discount" disabled>
+                                <option value="" hidden disabled selected>--Choose Discount--</option>
                             </select>
                             <span asp-validation-for="DiscountId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="WarehouseLocationId">
-                            Warehouse Location
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="WarehouseLocationId" asp-items="@ViewBag.Warehouse" class="form-control select2bs4" style="width: 100%;" id="WarehouseLocation" disabled>
-                                <option value="" hidden disabled selected>--Choice Warehouse Location--</option>
+                        <div class="col-sm-6">
+                            <label asp-for="MinStock"></label>
+                            <input type="text" asp-for="MinStock" class="form-control form-control-border border-width-2" id="MinStock" placeholder="Min Stock" readonly disabled>
+                            <span asp-validation-for="MinStock" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="MaxStock"></label>
+                            <input type="text" asp-for="MaxStock" class="form-control form-control-border border-width-2" id="MaxStock" placeholder="Max Stock" readonly disabled>
+                            <span asp-validation-for="MaxStock" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="BufferStock"></label>
+                            <input type="text" asp-for="BufferStock" class="form-control form-control-border border-width-2" id="BufferStock" placeholder="Buffer Stock" readonly disabled>
+                            <span asp-validation-for="BufferStock" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="Stock"></label>
+                            <input type="text" asp-for="Stock" class="form-control form-control-border border-width-2" id="Stock" placeholder="Stock" readonly disabled>
+                            <span asp-validation-for="Stock" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="BuyPrice"></label>
+                            <input type="text" asp-for="BuyPrice" class="form-control form-control-border border-width-2" id="BuyPrice" placeholder="Buy Price" disabled>
+                            <span asp-validation-for="BuyPrice" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="RetailPrice"></label>
+                            <input type="text" asp-for="RetailPrice" class="form-control form-control-border border-width-2" id="RetailPrice" placeholder="Retail Price" disabled>
+                            <span asp-validation-for="RetailPrice" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="Cogs"></label>
+                            <input type="text" asp-for="Cogs" class="form-control form-control-border border-width-2" id="Cogs" placeholder="Cogs" disabled>
+                            <span asp-validation-for="Cogs" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="WarehouseLocationId"></label>
+                            <select class="form-control select2bs4" style="width: 100%;" asp-for="WarehouseLocationId" id="WarehouseLocationId" asp-items="@ViewBag.Warehouse" disabled>
+                                <option value="" hidden disabled selected>--Choose WarehouseLocation--</option>
                             </select>
                             <span asp-validation-for="WarehouseLocationId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="MinStock">Min Stock</label>
-                        <div class="col-sm-9">
-                            <input maxlength="75" autocomplete="off" type="number" asp-for="MinStock" class="form-control form-control-border border-width-2" id="MinStock" placeholder="Min Stock" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="MaxStock">Max Stock</label>
-                        <div class="col-sm-9">
-                            <input maxlength="75" autocomplete="off" type="number" asp-for="MaxStock" class="form-control form-control-border border-width-2" id="MaxStock" placeholder="Max Stock" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="BufferStock">Buffer Stock</label>
-                        <div class="col-sm-9">
-                            <input maxlength="75" autocomplete="off" type="number" asp-for="BufferStock" class="form-control form-control-border border-width-2" id="BufferStock" placeholder="Buffer Stock" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Stock">Stock</label>
-                        <div class="col-sm-9">
-                            <input maxlength="75" autocomplete="off" type="number" asp-for="Stock" class="form-control form-control-border border-width-2" id="Stock" placeholder="Stock" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Cogs">Cogs</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="number" asp-for="Cogs" class="form-control form-control-border border-width-2" id="Cogs" placeholder="Cogs" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="BuyPrice">Buy Price</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="number" asp-for="BuyPrice" class="form-control form-control-border border-width-2" id="BuyPrice" placeholder="Buy Price" disabled>
-                            <span asp-validation-for="BuyPrice" class="text-danger"></span>
-                        </div>                        
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="RetailPrice">Retail Price</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="number" asp-for="RetailPrice" class="form-control form-control-border border-width-2" id="RetailPrice" placeholder="Retail Price" disabled>
-                            <span asp-validation-for="RetailPrice" class="text-danger"></span>
-                        </div>                        
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="StorageLocation">Storage Location</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="StorageLocation" class="form-control form-control-border border-width-2" id="StorageLocation" placeholder="Storage Location" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="StorageLocation"></label>
+                            <input type="text" asp-for="StorageLocation" class="form-control form-control-border border-width-2" id="StorageLocation" placeholder="Storage Location" disabled>
                             <span asp-validation-for="StorageLocation" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="RackNumber">Rack Number</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="RackNumber" class="form-control form-control-border border-width-2" id="RackNumber" placeholder="Rack Number" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="RackNumber"></label>
+                            <input type="text" asp-for="RackNumber" class="form-control form-control-border border-width-2" id="RackNumber" placeholder="Rack Number" disabled>
                             <span asp-validation-for="RackNumber" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="Note"></label>
+                            <input type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                            <span asp-validation-for="Note" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -190,16 +171,16 @@
 
                                 document.getElementById("ProductCode").disabled = false;
                                 document.getElementById("ProductName").disabled = false;
-                                document.getElementById("Supplier").disabled = false;
-                                document.getElementById("Category").disabled = false;
-                                document.getElementById("Measurement").disabled = false;
-                                document.getElementById("Discount").disabled = false;
-                                document.getElementById("WarehouseLocation").disabled = false;
-                                document.getElementById("MinStock").disabled = true;
-                                document.getElementById("MaxStock").disabled = true;
-                                document.getElementById("BufferStock").disabled = true;
-                                document.getElementById("Stock").disabled = true;
-                                document.getElementById("Cogs").disabled = true;
+                                document.getElementById("SupplierId").disabled = false;
+                                document.getElementById("CategoryId").disabled = false;
+                                document.getElementById("MeasurementId").disabled = false;
+                                document.getElementById("DiscountId").disabled = false;
+                                document.getElementById("WarehouseLocationId").disabled = false;
+                                document.getElementById("MinStock").disabled = false;
+                                document.getElementById("MaxStock").disabled = false;
+                                document.getElementById("BufferStock").disabled = false;
+                                document.getElementById("Stock").disabled = false;
+                                document.getElementById("Cogs").disabled = false;
                                 document.getElementById("BuyPrice").disabled = false;
                                 document.getElementById("RetailPrice").disabled = false;
                                 document.getElementById("StorageLocation").disabled = false;
@@ -216,11 +197,11 @@
 
                                 document.getElementById("ProductCode").disabled = true;
                                 document.getElementById("ProductName").disabled = true;
-                                document.getElementById("Supplier").disabled = true;
-                                document.getElementById("Category").disabled = true;
-                                document.getElementById("Measurement").disabled = true;
-                                document.getElementById("Discount").disabled = true;
-                                document.getElementById("WarehouseLocation").disabled = true;
+                                document.getElementById("SupplierId").disabled = true;
+                                document.getElementById("CategoryId").disabled = true;
+                                document.getElementById("MeasurementId").disabled = true;
+                                document.getElementById("DiscountId").disabled = true;
+                                document.getElementById("WarehouseLocationId").disabled = true;
                                 document.getElementById("MinStock").disabled = true;
                                 document.getElementById("MaxStock").disabled = true;
                                 document.getElementById("BufferStock").disabled = true;

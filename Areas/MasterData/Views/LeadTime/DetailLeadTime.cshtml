@@ -24,17 +24,16 @@
                 <div class="card-body">
                     <input hidden asp-for="LeadTimeId" />
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="LeadTimeCode">LeadTime Code</label>
-                        <div class="col-sm-9">
-                            <input type="text" asp-for="LeadTimeCode" class="form-control form-control-border border-width-2" id="LeadTimeCode" placeholder="LeadTime Code" readonly disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="LeadTimeCode"></label>
+                            <input type="text" asp-for="LeadTimeCode" class="form-control form-control-border border-width-2" id="LeadTimeCode" placeholder="Lead Time Code" readonly disabled>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="LeadTimeValue"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="LeadTimeValue" class="form-control form-control-border border-width-2" id="LeadTimeValue" placeholder="Lead Time Value" disabled>
+                            <span asp-validation-for="LeadTimeValue" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="LeadTimeValue">LeadTime Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="number" asp-for="LeadTimeValue" class="form-control form-control-border border-width-2" id="LeadTimeValue" placeholder="LeadTime Value" disabled>
-                        </div>
-                    </div>                    
                 </div>
                 <!-- start button footer -->
                 <div class="card card-orange">

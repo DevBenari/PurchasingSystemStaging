@@ -24,33 +24,30 @@
                 <div class="card-body">
                     <input hidden asp-for="WarehouseLocationId" />
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="WarehouseLocationCode">Warehouse Code</label>
-                        <div class="col-sm-9">
-                            <input type="text" asp-for="WarehouseLocationCode" class="form-control form-control-border border-width-2" id="WarehouseLocationCode" placeholder="Warehouse Code" readonly disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="WarehouseLocationCode"></label>
+                            <input type="text" asp-for="WarehouseLocationCode" class="form-control form-control-border border-width-2" id="WarehouseLocationCode" placeholder="Warehouse Location Code" readonly disabled>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="WarehouseLocationName"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="WarehouseLocationName" class="form-control form-control-border border-width-2" id="WarehouseLocationName" placeholder="Warehouse Location Name" disabled>
+                            <span asp-validation-for="WarehouseLocationName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="WarehouseLocationName">Warehouse Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="WarehouseLocationName" class="form-control form-control-border border-width-2" id="WarehouseLocationName" placeholder="Warehouse Name" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="WarehouseManagerId">
-                            Warehouse Manager
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="WarehouseManagerId" asp-items="@ViewBag.WarehouseManager" class="form-control select2bs4" style="width: 100%;" id="WarehouseManager" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="WarehouseManagerId"></label>
+                            <select asp-for="WarehouseManagerId" asp-items="@ViewBag.WarehouseManager" class="form-control select2bs4" id="WarehouseManagerId" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choice Warehouse Manager--</option>
                             </select>
+                            <span asp-validation-for="WarehouseManagerId" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="Address"></label>
+                            <input maxlength="100" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="Address" placeholder="Address" disabled>
+                            <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Address">Address</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="Address" class="form-control form-control-border border-width-2" id="Address" placeholder="Address" disabled>
-                        </div>
-                    </div>                    
                 </div>
                 <!-- start button footer -->
                 <div class="card card-orange">
@@ -87,7 +84,7 @@
 
                                 document.getElementById("WarehouseLocationCode").disabled = false;
                                 document.getElementById("WarehouseLocationName").disabled = false;
-                                document.getElementById("WarehouseManager").disabled = false;
+                                document.getElementById("WarehouseManagerId").disabled = false;
                                 document.getElementById("Address").disabled = false;
                             })
 
@@ -100,7 +97,7 @@
 
                                 document.getElementById("WarehouseLocationCode").disabled = true;
                                 document.getElementById("WarehouseLocationName").disabled = true;
-                                document.getElementById("WarehouseManager").disabled = true;
+                                document.getElementById("WarehouseManagerId").disabled = true;
                                 document.getElementById("Address").disabled = true;
                             })
                         })

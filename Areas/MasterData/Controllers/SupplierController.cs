@@ -217,7 +217,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 else 
                 {
                     ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-                    TempData["WarningMessage"] = "Name " + vm.SupplierName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + vm.SupplierName + " There is duplicate data !!!";
                     return View(vm);
                 }
             }
@@ -275,7 +275,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 {
                     var checkDuplicate = _supplierRepository.GetAllSupplierNonActive().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
 
-                    if (checkDuplicate.Count == 1)
+                    if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                     {
                         var data = _supplierRepository.GetAllSupplierNonActive().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
 
@@ -309,7 +309,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     else
                     {
                         ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-                        TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " Already Exist !!!";
+                        TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " There is duplicate data !!!";
                         return View(viewModel);
                     }
                 }
@@ -317,7 +317,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 {
                     var checkDuplicate = _supplierRepository.GetAllSupplierNonPks().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
 
-                    if (checkDuplicate.Count == 1)
+                    if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                     {
                         var data = _supplierRepository.GetAllSupplierNonPks().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
 
@@ -351,7 +351,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     else
                     {
                         ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-                        TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " Already Exist !!!";
+                        TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " There is duplicate data !!!";
                         return View(viewModel);
                     }
                 }                
@@ -359,7 +359,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 {
                     var checkDuplicate = _supplierRepository.GetAllSupplier().Where(d => d.SupplierName == viewModel.SupplierName).ToList();
 
-                    if (checkDuplicate.Count == 1)
+                    if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                     {
                         var data = _supplierRepository.GetAllSupplier().Where(d => d.SupplierCode == viewModel.SupplierCode).FirstOrDefault();
 
@@ -393,7 +393,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     else 
                     {
                         ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
-                        TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " Already Exist !!!";
+                        TempData["WarningMessage"] = "Name " + viewModel.SupplierName + " There is duplicate data !!!";
                         return View(viewModel);
                     }
                 }

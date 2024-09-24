@@ -24,21 +24,21 @@
                 <div class="card-body">
                     <input hidden asp-for="CategoryId" />
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="CategoryCode">Category Code</label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-6">
+                            <label asp-for="CategoryCode"></label>
                             <input type="text" asp-for="CategoryCode" class="form-control form-control-border border-width-2" id="CategoryCode" placeholder="Category Code" readonly disabled>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="CategoryName"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="CategoryName" class="form-control form-control-border border-width-2" id="CategoryName" placeholder="Category Name" disabled>
+                            <span asp-validation-for="CategoryName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="CategoryName">Category Name</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="CategoryName" class="form-control form-control-border border-width-2" id="CategoryName" placeholder="Category Name" disabled>
-                        </div>
-                    </div>                    
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                        <div class="col-sm-6">
+                            <label asp-for="Note"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                            <span asp-validation-for="Note" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

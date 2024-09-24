@@ -161,7 +161,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     KodeUser = vm.UserActiveCode,
                     NamaUser = vm.FullName,
                     Email = vm.Email,
-                    UserName = vm.Email
+                    UserName = vm.Email,
+                    IsActive = vm.IsActive
                 };
 
                 var user = new UserActive
@@ -180,7 +181,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Address = vm.Address,
                     Handphone = vm.Handphone,
                     Email = vm.Email,
-                    Foto = uniqueFileName
+                    Foto = uniqueFileName,
+                    IsActive = vm.IsActive
                 };
 
                 var passTglLahir = vm.DateOfBirth.ToString("ddMMMyyyy");                
@@ -220,7 +222,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 {
                     ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
                     ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
-                    TempData["WarningMessage"] = "Account " + vm.FullName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Account " + vm.FullName + " There is duplicate data !!!";
                     return View(vm);
                 }
             }
@@ -262,7 +264,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 Address = user.Address,
                 Handphone = user.Handphone,
                 Email = user.Email,
-                UserPhotoPath = user.Foto
+                UserPhotoPath = user.Foto,
+                IsActive = user.IsActive
             };
             return View(viewModel);
         }
@@ -281,7 +284,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var userLogin = await _userManager.FindByNameAsync(viewModel.Email);
                 var checkDuplicate = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).ToList();
 
-                if (checkDuplicate.Count == 1)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var data = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).FirstOrDefault();
 
@@ -316,7 +319,8 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
 
                             userLogin.NamaUser = viewModel.FullName;
                             userLogin.UserName = viewModel.Email;
-                            userLogin.Email = viewModel.Email;                            
+                            userLogin.Email = viewModel.Email;
+                            userLogin.IsActive = viewModel.IsActive;
 
                             var result = await _userManager.UpdateAsync(userLogin);
 
@@ -349,7 +353,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 {
                     ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
                     ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
-                    TempData["WarningMessage"] = "Account " + viewModel.FullName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Account " + viewModel.FullName + " There is duplicate data !!!";
                     return View(viewModel);
                 }
             }

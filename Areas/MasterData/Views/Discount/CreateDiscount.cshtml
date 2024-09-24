@@ -24,21 +24,21 @@
             <form enctype="multipart/form-data" asp-controller="Discount" asp-action="CreateDiscount" method="post" class="form-horizontal">
                 <div class="card-body">
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="DiscountCode">Discount Code</label>
-                        <div class="col-sm-9">
-                            <input type="text" asp-for="DiscountCode" class="form-control form-control-border border-width-2" id="" placeholder="Discount Code" readonly>
+                        <div class="col-sm-6">
+                            <label asp-for="DiscountCode"></label>
+                            <input type="text" asp-for="DiscountCode" class="form-control form-control-border border-width-2" id="DiscountCode" placeholder="Discount Code" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="DiscountValue"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="DiscountValue" class="form-control form-control-border border-width-2" id="DiscountValue" placeholder="Discount Value">
+                            <span asp-validation-for="DiscountValue" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="DiscountValue">Discount Value (%)</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="number" asp-for="DiscountValue" class="form-control form-control-border border-width-2" id="" placeholder="Discount Value">
-                        </div>
-                    </div>                    
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
-                        <div class="col-sm-9">
-                            <input maxlength="250" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="" placeholder="Note">
+                        <div class="col-sm-6">
+                            <label asp-for="Note"></label>
+                            <input maxlength="100" autocomplete="off" autofocus type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note">
+                            <span asp-validation-for="Note" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

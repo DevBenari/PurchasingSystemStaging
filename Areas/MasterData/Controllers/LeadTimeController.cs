@@ -148,18 +148,18 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     if (result == null)
                     {
                         _leadTimeRepository.Tambah(LeadTime);
-                        TempData["SuccessMessage"] = "Name " + vm.LeadTimeValue + " Saved";
+                        TempData["SuccessMessage"] = "Value " + vm.LeadTimeValue + " Saved";
                         return RedirectToAction("Index", "LeadTime");
                     }
                     else
                     {
-                        TempData["WarningMessage"] = "Name " + vm.LeadTimeValue + " Already Exist !!!";
+                        TempData["WarningMessage"] = "Value " + vm.LeadTimeValue + " Already Exist !!!";
                         return View(vm);
                     }
                 }
                 else
                 {
-                    TempData["WarningMessage"] = "Name " + vm.LeadTimeValue + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Value " + vm.LeadTimeValue + " There is duplicate data !!!";
                     return View(vm);
                 }
             }
@@ -201,7 +201,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                 var checkDuplicate = _leadTimeRepository.GetAllLeadTime().Where(d => d.LeadTimeValue == viewModel.LeadTimeValue).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var data = _leadTimeRepository.GetAllLeadTime().Where(d => d.LeadTimeCode == viewModel.LeadTimeCode).FirstOrDefault();
 
@@ -215,18 +215,18 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                         _leadTimeRepository.Update(LeadTime);
                         _applicationDbContext.SaveChanges();
 
-                        TempData["SuccessMessage"] = "Name " + viewModel.LeadTimeValue + " Success Changes";
+                        TempData["SuccessMessage"] = "Value " + viewModel.LeadTimeValue + " Success Changes";
                         return RedirectToAction("Index", "LeadTime");
                     }
                     else
                     {
-                        TempData["WarningMessage"] = "Name " + viewModel.LeadTimeValue + " Already Exist !!!";
+                        TempData["WarningMessage"] = "Value " + viewModel.LeadTimeValue + " Already Exist !!!";
                         return View(viewModel);
                     }
                 }
                 else
                 {
-                    TempData["WarningMessage"] = "Name " + viewModel.LeadTimeValue + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Value " + viewModel.LeadTimeValue + " There is duplicate data !!!";
                     return View(viewModel);
                 }
             }

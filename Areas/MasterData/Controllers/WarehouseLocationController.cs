@@ -214,7 +214,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                 var checkDuplicate = _warehouseLocationRepository.GetAllWarehouseLocation().Where(d => d.WarehouseLocationName == viewModel.WarehouseLocationName).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var data = _warehouseLocationRepository.GetAllWarehouseLocation().Where(d => d.WarehouseLocationCode == viewModel.WarehouseLocationCode).FirstOrDefault();
 

@@ -165,7 +165,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 else
                 {
                     ViewBag.UnitManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
-                    TempData["WarningMessage"] = "Name " + vm.UnitLocationName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + vm.UnitLocationName + " There is duplicate data !!!";
                     return View(vm);
                 }
             }
@@ -213,7 +213,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                 var checkDuplicate = _UnitLocationRepository.GetAllUnitLocation().Where(d => d.UnitLocationCode == viewModel.UnitLocationCode).ToList();
 
-                if (checkDuplicate.Count == 0)
+                if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
                 {
                     var check = _UnitLocationRepository.GetAllUnitLocation().Where(d => d.UnitLocationCode == viewModel.UnitLocationCode).FirstOrDefault();
 
@@ -244,7 +244,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 {
                     ViewBag.UnitManager = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
 
-                    TempData["WarningMessage"] = "Name " + viewModel.UnitLocationName + " Already Exist !!!";
+                    TempData["WarningMessage"] = "Name " + viewModel.UnitLocationName + " There is duplicate data !!!";
                     return View(viewModel);
                 }
             }
