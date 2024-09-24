@@ -1,7 +1,7 @@
 ﻿@using PurchasingSystemApps.Areas.MasterData.ViewModels;
 
 @{
-    Layout = "~/Views/Shared/_TopNavbarHome.cshtml";
+    Layout = "~/Views/Shared/_TopNavbarProfile.cshtml";
     var photoPath = "~/UserPhoto/" + (Model.UserPhotoPath ?? "user.jpg");
 }
 
@@ -14,26 +14,17 @@
         <div class="col-md-3 bg-white">
             <div class="card-header bg-indigo">
                 <h3 class="card-title fw-bold" style="color:#ffffff">@Html.DisplayFor(m => m.FullName)</h3>
-            </div>            
+            </div>
             <div class="card-body text-center">
                 <img src="@photoPath" asp-append-version="true" width="100%" height="100%" />
             </div>
 
             <ul class="list-group list-group-unbordered mb-3">
                 <li class="list-group-item">
-                    <b>Date Of Birth</b> <a class="float-right">@Html.DisplayFor(x => x.DateOfBirth)</a>
-                </li>
-                <li class="list-group-item">
                     <b>Department</b> <a class="float-right">@Html.DisplayFor(x => x.Department)</a>
                 </li>
                 <li class="list-group-item">
                     <b>Position</b> <a class="float-right">@Html.DisplayFor(s => s.Position)</a>
-                </li>
-                <li class="list-group-item">
-                    <b>Handphone</b> <a class="float-right">@Html.DisplayFor(s => s.Handphone)</a>
-                </li>
-                <li class="list-group-item">
-                    <b>Email</b> <a class="float-right">@Html.DisplayFor(s => s.Email)</a>
                 </li>
             </ul>
         </div>
@@ -42,7 +33,7 @@
                 <h3 class="card-title fw-bold" style="color:#ffffff">Detail Information</h3>
             </div>
 
-            @*<form enctype="multipart/form-data" asp-controller="UserActive" asp-action="DetailUserActive" method="post" class="form-horizontal">
+            <form enctype="multipart/form-data" asp-controller="UserActive" asp-action="DetailUserActive" method="post" class="form-horizontal">
                 <div class="card-body">
                     <input hidden asp-for="UserActiveId" />
                     <input hidden asp-for="UserPhotoPath" />
@@ -115,9 +106,9 @@
                             </div>
                             <input maxlength="100" autofocus autocomplete="off" asp-for="Email" type="email" class="form-control form-control-border border-width-2" id="email" placeholder="Email" disabled>
                         </div>
-                    </div>                   
+                    </div>
                 </div>
-                
+
                 @section Scripts {
                     <script>
                         $(function () {
@@ -126,7 +117,7 @@
                                 theme: 'bootstrap4'
                             })
                         })
-                    </script>                   
+                    </script>
 
                     <script>
                         $(function () {
@@ -143,9 +134,9 @@
                         })
                     </script>
                 }
-            </form>*@
-        </div>        
+            </form>
+        </div>
     </div>
-    <!-- /.row -->    
+    <!-- /.row -->
 </section>
 <!-- /.content -->

@@ -72,6 +72,25 @@
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
+                @if (signInManager.IsSignedIn(User))
+                {
+                    var user = await signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+
+                    <li class="nav-item">
+                        <a class="nav-link" role="button">
+                            <p>Halo, @(User.FindFirst("UserNamaDepan").Value)</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" role="button">
+                            @if (user.IsOnline == true)
+                            {
+                                <p><i class='fas fa-certificate' style='color:greenyellow'></i> Online</p>
+                            }
+                        </a>
+                    </li>
+                }                
             </ul>
 
             <!-- Right navbar links -->
@@ -80,29 +99,15 @@
                 @if (signInManager.IsSignedIn(User))
                 {
                     var user = await signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" role="button">
-                            @if (user.IsOnline == true)
-                            {
-                                <p><i class='fas fa-certificate' style='color:greenyellow'></i> Online</p>
-                            }
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" role="button">                            
-                            <p>Halo, @(User.FindFirst("UserNamaDepan").Value)</p>
-                        </a>
-                    </li>
+                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Pengaturan
+                            Setting
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            @*<a class="dropdown-item" asp-action="Profile" asp-controller="Setting">Profil</a>
-                            <a class="dropdown-item" asp-action="ChangePassword" asp-controller="Setting">Ganti Kata Sandi</a>
-                            <a class="dropdown-item" asp-action="Tutorial" asp-controller="Setting">Panduan Aplikasi</a>*@
-                            @*<a class="dropdown-item" asp-action="Logout" asp-controller="Setting">Keluar</a>*@
+                            <a class="dropdown-item" asp-action="MyProfile" asp-controller="Home">My Profile</a>
+                            @*<a class="dropdown-item" asp-action="ChangePassword" asp-controller="Setting">Ganti Kata Sandi</a>*@
+                            @*<a class="dropdown-item" asp-action="Tutorial" asp-controller="Setting">Panduan Aplikasi</a>*@
                             <form method="post" asp-action="Logout" asp-controller="Home" class="form-inline">
                                 <button type="submit" class="nav-link btn btn-link">
                                     <p><i class="fas fa-power-off mr-2"></i> Sign Out</p>
