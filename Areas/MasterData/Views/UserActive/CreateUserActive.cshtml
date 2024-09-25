@@ -21,12 +21,13 @@
                 <div class="card-header bg-cyan">
                     <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
 
-                    <div class="card-tools">                        
+                    @*Ketika buat user baru otomatis status user aktif*@
+                    @*<div class="card-tools">
                         <div class="icheck-success d-inline">
-                            <input asp-for="IsActive" type="checkbox" id="IsActive" disabled>
+                            <input asp-for="IsActive" type="checkbox" id="IsActive">
                             <label asp-for="IsActive">Is Active?</label>
                         </div>
-                    </div>
+                    </div>*@
                 </div>
 
                 <div class="card-body">
@@ -167,7 +168,7 @@
                             //Tanggal Lahir
                             $('#tanggallahir').datetimepicker({
                                 format: 'DD/MM/yyyy'
-                            })
+                            }).val();
                         })
                     </script>
 

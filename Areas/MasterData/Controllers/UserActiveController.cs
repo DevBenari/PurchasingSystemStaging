@@ -162,7 +162,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     NamaUser = vm.FullName,
                     Email = vm.Email,
                     UserName = vm.Email,
-                    IsActive = vm.IsActive
+                    IsActive = true
                 };
 
                 var user = new UserActive
@@ -182,7 +182,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Handphone = vm.Handphone,
                     Email = vm.Email,
                     Foto = uniqueFileName,
-                    IsActive = vm.IsActive
+                    IsActive = true
                 };
 
                 var passTglLahir = vm.DateOfBirth.ToString("ddMMMyyyy");                

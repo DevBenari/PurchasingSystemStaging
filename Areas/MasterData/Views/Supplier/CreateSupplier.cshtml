@@ -22,14 +22,14 @@
                     <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
 
                     <div class="card-tools">
-                        <div class="icheck-primary d-inline">
+                        @*<div class="icheck-primary d-inline">
                             <input asp-for="IsPKS" type="checkbox" id="IsPKS">
                             <label asp-for="IsPKS">Is PKS? &nbsp;</label>
-                        </div>
-                        <div class="icheck-success d-inline">
+                        </div>*@
+                        @*<div class="icheck-success d-inline">
                             <input asp-for="IsActive" type="checkbox" id="IsActive">
                             <label asp-for="IsActive">Is Active?</label>
-                        </div>
+                        </div>*@
                     </div>
                 </div>
 
@@ -84,7 +84,7 @@
                             <span asp-validation-for="Note" class="text-danger"></span>
                         </div>                        
                     </div>
-                    @*<div class="form-group row">
+                    <div class="form-group row">
                         <div class="col-sm-6 input-group">
                             <div class="form-group clearfix">
                                 <div class="icheck-primary d-inline">
@@ -94,7 +94,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    @*<div class="form-group row">
                         <div class="col-sm-6 input-group">
                             <div class="form-group clearfix">
                                 <div class="icheck-danger d-inline">
