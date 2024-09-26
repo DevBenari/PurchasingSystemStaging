@@ -193,7 +193,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     Email = vm.Email,
                     Note = vm.Note,
                     IsPKS = vm.IsPKS,
-                    IsActive = vm.IsActive,
+                    IsActive = true,
                 };
               
                 var checkDuplicate = _supplierRepository.GetAllSupplier().Where(c => c.SupplierName == vm.SupplierName).ToList();

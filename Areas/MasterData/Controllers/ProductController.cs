@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PurchasingSystemApps.Areas.MasterData.Models;
 using PurchasingSystemApps.Areas.MasterData.Repositories;
 using PurchasingSystemApps.Areas.MasterData.ViewModels;
 using PurchasingSystemApps.Data;
 using PurchasingSystemApps.Models;
 using PurchasingSystemApps.Repositories;
+using System.Net.Http;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystemApps.Areas.MasterData.Controllers
@@ -29,6 +31,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         private readonly IMeasurementRepository _measurementRepository;
         private readonly IDiscountRepository _discountRepository;
         private readonly IWarehouseLocationRepository _warehouseLocationRepository;
+        private readonly HttpClient _httpClient;
 
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -44,6 +47,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             IMeasurementRepository measurementRepository,
             IDiscountRepository discountRepository,
             IWarehouseLocationRepository warehouseLocationRepository,
+            HttpClient httpClient,
 
             IHostingEnvironment hostingEnvironment
         )
@@ -59,6 +63,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _measurementRepository = measurementRepository;
             _discountRepository = discountRepository;
             _warehouseLocationRepository = warehouseLocationRepository;
+            _httpClient = httpClient;
 
             _hostingEnvironment = hostingEnvironment;
         }

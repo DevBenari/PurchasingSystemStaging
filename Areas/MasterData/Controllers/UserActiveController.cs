@@ -305,6 +305,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                             user.Address = viewModel.Address;
                             user.Handphone = viewModel.Handphone;
                             user.Email = viewModel.Email;
+                            user.IsActive = viewModel.IsActive;
 
                             if (viewModel.Foto != null)
                             {

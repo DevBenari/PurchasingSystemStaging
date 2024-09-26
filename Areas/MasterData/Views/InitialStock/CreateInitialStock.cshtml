@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Add Initial Stock (Generate Buffer Stock And MinMax Stock)";
+    ViewData["Title"] = "Add Calculate Min-Max, Buffer Stock";
     Layout = "~/Views/Shared/_TopNavbarMasterData.cshtml";
 }
 
@@ -25,79 +25,63 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="GenerateBy">Generate By</label>
-                        <div class="col-sm-9">
-                            <select asp-for="GenerateBy" class="form-control select2bs4" style="width: 100%;" id="generateby">
-                                <option value="" hidden disabled selected>--Choose Generate--</option>
-                                <option value="Product">Product</option>
-                                <option value="Supplier">Supplier</option>
-                            </select>
-                            <span asp-validation-for="GenerateBy" class="text-danger"></span>
-                        </div>
+                        <<select asp-for="GenerateBy" class="form-control select2bs4" style="width: 100%;" id="generateby">
+                            <option value="" hidden disabled selected>--Choose Generate--</option>
+                            <option value="Product">Product</option>
+                            <option value="Supplier">Supplier</option>
+                        </select>
+                        <span asp-validation-for="GenerateBy" class="text-danger"></span>
                     </div>
                     <div class="form-group row" id="listproduct">
                         <label class="col-sm-3 col-form-label" asp-for="ProductId">
                             Product
                         </label>
-                        <div class="col-sm-9">
-                            <select asp-for="ProductId" data-placeholder="--Choose Product--" asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="selectproduct">
-                                <option value="" hidden disabled selected>--Choose Product--</option>
-                            </select>
-                            <span asp-validation-for="ProductId" class="text-danger"></span>
-                        </div>
+                        <select asp-for="ProductId" data-placeholder="--Choose Product--" asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="selectproduct">
+                            <option value="" hidden disabled selected>--Choose Product--</option>
+                        </select>
+                        <span asp-validation-for="ProductId" class="text-danger"></span>
                     </div>
                     <div class="form-group row" id="listSupplier">
                         <label class="col-sm-3 col-form-label" asp-for="SupplierId">
                             Supplier
                         </label>
-                        <div class="col-sm-9">
-                            <select asp-for="SupplierId" data-placeholder="--Choose Supplier--" asp-items="@ViewBag.Supplier" class="form-control select2bs4" style="width: 100%;" id="selectSupplier">
-                                <option value="" hidden disabled selected>--Choose Supplier--</option>
-                            </select>
-                            <span asp-validation-for="SupplierId" class="text-danger"></span>
-                        </div>
+                        <select asp-for="SupplierId" data-placeholder="--Choose Supplier--" asp-items="@ViewBag.Supplier" class="form-control select2bs4" style="width: 100%;" id="selectSupplier">
+                            <option value="" hidden disabled selected>--Choose Supplier--</option>
+                        </select>
+                        <span asp-validation-for="SupplierId" class="text-danger"></span>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="LeadTimeId">
                             Lead Time
                         </label>
-                        <div class="col-sm-9">
-                            <select asp-for="LeadTimeId" asp-items="@ViewBag.LeadTime" class="form-control select2bs4" style="width: 100%;">
-                                <option value="" hidden disabled selected>--Choice LeadTime--</option>
-                            </select>
-                            <span asp-validation-for="LeadTimeId" class="text-danger"></span>
-                        </div>
+                        <select asp-for="LeadTimeId" asp-items="@ViewBag.LeadTime" class="form-control select2bs4" style="width: 100%;">
+                            <option value="" hidden disabled selected>--Choice LeadTime--</option>
+                        </select>
+                        <span asp-validation-for="LeadTimeId" class="text-danger"></span>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="CalculateBaseOn">Calculate Base On</label>
-                        <div class="col-sm-9">
-                            <select asp-for="CalculateBaseOn" class="form-control select2bs4" style="width: 100%;" id="calculatebaseon">
-                                <option value="" hidden disabled selected>--Choose Calculate--</option>
-                                <option value="Daily">Daily</option>
-                                <option value="Weekly">Weekly</option>
-                                <option value="Monthly">Monthly</option>
-                            </select>
-                            <span asp-validation-for="CalculateBaseOn" class="text-danger"></span>
-                        </div>
+                        <select asp-for="CalculateBaseOn" class="form-control select2bs4" style="width: 100%;" id="calculatebaseon">
+                            <option value="" hidden disabled selected>--Choose Calculate--</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                        </select>
+                        <span asp-validation-for="CalculateBaseOn" class="text-danger"></span>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="MaxRequest">Max Request</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="number" asp-for="MaxRequest" class="form-control form-control-border border-width-2" id="" placeholder="Max Request">
-                            @*<span class="text-success">(Daily/Weekly/Monthly)</span>*@
-                        </div>
+                        <input maxlength="100" autocomplete="off" type="number" asp-for="MaxRequest" class="form-control form-control-border border-width-2" id="" placeholder="Max Request">
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="AverageRequest">Average Request</label>
-                        <div class="col-sm-9">
-                            <input maxlength="100" autocomplete="off" type="number" asp-for="AverageRequest" class="form-control form-control-border border-width-2" id="" placeholder="Average Request">
-                            @*<span class="text-success">(Daily/Weekly/Monthly)</span>*@
-                        </div>
+                        <label class="col-sm-3 col-form-label" asp-for="AverageRequest">Average Request Daily</label>
+                        <input maxlength="100" autocomplete="off" type="number" asp-for="AverageRequest" class="form-control form-control-border border-width-2" id="" placeholder="Average Request">
                     </div>                    
                 </div>
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold"><div style="color:#ffffff">Update Product</div></button>
+                        <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold"><div style="color:#ffffff">Calculate</div></button>
                         <a class="btn btn-default" asp-action="Index" asp-controller="InitialStock">Cancel</a>
                     </div>
                 </div>

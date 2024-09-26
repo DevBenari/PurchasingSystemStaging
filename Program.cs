@@ -19,6 +19,7 @@ builder.Services.AddControllersWithViews();
 
 
 //Tambahan Baru
+builder.Services.AddHttpClient();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

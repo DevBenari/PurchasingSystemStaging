@@ -342,11 +342,11 @@
                                 <tbody></tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="5" class="text-right" hidden><b>Total Qty</b></td>
-                                        <td id="producttotalqty" class="text-center productTotalQty" hidden>0</td>
+                                        <td colspan="5" class="text-right"><b>Total Qty</b></td>
+                                        <td id="producttotalqty" class="text-center productTotalQty">0</td>
                                         <td colspan="2" class="text-right" hidden><b>Grand Total</b></td>
                                         <td id="productgrandtotal" class="text-right productGrandTotal" hidden>0</td>
-                                        <td hidden></td>
+                                        <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -405,7 +405,7 @@
                             $("#productnumber").val(item.productCode);
                             $("#productname").val(item.productName);
                             $("#stock").val(item.stock);
-                            $("#Supplier").val(item.Supplier.SupplierName);
+                            $("#Supplier").val(item.supplier.supplierName);
                             $("#measure").val(item.measurement.measurementName);
                             $("#discount").val(item.discount.discountValue);
                             $("#price").val(item.buyPrice);
@@ -587,6 +587,7 @@
             var detail = {};
 
             var detailName = document.getElementsByClassName("row-productNumber");
+            var detailSupplier = document.getElementsByClassName("row-supplier");
             var detailNameProduct = document.getElementsByClassName("row-productName");
 
             $('#qty').keypress(function (e) {
@@ -667,7 +668,7 @@
 
                             var productNumber = $('#productnumber').val().trim();
                             var productName = $('#productname').val().trim();
-                            var Supplier = $('#Supplier').val().trim();
+                            var supplier = $('#Supplier').val().trim();
                             var measurement = $('#measure').val().trim();
                             var qty = parseInt($('#qty').val().trim());
                             var price = parseFloat($('#price').val().trim());
@@ -688,9 +689,22 @@
                                 if (detailName.length == 0) {
                                     checkDuplicate = undefined;
                                 }
-                                else if (detailName.length > 0 && detailName[i] != undefined) {
-                                    if (detailName[i].innerText != productNumber) {
+                                else if (detailName.length > 0 && detailName[i] != undefined) 
+                                {
+                                    if (detailName[i].innerText != productNumber && detailSupplier[i].innerText == supplier) {
                                         checkDuplicate = undefined;
+                                    }
+                                    else if (detailName[i].innerText != productNumber && detailSupplier[i].innerText != supplier) {
+                                        swal({
+                                            title: "Warning",
+                                            text: "Sorry supplier, " + supplier + " different from previous supplier",
+                                            type: "warning"
+                                        });
+
+                                        $('#produklist').select2('val', 'selectedIndex', 0);
+                                        $("#produklist").data('placeholder');
+                                        $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
+                                        return;
                                     }
                                     else {
                                         swal({
@@ -720,7 +734,7 @@
                                             <td class="row-index text-center"><p>${no}</p></td>
                                                         <td class="text-left row-productNumber"><input class="detProductNumber" asp-for="@Model.PurchaseRequestDetails[i].ProductNumber" type="hidden" value="${productNumber}">${productNumber}</td>
                                                         <td class="text-left row-productName"><input class="detProductName" asp-for="@Model.PurchaseRequestDetails[i].ProductName" type="hidden" value="${productName}">${productName}</td>
-                                                        <td class="text-left"><input class="detSupplier" asp-for="@Model.PurchaseRequestDetails[i].Supplier" type="hidden" value="${Supplier}">${Supplier}</td>
+                                                        <td class="text-left row-supplier"><input class="detSupplier" asp-for="@Model.PurchaseRequestDetails[i].Supplier" type="hidden" value="${supplier}">${supplier}</td>
                                                         <td class="text-left"><input class="detMeasurement" asp-for="@Model.PurchaseRequestDetails[i].Measurement" type="hidden" value="${measurement}">${measurement}</td>
                                                         <td class="text-center row-qty"><input class="detQty" asp-for="@Model.PurchaseRequestDetails[i].Qty" type="hidden" value="${qty}">${qty}</td>
                                                         <td class="text-right" hidden><input class="detPrice" asp-for="@Model.PurchaseRequestDetails[i].Price" type="hidden" value="${price}">${price}</td>
@@ -1046,7 +1060,7 @@
                         //***Penggunaan nama detail harus sesuai dengan nama pada table. Misal kodeproduk,namaproduk,dst harus sama.
                         detailDone.productnumber = $(element).find(".detProductNumber").val();
                         detailDone.productname = $(element).find(".detProductName").val();
-                        detailDone.Supplier = $(element).find(".detSupplier").val();
+                        detailDone.supplier = $(element).find(".detSupplier").val();
                         detailDone.measurement = $(element).find(".detMeasurement").val();
                         detailDone.qty = $(element).find(".detQty").val();
                         detailDone.price = $(element).find(".detPrice").val();
