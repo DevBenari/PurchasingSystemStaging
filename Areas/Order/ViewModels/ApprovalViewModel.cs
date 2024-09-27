@@ -8,7 +8,8 @@ namespace PurchasingSystemApps.Areas.Order.ViewModels
         public Guid? PurchaseRequestId { get; set; }
         public string PurchaseRequestNumber { get; set; }
         public string UserAccessId { get; set; } //Dibuat Oleh
-        public Guid? DueDateId { get; set; }
+        public int ExpiredDay { get; set; }
+        public int RemainingDay { get; set; }
         public DateTime ExpiredDate { get; set; }
         public Guid? UserApproveId { get; set; }
         public string? UserApprove { get; set; }

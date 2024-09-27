@@ -43,7 +43,6 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 .Include(d3 => d3.Department3)
                 .Include(p3 => p3.Position3)
                 .Include(a3 => a3.UserApprove3)
-                .Include(e => e.DueDate)                
                 .FirstOrDefault(p => p.PurchaseRequestId == Id);
 
             if (purchaseRequest != null)
@@ -60,7 +59,8 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                     PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                     UserAccessId = purchaseRequest.UserAccessId,
                     ApplicationUser = purchaseRequest.ApplicationUser,
-                    DueDateId = purchaseRequest.DueDateId,
+                    ExpiredDay = purchaseRequest.ExpiredDay,
+                    RemainingDay = purchaseRequest.RemainingDay,
                     DueDate = purchaseRequest.DueDate,
                     ExpiredDate = purchaseRequest.ExpiredDate,
                     Department1Id = purchaseRequest.Department1Id,
@@ -113,7 +113,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 .Include(d3 => d3.Department3)
                 .Include(p3 => p3.Position3)
                 .Include(a3 => a3.UserApprove3)
-                .Include(e => e.DueDate)
+                //.Include(e => e.DueDate)
                 .FirstOrDefaultAsync(a => a.PurchaseRequestId == Id);
         }
 
@@ -131,7 +131,8 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                 UserAccessId = purchaseRequest.UserAccessId,
                 ApplicationUser = purchaseRequest.ApplicationUser,
-                DueDateId = purchaseRequest.DueDateId,
+                ExpiredDay = purchaseRequest.ExpiredDay,
+                RemainingDay = purchaseRequest.RemainingDay,
                 DueDate = purchaseRequest.DueDate,
                 ExpiredDate = purchaseRequest.ExpiredDate,
                 Department1Id = purchaseRequest.Department1Id,
@@ -180,7 +181,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 .Include(d3 => d3.Department3)
                 .Include(p3 => p3.Position3)
                 .Include(a3 => a3.UserApprove3)
-                .Include(e => e.DueDate)
+                //.Include(e => e.DueDate)
                 .ToList();
         }
 

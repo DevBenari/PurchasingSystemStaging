@@ -33,7 +33,6 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 .Include(u => u.ApplicationUser)
                 .Include(t => t.PurchaseRequest)
                 .Include(a1 => a1.UserApprove)
-                .Include(e => e.DueDate)
                 .FirstOrDefault(p => p.ApprovalId == Id);
 
             if (Approval != null)
@@ -45,7 +44,8 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                     PurchaseRequestNumber = Approval.PurchaseRequestNumber,
                     UserAccessId = Approval.UserAccessId,
                     ApplicationUser = Approval.ApplicationUser,
-                    DueDateId = Approval.DueDateId,                    
+                    ExpiredDay = Approval.ExpiredDay,
+                    RemainingDay = Approval.RemainingDay,
                     DueDate = Approval.DueDate,
                     ExpiredDate = Approval.ExpiredDate,
                     UserApproveId = Approval.UserApproveId,
@@ -75,7 +75,8 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 PurchaseRequestNumber = Approval.PurchaseRequestNumber,
                 UserAccessId = Approval.UserAccessId,
                 ApplicationUser = Approval.ApplicationUser,
-                DueDateId = Approval.DueDateId,
+                ExpiredDay = Approval.ExpiredDay,
+                RemainingDay = Approval.RemainingDay,
                 DueDate = Approval.DueDate,
                 ExpiredDate = Approval.ExpiredDate,
                 UserApproveId = Approval.UserApproveId,
@@ -94,7 +95,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 .Include(u => u.ApplicationUser)
                 .Include(t => t.PurchaseRequest)
                 .Include(a1 => a1.UserApprove)
-                .Include(e => e.DueDate)
+                //.Include(e => e.DueDate)
                 .ToList();
         }
 

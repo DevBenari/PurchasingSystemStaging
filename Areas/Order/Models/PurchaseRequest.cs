@@ -15,7 +15,8 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public Guid PurchaseRequestId { get; set; }
         public string PurchaseRequestNumber { get; set; }
         public string UserAccessId { get; set; }
-        public Guid? DueDateId { get; set; }
+        public int ExpiredDay { get; set; }
+        public int RemainingDay { get; set; }
         public DateTime ExpiredDate { get; set; }
         public Guid? Department1Id { get; set; }
         public Guid? Position1Id { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PurchasingSystemApps.Data;
 
@@ -11,9 +12,10 @@ using PurchasingSystemApps.Data;
 namespace PurchasingSystemApps.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240927061615_deleteDueDateIdInPR")]
+    partial class deleteDueDateIdInPR
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1029,9 +1031,6 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<DateTime>("ExpiredDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ExpiredDay")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
 
@@ -1047,9 +1046,6 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<string>("PurchaseRequestNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RemainingDay")
-                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -1293,7 +1289,7 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<DateTime>("ExpiredDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ExpiredDay")
+                    b.Property<int>("ExpiredOrder")
                         .HasColumnType("int");
 
                     b.Property<decimal>("GrandTotal")
@@ -1322,9 +1318,6 @@ namespace PurchasingSystemApps.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QtyTotal")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RemainingDay")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")

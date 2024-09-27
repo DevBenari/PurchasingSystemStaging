@@ -1,6 +1,7 @@
 ﻿using FastReport.Data;
 using FastReport.Export.PdfSimple;
 using FastReport.Web;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         private readonly IDueDateRepository _dueDateRepository;
         private readonly IDepartmentRepository _departmentRepository;
         private readonly IPositionRepository _positionRepository;
+        private readonly ILeadTimeRepository _leadTimeRepository;
+        private readonly ISupplierRepository _supplierRepository;
 
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -54,6 +57,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             IDueDateRepository dueDateRepository,
             IDepartmentRepository departmentRepository,
             IPositionRepository positionRepository,
+            ILeadTimeRepository leadTimeRepository,
+            ISupplierRepository supplierRepository,
 
             IHostingEnvironment hostingEnvironment,
             IWebHostEnvironment webHostEnvironment,
@@ -72,6 +77,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             _dueDateRepository = dueDateRepository;
             _departmentRepository = departmentRepository;
             _positionRepository = positionRepository;
+            _leadTimeRepository = leadTimeRepository;
+            _supplierRepository = supplierRepository;
 
             _hostingEnvironment = hostingEnvironment;
             _webHostEnvironment = webHostEnvironment;
@@ -144,11 +151,40 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             if (getUserLogin.Id == "5f734880-f3d9-4736-8421-65a66d48020e")
             {
                 var data = _purchaseRequestRepository.GetAllPurchaseRequest();
+
+                foreach (var item in data)
+                {
+                    var remainingDay = DateTimeOffset.UtcNow.Date - item.CreateDateTime.Date;
+                    var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
+
+                    if (updateData.RemainingDay != 0)
+                    {
+                        updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                        _applicationDbContext.PurchaseRequests.Update(updateData);
+                        _applicationDbContext.SaveChanges();
+                    }                    
+                }
+
                 return View(data);
             }
             else
-            {
-                var data = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.CreateBy.ToString() == getUserLogin.Id).ToList();
+            {               
+                var data = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.CreateBy.ToString() == getUserLogin.Id).ToList();                
+
+                foreach (var item in data)
+                {
+                    var remainingDay = DateTimeOffset.UtcNow.Date - item.CreateDateTime.Date;
+                    var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
+
+                    if (updateData.RemainingDay != 0)
+                    {
+                        updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                        _applicationDbContext.PurchaseRequests.Update(updateData);
+                        _applicationDbContext.SaveChanges();
+                    }                        
+                }
                 return View(data);
             }
         }
@@ -264,19 +300,12 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     Position3Id = model.Position3Id,
                     UserApprove3Id = model.UserApprove3Id,
                     ApproveStatusUser3 = model.ApproveStatusUser3,
-                    DueDateId = model.DueDateId,                    
                     TermOfPaymentId = model.TermOfPaymentId,
                     Status = model.Status,
                     QtyTotal = model.QtyTotal,
                     GrandTotal = Math.Truncate(model.GrandTotal),
                     Note = model.Note,
                 };                
-
-                var findDueDate = _dueDateRepository.GetAllDueDate().Where(d => d.DueDateId == model.DueDateId).FirstOrDefault();
-
-                var Exp = DateTime.Now.Date.AddDays(Convert.ToDouble(findDueDate.Value));
-
-                purchaseRequest.ExpiredDate = Exp;
 
                 var ItemsList = new List<PurchaseRequestDetail>();
 
@@ -289,13 +318,27 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         ProductNumber = item.ProductNumber,
                         ProductName = item.ProductName,
                         Measurement = item.Measurement,
-                        Supplier = item.Supplier,                        
+                        Supplier = item.Supplier,
                         Qty = item.Qty,
                         Price = Math.Truncate(item.Price),
                         Discount = item.Discount,
                         SubTotal = Math.Truncate(item.SubTotal)
                     });
                 }
+
+                var getItemData = ItemsList.Where(a => a.Supplier != null).FirstOrDefault();
+
+                var getSupplier = _supplierRepository.GetAllSupplier().Where(s => s.SupplierName == getItemData.Supplier).FirstOrDefault();
+
+                var getLeadTime = getSupplier.LeadTime.LeadTimeValue;
+
+                var expiredDay = DateTimeOffset.UtcNow.Date.AddDays(Convert.ToDouble(getLeadTime));
+
+                var remainingDay = DateTimeOffset.UtcNow.Date - purchaseRequest.CreateDateTime.Date;
+
+                purchaseRequest.ExpiredDay = getLeadTime;
+                purchaseRequest.ExpiredDate = expiredDay;
+                purchaseRequest.RemainingDay = purchaseRequest.ExpiredDay - remainingDay.Days;
 
                 purchaseRequest.PurchaseRequestDetails = ItemsList;
                 _purchaseRequestRepository.Tambah(purchaseRequest);
@@ -309,7 +352,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                         UserAccessId = getUser.Id.ToString(),
-                        DueDateId = purchaseRequest.DueDateId,
+                        ExpiredDay = purchaseRequest.ExpiredDay,
+                        RemainingDay = purchaseRequest.RemainingDay,
                         ExpiredDate = purchaseRequest.ExpiredDate,
                         UserApproveId = purchaseRequest.UserApprove1Id,
                         ApproveBy = "",
@@ -331,7 +375,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                         UserAccessId = getUser.Id.ToString(),
-                        DueDateId = purchaseRequest.DueDateId,
+                        ExpiredDay = purchaseRequest.ExpiredDay,
+                        RemainingDay = purchaseRequest.RemainingDay,
                         ExpiredDate = purchaseRequest.ExpiredDate,
                         UserApproveId = purchaseRequest.UserApprove2Id,
                         ApproveBy = "",
@@ -353,7 +398,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
                         UserAccessId = getUser.Id.ToString(),
-                        DueDateId = purchaseRequest.DueDateId,
+                        ExpiredDay = purchaseRequest.ExpiredDay,
+                        RemainingDay = purchaseRequest.RemainingDay,
                         ExpiredDate = purchaseRequest.ExpiredDate,
                         UserApproveId = purchaseRequest.UserApprove3Id,
                         ApproveBy = "",
@@ -420,7 +466,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 Position3Id = purchaseRequest.Position3Id,
                 UserApprove3Id = purchaseRequest.UserApprove3Id,
                 ApproveStatusUser3 = purchaseRequest.ApproveStatusUser3,
-                DueDateId = purchaseRequest.DueDateId,
+                ExpiredDay = purchaseRequest.ExpiredDay,
+                RemainingDay = purchaseRequest.RemainingDay,
                 ExpiredDate = purchaseRequest.ExpiredDate,
                 TermOfPaymentId = purchaseRequest.TermOfPaymentId,
                 Status = purchaseRequest.Status,
@@ -492,7 +539,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         purchaseRequest.TermOfPaymentId = model.TermOfPaymentId;                                              
                         purchaseRequest.QtyTotal = model.QtyTotal;
                         purchaseRequest.GrandTotal = model.GrandTotal;
-                        purchaseRequest.DueDateId = model.DueDateId;
+                        //purchaseRequest.DueDateId = model.DueDateId;
                         purchaseRequest.ExpiredDate = model.ExpiredDate;
                         purchaseRequest.Note = model.Note;
                         purchaseRequest.PurchaseRequestDetails = model.PurchaseRequestDetails;
@@ -613,7 +660,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 Status = purchaseRequest.Status,
                 QtyTotal = purchaseRequest.QtyTotal,
                 GrandTotal = Math.Truncate(purchaseRequest.GrandTotal),
-                DueDateId = purchaseRequest.DueDateId,
+                //DueDateId = purchaseRequest.DueDateId,
                 Note = purchaseRequest.Note
             };
 
@@ -677,7 +724,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 Status = "InProcess",
                 QtyTotal = purchaseRequest.QtyTotal,
                 GrandTotal = Math.Truncate(purchaseRequest.GrandTotal),
-                DueDateId = purchaseRequest.DueDateId,
+                //DueDateId = purchaseRequest.DueDateId,
                 Note = purchaseRequest.Note
             };
 

@@ -17,22 +17,21 @@
             <div class="card card-cyan">
                 <div class="card-header">
                     <h3 class="card-title" style="color:#ffffff">@ViewBag.Title</h3>
+
+                    <div class="card-tools">
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <a class="btn btn-tool bg-indigo" asp-action="CreateDueDate" asp-controller="DueDate" asp-area="MasterData">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        }
+                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
                     <form enctype="multipart/form-data" asp-action="Index" asp-controller="DueDate" method="post" class="form-horizontal">
-                        <div class="row">
-                            <div class="col-md-1">
-                                <div class="form-group">
-                                    @if (signInManager.IsSignedIn(User))
-                                    {
-                                        <a class="btn bg-indigo" asp-action="CreateDueDate" asp-controller="DueDate" asp-area="MasterData">
-                                            <div style="color:#ffffff">Add New</div>
-                                        </a>
-                                    }
-                                </div>
-                            </div>
-                            <div class="col-md-3">
+                        <div class="row">                            
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="input-group date" id="tglAwalPencarian" data-target-input="nearest">
                                         <div class="input-group-append" data-target="#tglAwalPencarian" data-toggle="datetimepicker">
@@ -42,7 +41,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <div class="form-group">
                                     <div class="input-group date" id="reservationdate" data-target-input="nearest">
                                         <div class="input-group date" id="tglAkhirPencarian" data-target-input="nearest">
@@ -57,10 +56,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-3">
                                 <div class="form-group">
-                                    <select class="form-control select2" style="width: 100%;" id="daterange-btn">
-                                        <option value="" hidden disabled selected>Pencarian Berdasarkan Waktu</option>
+                                    <select class="form-control select2bs4" style="width: 100%;" id="btnFilterBy" data-placeholder="--Filter by--">
+                                        <option value="" hidden disabled selected>--Filter by--</option>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="Weekly">Weekly</option>
+                                        <option value="Daily">Daily</option>
                                     </select>
                                 </div>
                             </div>
@@ -109,6 +111,16 @@
 <!-- /.content -->
 @section Scripts{
     <script src="~/scripts/tabletemplate.js"></script>
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+            $("#btnFilterBy").data('placeholder');
+        })
+    </script>
     <script>
         $(function () {
             $('#tglAwalPencarian').datetimepicker({

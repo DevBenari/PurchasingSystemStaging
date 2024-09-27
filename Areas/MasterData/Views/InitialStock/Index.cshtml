@@ -125,6 +125,16 @@
     <script src="~/scripts/tabletemplate.js"></script>
     <script>
         $(function () {
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+            $("#btnFilterBy").data('placeholder');
+        })
+    </script>
+    <script>
+        $(function () {
             $('#tglAwalPencarian').datetimepicker({
                 format: 'DD MMMM YYYY'
             })
