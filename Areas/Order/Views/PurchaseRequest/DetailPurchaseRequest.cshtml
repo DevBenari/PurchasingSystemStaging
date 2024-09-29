@@ -42,7 +42,7 @@
                             User Approve 1
                         </label>
                         <div class="col-sm-10">
-                            <select asp-for="UserApprove1Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove1Id" style="width: 100%;" disabled>
+                            <select asp-for="UserApprove1Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove1List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
                             </select>
                             <span asp-validation-for="UserApprove1Id" class="error"></span>
@@ -53,7 +53,7 @@
                             User Approve 2
                         </label>
                         <div class="col-sm-10">
-                            <select asp-for="UserApprove2Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove2Id" style="width: 100%;" disabled>
+                            <select asp-for="UserApprove2Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove2List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
                             </select>
                             <span asp-validation-for="UserApprove2Id" class="error"></span>
@@ -64,7 +64,7 @@
                             User Approve 3
                         </label>
                         <div class="col-sm-10">
-                            <select asp-for="UserApprove3Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove3Id" style="width: 100%;" disabled>
+                            <select asp-for="UserApprove3Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove3List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
                             </select>
                             <span asp-validation-for="UserApprove3Id" class="error"></span>
@@ -106,7 +106,7 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        @if (Model.Status == "Waiting Approval")
+                        @if (Model.ApproveStatusUser1 == null)
                         {
                             <div class="form-group row" id="inputProduct">
                                 <div class="col-sm-5">
@@ -177,8 +177,56 @@
                                     <span class="error">Required !</span>
                                 </div>
                             </div>
+
+                            <div class="card-body table-responsive p-0">
+                                <table id="tbldetailpr" class="table table-head-fixed text-nowrap table-bordered table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">No</div></th>
+                                            <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Product Number</div></th>
+                                            <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Product Name</div></th>
+                                            <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Supplier</div></th>
+                                            <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Measure</div></th>
+                                            <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff">Qty</div></th>
+                                            <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Price</div></th>
+                                            <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Discount</div></th>
+                                            <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Sub Total</div></th>
+                                            <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff"></div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.PurchaseRequestDetails.Count; i++)
+                                        {
+                                            var no = (Model.PurchaseRequestDetails.Count - Model.PurchaseRequestDetails.Count) + i + 1;
+
+                                            <tr id="R$@no" class="detailProduct">
+                                                <td class="row-index text-center"><p>@no</p></td>
+                                                <td class="text-left row-productNumber"><input class="detProductNumber" asp-for="@Model.PurchaseRequestDetails[i].ProductNumber" type="hidden" value="@Model.PurchaseRequestDetails[i].ProductNumber">@Model.PurchaseRequestDetails[i].ProductNumber</td>
+                                                <td class="text-left row-productName"><input class="detProductName" asp-for="@Model.PurchaseRequestDetails[i].ProductName" type="hidden" value="@Model.PurchaseRequestDetails[i].ProductName">@Model.PurchaseRequestDetails[i].ProductName</td>
+                                                <td class="text-left row-Supplier"><input class="detSupplier" asp-for="@Model.PurchaseRequestDetails[i].Supplier" type="hidden" value="@Model.PurchaseRequestDetails[i].Supplier">@Model.PurchaseRequestDetails[i].Supplier</td>
+                                                <td class="text-left"><input class="detMeasurement" asp-for="@Model.PurchaseRequestDetails[i].Measurement" type="hidden" value="@Model.PurchaseRequestDetails[i].Measurement">@Model.PurchaseRequestDetails[i].Measurement</td>
+                                                <td class="text-center row-qty"><input class="detQty" asp-for="@Model.PurchaseRequestDetails[i].Qty" type="hidden" value="@Model.PurchaseRequestDetails[i].Qty">@Model.PurchaseRequestDetails[i].Qty</td>
+                                                <td class="text-right" hidden><input class="detPrice" asp-for="@Model.PurchaseRequestDetails[i].Price" type="hidden" value="@Model.PurchaseRequestDetails[i].Price">@Model.PurchaseRequestDetails[i].Price</td>
+                                                <td class="text-right" hidden><input class="detDiscount" asp-for="@Model.PurchaseRequestDetails[i].Discount" type="hidden" value="@Model.PurchaseRequestDetails[i].Discount">@Model.PurchaseRequestDetails[i].Discount</td>
+                                                <td class="text-right row-total" hidden><input class="detSubTotal" asp-for="@Model.PurchaseRequestDetails[i].SubTotal" type="hidden" value="@Model.PurchaseRequestDetails[i].SubTotal">@Model.PurchaseRequestDetails[i].SubTotal</td>
+                                                <td class="text-center"><button class="btn btn-danger btn-sm">X</button></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="5" class="text-right">Total Qty</th>
+                                            <td id="producttotalqty" class="text-center productTotalQty">@Model.QtyTotal</td>
+                                            <th colspan="2" class="text-right" hidden>Grand Total</th>
+                                            <td id="productgrandtotal" class="text-right productGrandTotal" hidden>@Math.Truncate(@Model.GrandTotal)</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         }
-                        @if (Model.Status == "Waiting Approval")
+
+                        @* @if (Model.Status == "Waiting Approval")
                         { 
                             <div class="card-body table-responsive p-0">
                                 <table id="tbldetailpr" class="table table-head-fixed text-nowrap table-bordered table-hover table-striped">
@@ -271,14 +319,14 @@
                                     </tfoot>
                                 </table>
                             </div>
-                        }
+                        } *@
                     </div>
                 </div>
 
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        @if (Model.Status == "Waiting Approval")
+                        @if (Model.ApproveStatusUser1 == null)
                         {
                             @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
                             <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
@@ -287,12 +335,12 @@
                             <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                             <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="PurchaseRequest">Batal</a>
                         }
-                        else if (Model.Status == "Approve")
+                        @* else if (Model.Status == "Approve")
                         {
                             <a class="btn btn-success" asp-action="GeneratePurchaseOrder" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId">Generate Purchase Order</a>
                             <a class="btn bg-indigo" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="fas fa-print" style="color:white"></i></a>
                             <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="PurchaseRequest">Batal</a>
-                        }
+                        } *@
                         else
                         {
                             <a class="btn bg-indigo" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="fas fa-print" style="color:white"></i></a>
@@ -345,9 +393,11 @@
                 $("#qty").show();
 
                 document.getElementById("purchaserequestnumber").disabled = false;
-                document.getElementById("userapprovalid").disabled = false;
-                document.getElementById("termofpayment").disabled = false;
-                document.getElementById("note").disabled = false;
+                document.getElementById("UserApprove1List").disabled = false;
+                document.getElementById("UserApprove2List").disabled = false;
+                document.getElementById("UserApprove3List").disabled = false;
+                document.getElementById("TermOfPaymentId").disabled = false;
+                document.getElementById("Note").disabled = false;
                 document.getElementById("produklist").disabled = false;
                 document.getElementById("qty").disabled = false;
             })
@@ -362,9 +412,11 @@
                 $(".btn-sm").hide();
 
                 document.getElementById("purchaserequestnumber").disabled = true;
-                document.getElementById("userapprovalid").disabled = true;
-                document.getElementById("termofpayment").disabled = true;
-                document.getElementById("note").disabled = true;
+                document.getElementById("UserApprove1List").disabled = true;
+                document.getElementById("UserApprove2List").disabled = true;
+                document.getElementById("UserApprove3List").disabled = true;
+                document.getElementById("TermOfPaymentId").disabled = true;
+                document.getElementById("Note").disabled = true;
                 document.getElementById("produklist").disabled = true;
                 document.getElementById("qty").disabled = true;
             })
@@ -389,7 +441,7 @@
                             $("#productnumber").val(item.productCode);
                             $("#productname").val(item.productName);
                             $("#stock").val(item.stock);
-                            $("#Supplier").val(item.Supplier.SupplierName);
+                            $("#Supplier").val(item.supplier.supplierName);
                             $("#measure").val(item.measurement.measurementName);
                             $("#discount").val(item.discount.discountValue);
                             $("#price").val(item.buyPrice);
@@ -428,6 +480,7 @@
             var detail = {};
 
             var detailName = document.getElementsByClassName("row-productNumber");
+            var detailSupplier = document.getElementsByClassName("row-Supplier");
             var detailNameProduct = document.getElementsByClassName("row-productName");
 
             $('#qty').keypress(function (e) {
@@ -508,7 +561,7 @@
 
                             var productNumber = $('#productnumber').val().trim();
                             var productName = $('#productname').val().trim();
-                            var Supplier = $('#Supplier').val().trim();
+                            var supplier = $('#Supplier').val().trim();
                             var measurement = $('#measure').val().trim();
                             var qty = parseInt($('#qty').val().trim());
                             var price = parseFloat($('#price').val().trim());
@@ -529,9 +582,22 @@
                                 if (detailName.length == 0) {
                                     checkDuplicate = undefined;
                                 }
-                                else if (detailName.length > 0 && detailName[i] != undefined) {
-                                    if (detailName[i].innerText != productNumber) {
+                                else if (detailName.length > 0 && detailName[i] != undefined) 
+                                {
+                                    if (detailName[i].innerText != productNumber && detailSupplier[i].innerText == supplier) {
                                         checkDuplicate = undefined;
+                                    }
+                                    else if (detailName[i].innerText != productNumber && detailSupplier[i].innerText != supplier) {
+                                        swal({
+                                            title: "Warning",
+                                            text: "Sorry, supplier " + supplier + " different from previous supplier",
+                                            type: "warning"
+                                        });
+
+                                        $('#produklist').select2('val', 'selectedIndex', 0);
+                                        $("#produklist").data('placeholder');
+                                        $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
+                                        return;
                                     }
                                     else {
                                         swal({
@@ -559,7 +625,7 @@
                                             <td class="row-index text-center"><p>${no}</p></td>
                                             <td class="text-left row-productNumber"><input class="detProductNumber" asp-for="@Model.PurchaseRequestDetails[i].ProductNumber" type="hidden" value="${productNumber}">${productNumber}</td>
                                             <td class="text-left row-productName"><input class="detProductName" asp-for="@Model.PurchaseRequestDetails[i].ProductName" type="hidden" value="${productName}">${productName}</td>
-                                            <td class="text-left"><input class="detSupplier" asp-for="@Model.PurchaseRequestDetails[i].Supplier" type="hidden" value="${Supplier}">${Supplier}</td>
+                                            <td class="text-left row-Supplier"><input class="detSupplier" asp-for="@Model.PurchaseRequestDetails[i].Supplier" type="hidden" value="${supplier}">${supplier}</td>
                                             <td class="text-left"><input class="detMeasurement" asp-for="@Model.PurchaseRequestDetails[i].Measurement" type="hidden" value="${measurement}">${measurement}</td>
                                             <td class="text-center row-qty"><input class="detQty" asp-for="@Model.PurchaseRequestDetails[i].Qty" type="hidden" value="${qty}">${qty}</td>
                                             <td class="text-right" hidden><input class="detPrice" asp-for="@Model.PurchaseRequestDetails[i].Price" type="hidden" value="${price}">${price}</td>
@@ -732,10 +798,7 @@
             $('#submit').click(function () {
                 var isAllValid = true;
                 var detailItemDone = [];
-                var detailDone = {};
-                var TermOfPayment = $('#termofpayment').find(":selected").val();
-                var UserApprovalId = $('#userapprovalid').find(":selected").val();
-                var detailTable = $('#tbldetailpr tbody').children().children().length;
+                var detailDone = {};               
 
                 if (detailTable == 1) {
                     swal({
@@ -749,7 +812,7 @@
                         //***Penggunaan nama detail harus sesuai dengan nama pada table. Misal kodeproduk,namaproduk,dst harus sama.
                         detailDone.productnumber = $(element).find(".detProductNumber").val();
                         detailDone.productname = $(element).find(".detProductName").val();
-                        detailDone.Supplier = $(element).find(".detSupplier").val();
+                        detailDone.supplier = $(element).find(".detSupplier").val();
                         detailDone.measurement = $(element).find(".detMeasurement").val();
                         detailDone.qty = $(element).find(".detQty").val();
                         detailDone.price = $(element).find(".detPrice").val();
@@ -760,13 +823,21 @@
                     });
 
                     var PurchaseRequestNumber = $('#purchaserequestnumber').val();
-                    var UserAccessId = $('#useraaccessid').val();
-                    var UserApprovalId = $('#userapprovalid').val();
-                    var TermOfPaymentId = $('#termofpayment').val();
+                    var UserAccessId = $('#UserAccessId').val();
+                    // var Department1Id = $('#Department1List').val();
+                    // var Position1Id = $('#Position1List').val();
+                    var UserApprove1Id = $('#UserApprove1List').val();
+                    // var Department1Id = $('#Department2List').val();
+                    // var Position1Id = $('#Position2List').val();
+                    var UserApprove2Id = $('#UserApprove2List').val();
+                    // var Department1Id = $('#Department3List').val();
+                    // var Position1Id = $('#Position3List').val();
+                    var UserApprove3Id = $('#UserApprove3List').val();
+                    var TermOfPaymentId = $('#TermOfPaymentId').val();
                     var Status = $('#Status').val();
                     var QtyTotal = $('.productTotalQty').text();
                     var GrandTotal = $('.productGrandTotal').text();
-                    var Note = $('#note').val();
+                    var Note = $('#Note').val();
                     var PurchaseRequestDetail = detailItemDone;
                 }
 
@@ -774,7 +845,15 @@
                     var dataPost = {};
                     dataPost.PurchaseRequestNumber = PurchaseRequestNumber;
                     dataPost.UserAccessId = UserAccessId;
-                    dataPost.UserApprovalId = UserApprovalId;
+                    // dataPost.Department1Id = Department1Id;
+                    // dataPost.Position1Id = Position1Id;
+                    dataPost.UserApprove1Id = UserApprove1Id;
+                    // dataPost.Department2Id = Department2Id;
+                    // dataPost.Position2Id = Position2Id;
+                    dataPost.UserApprove2Id = UserApprove2Id;
+                    // dataPost.Department3Id = Department3Id;
+                    // dataPost.Position3Id = Position3Id;
+                    dataPost.UserApprove3Id = UserApprove3Id;
                     dataPost.TermOfPaymentId = TermOfPaymentId;
                     dataPost.Status = Status;
                     dataPost.QtyTotal = QtyTotal;

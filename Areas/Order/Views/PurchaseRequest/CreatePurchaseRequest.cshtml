@@ -697,7 +697,7 @@
                                     else if (detailName[i].innerText != productNumber && detailSupplier[i].innerText != supplier) {
                                         swal({
                                             title: "Warning",
-                                            text: "Sorry supplier, " + supplier + " different from previous supplier",
+                                            text: "Sorry, supplier " + supplier + " different from previous supplier",
                                             type: "warning"
                                         });
 
@@ -873,14 +873,7 @@
                     title: "Item successfully deleted",
                     type: "success"
                 });
-
-                $(this).closest('tr').remove();
-
-                swal({
-                    title: "Item successfully deleted",
-                    type: "success"
-                });
-
+                
                 if ($('#tbldetailpr tbody').children().children().length == 0) {
                     $('#tbldetailpr tbody').append(emptyRow);
                 } else {
@@ -925,7 +918,6 @@
                 var Department3Id = $('#Department3List').find(":selected").val();
                 var Position3Id = $('#Position3List').find(":selected").val();
                 var UserApprove3Id = $('#UserApprove3List').find(":selected").val();
-                var DueDateId = $('#DueDateId').find(":selected").val();
                 var TermOfPayment = $('#TermOfPayment').find(":selected").val();
                 var detailTable = $('#tbldetailpr tbody').children().children().length;
 
@@ -945,8 +937,7 @@
                     $('#UserApprove2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#Department3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#Position3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
-                    $('#UserApprove3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
-                    $('#DueDateId').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
+                    $('#UserApprove3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');                    
                     $('#TermOfPayment').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -954,23 +945,15 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment == '' && DueDateId != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && TermOfPayment == ''  && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
                     $('#TermOfPayment').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
                         text: "Sorry, please select...",
                         type: "warning"
                     });
-                    isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId == '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
-                    $('#DueDateId').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
-                    swal({
-                        title: "Warning",
-                        text: "Sorry, please select...",
-                        type: "warning"
-                    });
-                    isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id == '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                    isAllValid = false;                
+                } else if (detailTable != 1 && TermOfPayment != ''  && Department1Id == '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
                     $('#Department1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -978,7 +961,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id != '' && Position1Id == '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id == '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
                     $('#Position1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -986,7 +969,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id == '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id == '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
                     $('#UserApprove1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -994,7 +977,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id == '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id == '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
                     $('#Department2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1002,7 +985,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id == '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id == '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
                     $('#Position2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1010,7 +993,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id == '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id == '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
                     $('#UserApprove2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1018,7 +1001,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id == '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id == '' && Position3Id != '' && UserApprove3Id != '') {
                     $('#Department3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1026,7 +1009,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id == '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id == '' && UserApprove3Id != '') {
                     $('#Position3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1034,7 +1017,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && DueDateId != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id == '') {
+                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id == '') {
                     $('#UserApprove3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1053,7 +1036,6 @@
                     $('#UserApprove1List').siblings('span.error').css('visibility', 'hidden')
                     $('#UserApprove2List').siblings('span.error').css('visibility', 'hidden')
                     $('#UserApprove3List').siblings('span.error').css('visibility', 'hidden')
-                    $('#DueDateId').siblings('span.error').css('visibility', 'hidden')
                     $('#TermOfPayment').siblings('span.error').css('visibility', 'hidden')
 
                     $("#tbldetailpr").find("tbody").children("tr").each(function (index, element) {
@@ -1075,13 +1057,12 @@
                     var Department1Id = $('#Department1List').val();
                     var Position1Id = $('#Position1List').val();
                     var UserApprove1Id = $('#UserApprove1List').val();
-                    var Department1Id = $('#Department2List').val();
-                    var Position1Id = $('#Position2List').val();
+                    var Department2Id = $('#Department2List').val();
+                    var Position2Id = $('#Position2List').val();
                     var UserApprove2Id = $('#UserApprove2List').val();
-                    var Department1Id = $('#Department3List').val();
-                    var Position1Id = $('#Position3List').val();
+                    var Department3Id = $('#Department3List').val();
+                    var Position3Id = $('#Position3List').val();
                     var UserApprove3Id = $('#UserApprove3List').val();
-                    var DueDateId = $('#DueDateId').val();
                     var TermOfPaymentId = $('#TermOfPayment').val();
                     var Status = $('#status').val();
                     var QtyTotal = $('.productTotalQty').text();
@@ -1103,7 +1084,6 @@
                     dataPost.Department3Id = Department3Id;
                     dataPost.Position3Id = Position3Id;
                     dataPost.UserApprove3Id = UserApprove3Id;
-                    dataPost.DueDateId = DueDateId;
                     dataPost.TermOfPaymentId = TermOfPaymentId;
                     dataPost.Status = Status;
                     dataPost.QtyTotal = QtyTotal;

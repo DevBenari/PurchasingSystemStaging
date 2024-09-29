@@ -60,7 +60,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
 
         public async Task<List<Supplier>> GetSuppliers()
         {
-            return await _context.Suppliers.OrderBy(p => p.CreateDateTime).Select(Supplier => new Supplier()
+            return await _context.Suppliers.Where(s => s.IsActive == true).OrderBy(p => p.CreateDateTime).Select(Supplier => new Supplier()
             {
                 CreateBy = Supplier.CreateBy,
                 CreateDateTime = Supplier.CreateDateTime,

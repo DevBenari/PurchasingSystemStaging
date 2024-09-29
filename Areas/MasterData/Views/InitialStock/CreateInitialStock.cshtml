@@ -36,7 +36,7 @@
                         <label class="col-sm-3 col-form-label" asp-for="ProductId">
                             Product
                         </label>
-                        <select asp-for="ProductId" data-placeholder="--Choose Product--" asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="selectproduct">
+                        <select asp-for="ProductId" data-placeholder="--Choose Product--" asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="ProductList">
                             <option value="" hidden disabled selected>--Choose Product--</option>
                         </select>
                         <span asp-validation-for="ProductId" class="text-danger"></span>
@@ -45,7 +45,7 @@
                         <label class="col-sm-3 col-form-label" asp-for="SupplierId">
                             Supplier
                         </label>
-                        <select asp-for="SupplierId" data-placeholder="--Choose Supplier--" asp-items="@ViewBag.Supplier" class="form-control select2bs4" style="width: 100%;" id="selectSupplier">
+                        <select asp-for="SupplierId" data-placeholder="--Choose Supplier--" asp-items="@ViewBag.Supplier" class="form-control select2bs4" style="width: 100%;" id="SupplierList">
                             <option value="" hidden disabled selected>--Choose Supplier--</option>
                         </select>
                         <span asp-validation-for="SupplierId" class="text-danger"></span>
@@ -54,7 +54,7 @@
                         <label class="col-sm-3 col-form-label" asp-for="LeadTimeId">
                             Lead Time
                         </label>
-                        <select asp-for="LeadTimeId" asp-items="@ViewBag.LeadTime" class="form-control select2bs4" style="width: 100%;">
+                        <select asp-for="LeadTimeId" asp-items="@ViewBag.LeadTime" class="form-control select2bs4" style="width: 100%;" id="LeadTimeList">
                             <option value="" hidden disabled selected>--Choice LeadTime--</option>
                         </select>
                         <span asp-validation-for="LeadTimeId" class="text-danger"></span>
@@ -106,19 +106,44 @@
                             }
                             else {
                                 $("#listproduct").hide();
-                                $('#selectproduct').select2('val', 'selectedIndex', 0);
-                                $("#selectproduct").data('placeholder');
+                                $('#ProductList').select2('val', 'selectedIndex', 0);
+                                $("#ProductList").data('placeholder');
                             }
 
                             if ($(this).val() == "Supplier") {
                                 $("#listSupplier").show();
                             } else {
                                 $("#listSupplier").hide();
-                                $('#selectSupplier').select2('val', 'selectedIndex', 0);
-                                $("#selectSupplier").data('placeholder');
+                                $('#SupplierList').select2('val', 'selectedIndex', 0);
+                                $("#SupplierList").data('placeholder');
                             }
                         });
                     </script>
+
+                    @* <script>
+                        $(document).ready(function () {
+                            $("#LeadTimeList").empty();
+
+                            $("#SupplierList").change(function () {
+                                $("#LeadTimeList").empty();
+                                $.ajax({
+                                    type: 'GET',
+                                    url: '@Url.Action("LoadLeadTime")',
+                                    dataType: 'json',
+                                    data: { id: $("#SupplierList").val() },
+                                    success: function (leads) {
+                                        $.each(leads, function (i, lead) {
+                                            $("#LeadTimeList").append('<option value = "' + lead.value + '">' + lead.text + '</option>');
+                                        });
+                                    },
+                                    error: function (ex) {
+                                        alert('Failed get data Lead Time !!!' + ex);
+                                    }
+                                });
+                                return false;
+                            })
+                        })
+                    </script> *@
                 }
             </form>
         </div>
