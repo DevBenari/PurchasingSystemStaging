@@ -56,6 +56,12 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        //public JsonResult LoadLeadTime(Guid Id)
+        //{
+        //    var leadtime = _applicationDbContext.Suppliers.Where(p => p.LeadTimeId == Id).ToList();
+        //    return Json(new SelectList(leadtime, "LeadTimeId", "LeadTimeValue"));
+        //}
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Index()
