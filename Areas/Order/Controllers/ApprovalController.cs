@@ -80,29 +80,28 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
             var getUser1 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User1" && a.UserApproveId == getUserActive.UserActiveId).FirstOrDefault();
+            var getUser2 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User2" && a.UserApproveId == getUserActive.UserActiveId).FirstOrDefault();
+            var getUser3 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User3" && a.UserApproveId == getUserActive.UserActiveId).FirstOrDefault();
 
             if (getUser1 != null)
             {
-                if (getUserActive.UserActiveId == getUser1.UserApproveId)
+                var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && getUser1.ApprovalStatusUser == "User1Approve").ToList();
+
+                foreach (var item in data)
                 {
-                    var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && u.Status != "Reject").ToList();
+                    var remainingDay = DateTimeOffset.UtcNow.Date - item.CreateDateTime.Date;
+                    var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
 
-                    foreach (var item in data)
+                    if (updateData.RemainingDay != 0)
                     {
-                        var remainingDay = DateTimeOffset.UtcNow.Date - item.CreateDateTime.Date;
-                        var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
-                        
-                        if (updateData.RemainingDay != 0)
-                        {
-                            updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+                        updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
 
-                            _applicationDbContext.Approvals.Update(updateData);
-                            _applicationDbContext.SaveChanges();
-                        }
+                        _applicationDbContext.Approvals.Update(updateData);
+                        _applicationDbContext.SaveChanges();
                     }
-
-                    return View(data);
                 }
+
+                return View(data);
             }
             else
             {

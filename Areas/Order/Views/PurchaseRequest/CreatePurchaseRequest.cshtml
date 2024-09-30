@@ -909,6 +909,7 @@
                 var isAllValid = true;
                 var detailItemDone = [];
                 var detailDone = {};
+                var detailTable = $('#tbldetailpr tbody').children().children().length;
                 var Department1Id = $('#Department1List').find(":selected").val();
                 var Position1Id = $('#Position1List').find(":selected").val();
                 var UserApprove1Id = $('#UserApprove1List').find(":selected").val();
@@ -918,8 +919,7 @@
                 var Department3Id = $('#Department3List').find(":selected").val();
                 var Position3Id = $('#Position3List').find(":selected").val();
                 var UserApprove3Id = $('#UserApprove3List').find(":selected").val();
-                var TermOfPayment = $('#TermOfPayment').find(":selected").val();
-                var detailTable = $('#tbldetailpr tbody').children().children().length;
+                var TermOfPayment = $('#TermOfPayment').find(":selected").val();                
 
                 if (detailTable == 1) { // 1 adalah isi dari keterangan pada table dihitung 1
                     swal({

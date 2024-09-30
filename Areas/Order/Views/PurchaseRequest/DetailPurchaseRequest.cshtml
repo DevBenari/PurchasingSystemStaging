@@ -24,7 +24,8 @@
                 <div class="card-body">
                     <input asp-for="PurchaseRequestId" type="hidden" />
                     <input asp-for="Status" id="Status" type="hidden">
-                    <input asp-for="UserAccessId" id="useraaccessid" type="hidden">
+                    <input asp-for="UserAccessId" id="UserAccessId" type="hidden">
+                    <input asp-for="ExpiredDate" id="ExpiredDate" type="hidden">
 
                     @if (signInManager.IsSignedIn(User))
                     {
@@ -95,7 +96,7 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="Note">Note</label>
                         <div class="col-sm-10">
-                            <input type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
+                            <input type="text" autocomplete="off" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" disabled>
                         </div>
                     </div>
                 </div>
@@ -393,10 +394,10 @@
                 $("#qty").show();
 
                 document.getElementById("purchaserequestnumber").disabled = false;
-                document.getElementById("UserApprove1List").disabled = false;
-                document.getElementById("UserApprove2List").disabled = false;
-                document.getElementById("UserApprove3List").disabled = false;
-                document.getElementById("TermOfPaymentId").disabled = false;
+                document.getElementById("UserApprove1List").disabled = true;
+                document.getElementById("UserApprove2List").disabled = true;
+                document.getElementById("UserApprove3List").disabled = true;
+                document.getElementById("TermOfPaymentId").disabled = true;
                 document.getElementById("Note").disabled = false;
                 document.getElementById("produklist").disabled = false;
                 document.getElementById("qty").disabled = false;
@@ -798,7 +799,11 @@
             $('#submit').click(function () {
                 var isAllValid = true;
                 var detailItemDone = [];
-                var detailDone = {};               
+                var detailDone = {};
+                var detailTable = $('#tbldetailpr tbody').children().children().length;
+                var UserApprove1Id = $('#UserApprove1List').find(":selected").val();
+                var UserApprove2Id = $('#UserApprove2List').find(":selected").val();
+                var UserApprove3Id = $('#UserApprove3List').find(":selected").val();                
 
                 if (detailTable == 1) {
                     swal({
@@ -823,6 +828,7 @@
                     });
 
                     var PurchaseRequestNumber = $('#purchaserequestnumber').val();
+                    var ExpiredDate = $('#ExpiredDate').val();
                     var UserAccessId = $('#UserAccessId').val();
                     // var Department1Id = $('#Department1List').val();
                     // var Position1Id = $('#Position1List').val();
@@ -844,6 +850,7 @@
                 if (isAllValid) {
                     var dataPost = {};
                     dataPost.PurchaseRequestNumber = PurchaseRequestNumber;
+                    dataPost.ExpiredDate = ExpiredDate;
                     dataPost.UserAccessId = UserAccessId;
                     // dataPost.Department1Id = Department1Id;
                     // dataPost.Position1Id = Position1Id;
