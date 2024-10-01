@@ -83,9 +83,49 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             var getUser2 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User2" && a.UserApproveId == getUserActive.UserActiveId).FirstOrDefault();
             var getUser3 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User3" && a.UserApproveId == getUserActive.UserActiveId).FirstOrDefault();
 
-            if (getUser1 != null)
+            if (getUser1 != null && getUser1.ApprovalStatusUser == "User1")
             {
-                var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && getUser1.ApprovalStatusUser == "User1Approve").ToList();
+                var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && getUser1.ApprovalStatusUser == "User1").ToList();
+
+                foreach (var item in data)
+                {
+                    var remainingDay = DateTimeOffset.UtcNow.Date - item.CreateDateTime.Date;
+                    var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                    if (updateData.RemainingDay != 0)
+                    {
+                        updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                        _applicationDbContext.Approvals.Update(updateData);
+                        _applicationDbContext.SaveChanges();
+                    }
+                }
+
+                return View(data);
+            }
+            else if (getUser1 != null && getUser1.ApprovalStatusUser == "User1" &&getUser2 != null && getUser2.ApprovalStatusUser == "User2")
+            {
+                var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && getUser1.ApprovalStatusUser == "User1" && getUser2.ApprovalStatusUser == "User2").ToList();
+
+                foreach (var item in data)
+                {
+                    var remainingDay = DateTimeOffset.UtcNow.Date - item.CreateDateTime.Date;
+                    var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                    if (updateData.RemainingDay != 0)
+                    {
+                        updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                        _applicationDbContext.Approvals.Update(updateData);
+                        _applicationDbContext.SaveChanges();
+                    }
+                }
+
+                return View(data);
+            }
+            else if (getUser1 != null && getUser1.ApprovalStatusUser == "User1" && getUser2 != null && getUser2.ApprovalStatusUser == "User2" && getUser3 != null && getUser3.ApprovalStatusUser == "User3")
+            {
+                var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && getUser1.ApprovalStatusUser == "User1" && getUser2.ApprovalStatusUser == "User2" && getUser3.ApprovalStatusUser == "User3").ToList();
 
                 foreach (var item in data)
                 {
@@ -246,7 +286,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     if (approval.ApprovalStatusUser == "User1")
                     {
-                        var updateStatusUser1 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User1").FirstOrDefault();
+                        var updateStatusUser1 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User1" && c.PurchaseRequestId == viewModel.PurchaseRequestId).FirstOrDefault();
                         if (updateStatusUser1 != null)
                         {
                             updateStatusUser1.Status = viewModel.Status;
@@ -256,16 +296,18 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                             updateStatusUser1.Note = viewModel.Note;
 
                             _applicationDbContext.Entry(updateStatusUser1).State = EntityState.Modified;
+                            _applicationDbContext.SaveChanges();
                         }
 
                         if (viewModel.Status == "Approve")
                         {
-                            var updateStatusUser2 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User2").FirstOrDefault();
+                            var updateStatusUser2 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User2" && c.PurchaseRequestId == viewModel.PurchaseRequestId).FirstOrDefault();
                             if (updateStatusUser2 != null)
                             {
                                 updateStatusUser2.Status = "User1Approve";
 
                                 _applicationDbContext.Entry(updateStatusUser2).State = EntityState.Modified;
+                                _applicationDbContext.SaveChanges();
                             }
 
                             checkPR.ApproveStatusUser1 = viewModel.Status;
@@ -277,7 +319,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     }
                     else if (approval.ApprovalStatusUser == "User2")
                     {
-                        var updateStatusUser2 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User2").FirstOrDefault();
+                        var updateStatusUser2 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User2" && c.PurchaseRequestId == viewModel.PurchaseRequestId).FirstOrDefault();
                         if (updateStatusUser2 != null)
                         {
                             updateStatusUser2.Status = viewModel.Status;
@@ -291,7 +333,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
                         if (viewModel.Status == "Approve")
                         {
-                            var updateStatusUser3 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User3").FirstOrDefault();
+                            var updateStatusUser3 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User3" && c.PurchaseRequestId == viewModel.PurchaseRequestId).FirstOrDefault();
                             if (updateStatusUser3 != null)
                             {
                                 updateStatusUser3.Status = "User2Approve";
@@ -307,7 +349,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     }
                     else if (approval.ApprovalStatusUser == "User3")
                     {
-                        var updateStatusUser3 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User3").FirstOrDefault();
+                        var updateStatusUser3 = _approvalRepository.GetAllApproval().Where(c => c.ApprovalStatusUser == "User3" && c.PurchaseRequestId == viewModel.PurchaseRequestId).FirstOrDefault();
                         if (updateStatusUser3 != null)
                         {
                             updateStatusUser3.Status = viewModel.Status;
