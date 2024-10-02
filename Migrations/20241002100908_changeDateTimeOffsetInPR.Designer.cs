@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PurchasingSystemApps.Data;
 
@@ -11,9 +12,10 @@ using PurchasingSystemApps.Data;
 namespace PurchasingSystemApps.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241002100908_changeDateTimeOffsetInPR")]
+    partial class changeDateTimeOffsetInPR
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1087,15 +1089,6 @@ namespace PurchasingSystemApps.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ApproveStatusUser1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApproveStatusUser2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApproveStatusUser3")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -1108,8 +1101,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<DateTimeOffset>("DeleteDateTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTimeOffset>("ExpiredDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<Guid?>("DueDateId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("GrandTotal")
                         .HasColumnType("decimal(18,2)");
@@ -1164,6 +1157,8 @@ namespace PurchasingSystemApps.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("PurchaseOrderId");
+
+                    b.HasIndex("DueDateId");
 
                     b.HasIndex("PurchaseRequestId");
 
@@ -1294,6 +1289,9 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid?>("Department3Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("DueDateId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("ExpiredDate")
                         .HasColumnType("datetimeoffset");
 
@@ -1364,6 +1362,8 @@ namespace PurchasingSystemApps.Migrations
                     b.HasIndex("Department2Id");
 
                     b.HasIndex("Department3Id");
+
+                    b.HasIndex("DueDateId");
 
                     b.HasIndex("Position1Id");
 
@@ -2560,6 +2560,11 @@ namespace PurchasingSystemApps.Migrations
 
             modelBuilder.Entity("PurchasingSystemApps.Areas.Order.Models.PurchaseOrder", b =>
                 {
+                    b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.DueDate", "DueDate")
+                        .WithMany()
+                        .HasForeignKey("DueDateId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("PurchasingSystemApps.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
                         .WithMany()
                         .HasForeignKey("PurchaseRequestId")
@@ -2592,6 +2597,8 @@ namespace PurchasingSystemApps.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("DueDate");
 
                     b.Navigation("PurchaseRequest");
 
@@ -2639,6 +2646,11 @@ namespace PurchasingSystemApps.Migrations
                     b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.Department", "Department3")
                         .WithMany()
                         .HasForeignKey("Department3Id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.DueDate", "DueDate")
+                        .WithMany()
+                        .HasForeignKey("DueDateId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.Position", "Position1")
@@ -2689,6 +2701,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Navigation("Department2");
 
                     b.Navigation("Department3");
+
+                    b.Navigation("DueDate");
 
                     b.Navigation("Position1");
 

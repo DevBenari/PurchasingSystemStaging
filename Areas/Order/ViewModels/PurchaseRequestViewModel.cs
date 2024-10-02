@@ -9,7 +9,7 @@ namespace PurchasingSystemApps.Areas.Order.ViewModels
         public string UserAccessId { get; set; }
         public int ExpiredDay { get; set; }
         public int RemainingDay { get; set; }
-        public DateTime ExpiredDate { get; set; }
+        public DateTimeOffset ExpiredDate { get; set; }
         public Guid? Department1Id { get; set; }
         public Guid? Position1Id { get; set; }
         public Guid? UserApprove1Id { get; set; }

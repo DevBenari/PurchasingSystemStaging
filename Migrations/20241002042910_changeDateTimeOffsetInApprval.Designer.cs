@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PurchasingSystemApps.Data;
 
@@ -11,9 +12,10 @@ using PurchasingSystemApps.Data;
 namespace PurchasingSystemApps.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241002042910_changeDateTimeOffsetInApprval")]
+    partial class changeDateTimeOffsetInApprval
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,14 +182,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -201,8 +203,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("BankId");
 
@@ -226,14 +228,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -247,8 +249,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("CategoryId");
 
@@ -264,14 +266,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DepartmentCode")
                         .IsRequired()
@@ -293,8 +295,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("DepartmentId");
 
@@ -310,14 +312,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DiscountCode")
                         .IsRequired()
@@ -338,8 +340,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("DiscountId");
 
@@ -355,14 +357,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -373,8 +375,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -401,14 +403,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("GenerateBy")
                         .IsRequired()
@@ -441,8 +443,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("InitialStockId");
 
@@ -464,14 +466,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -489,8 +491,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("LeadTimeId");
 
@@ -506,14 +508,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -535,8 +537,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("MeasurementId");
 
@@ -552,14 +554,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
@@ -581,8 +583,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("PositionId");
 
@@ -612,14 +614,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("DiscountId")
                         .HasColumnType("uniqueidentifier");
@@ -668,8 +670,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("WarehouseLocationId")
                         .HasColumnType("uniqueidentifier");
@@ -702,14 +704,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -748,8 +750,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("SupplierId");
 
@@ -767,14 +769,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -796,8 +798,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("TermOfPaymentId");
 
@@ -816,14 +818,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -845,8 +847,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UnitLocationId");
 
@@ -868,8 +870,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTimeOffset>("DateOfBirth")
                         .HasColumnType("datetimeoffset");
@@ -877,8 +879,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
@@ -925,8 +927,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserActiveCode")
                         .IsRequired()
@@ -953,14 +955,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -971,8 +973,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("WarehouseLocationCode")
                         .IsRequired()
@@ -1014,14 +1016,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("DueDateId")
                         .HasColumnType("uniqueidentifier");
@@ -1058,8 +1060,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAccessId")
                         .IsRequired()
@@ -1087,29 +1089,20 @@ namespace PurchasingSystemApps.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ApproveStatusUser1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApproveStatusUser2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApproveStatusUser3")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("ExpiredDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<Guid?>("DueDateId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("GrandTotal")
                         .HasColumnType("decimal(18,2)");
@@ -1147,8 +1140,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAccessId")
                         .IsRequired()
@@ -1164,6 +1157,8 @@ namespace PurchasingSystemApps.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("PurchaseOrderId");
+
+                    b.HasIndex("DueDateId");
 
                     b.HasIndex("PurchaseRequestId");
 
@@ -1189,14 +1184,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Discount")
                         .HasColumnType("int");
@@ -1244,8 +1239,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("PurchaseOrderDetailId");
 
@@ -1276,14 +1271,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("Department1Id")
                         .HasColumnType("uniqueidentifier");
@@ -1294,8 +1289,11 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid?>("Department3Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("ExpiredDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<Guid?>("DueDateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ExpiredDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ExpiredDay")
                         .HasColumnType("int");
@@ -1341,8 +1339,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAccessId")
                         .IsRequired()
@@ -1364,6 +1362,8 @@ namespace PurchasingSystemApps.Migrations
                     b.HasIndex("Department2Id");
 
                     b.HasIndex("Department3Id");
+
+                    b.HasIndex("DueDateId");
 
                     b.HasIndex("Position1Id");
 
@@ -1393,14 +1393,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Discount")
                         .HasColumnType("int");
@@ -1442,8 +1442,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("PurchaseRequestDetailId");
 
@@ -1461,14 +1461,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("HeadPurchasingManagerId")
                         .HasColumnType("uniqueidentifier");
@@ -1505,8 +1505,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAccessId")
                         .IsRequired()
@@ -1536,14 +1536,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -1574,8 +1574,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAccessId")
                         .IsRequired()
@@ -1614,14 +1614,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -1654,8 +1654,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UnitRequestDetailId");
 
@@ -1676,14 +1676,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -1714,8 +1714,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAccessId")
                         .IsRequired()
@@ -1756,14 +1756,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("HeadPurchasingManagerId")
                         .HasColumnType("uniqueidentifier");
@@ -1794,8 +1794,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("QtyDifferenceId");
 
@@ -1819,14 +1819,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -1858,8 +1858,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("QtyDifferenceDetailId");
 
@@ -1877,14 +1877,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -1913,8 +1913,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ReceiveOrderId");
 
@@ -1934,14 +1934,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -1973,8 +1973,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ReceivedOrderDetailId");
 
@@ -1992,14 +1992,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -2030,8 +2030,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAccessId")
                         .IsRequired()
@@ -2076,14 +2076,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -2116,8 +2116,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("WarehouseRequestId")
                         .HasColumnType("uniqueidentifier");
@@ -2138,14 +2138,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -2169,8 +2169,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAccessId")
                         .IsRequired()
@@ -2222,14 +2222,14 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("CreateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("CreateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("DeleteDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DeleteDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -2262,8 +2262,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("UpdateDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdateDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("WarehouseTransferId")
                         .HasColumnType("uniqueidentifier");
@@ -2560,6 +2560,11 @@ namespace PurchasingSystemApps.Migrations
 
             modelBuilder.Entity("PurchasingSystemApps.Areas.Order.Models.PurchaseOrder", b =>
                 {
+                    b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.DueDate", "DueDate")
+                        .WithMany()
+                        .HasForeignKey("DueDateId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("PurchasingSystemApps.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
                         .WithMany()
                         .HasForeignKey("PurchaseRequestId")
@@ -2592,6 +2597,8 @@ namespace PurchasingSystemApps.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("DueDate");
 
                     b.Navigation("PurchaseRequest");
 
@@ -2639,6 +2646,11 @@ namespace PurchasingSystemApps.Migrations
                     b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.Department", "Department3")
                         .WithMany()
                         .HasForeignKey("Department3Id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.DueDate", "DueDate")
+                        .WithMany()
+                        .HasForeignKey("DueDateId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PurchasingSystemApps.Areas.MasterData.Models.Position", "Position1")
@@ -2689,6 +2701,8 @@ namespace PurchasingSystemApps.Migrations
                     b.Navigation("Department2");
 
                     b.Navigation("Department3");
+
+                    b.Navigation("DueDate");
 
                     b.Navigation("Position1");
 

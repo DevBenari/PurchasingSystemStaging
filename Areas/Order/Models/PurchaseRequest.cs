@@ -4,7 +4,6 @@ using PurchasingSystemApps.Models;
 using PurchasingSystemApps.Repositories;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using DueDate = PurchasingSystemApps.Areas.MasterData.Models.DueDate;
 
 namespace PurchasingSystemApps.Areas.Order.Models
 {
@@ -17,7 +16,7 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public string UserAccessId { get; set; }
         public int ExpiredDay { get; set; }
         public int RemainingDay { get; set; }
-        public DateTime ExpiredDate { get; set; }
+        public DateTimeOffset ExpiredDate { get; set; }
         public Guid? Department1Id { get; set; }
         public Guid? Position1Id { get; set; }
         public Guid? UserApprove1Id { get; set; }
@@ -60,8 +59,8 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public Position? Position3 { get; set; }
         [ForeignKey("UserApprove3Id")]
         public UserActive? UserApprove3 { get; set; }
-        [ForeignKey("DueDateId")]   
-        public DueDate? DueDate { get; set; }
+        //[ForeignKey("DueDateId")]   
+        //public DueDate? DueDate { get; set; }
     }
 
     [Table("OrdPurchaseRequestDetail", Schema = "dbo")]

@@ -36,7 +36,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 .Include(a1 => a1.UserApprove1)
                 .Include(a2 => a2.UserApprove2)
                 .Include(a3 => a3.UserApprove3)
-                .Include(e => e.DueDate)
+                //.Include(e => e.DueDate)
                 .FirstOrDefault(p => p.PurchaseOrderId == Id);
 
             if (PurchaseOrder != null)
@@ -48,6 +48,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                     PurchaseRequestId = PurchaseOrder.PurchaseRequestId,
                     PurchaseRequestNumber = PurchaseOrder.PurchaseRequestNumber,
                     UserAccessId = PurchaseOrder.UserAccessId,
+                    ExpiredDate = PurchaseOrder.ExpiredDate,
                     ApplicationUser = PurchaseOrder.ApplicationUser,
                     UserApprove1Id = PurchaseOrder.UserApprove1Id,
                     UserApprove1 = PurchaseOrder.UserApprove1,
@@ -55,13 +56,16 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                     UserApprove2 = PurchaseOrder.UserApprove2,
                     UserApprove3Id = PurchaseOrder.UserApprove3Id,
                     UserApprove3 = PurchaseOrder.UserApprove3,
+                    ApproveStatusUser1 = PurchaseOrder.ApproveStatusUser1,
+                    ApproveStatusUser2 = PurchaseOrder.ApproveStatusUser2,
+                    ApproveStatusUser3 = PurchaseOrder.ApproveStatusUser3,
                     TermOfPaymentId = PurchaseOrder.TermOfPaymentId,
                     TermOfPayment = PurchaseOrder.TermOfPayment,
                     Status = PurchaseOrder.Status,
                     QtyTotal = PurchaseOrder.QtyTotal,
                     GrandTotal = PurchaseOrder.GrandTotal,
-                    DueDateId = PurchaseOrder.DueDateId,
-                    DueDate = PurchaseOrder.DueDate,
+                    //DueDateId = PurchaseOrder.DueDateId,
+                    //DueDate = PurchaseOrder.DueDate,
                     Note = PurchaseOrder.Note,
                     PurchaseOrderDetails = PurchaseOrder.PurchaseOrderDetails,
                 };
@@ -80,7 +84,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 .Include(a1 => a1.UserApprove1)
                 .Include(a2 => a2.UserApprove2)
                 .Include(a3 => a3.UserApprove3)
-                .Include(e => e.DueDate)
+                //.Include(e => e.DueDate)
                 .FirstOrDefaultAsync(a => a.PurchaseOrderId == Id);
         }
 
@@ -93,6 +97,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 PurchaseRequestId = PurchaseOrder.PurchaseRequestId,
                 PurchaseRequestNumber = PurchaseOrder.PurchaseRequestNumber,
                 UserAccessId = PurchaseOrder.UserAccessId,
+                ExpiredDate = PurchaseOrder.ExpiredDate,
                 ApplicationUser = PurchaseOrder.ApplicationUser,
                 UserApprove1Id = PurchaseOrder.UserApprove1Id,
                 UserApprove1 = PurchaseOrder.UserApprove1,
@@ -100,13 +105,16 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 UserApprove2 = PurchaseOrder.UserApprove2,
                 UserApprove3Id = PurchaseOrder.UserApprove3Id,
                 UserApprove3 = PurchaseOrder.UserApprove3,
+                ApproveStatusUser1 = PurchaseOrder.ApproveStatusUser1,
+                ApproveStatusUser2 = PurchaseOrder.ApproveStatusUser2,
+                ApproveStatusUser3 = PurchaseOrder.ApproveStatusUser3,
                 TermOfPaymentId = PurchaseOrder.TermOfPaymentId,
                 TermOfPayment = PurchaseOrder.TermOfPayment,
                 Status = PurchaseOrder.Status,
                 QtyTotal = PurchaseOrder.QtyTotal,
                 GrandTotal = PurchaseOrder.GrandTotal,
-                DueDateId = PurchaseOrder.DueDateId,
-                DueDate = PurchaseOrder.DueDate,
+                //DueDateId = PurchaseOrder.DueDateId,
+                //DueDate = PurchaseOrder.DueDate,
                 Note = PurchaseOrder.Note,
                 PurchaseOrderDetails = PurchaseOrder.PurchaseOrderDetails,
             }).ToListAsync();
@@ -121,6 +129,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 PurchaseRequestId = PurchaseOrder.PurchaseRequestId,
                 PurchaseRequestNumber = PurchaseOrder.PurchaseRequestNumber,
                 UserAccessId = PurchaseOrder.UserAccessId,
+                ExpiredDate = PurchaseOrder.ExpiredDate,
                 ApplicationUser = PurchaseOrder.ApplicationUser,
                 UserApprove1Id = PurchaseOrder.UserApprove1Id,
                 UserApprove1 = PurchaseOrder.UserApprove1,
@@ -128,13 +137,16 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 UserApprove2 = PurchaseOrder.UserApprove2,
                 UserApprove3Id = PurchaseOrder.UserApprove3Id,
                 UserApprove3 = PurchaseOrder.UserApprove3,
+                ApproveStatusUser1 = PurchaseOrder.ApproveStatusUser1,
+                ApproveStatusUser2 = PurchaseOrder.ApproveStatusUser2,
+                ApproveStatusUser3 = PurchaseOrder.ApproveStatusUser3,
                 TermOfPaymentId = PurchaseOrder.TermOfPaymentId,
                 TermOfPayment = PurchaseOrder.TermOfPayment,
                 Status = PurchaseOrder.Status,
                 QtyTotal = PurchaseOrder.QtyTotal,
                 GrandTotal = PurchaseOrder.GrandTotal,
-                DueDateId = PurchaseOrder.DueDateId,
-                DueDate = PurchaseOrder.DueDate,
+                //DueDateId = PurchaseOrder.DueDateId,
+                //DueDate = PurchaseOrder.DueDate,
                 Note = PurchaseOrder.Note,
                 PurchaseOrderDetails = PurchaseOrder.PurchaseOrderDetails,
             }).ToListAsync();
@@ -149,7 +161,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 .Include(a1 => a1.UserApprove1)
                 .Include(a2 => a2.UserApprove2)
                 .Include(a3 => a3.UserApprove3)
-                .Include(e => e.DueDate)
+                //.Include(e => e.DueDate)
                 .ToList();
         }
 

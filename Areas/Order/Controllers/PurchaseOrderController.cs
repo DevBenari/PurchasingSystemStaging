@@ -146,7 +146,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 UserApprove2Id = purchaseOrder.UserApprove2Id,
                 UserApprove3Id = purchaseOrder.UserApprove3Id,
                 TermOfPaymentId = purchaseOrder.TermOfPaymentId,
-                DueDate = purchaseOrder.DueDate,
+                //DueDate = purchaseOrder.DueDate,
                 Status = purchaseOrder.Status,
                 QtyTotal = purchaseOrder.QtyTotal,
                 GrandTotal = Math.Truncate(purchaseOrder.GrandTotal),
@@ -193,7 +193,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 .Include(a2 => a2.UserApprove2)
                 .Include(a3 => a3.UserApprove3)
                 .Include(p => p.TermOfPayment)
-                .Include(e => e.DueDate)
+                //.Include(e => e.DueDate)
                 .Where(p => p.PurchaseOrderId == Id).FirstOrDefault();
 
             _signInManager.IsSignedIn(User);
@@ -238,7 +238,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 UserApprove2Id = purchaseOrder.UserApprove2Id,
                 UserApprove3Id = purchaseOrder.UserApprove3Id,
                 TermOfPaymentId = purchaseOrder.TermOfPaymentId,
-                DueDateId = purchaseOrder.DueDateId,
+                //DueDateId = purchaseOrder.DueDateId,
                 Status = purchaseOrder.Status,
                 QtyTotal = purchaseOrder.QtyTotal,
                 GrandTotal = Math.Truncate(purchaseOrder.GrandTotal),
@@ -331,7 +331,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 UserApprove2Id = model.UserApprove2Id,
                 UserApprove3Id = model.UserApprove3Id,
                 TermOfPaymentId = model.TermOfPaymentId,
-                DueDateId = model.DueDateId,
+                //DueDateId = model.DueDateId,
                 Status = "InProcess",
                 QtyTotal = model.QtyTotal,
                 GrandTotal = Math.Truncate(model.GrandTotal),
@@ -378,7 +378,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             var UserApprove2 = purchaseOrder.UserApprove2.FullName;
             var UserApprove3 = purchaseOrder.UserApprove3.FullName;
             var TermOfPayment = purchaseOrder.TermOfPayment.TermOfPaymentName;
-            var DueDate = purchaseOrder.DueDate;
+            //var DueDate = purchaseOrder.DueDate;
             var Note = purchaseOrder.Note;
             var GrandTotal = purchaseOrder.GrandTotal;
             var Tax = (GrandTotal / 100) * 11;
@@ -401,7 +401,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             web.Report.SetParameterValue("UserApprove2", UserApprove2);
             web.Report.SetParameterValue("UserApprove3", UserApprove3);
             web.Report.SetParameterValue("TermOfPayment", TermOfPayment);
-            web.Report.SetParameterValue("DueDate", DueDate);
+            //web.Report.SetParameterValue("DueDate", DueDate);
             web.Report.SetParameterValue("Note", Note);
             web.Report.SetParameterValue("GrandTotal", GrandTotal);
             web.Report.SetParameterValue("Tax", Tax);

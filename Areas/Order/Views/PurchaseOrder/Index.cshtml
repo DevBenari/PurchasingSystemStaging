@@ -61,7 +61,9 @@
                                         <th>No</th>
                                         <th>Create Date</th>
                                         <th>Create By</th>
-                                        <th>Approve By</th>
+                                        <th>User Approve 1</th>
+                                        <th>User Approve 2</th>
+                                        <th>User Approve 3</th>
                                         <th>PO Number</th>
                                         <th>PR Number</th>
                                         <th>Status</th>
@@ -76,6 +78,8 @@
                                             <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
                                             <td>@pr.ApplicationUser.NamaUser</td>
                                             <td>@pr.UserApprove1.FullName</td>
+                                            <td>@pr.UserApprove2.FullName</td>
+                                            <td>@pr.UserApprove3.FullName</td>
                                             <td>@pr.PurchaseOrderNumber</td>
                                             <td>@pr.PurchaseRequestNumber</td>
                                             @if (pr.Status == "InProcess")
@@ -108,7 +112,7 @@
                 {
                     <script type="text/javascript">
                         window.onload = function () {
-                            swal("Berhasil", '@TempData["SuccessMessage"]', "success");
+                            swal("Success", '@TempData["SuccessMessage"]', "success");
                         };
                     </script>
                 }

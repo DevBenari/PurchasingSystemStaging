@@ -154,7 +154,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
                 foreach (var item in data)
                 {
-                    var remainingDay = DateTimeOffset.UtcNow.Date - item.CreateDateTime.Date;
+                    var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
                     var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
 
                     if (updateData.RemainingDay != 0)
@@ -174,7 +174,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
                 foreach (var item in data)
                 {
-                    var remainingDay = DateTimeOffset.UtcNow.Date - item.CreateDateTime.Date;
+                    var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
                     var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
 
                     if (updateData.RemainingDay != 0)
@@ -191,7 +191,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
+        public async Task<IActionResult> Index(DateTimeOffset tglAwalPencarian, DateTimeOffset tglAkhirPencarian)
         {
             ViewBag.Active = "PurchaseRequest";
             ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
@@ -255,8 +255,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         {
             ViewBag.Active = "PurchaseRequest";
 
-            var dateNow = DateTime.Now;
-            var setDateNow = DateTime.Now.ToString("yyMMdd");
+            var dateNow = DateTimeOffset.Now;
+            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
 
             var lastCode = _purchaseRequestRepository.GetAllPurchaseRequest().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.PurchaseRequestNumber).FirstOrDefault();
             if (lastCode == null)
@@ -283,7 +283,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             {
                 var purchaseRequest = new PurchaseRequest
                 {
-                    CreateDateTime = DateTime.Now,
+                    CreateDateTime = DateTimeOffset.Now,
                     CreateBy = new Guid(getUser.Id), //Convert Guid to String
                     PurchaseRequestId = model.PurchaseRequestId,
                     PurchaseRequestNumber = model.PurchaseRequestNumber,
@@ -313,7 +313,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     ItemsList.Add(new PurchaseRequestDetail
                     {
-                        CreateDateTime = DateTime.Now,
+                        CreateDateTime = DateTimeOffset.Now,
                         CreateBy = new Guid(getUser.Id),
                         ProductNumber = item.ProductNumber,
                         ProductName = item.ProductName,
@@ -332,9 +332,9 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
                 var getLeadTime = getSupplier.LeadTime.LeadTimeValue;
 
-                var expiredDay = DateTimeOffset.UtcNow.Date.AddDays(Convert.ToDouble(getLeadTime));
+                var expiredDay = DateTimeOffset.Now.Date.AddDays(Convert.ToDouble(getLeadTime));
 
-                var remainingDay = DateTimeOffset.UtcNow.Date - purchaseRequest.CreateDateTime.Date;
+                var remainingDay = DateTimeOffset.Now.Date - purchaseRequest.CreateDateTime.Date;
 
                 purchaseRequest.ExpiredDay = getLeadTime;
                 purchaseRequest.ExpiredDate = expiredDay;
@@ -347,7 +347,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     var approval = new Approval
                     {
-                        CreateDateTime = DateTime.Now,
+                        CreateDateTime = DateTimeOffset.Now,
                         CreateBy = new Guid(getUser.Id),
                         PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
@@ -358,7 +358,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         UserApproveId = purchaseRequest.UserApprove1Id,
                         ApproveBy = "",
                         ApprovalTime = "",
-                        ApprovalDate = DateTime.MinValue,
+                        ApprovalDate = DateTimeOffset.MinValue,
                         ApprovalStatusUser = "User1",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
@@ -370,7 +370,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     var approval = new Approval
                     {
-                        CreateDateTime = DateTime.Now,
+                        CreateDateTime = DateTimeOffset.Now,
                         CreateBy = new Guid(getUser.Id),
                         PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
@@ -381,7 +381,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         UserApproveId = purchaseRequest.UserApprove2Id,
                         ApproveBy = "",
                         ApprovalTime = "",
-                        ApprovalDate = DateTime.MinValue,
+                        ApprovalDate = DateTimeOffset.MinValue,
                         ApprovalStatusUser = "User2",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
@@ -393,7 +393,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     var approval = new Approval
                     {
-                        CreateDateTime = DateTime.Now,
+                        CreateDateTime = DateTimeOffset.Now,
                         CreateBy = new Guid(getUser.Id),
                         PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                         PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
@@ -404,7 +404,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         UserApproveId = purchaseRequest.UserApprove3Id,
                         ApproveBy = "",
                         ApprovalTime = "",
-                        ApprovalDate = DateTime.MinValue,
+                        ApprovalDate = DateTimeOffset.MinValue,
                         ApprovalStatusUser = "User3",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
@@ -531,7 +531,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     if (approval != null)
                     {
-                        purchaseRequest.UpdateDateTime = DateTime.Now;
+                        purchaseRequest.UpdateDateTime = DateTimeOffset.Now;
                         purchaseRequest.UpdateBy = new Guid(getUser.Id);                        
                         purchaseRequest.UserApprove1Id = model.UserApprove1Id;
                         purchaseRequest.UserApprove2Id = model.UserApprove2Id;
@@ -615,7 +615,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 .Include(a2 => a2.UserApprove2)
                 .Include(a3 => a3.UserApprove3)
                 .Include(p => p.TermOfPayment)
-                .Include(e => e.DueDate)
+                //.Include(e => e.DueDate)
                 .Where(p => p.PurchaseRequestId == Id).FirstOrDefault();
 
             _signInManager.IsSignedIn(User);
@@ -670,7 +670,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             {
                 ItemsList.Add(new PurchaseRequestDetail
                 {
-                    CreateDateTime = DateTime.Now,
+                    CreateDateTime = DateTimeOffset.Now,
                     CreateBy = new Guid(getUser.Id),
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
@@ -712,7 +712,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
             var newPurchaseOrder = new PurchaseOrder
             {
-                CreateDateTime = DateTime.Now,
+                CreateDateTime = DateTimeOffset.Now,
                 CreateBy = new Guid(getUser.Id),
                 PurchaseRequestId = purchaseRequest.PurchaseRequestId,
                 PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
@@ -736,7 +736,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             {
                 ItemsList.Add(new PurchaseOrderDetail
                 {
-                    CreateDateTime = DateTime.Now,
+                    CreateDateTime = DateTimeOffset.Now,
                     CreateBy = new Guid(getUser.Id),
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
@@ -761,14 +761,14 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         {
             var purchaseRequest = await _purchaseRequestRepository.GetPurchaseRequestById(Id);
 
-            var CreateDate = DateTime.Now.ToString("dd MMMM yyyy");
+            var CreateDate = DateTimeOffset.Now.ToString("dd MMMM yyyy");
             var PrNumber = purchaseRequest.PurchaseRequestNumber;
             var CreateBy = purchaseRequest.ApplicationUser.NamaUser;
             var UserApprove1 = purchaseRequest.UserApprove1.FullName;
             var UserApprove2 = purchaseRequest.UserApprove2.FullName;
             var UserApprove3 = purchaseRequest.UserApprove3.FullName;
             var TermOfPayment = purchaseRequest.TermOfPayment.TermOfPaymentName;
-            var DueDate = purchaseRequest.DueDate;
+            //var DueDate = purchaseRequest.DueDate;
             var Note = purchaseRequest.Note;
             var GrandTotal = purchaseRequest.GrandTotal;
             var Tax = (GrandTotal / 100) * 11;
@@ -791,7 +791,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             web.Report.SetParameterValue("UserApprove2", UserApprove2);
             web.Report.SetParameterValue("UserApprove3", UserApprove3);
             web.Report.SetParameterValue("TermOfPayment", TermOfPayment);
-            web.Report.SetParameterValue("DueDate", DueDate);
+            //web.Report.SetParameterValue("DueDate", DueDate);
             web.Report.SetParameterValue("Note", Note);
             web.Report.SetParameterValue("GrandTotal", GrandTotal);
             web.Report.SetParameterValue("Tax", Tax);
