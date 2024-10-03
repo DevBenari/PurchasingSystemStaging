@@ -64,7 +64,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> CreateProduct(List<Product> products)
         {
-            var apiUrl = "https://localhost:7133/MasterData/Product/GetProduct";
+            var apiUrl = "http://192.168.15.250:7311/MasterData/Product/GetProduct";
 
             // Mengirimkan permintaan GET ke API
             var response = await _httpClient.GetAsync(apiUrl);

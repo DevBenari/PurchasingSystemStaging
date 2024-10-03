@@ -46,8 +46,8 @@
     <script src="~/admin/plugins/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="~/admin/plugins/sweetalert2/sweetalert2.all.js"></script>
     <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
-    <script src="~/admin/plugins/sweetalert2/sweetalert2.js"></script>*@
-    @*<link href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css" rel="stylesheet" />
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.js"></script>
+    <link href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css" rel="stylesheet" />
     <link href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.css" rel="stylesheet" />*@
 
     <link media="screen" rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.3.8/sweetalert2.min.css" />
@@ -95,6 +95,33 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+
+                <!-- Messages Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-bell"></i>
+                        <span class="badge badge-danger navbar-badge" id="dataCountNotification"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; overflow-y: auto;" id="loggerContainer">
+                        @* <a href="#" class="dropdown-item">
+                            <!-- Message Start -->
+                            <div class="media">
+                                <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle"> 
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Brad Diesel
+                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">Call me whenever you can...</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+                        </a> *@
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                    </div>
+                </li>
+
                 <!-- Navbar Search -->
                 @if (signInManager.IsSignedIn(User))
                 {
@@ -139,6 +166,15 @@
                                 <i class="nav-icon fas fa-home" style="color:#FFFFFF"></i>
                                 <p style="color:#FFFFFF">
                                     Dashboard
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-header">Key Performance Request</li>
+                        <li class="@(ViewBag.Active == "KPI" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="KeyPerformanceIndicator" asp-area="Transaction" class="nav-link">
+                                <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    KPI
                                 </p>
                             </a>
                         </li>
@@ -344,9 +380,148 @@
     <script src="~/admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
     <script src="~/admin/dist/js/adminlte.js"></script>
+    <script src="~/admin/dist/js/signalr.min.js"></script>
 
     @*UI Normal*@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Sisipkan data dari ViewBag ke dalam tag <script> -->
+    <script>
+        window.initialData = {
+            totalKaryawan: '@ViewBag.TotalKaryawan',
+            loggerData: '@ViewBag.LoggerData'
+        };
+    </script>
+    <script>
+        // Hubungkan ke SignalR
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+        // Event saat koneksi mulai
+        connection.start().then(function () {
+            console.log("SignalR connected.");
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        // Fungsi untuk memperbarui tampilan jumlah karyawan
+        function updateData(totalKaryawan) {
+            var notificationElement = document.getElementById("dataCountNotification");
+
+            console.log("Pangil Count .");
+            if (notificationElement) {
+                if (totalKaryawan == '0' || !totalKaryawan || isNaN(totalKaryawan)) {
+                    notificationElement.style.display = '0';
+                } else {
+                    notificationElement.textContent = `${totalKaryawan}`;
+                    localStorage.setItem('totalKaryawan', totalKaryawan);
+                }
+            }
+        }
+
+        // Menerima notifikasi dari SignalR dan memperbarui data
+        connection.on("UpdateDataCount", function (totalKaryawan) {
+            console.log("Total karyawan diterima  : ", totalKaryawan);
+            updateData(totalKaryawan);
+
+            // Simpan total karyawan ke Local Storage
+            localStorage.setItem('totalKaryawan', totalKaryawan);
+        });
+
+
+        //LONGER
+
+        // Fungsi untuk memperbarui tampilan jumlah karyawan
+        function updateDataLog(loggerData) {
+            var notificationElement = document.getElementById("loggerContainer");
+            localStorage.setItem('loggerData', loggerData);
+            // var loggerData = loggerData.replace(/[\[\]",]/g, '');
+          
+            if (notificationElement) {
+                // Kosongkan kontainer sebelumnya
+                notificationElement.innerHTML = "";
+
+                // Jika loggerData masih berbentuk string, parse menjadi array
+                if (typeof loggerData === "string") {
+                    var entries = loggerData.split(',').map(entry => entry.trim()).filter(Boolean); // Pisahkan dan hapus spasi
+
+                    var parsedData = [];
+                    for (var i = 0; i < entries.length; i += 3) {
+                        parsedData.push({
+                            FS_USERNAME: entries[i] ? entries[i] : "", // Username
+                            FS_PESAN: entries[i + 1] ? entries[i + 1] : "", // Pesan
+                            FS_JAM: entries[i + 2] ? entries[i + 2] : "" // Jam
+                        });
+                    }
+                    loggerData = parsedData;
+                }
+
+                // Pastikan loggerData sekarang berbentuk array
+                if (Array.isArray(loggerData)) {
+                    // Iterasi setiap elemen dan tambahkan HTML hanya jika data tidak kosong
+                    loggerData.forEach(function (empl) {
+                        var username = ((empl.FS_USERNAME || "Unknown User").replace(/["\[\]]/g, '')).replace(/&quot;/g, '');
+                        var message = ((empl.FS_PESAN || "No Message").replace(/["\[\]]/g, '')).replace(/&quot;/g, '');
+                        var time = ((empl.FS_JAM || "No Timestamp").replace(/["\[\]]/g, '')).replace(/&quot;/g, '');
+
+                        console.log("Dt : ", username);
+                        // Pastikan ada data valid sebelum menampilkan
+                        if (username && message && time) {
+                            var item = `
+                                <a href="#" class="dropdown-item">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <h3 class="dropdown-item-title">
+                                              ${message} Created, By ${username}
+                                                <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                            </h3>
+                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>${time}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            `;
+                            // Tambahkan elemen baru ke loggerContainer
+                            notificationElement.insertAdjacentHTML('beforeend', item);
+                        } else {
+                            var item = `
+                                         <a href="#" class="dropdown-item dropdown-footer">Data Kosong</a>
+                                            `;
+                            // Tambahkan elemen baru ke loggerContainer
+                            notificationElement.insertAdjacentHTML('beforeend', item);
+                        }
+                    });
+                }
+            }
+        }
+
+
+        // Menerima notifikasi dari SignalR dan memperbarui data
+        connection.on("UpdateDataLogger", function (loggerData) {
+            console.log("Total karyawan diterima dari server ini: ", loggerData);
+            updateDataLog(loggerData);
+
+            // Simpan total karyawan ke Local Storage
+            localStorage.setItem('loggerData', loggerData);
+        });
+
+        // Saat halaman dimuat, periksa Local Storage
+        window.onload = function () {
+            var storedTotalKaryawan = localStorage.getItem('totalKaryawan');
+            if (!storedTotalKaryawan) {
+                // Jika tidak ada di LocalStorage, gunakan data dari ViewBag
+                storedTotalKaryawan = window.initialData.totalKaryawan;
+            }
+            console.log("Total karyawan diterima dari Local Storage atau ViewBag: ", storedTotalKaryawan);
+            updateData(storedTotalKaryawan);
+
+            var storedLoggerData = localStorage.getItem('loggerData');
+            if (!storedLoggerData) {
+                // Jika tidak ada di LocalStorage, gunakan data dari ViewBag
+                storedLoggerData = window.initialData.loggerData;
+            }
+            console.log("Logger data diterima dari Local Storage atau ViewBag: ", storedLoggerData);
+            updateDataLog(storedLoggerData);
+        };
+    </script>
 </body>
 </html>

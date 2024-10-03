@@ -105,6 +105,18 @@ namespace PurchasingSystemApps.Areas.Transaction.Repositories
                 .ToList();
         }
 
+        public IEnumerable<UnitRequest> GetAllUnitRequestAsc()
+        {
+            return _context.UnitRequests
+                .Include(d => d.UnitRequestDetails)
+                .Include(u => u.ApplicationUser)
+                .Include(z => z.UnitLocation)
+                .Include(a => a.UnitRequestManager)
+                .Include(t => t.WarehouseLocation)
+                .Include(w => w.WarehouseApproval)
+                .ToList();
+        }
+
         public async Task<UnitRequest> Update(UnitRequest update)
         {
             List<UnitRequestDetail> UnitRequestDetails = _context.UnitRequestDetails.Where(d => d.UnitRequestId == update.UnitRequestId).ToList();

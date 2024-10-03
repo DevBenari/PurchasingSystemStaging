@@ -6,13 +6,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PurchasingSystemApps.Areas.MasterData.Repositories;
 using PurchasingSystemApps.Areas.Order.Models;
 using PurchasingSystemApps.Areas.Order.Repositories;
 using PurchasingSystemApps.Areas.Order.ViewModels;
 using PurchasingSystemApps.Data;
+using PurchasingSystemApps.Hubs;
 using PurchasingSystemApps.Models;
 using PurchasingSystemApps.Repositories;
 using System.Data;
@@ -38,6 +41,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         private readonly IPositionRepository _positionRepository;
         private readonly ILeadTimeRepository _leadTimeRepository;
         private readonly ISupplierRepository _supplierRepository;
+        private readonly IHubContext<ChatHub> _hubContext;
 
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -59,6 +63,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             IPositionRepository positionRepository,
             ILeadTimeRepository leadTimeRepository,
             ISupplierRepository supplierRepository,
+            IHubContext<ChatHub> hubContext,
 
             IHostingEnvironment hostingEnvironment,
             IWebHostEnvironment webHostEnvironment,
@@ -79,6 +84,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             _positionRepository = positionRepository;
             _leadTimeRepository = leadTimeRepository;
             _supplierRepository = supplierRepository;
+            _hubContext = hubContext;
 
             _hostingEnvironment = hostingEnvironment;
             _webHostEnvironment = webHostEnvironment;
@@ -342,6 +348,26 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
                 purchaseRequest.PurchaseRequestDetails = ItemsList;
                 _purchaseRequestRepository.Tambah(purchaseRequest);
+
+                //Signal R
+
+                var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
+                var loggerData = new List<string>();
+
+                foreach (var logger in data2)
+                {
+                    var detail = $"{logger.CreateBy}, {logger.PurchaseRequestNumber}, {logger.CreateDateTime}";
+                    loggerData.Add(detail);
+                }
+
+                int totalKaryawan = data2.Count();
+                var loggerDataJson = JsonConvert.SerializeObject(loggerData);
+                ViewBag.TotalKaryawan = totalKaryawan;
+                ViewBag.LoggerData = loggerDataJson;
+                await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
+                await _hubContext.Clients.All.SendAsync("UpdateDataLogger", loggerDataJson);
+
+                //End Signal R                
 
                 if (model.UserApprove1Id != null) 
                 {

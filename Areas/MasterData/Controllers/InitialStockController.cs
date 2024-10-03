@@ -121,7 +121,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                     CalculateBaseOn = vm.CalculateBaseOn,
                     MaxRequest = vm.MaxRequest,
                     AverageRequest = vm.AverageRequest
-                };                
+                };
 
                 var leadtime = _leadTimeRepository.GetAllLeadTime().Where(l => l.LeadTimeId == vm.LeadTimeId).FirstOrDefault();
                 var product = _productRepository.GetAllProduct().Where(p => p.ProductId == vm.ProductId).FirstOrDefault();

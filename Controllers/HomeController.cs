@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using PurchasingSystemApps.Areas.MasterData.Repositories;
 using PurchasingSystemApps.Areas.MasterData.ViewModels;
+using PurchasingSystemApps.Areas.Order.Models;
+using PurchasingSystemApps.Areas.Order.Repositories;
 using PurchasingSystemApps.Data;
+using PurchasingSystemApps.Hubs;
 using PurchasingSystemApps.Models;
 using PurchasingSystemApps.Repositories;
 using PurchasingSystemApps.ViewModels;
@@ -19,18 +24,24 @@ namespace PurchasingSystemApps.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly IUserActiveRepository _userActiveRepository;
+        private readonly IHubContext<ChatHub> _hubContext;
+        private readonly IPurchaseRequestRepository _purchaseRequestRepository;
 
         public HomeController(ILogger<HomeController> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext context,
+            IHubContext<ChatHub> hubContext,
+            IPurchaseRequestRepository purchaseRequestRepository,
             IUserActiveRepository userActiveRepository)
         {
             _logger = logger;
             _applicationDbContext = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _hubContext = hubContext;
             _userActiveRepository = userActiveRepository;
+            _purchaseRequestRepository = purchaseRequestRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -80,6 +91,33 @@ namespace PurchasingSystemApps.Controllers
 
             var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
+
+            //Signal R
+
+            var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
+            //var data2 = new List<dynamic>
+            //        {
+            //            new { CreateBy = "USER1001USER1001USER1001", PurchaseRequestNumber = "PR001", CreateDateTime = DateTime.Parse("2024-09-26 10:00:00") },
+            //            new { CreateBy = "USER1002", PurchaseRequestNumber = "PR002", CreateDateTime = DateTime.Parse("2024-09-20 09:00:00") },
+            //            new { CreateBy = "USER1003", PurchaseRequestNumber = "PR003", CreateDateTime = DateTime.Parse("2024-09-15 08:30:00") }
+            //        };
+
+            var loggerData = new List<string>();
+
+            foreach (var logger in data2)
+            {
+                var detail = $"{logger.CreateBy}, {logger.PurchaseRequestNumber}, {logger.CreateDateTime}";
+                loggerData.Add(detail);
+            }
+
+            int totalKaryawan = data2.Count();
+            var loggerDataJson = JsonConvert.SerializeObject(loggerData);
+            ViewBag.TotalKaryawan = totalKaryawan;
+            ViewBag.LoggerData = loggerDataJson;
+            await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
+            await _hubContext.Clients.All.SendAsync("UpdateDataLogger", loggerDataJson);
+
+            //End Signal R
 
             if (user != null) {
                 UserActiveViewModel viewModel = new UserActiveViewModel
@@ -199,6 +237,17 @@ namespace PurchasingSystemApps.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+
+        public async Task<IActionResult> GetProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var userId = new Guid(user.Id);
+            var data = _userActiveRepository.GetAllUser().Where(x => x.CreateBy == userId).ToList();
+
+            //// Gunakan userId untuk melakukan sesuatu, misalnya:
+            ViewBag.UserId = userId;
+            return Json(data);
+        }
         public async Task<IActionResult> Logout()
         {
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
