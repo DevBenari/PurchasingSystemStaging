@@ -82,15 +82,19 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
-            var getUser1 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User1" && a.UserApproveId == getUserActive.UserActiveId).FirstOrDefault();
-            var getUser2 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User2" && a.UserApproveId == getUserActive.UserActiveId).FirstOrDefault();
-            var getUser3 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User3" && a.UserApproveId == getUserActive.UserActiveId).FirstOrDefault();
+            var getUser1 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User1" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "Waiting Approval").ToList();
+            var getUser2 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User2" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "User1Approve").ToList();
+            var getUser3 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User3" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "User2Approve").ToList();
 
-            if (getUser1 != null && getUser1.ApprovalStatusUser == "User1")
+            var itemList = new List<Approval>();
+
+            if (getUser1 != null && getUser2 != null && getUser3 != null)
             {
-                var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && getUser1.ApprovalStatusUser == "User1").ToList();
+                itemList.AddRange(getUser1);
+                itemList.AddRange(getUser2);
+                itemList.AddRange(getUser3);
 
-                foreach (var item in data)
+                foreach (var item in itemList)
                 {
                     var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
                     var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
@@ -104,13 +108,14 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     }
                 }
 
-                return View(data);
+                return View(itemList);
             }
-            else if (getUser1 != null && getUser1.ApprovalStatusUser == "User1" &&getUser2 != null && getUser2.ApprovalStatusUser == "User2")
+            else if (getUser1 != null && getUser2 != null)
             {
-                var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && getUser1.ApprovalStatusUser == "User1" && getUser2.ApprovalStatusUser == "User2").ToList();
+                itemList.AddRange(getUser1);
+                itemList.AddRange(getUser2);
 
-                foreach (var item in data)
+                foreach (var item in itemList)
                 {
                     var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
                     var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
@@ -124,13 +129,13 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     }
                 }
 
-                return View(data);
+                return View(itemList);
             }
-            else if (getUser1 != null && getUser1.ApprovalStatusUser == "User1" && getUser2 != null && getUser2.ApprovalStatusUser == "User2" && getUser3 != null && getUser3.ApprovalStatusUser == "User3")
+            else if (getUser1 != null)
             {
-                var data = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActive.UserActiveId && getUser1.ApprovalStatusUser == "User1" && getUser2.ApprovalStatusUser == "User2" && getUser3.ApprovalStatusUser == "User3").ToList();
+                itemList.AddRange(getUser1);
 
-                foreach (var item in data)
+                foreach (var item in itemList)
                 {
                     var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
                     var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
@@ -144,7 +149,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     }
                 }
 
-                return View(data);
+                return View(itemList);
             }
             else
             {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using PurchasingSystemApps.Areas.MasterData.Models;
 using PurchasingSystemApps.Areas.MasterData.Repositories;
 using PurchasingSystemApps.Areas.MasterData.ViewModels;
 using PurchasingSystemApps.Areas.Order.Models;
@@ -13,7 +14,9 @@ using PurchasingSystemApps.Models;
 using PurchasingSystemApps.Repositories;
 using PurchasingSystemApps.ViewModels;
 using System.Diagnostics;
+using System.Net;
 using System.Security.Claims;
+using System.Web.Helpers;
 
 namespace PurchasingSystemApps.Controllers
 {
@@ -47,75 +50,57 @@ namespace PurchasingSystemApps.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "Dashboard";
-            var countUser = _applicationDbContext.UserActives.GroupBy(u => u.UserActiveId).Select(y => new
+
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).ToList();
+            var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
+
+            var userOnline = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).GroupBy(u => u.Id).Select(y => new
             {
-                UserActiveId = y.Key,
+                Id = y.Key,
                 CountOfUsers = y.Count()
             }).ToList();
-            ViewBag.CountUser = countUser.Count;
+            ViewBag.UserOnline = userOnline.Count;
 
-            var countSupplier = _applicationDbContext.Suppliers.GroupBy(u => u.SupplierId).Select(y => new
-            {
-                SupplierId = y.Key,
-                CountOfSuppliers = y.Count()
-            }).ToList();
-            ViewBag.CountSupplier = countSupplier.Count;
-
-            var countProduct = _applicationDbContext.Products.GroupBy(u => u.ProductId).Select(y => new
-            {
-                ProductId = y.Key,
-                CountOfProducts = y.Count()
-            }).ToList();
-            ViewBag.CountProduct = countProduct.Count;
-
-            var countPurchaseRequest = _applicationDbContext.PurchaseRequests.GroupBy(u => u.PurchaseRequestId).Select(y => new
+            var countPurchaseRequest = _applicationDbContext.PurchaseRequests.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.PurchaseRequestId).Select(y => new
             {
                 PurchaseRequestId = y.Key,
                 CountOfPurchaseRequests = y.Count()
             }).ToList();
             ViewBag.CountPurchaseRequest = countPurchaseRequest.Count;
 
-            var countPurchaseOrder = _applicationDbContext.PurchaseOrders.GroupBy(u => u.PurchaseOrderId).Select(y => new
+            var countPurchaseOrder = _applicationDbContext.PurchaseOrders.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.PurchaseOrderId).Select(y => new
             {
                 PurchaseOrderId = y.Key,
                 CountOfPurchaseOrders = y.Count()
             }).ToList();
             ViewBag.CountPurchaseOrder = countPurchaseOrder.Count;
 
-            var countReceiveOrder = _applicationDbContext.ReceiveOrders.GroupBy(u => u.ReceiveOrderId).Select(y => new
+            var countReceiveOrder = _applicationDbContext.ReceiveOrders.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.ReceiveOrderId).Select(y => new
             {
                 ReceiveOrderId = y.Key,
                 CountOfReceiveOrders = y.Count()
             }).ToList();
-            ViewBag.CountReceiveOrder = countReceiveOrder.Count;
-
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
+            ViewBag.CountReceiveOrder = countReceiveOrder.Count;            
 
             //Signal R
 
-            var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
-            //var data2 = new List<dynamic>
-            //        {
-            //            new { CreateBy = "USER1001USER1001USER1001", PurchaseRequestNumber = "PR001", CreateDateTime = DateTime.Parse("2024-09-26 10:00:00") },
-            //            new { CreateBy = "USER1002", PurchaseRequestNumber = "PR002", CreateDateTime = DateTime.Parse("2024-09-20 09:00:00") },
-            //            new { CreateBy = "USER1003", PurchaseRequestNumber = "PR003", CreateDateTime = DateTime.Parse("2024-09-15 08:30:00") }
-            //        };
+            //var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
 
-            var loggerData = new List<string>();
+            //var loggerData = new List<string>();
 
-            foreach (var logger in data2)
-            {
-                var detail = $"{logger.CreateBy}, {logger.PurchaseRequestNumber}, {logger.CreateDateTime}";
-                loggerData.Add(detail);
-            }
+            //foreach (var logger in data2)
+            //{
+            //    var detail = $"{logger.CreateBy}, {logger.PurchaseRequestNumber}, {logger.CreateDateTime}";
+            //    loggerData.Add(detail);
+            //}
 
-            int totalKaryawan = data2.Count();
-            var loggerDataJson = JsonConvert.SerializeObject(loggerData);
-            ViewBag.TotalKaryawan = totalKaryawan;
-            ViewBag.LoggerData = loggerDataJson;
-            await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
-            await _hubContext.Clients.All.SendAsync("UpdateDataLogger", loggerDataJson);
+            //int totalKaryawan = data2.Count();
+            //var loggerDataJson = JsonConvert.SerializeObject(loggerData);
+            //ViewBag.TotalKaryawan = totalKaryawan;
+            //ViewBag.LoggerData = loggerDataJson;
+            //await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
+            //await _hubContext.Clients.All.SendAsync("UpdateDataLogger", loggerDataJson);
 
             //End Signal R
 
@@ -137,9 +122,17 @@ namespace PurchasingSystemApps.Controllers
                     Handphone = user.Handphone,
                     Email = user.Email,
                     UserPhotoPath = user.Foto
-                };
-                return View(viewModel);
-            } else if (user == null && checkUserLogin.NamaUser == "SuperAdmin")
+                };                
+
+                var dashboard = new Dashboard();
+                {
+                    dashboard.UserActiveViewModels = viewModel;
+                    dashboard.UserOnlines = userLogin;
+                }
+
+                return View(dashboard);
+            } 
+            else if (user == null && checkUserLogin.NamaUser == "SuperAdmin")
             {
                 UserActiveViewModel viewModel = new UserActiveViewModel
                 {
