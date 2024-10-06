@@ -52,6 +52,7 @@ namespace PurchasingSystemApps.Controllers
             ViewBag.Active = "Dashboard";
 
             var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
             var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).ToList();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
 
@@ -75,6 +76,9 @@ namespace PurchasingSystemApps.Controllers
                 CountOfPurchaseOrders = y.Count()
             }).ToList();
             ViewBag.CountPurchaseOrder = countPurchaseOrder.Count;
+
+            var countApproval = _applicationDbContext.Approvals.Where(u => u.UserApproveId == getUserActive.UserActiveId && u.Status == "Approve").ToList();
+            ViewBag.CountApproval = countApproval.Count;
 
             var countReceiveOrder = _applicationDbContext.ReceiveOrders.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.ReceiveOrderId).Select(y => new
             {

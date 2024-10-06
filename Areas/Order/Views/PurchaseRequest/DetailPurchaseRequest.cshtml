@@ -225,9 +225,8 @@
                                     </tfoot>
                                 </table>
                             </div>
-                        }
-
-                        @* @if (Model.Status == "Waiting Approval")
+                        }                        
+                        else
                         { 
                             <div class="card-body table-responsive p-0">
                                 <table id="tbldetailpr" class="table table-head-fixed text-nowrap table-bordered table-hover table-striped">
@@ -275,7 +274,8 @@
                                     </tfoot>
                                 </table>
                             </div>
-                        } else
+                        }
+                        @* else
                         {
                             <div class="card-body table-responsive p-0">
                                 <table id="tbldetailpr" class="table table-head-fixed text-nowrap table-bordered table-hover table-striped">

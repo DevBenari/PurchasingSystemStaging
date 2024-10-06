@@ -19,7 +19,6 @@
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-info">
                     <h1 class="widget-user-username"><b>@ViewBag.Title</b></h1>
-                    @*<h5 class="widget-user-desc">Founder & CEO</h5>*@
                 </div>                
             </div>
             <!-- /.widget-user -->
@@ -115,10 +114,56 @@
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
                         <span class="info-box-icon text-bg-danger shadow-sm" style="background-color: yellowgreen"> <i class="fa-solid fa-file-circle-check" style="color: white;"></i> </span>
-                        <div class="info-box-content"> <span class="info-box-text">Receive Order</span> 
+                        <div class="info-box-content"> <span class="info-box-text">Approval</span> 
+                            <span class="info-box-number" style="margin-top: -10px;">
+                                @ViewBag.CountApproval
+                            </span> </div> <!-- /.info-box-content -->
+                    </div> <!-- /.info-box -->
+                </div> <!-- /.col -->
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon shadow-sm" style="background-color: greenyellow;"> <i class="fa-solid fa-globe" style="color:white;"></i> </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Unit Request</span> <span class="info-box-number" style="margin-top: -10px;">
+                                @ViewBag.UserOnline
+                            </span>
+                        </div> <!-- /.info-box-content -->
+                    </div> <!-- /.info-box -->
+                </div> <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-success shadow-sm"> <i class="fa-solid fa-file-pen" style="color: white;"></i></i> </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Receive Order</span>
+                            <span class="info-box-number" style="margin-top: -10px;">
+                                @ViewBag.CountPurchaseRequest
+                            </span>
+                        </div> <!-- /.info-box-content -->
+                    </div> <!-- /.info-box -->
+                </div> <!-- /.col --> <!-- fix for small devices only --> <!-- <div class="clearfix hidden-md-up"></div> -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-warning shadow-sm"> <i class="fa-solid fa-truck-fast" style="color: white;"></i></i> </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Approval Unit Request</span>
+                            <span class="info-box-number" style="margin-top: -10px;">
+                                @ViewBag.CountPurchaseOrder
+                            </span>
+                        </div> <!-- /.info-box-content -->
+                    </div> <!-- /.info-box -->
+                </div> <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-danger shadow-sm" style="background-color: yellowgreen"> <i class="fa-solid fa-file-circle-check" style="color: white;"></i> </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Warehouse Transfer</span>
                             <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.CountReceiveOrder
-                            </span> </div> <!-- /.info-box-content -->
+                            </span>
+                        </div> <!-- /.info-box-content -->
                     </div> <!-- /.info-box -->
                 </div> <!-- /.col -->
             </div>

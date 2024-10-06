@@ -86,6 +86,10 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             var getUser2 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User2" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "User1Approve").ToList();
             var getUser3 = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User3" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "User2Approve").ToList();
 
+            var getUser1Approve = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User1" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "Approve").ToList();
+            var getUser2Approve = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User2" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "Approve").ToList();
+            var getUser3Approve = _approvalRepository.GetAllApproval().Where(a => a.ApprovalStatusUser == "User3" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "Approve").ToList();
+
             var itemList = new List<Approval>();
 
             if (getUser1 != null && getUser2 != null && getUser3 != null)
@@ -93,6 +97,10 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 itemList.AddRange(getUser1);
                 itemList.AddRange(getUser2);
                 itemList.AddRange(getUser3);
+
+                itemList.AddRange(getUser1Approve);
+                itemList.AddRange(getUser2Approve);
+                itemList.AddRange(getUser3Approve);
 
                 foreach (var item in itemList)
                 {
@@ -115,6 +123,9 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 itemList.AddRange(getUser1);
                 itemList.AddRange(getUser2);
 
+                itemList.AddRange(getUser1Approve);
+                itemList.AddRange(getUser2Approve);
+
                 foreach (var item in itemList)
                 {
                     var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
@@ -134,6 +145,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             else if (getUser1 != null)
             {
                 itemList.AddRange(getUser1);
+
+                itemList.AddRange(getUser1Approve);
 
                 foreach (var item in itemList)
                 {

@@ -122,7 +122,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
 
         public async Task<List<PurchaseOrder>> GetPurchaseOrdersFilters()
         {
-            return await _context.PurchaseOrders.Where(p => p.Status == "InProcess").OrderBy(p => p.CreateDateTime).Select(PurchaseOrder => new PurchaseOrder()
+            return await _context.PurchaseOrders.Where(p => p.Status == "In Order").OrderBy(p => p.CreateDateTime).Select(PurchaseOrder => new PurchaseOrder()
             {
                 PurchaseOrderId = PurchaseOrder.PurchaseOrderId,
                 PurchaseOrderNumber = PurchaseOrder.PurchaseOrderNumber,
