@@ -413,7 +413,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         var po = new PurchaseOrder 
                         {
                             CreateDateTime = DateTimeOffset.Now,
-                            CreateBy = new Guid(getUser.Id),
+                            CreateBy = checkPR.CreateBy,
                             PurchaseRequestId = checkPR.PurchaseRequestId,
                             PurchaseRequestNumber = checkPR.PurchaseRequestNumber,
                             UserAccessId = getUser.Id.ToString(),
