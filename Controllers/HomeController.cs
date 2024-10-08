@@ -80,31 +80,52 @@ namespace PurchasingSystemApps.Controllers
             var countApproval = _applicationDbContext.Approvals.Where(u => u.UserApproveId == getUserActive.UserActiveId && u.Status == "Approve").ToList();
             ViewBag.CountApproval = countApproval.Count;
 
+            var countUnitRequest = _applicationDbContext.UnitRequests.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.UnitRequestId).Select(y => new
+            {
+                UnitRequestId = y.Key,
+                CountOfUnitRequests = y.Count()
+            }).ToList();
+            ViewBag.CountUnitRequest = countUnitRequest.Count;
+
             var countReceiveOrder = _applicationDbContext.ReceiveOrders.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.ReceiveOrderId).Select(y => new
             {
                 ReceiveOrderId = y.Key,
                 CountOfReceiveOrders = y.Count()
             }).ToList();
-            ViewBag.CountReceiveOrder = countReceiveOrder.Count;            
+            ViewBag.CountReceiveOrder = countReceiveOrder.Count;
+
+            var countApprovalUnitRequest = _applicationDbContext.ApprovalRequests.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.ApprovalRequestId).Select(y => new
+            {
+                ApprovalRequestId = y.Key,
+                CountOfApprovalUnitRequests = y.Count()
+            }).ToList();
+            ViewBag.CountApprovalUnitRequest = countApprovalUnitRequest.Count;
+
+            var countWarehouseTransfer = _applicationDbContext.WarehouseTransfers.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.WarehouseTransferId).Select(y => new
+            {
+                WarehouseTransferId = y.Key,
+                CountOfWarehouseTransfers = y.Count()
+            }).ToList();
+            ViewBag.CountWarehouseTransfer = countWarehouseTransfer.Count;
 
             //Signal R
 
-            //var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
+            var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
 
-            //var loggerData = new List<string>();
+            var loggerData = new List<string>();
 
-            //foreach (var logger in data2)
-            //{
-            //    var detail = $"{logger.CreateBy}, {logger.PurchaseRequestNumber}, {logger.CreateDateTime}";
-            //    loggerData.Add(detail);
-            //}
+            foreach (var logger in data2)
+            {
+                var detail = $"{logger.CreateBy}, {logger.PurchaseRequestNumber}, {logger.CreateDateTime}";
+                loggerData.Add(detail);
+            }
 
-            //int totalKaryawan = data2.Count();
-            //var loggerDataJson = JsonConvert.SerializeObject(loggerData);
-            //ViewBag.TotalKaryawan = totalKaryawan;
-            //ViewBag.LoggerData = loggerDataJson;
-            //await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
-            //await _hubContext.Clients.All.SendAsync("UpdateDataLogger", loggerDataJson);
+            int totalKaryawan = data2.Count();
+            var loggerDataJson = JsonConvert.SerializeObject(loggerData);
+            ViewBag.TotalKaryawan = totalKaryawan;
+            ViewBag.LoggerData = loggerDataJson;
+            await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
+            await _hubContext.Clients.All.SendAsync("UpdateDataLogger", loggerDataJson);
 
             //End Signal R
 

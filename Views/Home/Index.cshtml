@@ -68,7 +68,7 @@
                                     <td>@user.NamaUser</td>
                                     @if (@user.IsOnline == true)
                                     {
-                                        <td><i class='fas fa-certificate' style='color:greenyellow'></i> Online</td>
+                                        <td><i class='fas fa-circle' style='color:greenyellow'></i> Online</td>
                                     }
                                 </tr>
                             }
@@ -85,83 +85,99 @@
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
-                        <span class="info-box-icon shadow-sm" style="background-color: greenyellow;"> <i class="fa-solid fa-globe" style="color:white;"></i> </span>
+                        <span class="info-box-icon shadow-sm" style="background-color: #347FC4">
+                            <i class="fa-solid fa-globe" style="color:white"></i> 
+                        </span>
                         <div class="info-box-content">
                             <span class="info-box-text">User Online</span> <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.UserOnline
                             </span>
-                        </div> <!-- /.info-box-content -->
-                    </div> <!-- /.info-box -->
-                </div> <!-- /.col -->
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
-                        <span class="info-box-icon bg-success shadow-sm"> <i class="fa-solid fa-file-pen" style="color: white;"></i></i> </span>
+                        <span class="info-box-icon shadow-sm" style="background-color: #E53D00">
+                            <i class="fas fa-file-alt" style="color: white"></i>
+                        </span>
                         <div class="info-box-content"> <span class="info-box-text">Purchase Request</span> 
                             <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.CountPurchaseRequest
-                            </span> </div> <!-- /.info-box-content -->
-                    </div> <!-- /.info-box -->
-                </div> <!-- /.col --> <!-- fix for small devices only --> <!-- <div class="clearfix hidden-md-up"></div> -->
+                            </span> 
+                         </div>
+                    </div>
+                </div>
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
-                        <span class="info-box-icon bg-warning shadow-sm"> <i class="fa-solid fa-truck-fast" style="color: white;"></i></i> </span>
+                        <span class="info-box-icon shadow-sm" style="background-color: #FFE900">
+                            <i class="fas fa-file-archive" style="color: white"></i>
+                        </span>
                         <div class="info-box-content"> <span class="info-box-text">Purchase Order</span> 
                             <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.CountPurchaseOrder
-                            </span> </div> <!-- /.info-box-content -->
-                    </div> <!-- /.info-box -->
-                </div> <!-- /.col -->
+                            </span> 
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
-                        <span class="info-box-icon text-bg-danger shadow-sm" style="background-color: yellowgreen"> <i class="fa-solid fa-file-circle-check" style="color: white;"></i> </span>
+                        <span class="info-box-icon shadow-sm" style="background-color: #F7C1BB">
+                            <i class="fa-solid fa-file-circle-check" style="color: white"></i>
+                        </span>
                         <div class="info-box-content"> <span class="info-box-text">Approval</span> 
                             <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.CountApproval
-                            </span> </div> <!-- /.info-box-content -->
-                    </div> <!-- /.info-box -->
-                </div> <!-- /.col -->
+                            </span> 
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
-                        <span class="info-box-icon shadow-sm" style="background-color: greenyellow;"> <i class="fa-solid fa-globe" style="color:white;"></i> </span>
+                        <span class="info-box-icon shadow-sm" style="background-color: #84B082">
+                            <i class="fas fa-clipboard" style="color:white"></i>
+                        </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Unit Request</span> <span class="info-box-number" style="margin-top: -10px;">
-                                @ViewBag.UserOnline
+                                @ViewBag.CountUnitRequest
                             </span>
                         </div> <!-- /.info-box-content -->
                     </div> <!-- /.info-box -->
                 </div> <!-- /.col -->
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
-                        <span class="info-box-icon bg-success shadow-sm"> <i class="fa-solid fa-file-pen" style="color: white;"></i></i> </span>
+                        <span class="info-box-icon shadow-sm" style="background-color: #F7C1BB">
+                            <i class="fa-solid fa-file-pen" style="color: white"></i>
+                        </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Receive Order</span>
-                            <span class="info-box-number" style="margin-top: -10px;">
-                                @ViewBag.CountPurchaseRequest
+                            <span class="info-box-text">Receive Order</span> <span class="info-box-number" style="margin-top: -10px;">
+                                @ViewBag.CountReceiveOrder
                             </span>
                         </div> <!-- /.info-box-content -->
                     </div> <!-- /.info-box -->
                 </div> <!-- /.col --> <!-- fix for small devices only --> <!-- <div class="clearfix hidden-md-up"></div> -->
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
-                        <span class="info-box-icon bg-warning shadow-sm"> <i class="fa-solid fa-truck-fast" style="color: white;"></i></i> </span>
+                        <span class="info-box-icon shadow-sm" style="background-color: #347FC4">
+                            <i class="fa-solid fa-truck-fast" style="color: white"></i>
+                        </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Approval Unit Request</span>
-                            <span class="info-box-number" style="margin-top: -10px;">
-                                @ViewBag.CountPurchaseOrder
+                            <span class="info-box-text">Approval Unit Request</span> <span class="info-box-number" style="margin-top: -10px;">
+                                @ViewBag.CountApprovalUnitRequest
                             </span>
                         </div> <!-- /.info-box-content -->
                     </div> <!-- /.info-box -->
                 </div> <!-- /.col -->
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
-                        <span class="info-box-icon text-bg-danger shadow-sm" style="background-color: yellowgreen"> <i class="fa-solid fa-file-circle-check" style="color: white;"></i> </span>
+                        <span class="info-box-icon shadow-sm" style="background-color: #E53D00">
+                            <i class="fa-solid fa-file-circle-check" style="color: white"></i>
+                        </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Warehouse Transfer</span>
-                            <span class="info-box-number" style="margin-top: -10px;">
-                                @ViewBag.CountReceiveOrder
+                            <span class="info-box-text">Warehouse Transfer</span> <span class="info-box-number" style="margin-top: -10px;">
+                                @ViewBag.CountWarehouseTransfer
                             </span>
                         </div> <!-- /.info-box-content -->
                     </div> <!-- /.info-box -->

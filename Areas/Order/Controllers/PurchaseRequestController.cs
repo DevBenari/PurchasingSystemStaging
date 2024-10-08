@@ -217,6 +217,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
 
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+            //ViewBag.Product = from p in _applicationDbContext.Products.Include(s => s.Supplier).ToList() select new { ProductId = p.ProductId, ProductName = p.ProductName, Supplier = p.Supplier.SupplierName };
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);
             ViewBag.DueDate = new SelectList(await _dueDateRepository.GetDueDates(), "DueDateId", "Value", SortOrder.Ascending);

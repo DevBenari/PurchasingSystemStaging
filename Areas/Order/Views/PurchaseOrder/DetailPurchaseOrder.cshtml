@@ -181,17 +181,17 @@
                         @if (Model.Status == "Cancellation")
                         {
                             <a class="btn btn-success" asp-action="GenerateNewPo" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId">Generate New PO</a>
-                            <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseOrder">Batal</a>
+                            <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseOrder">Cancel</a>
                         }
                         else if (Model.Status == "Cancelled")
                         {
                             <a class="btn bg-indigo" asp-action="PrintPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="fas fa-print" style="color:white"></i></a>
-                            <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseOrder">Batal</a>
+                            <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseOrder">Cancel</a>
                         }
                         else
                         {
                             <a class="btn bg-indigo" asp-action="PrintPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="fas fa-print" style="color:white"></i></a>
-                            <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseOrder">Batal</a>
+                            <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseOrder">Cancel</a>
                         }                        
                     </div>
                 </div>

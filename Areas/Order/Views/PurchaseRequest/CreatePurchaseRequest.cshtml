@@ -255,6 +255,7 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-sm-5">
+                                <span>Search Product</span>
                                 <div class="form-group">
                                     <select asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="produklist" data-placeholder="--Choose Product--">
                                         <option value="" hidden disabled selected>--Choose Product--</option>
@@ -262,10 +263,12 @@
                                 </div>
                             </div>
                             <div class="col-sm-1">
+                                <span>Qty</span>
                                 <input autocomplete="off" class="form-control" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==6) return false;" min="1" max="1000" id="qty" placeholder="Qty">
                                 <span class="error">Required !</span>
                             </div>
                             <div class="col-sm-2">
+                                <span>&nbsp;</span>
                                 <div class="form-group">
                                     @if (signInManager.IsSignedIn(User))
                                     {
@@ -276,13 +279,16 @@
                                 </div>
                             </div>
                             <div class="col-sm-1">
-                                <input autocomplete="off" class="form-control" id="minstock" type="hidden" placeholder="Min Stock" readonly>                                
+                                <span>Min Stock</span>
+                                <input autocomplete="off" class="form-control" id="minstock" type="text" placeholder="Min Stock" readonly>                                
                             </div>
-                            <div class="col-sm-1">                                
-                                <input autocomplete="off" class="form-control" id="maxstock" type="hidden" placeholder="Max Stock" readonly>
+                            <div class="col-sm-1">
+                                <span>Max Stock</span>
+                                <input autocomplete="off" class="form-control" id="maxstock" type="text" placeholder="Max Stock" readonly>
                             </div>
-                            <div class="col-sm-2">                               
-                                <input autocomplete="off" class="form-control" id="bufferstock" type="hidden" placeholder="Buffer Stock" readonly>
+                            <div class="col-sm-2">
+                                <span>Buffer Stock</span>
+                                <input autocomplete="off" class="form-control" id="bufferstock" type="text" placeholder="Buffer Stock" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -359,7 +365,7 @@
                     <div class="card-body">
                         @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
                         <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
-                        <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseRequest">Batal</a>
+                        <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseRequest">Cancel</a>
                     </div>
                 </div>
                 <!-- /.end button footer -->
