@@ -222,15 +222,6 @@
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-header">Warehouse Management</li>
-                        <li class="@(ViewBag.Active == "ReceiveOrder" ? "nav-item menu-open active":"")">
-                            <a asp-action="Index" is-active-route asp-controller="ReceiveOrder" asp-area="Warehouse" class="nav-link">
-                                <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i>
-                                <p style="color:#FFFFFF">
-                                    Receive Order
-                                </p>
-                            </a>
-                        </li>
                         <li class="@(ViewBag.Active == "ApprovalRequest" ? "nav-item menu-open active":"")">
                             <a asp-action="Index" is-active-route asp-controller="ApprovalRequest" asp-area="Warehouse" class="nav-link">
                                 <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i>
@@ -239,6 +230,23 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-header">Warehouse Management</li>
+                        <li class="@(ViewBag.Active == "ReceiveOrder" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="ReceiveOrder" asp-area="Warehouse" class="nav-link">
+                                <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    Receive Order
+                                </p>
+                            </a>
+                        </li>   
+                        <li class="@(ViewBag.Active == "ReceiveOrder" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="QtyDifferenceRequest" asp-area="Order" class="nav-link">
+                                <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    Approval Qty Difference
+                                </p>
+                            </a>
+                        </li>                        
                         <li class="nav-header">Reporting</li>
                         <li class="@(ViewBag.Active == "Report" ? "nav-item menu-open active":"")">
                             <a asp-action="Index" is-active-route asp-controller="Dashboard" asp-area="Report" class="nav-link">

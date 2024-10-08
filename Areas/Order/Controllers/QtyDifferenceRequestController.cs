@@ -87,7 +87,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             }
             else
             {
-                var data = _qtyDifferenceRequestRepository.GetAllQtyDifferenceRequest().Where(u => u.HeadPurchasingManagerId == getUserActive.UserActiveId).ToList();
+                var data = _qtyDifferenceRequestRepository.GetAllQtyDifferenceRequest().Where(u => u.HeadWarehouseManagerId == getUserActive.UserActiveId).ToList();
                 return View(data);
             }
         }
