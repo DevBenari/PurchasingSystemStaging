@@ -64,7 +64,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "Approval";
 
             //var countApproval = _applicationDbContext.Approvals.Where(p => p.Status == "Waiting Approval").GroupBy(u => u.PurchaseRequestId).Select(y => new
             //{
@@ -213,7 +213,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "Approval";
             ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
             ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
 
@@ -225,7 +225,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public async Task<ViewResult> DetailApproval(Guid Id)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "Approval";
 
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
@@ -291,7 +291,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> DetailApproval(ApprovalViewModel viewModel)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "Approval";
 
             if (ModelState.IsValid)
             {

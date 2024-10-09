@@ -29,6 +29,7 @@ namespace PurchasingSystemApps.Controllers
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly IPurchaseRequestRepository _purchaseRequestRepository;
+        private readonly IProductRepository _productRepository;
 
         public HomeController(ILogger<HomeController> logger,
             UserManager<ApplicationUser> userManager,
@@ -36,7 +37,8 @@ namespace PurchasingSystemApps.Controllers
             ApplicationDbContext context,
             IHubContext<ChatHub> hubContext,
             IPurchaseRequestRepository purchaseRequestRepository,
-            IUserActiveRepository userActiveRepository)
+            IUserActiveRepository userActiveRepository,
+            IProductRepository productRepository)
         {
             _logger = logger;
             _applicationDbContext = context;
@@ -45,6 +47,7 @@ namespace PurchasingSystemApps.Controllers
             _hubContext = hubContext;
             _userActiveRepository = userActiveRepository;
             _purchaseRequestRepository = purchaseRequestRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -55,6 +58,7 @@ namespace PurchasingSystemApps.Controllers
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
             var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).ToList();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
+            var product = _productRepository.GetAllProduct().Where(p => p.Stock < p.MinStock).ToList();
 
             var userOnline = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).GroupBy(u => u.Id).Select(y => new
             {
@@ -153,6 +157,7 @@ namespace PurchasingSystemApps.Controllers
                 {
                     dashboard.UserActiveViewModels = viewModel;
                     dashboard.UserOnlines = userLogin;
+                    dashboard.Products = product;
                 }
 
                 return View(dashboard);

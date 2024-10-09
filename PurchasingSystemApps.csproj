@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\General\Data\" />
+    <Folder Include="Areas\General\Models\" />
     <Folder Include="Areas\MasterData\Data\" />
     <Folder Include="Areas\Order\Data\" />
     <Folder Include="Areas\Report\Data\" />

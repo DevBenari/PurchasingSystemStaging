@@ -26,34 +26,40 @@
     </div>
     <div class="row">
         <div class="col-md-3 bg-white">
-            <div class="card-header bg-indigo">
-                <h3 class="card-title fw-bold" style="color:#ffffff">@Html.DisplayFor(m => m.UserActiveViewModels.FullName)</h3>
-            </div>
-            <div class="card-body text-center">
-                <img src="@photoPath" asp-append-version="true" width="100%" height="100%" />
-            </div>
+            <div class="card">
+                <div class="card-header bg-indigo">
+                    <h3 class="card-title fw-bold" style="color:#ffffff">@Html.DisplayFor(m => m.UserActiveViewModels.FullName)</h3>
+                </div>
+                <div class="card-body text-center">
+                    <img src="@photoPath" asp-append-version="true" width="100%" height="100%" />
+                </div>
 
-            <ul class="list-group list-group-unbordered mb-3">
-                <li class="list-group-item">
-                    <b>Date Of Birth</b> <a class="float-right">@Model.UserActiveViewModels.DateOfBirth.ToString("dd MMMM yyyy")</a>
-                </li>
-                <li class="list-group-item">
-                    <b>Department</b> <a class="float-right">@Html.DisplayFor(x => x.UserActiveViewModels.Department)</a>
-                </li>
-                <li class="list-group-item">
-                    <b>Position</b> <a class="float-right">@Html.DisplayFor(s => s.UserActiveViewModels.Position)</a>
-                </li>
-                <li class="list-group-item">
-                    <b>Handphone</b> <a class="float-right">@Html.DisplayFor(s => s.UserActiveViewModels.Handphone)</a>
-                </li>
-                <li class="list-group-item">
-                    <b>Email</b> <a class="float-right">@Html.DisplayFor(s => s.UserActiveViewModels.Email)</a>
-                </li>
-            </ul>
+                <div class="card-body">
+                    <ul class="list-group list-group-unbordered mb-3">
+                        <li class="list-group-item">
+                            <b>Date Of Birth</b> <a class="float-right">@Model.UserActiveViewModels.DateOfBirth.ToString("dd MMMM yyyy")</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Department</b> <a class="float-right">@Html.DisplayFor(x => x.UserActiveViewModels.Department)</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Position</b> <a class="float-right">@Html.DisplayFor(s => s.UserActiveViewModels.Position)</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Handphone</b> <a class="float-right">@Html.DisplayFor(s => s.UserActiveViewModels.Handphone)</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Email</b> <a class="float-right">@Html.DisplayFor(s => s.UserActiveViewModels.Email)</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>            
 
             <div class="card">
-                <div class="card-body">
-                    <h4 class="border-bottom">User Online</h4>
+                <div class="card-header bg-indigo">
+                    <h3 class="card-title fw-bold" style="color:#ffffff">User Online</h3>
+                </div>
+                <div class="card-body table-responsive p-0">
                     <table id="tblTemplate2" class="table table-hover table-head-fixed text-nowrap">
                         <thead>
                             <tr>
@@ -143,9 +149,9 @@
                             <span class="info-box-text">Unit Request</span> <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.CountUnitRequest
                             </span>
-                        </div> <!-- /.info-box-content -->
-                    </div> <!-- /.info-box -->
-                </div> <!-- /.col -->
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
                         <span class="info-box-icon shadow-sm" style="background-color: #F7C1BB">
@@ -155,9 +161,9 @@
                             <span class="info-box-text">Receive Order</span> <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.CountReceiveOrder
                             </span>
-                        </div> <!-- /.info-box-content -->
-                    </div> <!-- /.info-box -->
-                </div> <!-- /.col --> <!-- fix for small devices only --> <!-- <div class="clearfix hidden-md-up"></div> -->
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
                         <span class="info-box-icon shadow-sm" style="background-color: #347FC4">
@@ -167,9 +173,9 @@
                             <span class="info-box-text">Approval Unit Request</span> <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.CountApprovalUnitRequest
                             </span>
-                        </div> <!-- /.info-box-content -->
-                    </div> <!-- /.info-box -->
-                </div> <!-- /.col -->
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
                         <span class="info-box-icon shadow-sm" style="background-color: #E53D00">
@@ -179,40 +185,13 @@
                             <span class="info-box-text">Warehouse Transfer</span> <span class="info-box-number" style="margin-top: -10px;">
                                 @ViewBag.CountWarehouseTransfer
                             </span>
-                        </div> <!-- /.info-box-content -->
-                    </div> <!-- /.info-box -->
-                </div> <!-- /.col -->
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-6">
-                    @*<div class="card">
-                        <div class="card-body">
-                            <h4 class="border-bottom">User Online</h4>
-                            <table id="tblTemplate" class="table table-hover table-head-fixed text-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Name</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="show_data">
-                                    @foreach (var user in Model.UserOnlines)
-                                    {
-                                        <tr>
-                                            <td></td>
-                                            <td>@user.NamaUser</td>
-                                            @if (@user.IsOnline == true) 
-                                                {
-                                                <td><i class='fas fa-certificate' style='color:greenyellow'></i> Online</td>
-                                                }
-                                        </tr>
-                                    }                           
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>*@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
@@ -236,11 +215,51 @@
                     </div>                    
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header bg-indigo">
+                            <h3 class="card-title fw-bold" style="color:#ffffff">Stock Monitoring Under Min Stock</h3>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table id="tblTemplate" class="table table-hover table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Product Name</th>
+                                        <th>Supplier</th>
+                                        <th>Min Stock</th>
+                                        <th>Max Stock</th>
+                                        <th>Buffer Stock</th>
+                                        <th>Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="show_data">
+                                    @foreach (var prd in Model.Products)
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td>@prd.ProductName</td>
+                                            <td>@prd.Supplier.SupplierName</td>
+                                            <td>@prd.MinStock</td>
+                                            <td>@prd.MaxStock</td>
+                                            <td>@prd.BufferStock</td>
+                                            <td>@prd.Stock</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>    
 </section>
 
 @section Scripts{
+    <script src="~/scripts/TableTemplate.js"></script>
     <script src="~/scripts/TableTemplate2.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js" integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>

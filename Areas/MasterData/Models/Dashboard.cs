@@ -7,5 +7,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Models
     {
         public IEnumerable<ApplicationUser> UserOnlines { get; set; }
         public UserActiveViewModel UserActiveViewModels { get; set; }
+        public IEnumerable<Product> Products { get; set; }
     }
 }

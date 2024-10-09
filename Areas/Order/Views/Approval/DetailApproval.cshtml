@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "List Approval";
+    ViewData["Title"] = "Detail Approval";
     Layout = "~/Views/Shared/_TopNavbarPurchaseRequest.cshtml";
 }
 
@@ -51,6 +51,13 @@
                                 <option value="" hidden disabled selected>--Choose User--</option>
                             </select>
                             <span asp-validation-for="UserAccessId" class="error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Note">Note</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Note" autocomplete="off" class="form-control" disabled>
+                            <span asp-validation-for="Note" class="text-danger"></span>
                         </div>
                     </div>
 

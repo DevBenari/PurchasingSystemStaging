@@ -98,7 +98,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "PurchaseOrder";
             var data = _purchaseOrderRepository.GetAllPurchaseOrder();
             return View(data);
         }
@@ -107,7 +107,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "PurchaseOrder";
             ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
             ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
 
@@ -119,7 +119,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> DetailPurchaseOrder(Guid Id)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "PurchaseOrder";
 
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
             ViewBag.Pr = new SelectList(await _purchaseRequestRepository.GetPurchaseRequests(), "PurchaseRequestId", "PurchaseRequestNumber", SortOrder.Ascending);
@@ -179,7 +179,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GenerateNewPo(Guid Id)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "PurchaseOrder";
 
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
@@ -296,7 +296,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GenerateNewPo(PurchaseOrder model)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "PurchaseOrder";
 
             //PurchaseOrder purchaseOrder = await _purchaseOrderRepository.GetPurchaseOrderByIdNoTracking(model.PurchaseOrderId);
 
