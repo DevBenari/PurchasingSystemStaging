@@ -75,6 +75,7 @@ builder.Services.AddScoped<IPurchaseRequestRepository>();
 builder.Services.AddScoped<IApprovalRepository>();
 builder.Services.AddScoped<IPurchaseOrderRepository>();
 builder.Services.AddScoped<IQtyDifferenceRequestRepository>();
+builder.Services.AddScoped<IEmailRepository>();
 #endregion
 
 #region Areas Warehouse

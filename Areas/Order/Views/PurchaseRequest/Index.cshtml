@@ -11,11 +11,11 @@
 
 <!-- Main content -->
 <section class="content">
-        <div class="row">
-            <div class="col-12">
-                <div class="card card-cyan">
-                    <div class="card-header">
-                        <h3 class="card-title" style="color:#ffffff">@ViewBag.Title</h3>
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-cyan">
+                <div class="card-header">
+                    <h3 class="card-title" style="color:#ffffff">@ViewBag.Title</h3>
 
                     <div class="card-tools">
                         @if (signInManager.IsSignedIn(User))
@@ -25,11 +25,11 @@
                             </a>
                         }
                     </div>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
                     <form enctype="multipart/form-data" asp-action="Index" asp-controller="PurchaseRequest" method="post" class="form-horizontal">
-                        <div class="row">                            
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="input-group date" id="tglAwalPencarian" data-target-input="nearest">
@@ -71,14 +71,14 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Create Date</th>                                        
+                                        <th>Create Date</th>
                                         <th>Expired Date</th>
                                         <th>Expired Day</th>
                                         <th>Remaining Day</th>
-                                        <th>Create By</th>                                        
-                                        <th>User Approve 1</th>
-                                        <th>User Approve 2</th>
-                                        <th>User Approve 3</th>
+                                        <th>Create By</th>
+                                        <th>Approve 1</th>
+                                        <th>Approve 2</th>
+                                        <th>Approve 3</th>
                                         <th>PR Number</th>
                                         <th>Status</th>
                                         @*<th>Grand Total</th>*@
@@ -92,14 +92,14 @@
                                             //Background In Status
                                             <tr data-href="@Url.Action("DetailPurchaseRequest", "PurchaseRequest", new {id=pr.PurchaseRequestId})">
                                                 <td></td>
-                                                <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>                                                
+                                                <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
                                                 <td>@pr.ExpiredDate.ToString("dd MMMM yyyy")</td>
                                                 <td>@pr.ExpiredDay day</td>
                                                 <td>@pr.RemainingDay day</td>
-                                                <td>@pr.ApplicationUser.NamaUser</td>                                                
+                                                <td>@pr.ApplicationUser.NamaUser</td>
                                                 @if (pr.ApproveStatusUser1 == "Approve")
                                                 {
-                                                    <td><span class="badge bg-success"><b>@pr.UserApprove1.FullName</b></span></td>                                                    
+                                                    <td><span class="badge bg-success"><b>@pr.UserApprove1.FullName</b></span></td>
                                                 }
                                                 else if (pr.ApproveStatusUser1 == "Reject")
                                                 {
@@ -138,7 +138,7 @@
                                             </tr>
                                         }
                                         else if (pr.Status == "Approve")
-                                        {                                            
+                                        {
                                             //Background In Status
                                             <tr data-href="@Url.Action("DetailPurchaseRequest", "PurchaseRequest", new {id=pr.PurchaseRequestId})">
                                                 <td></td>
@@ -209,29 +209,29 @@
                         </div>
                         <span class="error">* Double click in the row table to get data</span>
                     </form>
-                    </div>                    
-                    <!-- /.card-body -->
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <script type="text/javascript">
-                            window.onload = function () {
-                                swal("Success", '@TempData["SuccessMessage"]', "success");
-                            };
-                        </script>
-                    }
-                    @if (TempData["WarningMessage"] != null)
-                    {
-                        <script type="text/javascript">
-                            window.onload = function () {
-                                swal("Failed", '@TempData["WarningMessage"]', "warning");
-                            };
-                        </script>
-                    }
                 </div>
-                <!-- /.card -->
+                <!-- /.card-body -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <script type="text/javascript">
+                        window.onload = function () {
+                            swal("Success", '@TempData["SuccessMessage"]', "success");
+                        };
+                    </script>
+                }
+                @if (TempData["WarningMessage"] != null)
+                {
+                    <script type="text/javascript">
+                        window.onload = function () {
+                            swal("Failed", '@TempData["WarningMessage"]', "warning");
+                        };
+                    </script>
+                }
             </div>
+            <!-- /.card -->
         </div>
-        <!-- /.row -->
+    </div>
+    <!-- /.row -->
 </section>
 <!-- /.content -->
 @section Scripts{

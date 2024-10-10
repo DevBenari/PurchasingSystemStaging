@@ -29,7 +29,7 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public Guid? Position3Id { get; set; }
         public Guid? UserApprove3Id { get; set; }
         public string? ApproveStatusUser3 { get; set; }
-        public Guid? TermOfPaymentId { get; set; }        
+        public Guid? TermOfPaymentId { get; set; }
         public string Status { get; set; }
         public int QtyTotal { get; set; }
         public decimal GrandTotal { get; set; }
