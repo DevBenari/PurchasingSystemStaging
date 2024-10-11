@@ -66,15 +66,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body table-responsive mailbox-messages">
+                        <div class="card-body table-responsive p-0">
                             <table id="tblTemplate" class="table table-hover table-head-fixed text-nowrap">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Create Date</th>
-                                        <th>Email Supplier</th>
-                                        <th>Message</th>
-                                        <th>Link Document</th>
+                                        <th>To</th>
+                                        <th>Subject - Message</th>
+                                        <th>Link</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -97,8 +97,8 @@
                                             <td class="mailbox-attachment">
                                                 @if (!string.IsNullOrEmpty(email.Document))
                                                 {
-                                                    <a href="@Url.Content("~/email/" + email.Document)" target="_blank">
-                                                        <i class="fas fa-paperclip"></i>
+                                                    <a href="@Url.Content("/EmailDocument/" + email.Document)" target="_blank">
+                                                        <i class="fas fa-paperclip"></i> @email.Subject
                                                     </a>
                                                 }
                                             </td>

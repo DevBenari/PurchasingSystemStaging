@@ -88,8 +88,11 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                     TermOfPayment = purchaseRequest.TermOfPayment,                    
                     Status = purchaseRequest.Status,
                     QtyTotal = purchaseRequest.QtyTotal,
-                    GrandTotal = purchaseRequest.GrandTotal,                    
+                    GrandTotal = purchaseRequest.GrandTotal,
                     Note = purchaseRequest.Note,
+                    MessageApprove1 = purchaseRequest.MessageApprove1,
+                    MessageApprove2 = purchaseRequest.MessageApprove2,
+                    MessageApprove3 = purchaseRequest.MessageApprove3,
                     PurchaseRequestDetails = purchaseRequest.PurchaseRequestDetails
                 };
                 return purchaseRequestDetail;
@@ -162,6 +165,9 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 QtyTotal = purchaseRequest.QtyTotal,
                 GrandTotal = purchaseRequest.GrandTotal,
                 Note = purchaseRequest.Note,
+                MessageApprove1 = purchaseRequest.MessageApprove1,
+                MessageApprove2 = purchaseRequest.MessageApprove2,
+                MessageApprove3 = purchaseRequest.MessageApprove3,
                 PurchaseRequestDetails = purchaseRequest.PurchaseRequestDetails
             }).ToListAsync();
         }

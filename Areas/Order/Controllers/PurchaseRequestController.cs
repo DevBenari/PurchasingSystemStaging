@@ -312,6 +312,9 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     QtyTotal = model.QtyTotal,
                     GrandTotal = Math.Truncate(model.GrandTotal),
                     Note = model.Note,
+                    MessageApprove1 = model.MessageApprove1,
+                    MessageApprove2 = model.MessageApprove2,
+                    MessageApprove3 = model.MessageApprove3
                 };                
 
                 var ItemsList = new List<PurchaseRequestDetail>();
@@ -389,6 +392,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         ApprovalStatusUser = "User1",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
+                        Message = purchaseRequest.MessageApprove1
                     };
                     _approvalRepository.Tambah(approval);
                 }
@@ -412,6 +416,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         ApprovalStatusUser = "User2",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
+                        Message = purchaseRequest.MessageApprove2
                     };
                     _approvalRepository.Tambah(approval);
                 }
@@ -435,6 +440,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         ApprovalStatusUser = "User3",
                         Status = purchaseRequest.Status,
                         Note = purchaseRequest.Note,
+                        Message = purchaseRequest.MessageApprove3
                     };
                     _approvalRepository.Tambah(approval);
                 }
@@ -501,24 +507,10 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 QtyTotal = purchaseRequest.QtyTotal,
                 GrandTotal = Math.Truncate(purchaseRequest.GrandTotal),
                 Note = purchaseRequest.Note,
-
-                //PurchaseRequestId = purchaseRequest.PurchaseRequestId,
-                //PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
-                //UserAccessId = purchaseRequest.UserAccessId,
-                //UserApprove1Id = purchaseRequest.UserApprove1Id,
-                //UserApprove2Id = purchaseRequest.UserApprove2Id,
-                //UserApprove3Id = purchaseRequest.UserApprove3Id,
-                //TermOfPaymentId = purchaseRequest.TermOfPaymentId,
-                //Status = purchaseRequest.Status,
-                //QtyTotal = purchaseRequest.QtyTotal,
-                //GrandTotal = Math.Truncate(purchaseRequest.GrandTotal),
-                //DueDateId = purchaseRequest.DueDateId,
-                //Note = purchaseRequest.Note,
+                MessageApprove1 = purchaseRequest.MessageApprove1,
+                MessageApprove2 = purchaseRequest.MessageApprove2,
+                MessageApprove3 = purchaseRequest.MessageApprove3             
             };
-
-            // Rumus Pengurangan Tanggal
-            //var diffDate = (DateTime.Now.Date - purchaseRequest.CreateDateTime.Date);
-            //int day = diffDate.Days;
 
             var ItemsList = new List<PurchaseRequestDetail>();
 
@@ -566,20 +558,13 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         purchaseRequest.TermOfPaymentId = model.TermOfPaymentId;                                              
                         purchaseRequest.QtyTotal = model.QtyTotal;
                         purchaseRequest.GrandTotal = model.GrandTotal;
-                        //purchaseRequest.DueDateId = model.DueDateId;
                         purchaseRequest.ExpiredDate = model.ExpiredDate;
+                        purchaseRequest.MessageApprove1 = model.MessageApprove1;
+                        purchaseRequest.MessageApprove2 = model.MessageApprove2;
+                        purchaseRequest.MessageApprove3 = model.MessageApprove3;
                         purchaseRequest.Note = model.Note;
                         purchaseRequest.PurchaseRequestDetails = model.PurchaseRequestDetails;
 
-                        //approval.User1ApproveDate = DateTime.MinValue;
-                        //approval.UserApprove1Id = model.UserApprove1Id;
-                        //approval.ApproveByUser1 = model.UserApprove1.FullName;
-                        //approval.User2ApproveDate = DateTime.MinValue;
-                        //approval.UserApprove2Id = model.UserApprove2Id;
-                        //approval.ApproveByUser2 = model.UserApprove2.FullName;
-                        //approval.User3ApproveDate = DateTime.MinValue;
-                        //approval.UserApprove3Id = model.UserApprove3Id;
-                        //approval.ApproveByUser3 = model.UserApprove3.FullName;
                         approval.Note = model.Note;
 
                         _applicationDbContext.Entry(approval).State = EntityState.Modified;
@@ -622,167 +607,166 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             return Json(new { redirectToUrl = Url.Action("Index", "PurchaseRequest") });
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GeneratePurchaseOrder(Guid Id)
-        {
-            ViewBag.Active = "PurchaseRequest";
+        //[HttpGet]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> GeneratePurchaseOrder(Guid Id)
+        //{
+        //    ViewBag.Active = "PurchaseRequest";
 
-            ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-            ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
-            ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);
-            ViewBag.DueDate = new SelectList(await _dueDateRepository.GetDueDates(), "DueDateId", "Value", SortOrder.Ascending);
-            ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
-            ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
+        //    ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+        //    ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
+        //    ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);
+        //    ViewBag.DueDate = new SelectList(await _dueDateRepository.GetDueDates(), "DueDateId", "Value", SortOrder.Ascending);
+        //    ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+        //    ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
 
-            PurchaseRequest purchaseRequest = _applicationDbContext.PurchaseRequests
-                .Include(d => d.PurchaseRequestDetails)
-                .Include(u => u.ApplicationUser)
-                .Include(a1 => a1.UserApprove1)
-                .Include(a2 => a2.UserApprove2)
-                .Include(a3 => a3.UserApprove3)
-                .Include(p => p.TermOfPayment)
-                //.Include(e => e.DueDate)
-                .Where(p => p.PurchaseRequestId == Id).FirstOrDefault();
+        //    PurchaseRequest purchaseRequest = _applicationDbContext.PurchaseRequests
+        //        .Include(d => d.PurchaseRequestDetails)
+        //        .Include(u => u.ApplicationUser)
+        //        .Include(a1 => a1.UserApprove1)
+        //        .Include(a2 => a2.UserApprove2)
+        //        .Include(a3 => a3.UserApprove3)
+        //        .Include(p => p.TermOfPayment)
+        //        //.Include(e => e.DueDate)
+        //        .Where(p => p.PurchaseRequestId == Id).FirstOrDefault();
 
-            _signInManager.IsSignedIn(User);
+        //    _signInManager.IsSignedIn(User);
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+        //    var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
 
-            PurchaseOrder po = new PurchaseOrder();            
+        //    PurchaseOrder po = new PurchaseOrder();            
             
-            var dateNow = DateTimeOffset.Now;
-            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
+        //    var dateNow = DateTimeOffset.Now;
+        //    var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
 
-            var lastCode = _purchaseOrderRepository.GetAllPurchaseOrder().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.PurchaseOrderNumber).FirstOrDefault();
-            if (lastCode == null)
-            {
-                po.PurchaseOrderNumber = "PO" + setDateNow + "0001";
-            }
-            else
-            {
-                var lastCodeTrim = lastCode.PurchaseOrderNumber.Substring(2, 6);
+        //    var lastCode = _purchaseOrderRepository.GetAllPurchaseOrder().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.PurchaseOrderNumber).FirstOrDefault();
+        //    if (lastCode == null)
+        //    {
+        //        po.PurchaseOrderNumber = "PO" + setDateNow + "0001";
+        //    }
+        //    else
+        //    {
+        //        var lastCodeTrim = lastCode.PurchaseOrderNumber.Substring(2, 6);
 
-                if (lastCodeTrim != setDateNow)
-                {
-                    po.PurchaseOrderNumber = "PO" + setDateNow + "0001";
-                }
-                else
-                {
-                    po.PurchaseOrderNumber = "PO" + setDateNow + (Convert.ToInt32(lastCode.PurchaseOrderNumber.Substring(9, lastCode.PurchaseOrderNumber.Length - 9)) + 1).ToString("D4");
-                }
-            }
+        //        if (lastCodeTrim != setDateNow)
+        //        {
+        //            po.PurchaseOrderNumber = "PO" + setDateNow + "0001";
+        //        }
+        //        else
+        //        {
+        //            po.PurchaseOrderNumber = "PO" + setDateNow + (Convert.ToInt32(lastCode.PurchaseOrderNumber.Substring(9, lastCode.PurchaseOrderNumber.Length - 9)) + 1).ToString("D4");
+        //        }
+        //    }
 
-            ViewBag.PurchaseOrderNumber = po.PurchaseOrderNumber;
+        //    ViewBag.PurchaseOrderNumber = po.PurchaseOrderNumber;
 
-            var getPr = new PurchaseRequest()
-            {
-                PurchaseRequestId = purchaseRequest.PurchaseRequestId,
-                PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
-                UserAccessId = purchaseRequest.UserAccessId,
-                UserApprove1Id = purchaseRequest.UserApprove1Id,
-                UserApprove2Id = purchaseRequest.UserApprove2Id,
-                UserApprove3Id = purchaseRequest.UserApprove3Id,
-                TermOfPaymentId = purchaseRequest.TermOfPaymentId,
-                Status = purchaseRequest.Status,
-                QtyTotal = purchaseRequest.QtyTotal,
-                GrandTotal = Math.Truncate(purchaseRequest.GrandTotal),
-                //DueDateId = purchaseRequest.DueDateId,
-                Note = purchaseRequest.Note
-            };
+        //    var getPr = new PurchaseRequest()
+        //    {
+        //        PurchaseRequestId = purchaseRequest.PurchaseRequestId,
+        //        PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
+        //        UserAccessId = purchaseRequest.UserAccessId,
+        //        UserApprove1Id = purchaseRequest.UserApprove1Id,
+        //        UserApprove2Id = purchaseRequest.UserApprove2Id,
+        //        UserApprove3Id = purchaseRequest.UserApprove3Id,
+        //        TermOfPaymentId = purchaseRequest.TermOfPaymentId,
+        //        Status = purchaseRequest.Status,
+        //        QtyTotal = purchaseRequest.QtyTotal,
+        //        GrandTotal = Math.Truncate(purchaseRequest.GrandTotal),
+        //        //DueDateId = purchaseRequest.DueDateId,
+        //        Note = purchaseRequest.Note
+        //    };
 
-            var ItemsList = new List<PurchaseRequestDetail>();
+        //    var ItemsList = new List<PurchaseRequestDetail>();
 
-            foreach (var item in purchaseRequest.PurchaseRequestDetails)
-            {
-                ItemsList.Add(new PurchaseRequestDetail
-                {
-                    CreateDateTime = DateTimeOffset.Now,
-                    CreateBy = new Guid(getUser.Id),
-                    ProductNumber = item.ProductNumber,
-                    ProductName = item.ProductName,
-                    Supplier = item.Supplier,
-                    Measurement = item.Measurement,
-                    Qty = item.Qty,
-                    Price = Math.Truncate(item.Price),
-                    Discount = item.Discount,
-                    SubTotal = Math.Truncate(item.SubTotal)
-                });
-            }
+        //    foreach (var item in purchaseRequest.PurchaseRequestDetails)
+        //    {
+        //        ItemsList.Add(new PurchaseRequestDetail
+        //        {
+        //            CreateDateTime = DateTimeOffset.Now,
+        //            CreateBy = new Guid(getUser.Id),
+        //            ProductNumber = item.ProductNumber,
+        //            ProductName = item.ProductName,
+        //            Supplier = item.Supplier,
+        //            Measurement = item.Measurement,
+        //            Qty = item.Qty,
+        //            Price = Math.Truncate(item.Price),
+        //            Discount = item.Discount,
+        //            SubTotal = Math.Truncate(item.SubTotal)
+        //        });
+        //    }
 
-            getPr.PurchaseRequestDetails = ItemsList;          
-            return View(getPr);
-        }
+        //    getPr.PurchaseRequestDetails = ItemsList;          
+        //    return View(getPr);
+        //}
 
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> GeneratePurchaseOrder(PurchaseRequest model)
-        {
-            ViewBag.Active = "PurchaseRequest";
+        //[HttpPost]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> GeneratePurchaseOrder(PurchaseRequest model)
+        //{
+        //    ViewBag.Active = "PurchaseRequest";
 
-            PurchaseRequest purchaseRequest = await _purchaseRequestRepository.GetPurchaseRequestByIdNoTracking(model.PurchaseRequestId);
+        //    PurchaseRequest purchaseRequest = await _purchaseRequestRepository.GetPurchaseRequestByIdNoTracking(model.PurchaseRequestId);
 
-            _signInManager.IsSignedIn(User);
+        //    _signInManager.IsSignedIn(User);
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+        //    var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
 
-            string getPurchaseOrderNumber = Request.Form["PONumber"];
+        //    string getPurchaseOrderNumber = Request.Form["PONumber"];
 
-            var updatePurchaseRequest = _purchaseRequestRepository.GetAllPurchaseRequest().Where(c => c.PurchaseRequestId == model.PurchaseRequestId).FirstOrDefault();
-            if (updatePurchaseRequest != null)
-            {
-                {
-                    updatePurchaseRequest.Status = getPurchaseOrderNumber;
-                };
-                _applicationDbContext.Entry(updatePurchaseRequest).State = EntityState.Modified;
-            }
+        //    var updatePurchaseRequest = _purchaseRequestRepository.GetAllPurchaseRequest().Where(c => c.PurchaseRequestId == model.PurchaseRequestId).FirstOrDefault();
+        //    if (updatePurchaseRequest != null)
+        //    {
+        //        {
+        //            updatePurchaseRequest.Status = getPurchaseOrderNumber;
+        //        };
+        //        _applicationDbContext.Entry(updatePurchaseRequest).State = EntityState.Modified;
+        //    }
 
-            var newPurchaseOrder = new PurchaseOrder
-            {
-                CreateDateTime = DateTimeOffset.Now,
-                CreateBy = new Guid(getUser.Id),
-                PurchaseRequestId = purchaseRequest.PurchaseRequestId,
-                PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
-                UserAccessId = getUser.Id.ToString(),
-                UserApprove1Id = purchaseRequest.UserApprove1Id,
-                UserApprove2Id = purchaseRequest.UserApprove2Id,
-                UserApprove3Id = purchaseRequest.UserApprove3Id,
-                TermOfPaymentId = purchaseRequest.TermOfPaymentId,
-                Status = "InProcess",
-                QtyTotal = purchaseRequest.QtyTotal,
-                GrandTotal = Math.Truncate(purchaseRequest.GrandTotal),
-                //DueDateId = purchaseRequest.DueDateId,
-                Note = purchaseRequest.Note
-            };
+        //    var newPurchaseOrder = new PurchaseOrder
+        //    {
+        //        CreateDateTime = DateTimeOffset.Now,
+        //        CreateBy = new Guid(getUser.Id),
+        //        PurchaseRequestId = purchaseRequest.PurchaseRequestId,
+        //        PurchaseRequestNumber = purchaseRequest.PurchaseRequestNumber,
+        //        UserAccessId = getUser.Id.ToString(),
+        //        UserApprove1Id = purchaseRequest.UserApprove1Id,
+        //        UserApprove2Id = purchaseRequest.UserApprove2Id,
+        //        UserApprove3Id = purchaseRequest.UserApprove3Id,
+        //        TermOfPaymentId = purchaseRequest.TermOfPaymentId,
+        //        Status = "InProcess",
+        //        QtyTotal = purchaseRequest.QtyTotal,
+        //        GrandTotal = Math.Truncate(purchaseRequest.GrandTotal),
+        //        Note = purchaseRequest.Note
+        //    };
 
-            newPurchaseOrder.PurchaseOrderNumber = getPurchaseOrderNumber;
+        //    newPurchaseOrder.PurchaseOrderNumber = getPurchaseOrderNumber;
 
-            var ItemsList = new List<PurchaseOrderDetail>();
+        //    var ItemsList = new List<PurchaseOrderDetail>();
 
-            foreach (var item in purchaseRequest.PurchaseRequestDetails)
-            {
-                ItemsList.Add(new PurchaseOrderDetail
-                {
-                    CreateDateTime = DateTimeOffset.Now,
-                    CreateBy = new Guid(getUser.Id),
-                    ProductNumber = item.ProductNumber,
-                    ProductName = item.ProductName,
-                    Supplier = item.Supplier,
-                    Measurement = item.Measurement,
-                    Qty = item.Qty,
-                    Price = Math.Truncate(item.Price),
-                    Discount = item.Discount,
-                    SubTotal = Math.Truncate(item.SubTotal)
-                });
-            }
+        //    foreach (var item in purchaseRequest.PurchaseRequestDetails)
+        //    {
+        //        ItemsList.Add(new PurchaseOrderDetail
+        //        {
+        //            CreateDateTime = DateTimeOffset.Now,
+        //            CreateBy = new Guid(getUser.Id),
+        //            ProductNumber = item.ProductNumber,
+        //            ProductName = item.ProductName,
+        //            Supplier = item.Supplier,
+        //            Measurement = item.Measurement,
+        //            Qty = item.Qty,
+        //            Price = Math.Truncate(item.Price),
+        //            Discount = item.Discount,
+        //            SubTotal = Math.Truncate(item.SubTotal)
+        //        });
+        //    }
 
-            newPurchaseOrder.PurchaseOrderDetails = ItemsList;
+        //    newPurchaseOrder.PurchaseOrderDetails = ItemsList;
 
-            _purchaseOrderRepository.Tambah(newPurchaseOrder);
+        //    _purchaseOrderRepository.Tambah(newPurchaseOrder);
 
-            TempData["SuccessMessage"] = "Number " + newPurchaseOrder.PurchaseOrderNumber + " Saved";
-            return RedirectToAction("Index", "PurchaseRequest");
-        }
+        //    TempData["SuccessMessage"] = "Number " + newPurchaseOrder.PurchaseOrderNumber + " Saved";
+        //    return RedirectToAction("Index", "PurchaseRequest");
+        //}
 
         public async Task<IActionResult> PrintPurchaseRequest(Guid Id)
         {
@@ -795,7 +779,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             var UserApprove2 = purchaseRequest.UserApprove2.FullName;
             var UserApprove3 = purchaseRequest.UserApprove3.FullName;
             var TermOfPayment = purchaseRequest.TermOfPayment.TermOfPaymentName;
-            //var DueDate = purchaseRequest.DueDate;
             var Note = purchaseRequest.Note;
             var GrandTotal = purchaseRequest.GrandTotal;
             var Tax = (GrandTotal / 100) * 11;

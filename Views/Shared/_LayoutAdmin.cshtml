@@ -228,7 +228,15 @@
                                     Receive Order
                                 </p>
                             </a>
-                        </li>   
+                        </li>
+                        <li class="@(ViewBag.Active == "QtyDifference" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="QtyDifference" asp-area="Warehouse" class="nav-link">
+                                <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    Qty Difference
+                                </p>
+                            </a>
+                        </li>
                         <li class="@(ViewBag.Active == "ApprovalQtyDifference" ? "nav-item menu-open active":"")">
                             <a asp-action="Index" is-active-route asp-controller="QtyDifferenceRequest" asp-area="Order" class="nav-link">
                                 <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i>

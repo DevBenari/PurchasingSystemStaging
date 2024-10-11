@@ -45,7 +45,10 @@
                         <div class="col-sm-10">
                             <select asp-for="UserApprove1Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove1List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
+                            </select>                          
+                            <div class="col-sm-12">
+                                <label asp-for="MessageApprove1" class="col-form-label text-success">Note : @Html.DisplayFor(x => x.MessageApprove1)</label>
+                            </div>
                             <span asp-validation-for="UserApprove1Id" class="error"></span>
                         </div>
                     </div>
@@ -57,6 +60,9 @@
                             <select asp-for="UserApprove2Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove2List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
                             </select>
+                            <div class="col-sm-12">
+                                <label asp-for="MessageApprove2" class="col-form-label text-success">Note : @Html.DisplayFor(x => x.MessageApprove2)</label>
+                            </div>
                             <span asp-validation-for="UserApprove2Id" class="error"></span>
                         </div>
                     </div>
@@ -68,6 +74,9 @@
                             <select asp-for="UserApprove3Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove3List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
                             </select>
+                            <div class="col-sm-12">
+                                <label asp-for="MessageApprove3" class="col-form-label text-success">Note : @Html.DisplayFor(x => x.MessageApprove3)</label>
+                            </div>
                             <span asp-validation-for="UserApprove3Id" class="error"></span>
                         </div>
                     </div>

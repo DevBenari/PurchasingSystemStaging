@@ -312,7 +312,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                             updateStatusUser1.ApprovalDate = DateTimeOffset.Now;
                             updateStatusUser1.ApproveBy = getUser.NamaUser;
                             updateStatusUser1.ApprovalTime = diffDate.Days.ToString() + " Day";
-                            updateStatusUser1.Note = viewModel.Note;
+                            updateStatusUser1.Message = viewModel.Message;
 
                             _applicationDbContext.Entry(updateStatusUser1).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -330,6 +330,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                             }
 
                             checkPR.ApproveStatusUser1 = viewModel.Status;
+                            checkPR.MessageApprove1 = viewModel.Message;
 
                             _applicationDbContext.Entry(checkPR).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -337,6 +338,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         else
                         {
                             checkPR.ApproveStatusUser1 = viewModel.Status;
+                            checkPR.MessageApprove1 = viewModel.Message;
 
                             _applicationDbContext.Entry(checkPR).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -351,7 +353,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                             updateStatusUser2.ApprovalDate = DateTimeOffset.Now;
                             updateStatusUser2.ApproveBy = getUser.NamaUser;
                             updateStatusUser2.ApprovalTime = diffDate.Days.ToString() + " Day";
-                            updateStatusUser2.Note = viewModel.Note;
+                            updateStatusUser2.Message = viewModel.Message;
 
                             _applicationDbContext.Entry(updateStatusUser2).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -368,6 +370,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                                 _applicationDbContext.SaveChanges();
                             }
                             checkPR.ApproveStatusUser2 = viewModel.Status;
+                            checkPR.MessageApprove2 = viewModel.Message;
 
                             _applicationDbContext.Entry(checkPR).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -375,6 +378,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         else
                         {
                             checkPR.ApproveStatusUser2 = viewModel.Status;
+                            checkPR.MessageApprove2 = viewModel.Message;
 
                             _applicationDbContext.Entry(checkPR).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -389,12 +393,14 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                             updateStatusUser3.ApprovalDate = DateTimeOffset.Now;
                             updateStatusUser3.ApproveBy = getUser.NamaUser;
                             updateStatusUser3.ApprovalTime = diffDate.Days.ToString() + " Day";
-                            updateStatusUser3.Note = viewModel.Note;
+                            updateStatusUser3.Message = viewModel.Message;
 
                             _applicationDbContext.Entry(updateStatusUser3).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
                         }
+
                         checkPR.ApproveStatusUser3 = viewModel.Status;
+                        checkPR.MessageApprove3 = viewModel.Message;
 
                         _applicationDbContext.Entry(checkPR).State = EntityState.Modified;
                         _applicationDbContext.SaveChanges();
@@ -404,7 +410,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                     if (checkPR.ApproveStatusUser1 == "Approve" && checkPR.ApproveStatusUser2 == "Approve" && checkPR.ApproveStatusUser3 == "Approve")
                     {
                         checkPR.Status = viewModel.Status;
-                        checkPR.Note = viewModel.Note;
 
                         _applicationDbContext.Entry(checkPR).State = EntityState.Modified;
                         _applicationDbContext.SaveChanges();
@@ -416,7 +421,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                             CreateBy = checkPR.CreateBy,
                             PurchaseRequestId = checkPR.PurchaseRequestId,
                             PurchaseRequestNumber = checkPR.PurchaseRequestNumber,
-                            UserAccessId = getUser.Id.ToString(),
+                            UserAccessId = checkPR.CreateBy.ToString(),
                             ExpiredDate = checkPR.ExpiredDate,
                             UserApprove1Id = checkPR.UserApprove1Id,
                             UserApprove2Id = checkPR.UserApprove2Id,

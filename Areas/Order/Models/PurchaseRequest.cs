@@ -34,6 +34,9 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public int QtyTotal { get; set; }
         public decimal GrandTotal { get; set; }
         public string? Note { get; set; }
+        public string? MessageApprove1 { get; set; }
+        public string? MessageApprove2 { get; set; }
+        public string? MessageApprove3 { get; set; }
         public List<PurchaseRequestDetail> PurchaseRequestDetails { get; set; } = new List<PurchaseRequestDetail>();
 
         //Relationship

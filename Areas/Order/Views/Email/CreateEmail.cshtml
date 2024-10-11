@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "List Email";
+    ViewData["Title"] = "Create Email Supplier";
     Layout = "~/Views/Shared/_TopNavbarPurchaseOrder.cshtml";
 }
 
@@ -11,16 +11,24 @@
 
 <!-- Main content -->
 <section class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <!-- /.col -->
-            <div class="col-md-8">
-                <div class="card card-primary card-outline">
-                    <form method="post" asp-action="CreateEmail" asp-controller="Email" class="needs-validation" novalidate="" enctype="multipart/form-data">
-                        <div class="card-header">
-                            <h3 class="card-title">Email</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-cyan">
+                <div class="card-header">
+                    <h3 class="card-title" style="color:#ffffff">@ViewBag.Title</h3>
+                    <div class="card-tools">
+                        <div class="card-tools">
+                            @if (signInManager.IsSignedIn(User))
+                            {
+                                <a class="btn btn-tool bg-indigo" asp-action="CreateEmail" asp-controller="Email" asp-area="Order">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            }
                         </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-action="CreateEmail" asp-controller="Email" class="needs-validation" novalidate="" enctype="multipart/form-data">                       
                         <div class="card-body">
                             <div class="form-group">
                                 <input class="form-control" asp-for="To" placeholder="To:" />
@@ -35,9 +43,9 @@
                             </div>
                             <div class="form-group">
                                 @*<div class="btn btn-default btn-file">
-                                    <i class="fas fa-paperclip"></i> Attachment
-                                    <input asp-for="Document" class="form-control custom-file-input" />
-                                    <label class="custom-file-label">Choose Document...</label>
+                                <i class="fas fa-paperclip"></i> Attachment
+                                <input asp-for="Document" class="form-control custom-file-input" />
+                                <label class="custom-file-label">Choose Document...</label>
                                 </div>*@
                                 <div class="custom-file">
                                     <input asp-for="Document" class="form-control custom-file-input">
@@ -53,14 +61,13 @@
                             <a class="btn btn-default" asp-action="Index" asp-controller="Email">Cancel</a>
                         </div>
                     </form>
-                </div>
-                <!-- /.card -->
+                </div>                
             </div>
-            <!-- /.col -->
-            <div class="col-md-2"></div>
+            <!-- /.card -->
         </div>
-        <!-- /.row -->
-    </div><!-- /.container-fluid -->
+        <!-- /.col -->
+        <div class="col-md-2"></div>
+    </div>
 </section>
 <!-- /.content -->
 @section Scripts {
