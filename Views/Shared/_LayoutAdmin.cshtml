@@ -461,7 +461,24 @@
                 return extendSession();
             }, function (dismiss) {
                 if (dismiss === "cancel") {
-                    endSession();  // Akhiri sesi jika pengguna memilih untuk melakukannya
+                    fetch("/accountController/EndSession", {
+                                method: 'POST'
+                            }).then(response => {
+                                if (response.ok) {
+                                    swal({
+                                        title: "Session Berakhir",
+                                        text: "Session Anda telah berakhir",
+                                        type: "error",
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+
+                                    // Redirect user ke halaman login
+                                    setTimeout(function () {
+                                        window.location.href = '/Account/Login?ReturnUrl=%2F';
+                                    }, 1500);
+                                }
+                            });  // Akhiri sesi jika pengguna memilih untuk melakukannya
                 }
             });
         }
