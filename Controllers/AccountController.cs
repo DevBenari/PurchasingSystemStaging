@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PurchasingSystemApps.Areas.MasterData.Repositories;
 using PurchasingSystemApps.Data;
 using PurchasingSystemApps.Models;
 using PurchasingSystemApps.ViewModels;
@@ -15,16 +16,19 @@ namespace PurchasingSystemApps.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private ILogger<AccountController> _logger;
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly IUserActiveRepository _userActiveRepository;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext applicationDbContext,
+            IUserActiveRepository userActiveRepository,
             ILogger<AccountController> logger)
         {
             _applicationDbContext = applicationDbContext;
             _signInManager = signInManager;
             _userManager = userManager;
+            _userActiveRepository = userActiveRepository;
             _logger = logger;
         }
 
@@ -33,6 +37,41 @@ namespace PurchasingSystemApps.Controllers
         {            
             return View();
         }
+
+
+        [HttpPost]
+        [Route("accountController/ExtendSession")]
+        public IActionResult ExtendSession()
+        {
+            // Memperpanjang session dengan memperbarui waktu aktivitas terakhir
+            HttpContext.Session.SetString("LastActivity", DateTime.Now.ToString());
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("accountController/EndSession")]
+        public async Task<IActionResult> EndSession()
+        {
+            HttpContext.Session.Clear();
+
+            // Hapus authentication cookies jika ada
+            Response.Cookies.Delete(".AspNetCore.Identity.Application");
+
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
+
+            if (user != null)
+            {
+                user.IsOnline = false;
+                await _userManager.UpdateAsync(user);
+            }
+
+            await _signInManager.SignOutAsync();
+
+            return Ok();
+        }
+
 
         [HttpGet]
         [AllowAnonymous]
@@ -79,7 +118,10 @@ namespace PurchasingSystemApps.Controllers
                         }
 
                         await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
-
+                        // menyimpan data user yang sedang login berdasarkan NamaUser dan KodeUser
+                        HttpContext.Session.SetString("FullName", user.NamaUser);
+                        HttpContext.Session.SetString("KodeUser", user.KodeUser);
+                        
                         user.IsOnline = true;
 
                         await _userManager.UpdateAsync(user);
@@ -95,6 +137,8 @@ namespace PurchasingSystemApps.Controllers
                     else if (result.IsLockedOut)
                     {
                         _logger.LogWarning("User account locked out.");
+                        // HttpContext.session.Clear untuk menghapus session data pengguna tidak lagi tersimpan
+                        HttpContext.Session.Clear();
                         return RedirectToPage("./Lockout");
                     }
                     else
