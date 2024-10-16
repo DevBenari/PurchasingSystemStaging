@@ -90,18 +90,7 @@
                             </select>
                             <span asp-validation-for="TermOfPaymentId" class="error"></span>
                         </div>
-                    </div>
-                    @*<div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="DueDateId">
-                            Due Date
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="DueDateId" asp-items="@ViewBag.DueDate" class="form-control select2bs4" id="DueDateId" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose DueDate--</option>
-                            </select>
-                            <span asp-validation-for="DueDateId" class="error"></span>
-                        </div>
-                    </div>*@
+                    </div>                   
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="Note">Note</label>
                         <div class="col-sm-10">
@@ -256,7 +245,6 @@
                                             <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Price</div></th>
                                             <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Discount</div></th>
                                             <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Sub Total</div></th>
-                                            <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff"></div></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -273,8 +261,7 @@
                                                 <td class="text-center row-qty"><input class="detQty" asp-for="@Model.PurchaseRequestDetails[i].Qty" type="hidden" value="@Model.PurchaseRequestDetails[i].Qty">@Model.PurchaseRequestDetails[i].Qty</td>
                                                 <td class="text-right" hidden><input class="detPrice" asp-for="@Model.PurchaseRequestDetails[i].Price" type="hidden" value="@Model.PurchaseRequestDetails[i].Price">@Model.PurchaseRequestDetails[i].Price</td>
                                                 <td class="text-right" hidden><input class="detDiscount" asp-for="@Model.PurchaseRequestDetails[i].Discount" type="hidden" value="@Model.PurchaseRequestDetails[i].Discount">@Model.PurchaseRequestDetails[i].Discount</td>
-                                                <td class="text-right row-total" hidden><input class="detSubTotal" asp-for="@Model.PurchaseRequestDetails[i].SubTotal" type="hidden" value="@Model.PurchaseRequestDetails[i].SubTotal">@Model.PurchaseRequestDetails[i].SubTotal</td>
-                                                <td class="text-center"><button class="btn btn-danger btn-sm">X</button></td>
+                                                <td class="text-right row-total" hidden><input class="detSubTotal" asp-for="@Model.PurchaseRequestDetails[i].SubTotal" type="hidden" value="@Model.PurchaseRequestDetails[i].SubTotal">@Model.PurchaseRequestDetails[i].SubTotal</td>                                                
                                             </tr>
                                         }
                                     </tbody>
@@ -283,8 +270,7 @@
                                             <th colspan="5" class="text-right">Total Qty</th>
                                             <td id="producttotalqty" class="text-center productTotalQty">@Model.QtyTotal</td>
                                             <th colspan="2" class="text-right" hidden>Grand Total</th>
-                                            <td id="productgrandtotal" class="text-right productGrandTotal" hidden>@Math.Truncate(@Model.GrandTotal)</td>
-                                            <td></td>
+                                            <td id="productgrandtotal" class="text-right productGrandTotal" hidden>@Math.Truncate(@Model.GrandTotal)</td>                                            
                                         </tr>
                                     </tfoot>
                                 </table>

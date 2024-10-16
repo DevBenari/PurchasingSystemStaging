@@ -135,7 +135,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-1">
-                                    <input autocomplete="off" class="form-control" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==4) return false;" min="1" max="1000" id="qty" placeholder="Qty">
+                                    <input autocomplete="off" class="form-control" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==4) return false;" min="1" max="1000" id="qty" placeholder="Qty" readonly>
                                     <span class="error">Required !</span>
                                 </div>
                                 <div class="col-sm-2">
@@ -360,16 +360,17 @@
                         $.each(item, function () {
                             $("#productnumber").val(item.productNumber);
                             $("#productname").val(item.productName);
-                            $("#qtyorder").val(item.qty);
+                            $("#qtyorder").val(item.qtyOrder);
                             $("#Supplier").val(item.supplier);
-                            $("#measure").val(item.measurement);                            
+                            $("#measure").val(item.measurement);
                             $("#discount").val(item.discount);
                             $("#price").val(item.price);
+                            $("#qty").val(item.qtyReceive);
                         });
                     },
-                    error: function (ex) {
-                        alert('Please wait until the data..., ' + ex);
-                    }
+                    //error: function (ex) {
+                    //    alert('Please wait until the data..., ' + ex);
+                    //}
                 });
                 return false;
             })
@@ -509,8 +510,8 @@
                             var measurement = $('#measure').val().trim();
                             var qty = parseInt($('#qty').val().trim());
                             var price = parseFloat($('#price').val().trim());
-                            var discount = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) * (parseInt($('#discount').val().trim()) / 100);
-                            var total = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) - (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) * (parseInt($('#discount').val().trim()) / 100);
+                            var discount = parseInt($('#discount').val().trim());
+                            var total = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) - (parseInt($('#discount').val().trim()));
 
                             if ($('#tbldetailpr tbody').children().children().length == 1) {
                                 $('#tbldetailpr tbody').html('');

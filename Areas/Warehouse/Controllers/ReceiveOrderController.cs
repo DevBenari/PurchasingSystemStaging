@@ -72,7 +72,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewBag.Active = "Warehouse";
@@ -81,7 +80,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "Warehouse";
@@ -93,7 +91,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateReceiveOrder(string poList)
         {
             //Pembelian Pembelian = await _pembelianRepository.GetAllPembelian().Where(p => p.PembelianNumber == );
@@ -138,91 +135,102 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateReceiveOrder(ReceiveOrder model)
         {
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.POFilter = new SelectList(await _purchaseOrderRepository.GetPurchaseOrdersFilters(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
 
-            var dateNow = DateTimeOffset.Now;
-            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
-
-            var lastCode = _receiveOrderRepository.GetAllReceiveOrder().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.ReceiveOrderNumber).FirstOrDefault();
-            if (lastCode == null)
+            var checkDuplicate = _receiveOrderRepository.GetAllReceiveOrder().Where(r => r.PurchaseOrderId == model.PurchaseOrderId).ToList();
+            
+            if (checkDuplicate.Count == 0) 
             {
-                model.ReceiveOrderNumber = "RO" + setDateNow + "0001";
-            }
-            else
-            {
-                var lastCodeTrim = lastCode.ReceiveOrderNumber.Substring(2, 6);
+                var dateNow = DateTimeOffset.Now;
+                var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
 
-                if (lastCodeTrim != setDateNow)
+                var lastCode = _receiveOrderRepository.GetAllReceiveOrder().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.ReceiveOrderNumber).FirstOrDefault();
+                if (lastCode == null)
                 {
                     model.ReceiveOrderNumber = "RO" + setDateNow + "0001";
                 }
                 else
                 {
-                    model.ReceiveOrderNumber = "RO" + setDateNow + (Convert.ToInt32(lastCode.ReceiveOrderNumber.Substring(9, lastCode.ReceiveOrderNumber.Length - 9)) + 1).ToString("D4");
-                }
-            }
+                    var lastCodeTrim = lastCode.ReceiveOrderNumber.Substring(2, 6);
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-
-            if (ModelState.IsValid)
-            {
-                var receiveOrder = new ReceiveOrder
-                {
-                    CreateDateTime = DateTime.Now,
-                    CreateBy = new Guid(getUser.Id), //Convert Guid to String
-                    ReceiveOrderId = model.ReceiveOrderId,
-                    ReceiveOrderNumber = model.ReceiveOrderNumber,
-                    PurchaseOrderId = model.PurchaseOrderId,
-                    ReceiveById = getUser.Id,
-                    Status = model.Status,
-                    Note = model.Note,
-                    ReceiveOrderDetails = model.ReceiveOrderDetails,
-                };
-
-                var updateStatusPO = _purchaseOrderRepository.GetAllPurchaseOrder().Where(c => c.PurchaseOrderId == model.PurchaseOrderId).FirstOrDefault();
-                if (updateStatusPO != null)
-                {
-                    updateStatusPO.UpdateDateTime = DateTime.Now;
-                    updateStatusPO.UpdateBy = new Guid(getUser.Id);
-                    updateStatusPO.Status = model.ReceiveOrderNumber;
-
-                    _applicationDbContext.Entry(updateStatusPO).State = EntityState.Modified;
-                }
-
-                foreach (var item in receiveOrder.ReceiveOrderDetails)
-                {
-                    var updateProduk = _productRepository.GetAllProduct().Where(c => c.ProductCode == item.ProductNumber).FirstOrDefault();
-                    if (updateProduk != null)
+                    if (lastCodeTrim != setDateNow)
                     {
-                        updateProduk.UpdateDateTime = DateTime.Now;
-                        updateProduk.UpdateBy = new Guid(getUser.Id);
-                        updateProduk.Stock = updateProduk.Stock + item.QtyReceive;
-
-                        _applicationDbContext.Entry(updateProduk).State = EntityState.Modified;
+                        model.ReceiveOrderNumber = "RO" + setDateNow + "0001";
+                    }
+                    else
+                    {
+                        model.ReceiveOrderNumber = "RO" + setDateNow + (Convert.ToInt32(lastCode.ReceiveOrderNumber.Substring(9, lastCode.ReceiveOrderNumber.Length - 9)) + 1).ToString("D4");
                     }
                 }
 
-                _receiveOrderRepository.Tambah(receiveOrder);
-                TempData["SuccessMessage"] = "Number " + model.ReceiveOrderNumber + " Saved";
-                return Json(new { redirectToUrl = Url.Action("Index", "ReceiveOrder") });
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+
+                if (ModelState.IsValid)
+                {
+                    var receiveOrder = new ReceiveOrder
+                    {
+                        CreateDateTime = DateTime.Now,
+                        CreateBy = new Guid(getUser.Id), //Convert Guid to String
+                        ReceiveOrderId = model.ReceiveOrderId,
+                        ReceiveOrderNumber = model.ReceiveOrderNumber,
+                        PurchaseOrderId = model.PurchaseOrderId,
+                        ReceiveById = getUser.Id,
+                        Status = model.Status,
+                        Note = model.Note,
+                        ReceiveOrderDetails = model.ReceiveOrderDetails,
+                    };
+
+                    var updateStatusPO = _purchaseOrderRepository.GetAllPurchaseOrder().Where(c => c.PurchaseOrderId == model.PurchaseOrderId).FirstOrDefault();
+                    if (updateStatusPO != null)
+                    {
+                        updateStatusPO.UpdateDateTime = DateTime.Now;
+                        updateStatusPO.UpdateBy = new Guid(getUser.Id);
+                        updateStatusPO.Status = model.ReceiveOrderNumber;
+
+                        _applicationDbContext.Entry(updateStatusPO).State = EntityState.Modified;
+                    }
+
+                    foreach (var item in receiveOrder.ReceiveOrderDetails)
+                    {
+                        var updateProduk = _productRepository.GetAllProduct().Where(c => c.ProductCode == item.ProductNumber).FirstOrDefault();
+                        if (updateProduk != null)
+                        {
+                            updateProduk.UpdateDateTime = DateTime.Now;
+                            updateProduk.UpdateBy = new Guid(getUser.Id);
+                            updateProduk.Stock = updateProduk.Stock + item.QtyReceive;
+
+                            _applicationDbContext.Entry(updateProduk).State = EntityState.Modified;
+                        }
+                    }
+
+                    _receiveOrderRepository.Tambah(receiveOrder);
+                    TempData["SuccessMessage"] = "Number " + model.ReceiveOrderNumber + " Saved";
+                    return Json(new { redirectToUrl = Url.Action("Index", "ReceiveOrder") });
+                }
+                else
+                {
+                    ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+                    ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
+                    ViewBag.POFilter = new SelectList(await _purchaseOrderRepository.GetPurchaseOrdersFilters(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
+                    TempData["WarningMessage"] = "There is still empty data!!!";
+                    return View(model);
+                }
             }
             else
             {
                 ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
                 ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
                 ViewBag.POFilter = new SelectList(await _purchaseOrderRepository.GetPurchaseOrdersFilters(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
-                TempData["WarningMessage"] = "There is still empty data!!!";
+                TempData["WarningMessage"] = "Sorry, the PO number has been created!";
                 return View(model);
             }
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailReceiveOrder(Guid Id)
         {
             ViewBag.PO = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);

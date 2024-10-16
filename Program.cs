@@ -152,7 +152,7 @@ app.Use(async (context, next) =>
         await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
-        context.Response.Redirect("./Lockout");
+        //context.Response.Redirect("./LoginWith2fa");
         return ;
     }
     await next();

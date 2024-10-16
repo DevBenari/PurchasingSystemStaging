@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-2">
-                                <input autocomplete="off" class="form-control row-QtyReceive" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==6) return false;" min="1" max="1000" id="qtyreceive" placeholder="Qty Receive">
+                                <input autocomplete="off" class="form-control row-QtyReceive" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==6) return false;" min="1" max="1000" id="qtyreceive" placeholder="Qty Receive" disabled>
                                 <span class="error">Required !</span>
                             </div>
                             <div class="col-md-6">
@@ -203,6 +203,7 @@
                             $("#productname").val(item.productName);
                             $("#measure").val(item.measurement);
                             $("#qtyorder").val(item.qty);
+                            $("#qtyreceive").val(item.qty);
                         });
                     },
                     error: function (ex) {
@@ -214,13 +215,13 @@
         })
     </script>
 
-    <script>
+    @*<script>
         $(document).ready(function () {
             $("#produklist").change(function () {
-                $("#qtyreceive").val('1');
+                $("#qtyreceive").val() = ;
             });
         });
-    </script>
+    </script>*@
 
     <script>
         function qtyInput(qtySpecial) {

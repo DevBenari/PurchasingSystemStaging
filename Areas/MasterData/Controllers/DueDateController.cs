@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PurchasingSystemApps.Areas.MasterData.Models;
@@ -46,7 +45,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
@@ -55,7 +53,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -67,7 +64,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> CreateDueDate()
         {
             ViewBag.Active = "MasterData";
@@ -77,7 +73,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateDueDate(DueDateViewModel vm)
         {
             var dateNow = DateTimeOffset.Now;            
@@ -113,7 +108,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailDueDate(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -134,7 +128,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailDueDate(DueDateViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -166,8 +159,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        //[Authorize]
         public async Task<IActionResult> DeleteDueDate(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -187,7 +178,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DeleteDueDate(DueDateViewModel vm)
         {
             //Cek Relasi

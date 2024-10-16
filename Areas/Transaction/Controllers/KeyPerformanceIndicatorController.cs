@@ -46,7 +46,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewBag.Active = "KeyPerformanceIndikator";

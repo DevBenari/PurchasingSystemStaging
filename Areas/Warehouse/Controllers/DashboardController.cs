@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PurchasingSystemApps.Areas.MasterData.Repositories;
 using PurchasingSystemApps.Data;
 
@@ -19,6 +20,7 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
             _applicationDbContext = applicationDbContext;
             _userActiveRepository = userActiveRepository;
         }
+
         public IActionResult Index()
         {
             ViewBag.Active = "Warehouse";

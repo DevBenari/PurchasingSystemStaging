@@ -53,7 +53,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewBag.Active = "KeyPerformanceIndikator";

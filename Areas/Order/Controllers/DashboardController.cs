@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PurchasingSystemApps.Areas.MasterData.Repositories;
@@ -24,6 +25,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             _applicationDbContext = applicationDbContext;
             _userActiveRepository = userActiveRepository;
         }
+
         public IActionResult Index()
         {
             ViewBag.Active = "Order";

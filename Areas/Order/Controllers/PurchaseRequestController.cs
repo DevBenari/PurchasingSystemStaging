@@ -132,7 +132,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewBag.Active = "PurchaseRequest";
@@ -196,7 +195,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTimeOffset tglAwalPencarian, DateTimeOffset tglAkhirPencarian)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -208,7 +206,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> CreatePurchaseRequest()
         {
             ViewBag.Active = "PurchaseRequest";
@@ -257,7 +254,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreatePurchaseRequest(PurchaseRequest model)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -462,7 +458,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailPurchaseRequest(Guid Id)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -534,7 +529,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailPurchaseRequest(PurchaseRequest model)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -543,13 +537,37 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
             if (ModelState.IsValid)
             {
-                PurchaseRequest purchaseRequest = _purchaseRequestRepository.GetAllPurchaseRequest().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).FirstOrDefault();
-                Approval approval = _approvalRepository.GetAllApproval().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).FirstOrDefault();
+                var purchaseRequest = _purchaseRequestRepository.GetAllPurchaseRequest().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).FirstOrDefault();
+                var approval = _approvalRepository.GetAllApproval().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).ToList();
+                //var itemApproval = _approvalRepository.GetAllApproval().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).FirstOrDefault();
 
                 if (purchaseRequest != null)
                 {
                     if (approval != null)
                     {
+                        foreach (var item in approval)
+                        {
+                            var itemApproval = approval.Where(o => o.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
+                            if (itemApproval != null)
+                            {
+                                item.Note = model.Note;
+
+                                _applicationDbContext.Entry(itemApproval).State = EntityState.Modified;
+                                _applicationDbContext.SaveChanges();
+                            }
+                            else
+                            {
+                                ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+                                ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
+                                ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);
+                                ViewBag.DueDate = new SelectList(await _dueDateRepository.GetDueDates(), "DueDateId", "Value", SortOrder.Ascending);
+                                ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
+                                ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
+                                TempData["WarningMessage"] = "Name " + item.ApproveBy + " Not Found !!!";
+                                return View(model);
+                            }
+                        }
+
                         purchaseRequest.UpdateDateTime = DateTimeOffset.Now;
                         purchaseRequest.UpdateBy = new Guid(getUser.Id);                        
                         purchaseRequest.UserApprove1Id = model.UserApprove1Id;
@@ -563,11 +581,8 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         purchaseRequest.MessageApprove2 = model.MessageApprove2;
                         purchaseRequest.MessageApprove3 = model.MessageApprove3;
                         purchaseRequest.Note = model.Note;
-                        purchaseRequest.PurchaseRequestDetails = model.PurchaseRequestDetails;
+                        purchaseRequest.PurchaseRequestDetails = model.PurchaseRequestDetails;                        
 
-                        approval.Note = model.Note;
-
-                        _applicationDbContext.Entry(approval).State = EntityState.Modified;
                         _purchaseRequestRepository.Update(purchaseRequest);
 
                         TempData["SuccessMessage"] = "Number " + model.PurchaseRequestNumber + " Changes saved";

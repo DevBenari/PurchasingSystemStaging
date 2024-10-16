@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +51,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
@@ -61,7 +59,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -73,7 +70,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> NonActive()
         {
             ViewBag.Active = "MasterData";
@@ -82,7 +78,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> NonActive(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -94,7 +89,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> NonPks()
         {
             ViewBag.Active = "MasterData";
@@ -103,7 +97,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> NonPks(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -115,7 +108,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> CreateSupplier()
         {
             ViewBag.Active = "MasterData";
@@ -149,7 +141,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateSupplier(SupplierViewModel vm)
         {
             ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
@@ -229,7 +220,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailSupplier(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -261,7 +251,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailSupplier(SupplierViewModel viewModel)
         {
             ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);
@@ -409,8 +398,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        //[Authorize]
         public async Task<IActionResult> DeleteSupplier(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -431,7 +418,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DeleteSupplier(SupplierViewModel vm)
         {
             //Cek Relasi

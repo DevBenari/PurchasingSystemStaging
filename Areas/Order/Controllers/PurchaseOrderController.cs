@@ -1,7 +1,6 @@
 ﻿using FastReport.Data;
 using FastReport.Export.PdfSimple;
 using FastReport.Web;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -91,11 +90,13 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         {
             var podetail = _applicationDbContext.PurchaseOrderDetails
                 .Where(p => p.PurchaseOrderDetailId == Id).FirstOrDefault();
-            return new JsonResult(podetail);
+            var qtyDiff = _applicationDbContext.QtyDifferences.Where(q => q.PurchaseOrderId == podetail.PurchaseOrderId).FirstOrDefault();
+            var qtyDiffDetail = _applicationDbContext.QtyDifferenceDetails
+                .Where(d => d.QtyDifferenceId == qtyDiff.QtyDifferenceId && d.ProductNumber == podetail.ProductNumber).FirstOrDefault();
+            return new JsonResult(qtyDiffDetail);
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewBag.Active = "PurchaseOrder";
@@ -104,7 +105,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "PurchaseOrder";
@@ -116,7 +116,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }        
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailPurchaseOrder(Guid Id)
         {
             ViewBag.Active = "PurchaseOrder";
@@ -176,7 +175,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GenerateNewPo(Guid Id)
         {
             ViewBag.Active = "PurchaseOrder";
@@ -193,7 +191,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 .Include(a2 => a2.UserApprove2)
                 .Include(a3 => a3.UserApprove3)
                 .Include(p => p.TermOfPayment)
-                //.Include(e => e.DueDate)
                 .Where(p => p.PurchaseOrderId == Id).FirstOrDefault();
 
             _signInManager.IsSignedIn(User);
@@ -237,8 +234,10 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 UserApprove1Id = purchaseOrder.UserApprove1Id,
                 UserApprove2Id = purchaseOrder.UserApprove2Id,
                 UserApprove3Id = purchaseOrder.UserApprove3Id,
+                ApproveStatusUser1 = purchaseOrder.ApproveStatusUser1,
+                ApproveStatusUser2 = purchaseOrder.ApproveStatusUser2,
+                ApproveStatusUser3 = purchaseOrder.ApproveStatusUser3,
                 TermOfPaymentId = purchaseOrder.TermOfPaymentId,
-                //DueDateId = purchaseOrder.DueDateId,
                 Status = purchaseOrder.Status,
                 QtyTotal = purchaseOrder.QtyTotal,
                 GrandTotal = Math.Truncate(purchaseOrder.GrandTotal),
@@ -293,78 +292,84 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> GenerateNewPo(PurchaseOrder model)
         {
             ViewBag.Active = "PurchaseOrder";
 
-            //PurchaseOrder purchaseOrder = await _purchaseOrderRepository.GetPurchaseOrderByIdNoTracking(model.PurchaseOrderId);
-
-            _signInManager.IsSignedIn(User);
-
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-
-            //string getPurchaseOrderNumber = Request.Form["PONumber"];
-
-            var updatePurchaseRequest = _purchaseRequestRepository.GetAllPurchaseRequest().Where(c => c.PurchaseRequestId == model.PurchaseRequestId).FirstOrDefault();
-            if (updatePurchaseRequest != null)
+            if (ModelState.IsValid)
             {
-                updatePurchaseRequest.Status = model.PurchaseOrderNumber;
-                _applicationDbContext.Entry(updatePurchaseRequest).State = EntityState.Modified;
-            }
+                //PurchaseOrder purchaseOrder = await _purchaseOrderRepository.GetPurchaseOrderByIdNoTracking(model.PurchaseOrderId);
 
-            var updateStatusPo = _purchaseOrderRepository.GetAllPurchaseOrder().Where(p => p.PurchaseRequestId == model.PurchaseRequestId).FirstOrDefault();
-            if (updateStatusPo != null)
-            {
-                updateStatusPo.Status = "Cancelled";
-                _applicationDbContext.Entry(updateStatusPo).State = EntityState.Modified;
-            }
+                _signInManager.IsSignedIn(User);
 
-            var newPurchaseOrder = new PurchaseOrder
-            {
-                CreateDateTime = DateTime.Now,
-                CreateBy = new Guid(getUser.Id),
-                PurchaseRequestId = model.PurchaseRequestId,
-                PurchaseRequestNumber = model.PurchaseRequestNumber,
-                UserAccessId = getUser.Id.ToString(),
-                UserApprove1Id = model.UserApprove1Id,
-                UserApprove2Id = model.UserApprove2Id,
-                UserApprove3Id = model.UserApprove3Id,
-                TermOfPaymentId = model.TermOfPaymentId,
-                //DueDateId = model.DueDateId,
-                Status = "InProcess",
-                QtyTotal = model.QtyTotal,
-                GrandTotal = Math.Truncate(model.GrandTotal),
-                Note = model.Note
-            };
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
 
-            newPurchaseOrder.PurchaseOrderNumber = model.PurchaseOrderNumber;
+                //string getPurchaseOrderNumber = Request.Form["PONumber"];
 
-            var ItemsList = new List<PurchaseOrderDetail>();
+                var updatePurchaseRequest = _purchaseRequestRepository.GetAllPurchaseRequest().Where(c => c.PurchaseRequestId == model.PurchaseRequestId).FirstOrDefault();
+                if (updatePurchaseRequest != null)
+                {
+                    updatePurchaseRequest.Status = model.PurchaseOrderNumber;
+                    _applicationDbContext.Entry(updatePurchaseRequest).State = EntityState.Modified;
+                }
 
-            foreach (var item in model.PurchaseOrderDetails)
-            {
-                ItemsList.Add(new PurchaseOrderDetail
+                var updateStatusPo = _purchaseOrderRepository.GetAllPurchaseOrder().Where(p => p.PurchaseRequestId == model.PurchaseRequestId).FirstOrDefault();
+                if (updateStatusPo != null)
+                {
+                    updateStatusPo.Status = "Cancelled";
+                    _applicationDbContext.Entry(updateStatusPo).State = EntityState.Modified;
+                }
+
+                var newPurchaseOrder = new PurchaseOrder
                 {
                     CreateDateTime = DateTime.Now,
                     CreateBy = new Guid(getUser.Id),
-                    ProductNumber = item.ProductNumber,
-                    ProductName = item.ProductName,
-                    Supplier = item.Supplier,
-                    Measurement = item.Measurement,
-                    Qty = item.Qty,
-                    Price = Math.Truncate(item.Price),
-                    Discount = item.Discount,
-                    SubTotal = Math.Truncate(item.SubTotal)
-                });
+                    PurchaseRequestId = model.PurchaseRequestId,
+                    PurchaseRequestNumber = model.PurchaseRequestNumber,
+                    UserAccessId = getUser.Id.ToString(),
+                    UserApprove1Id = model.UserApprove1Id,
+                    UserApprove2Id = model.UserApprove2Id,
+                    UserApprove3Id = model.UserApprove3Id,
+                    ApproveStatusUser1 = model.ApproveStatusUser1,
+                    ApproveStatusUser2 = model.ApproveStatusUser2,
+                    ApproveStatusUser3 = model.ApproveStatusUser3,
+                    TermOfPaymentId = model.TermOfPaymentId,
+                    Status = "InProcess",
+                    QtyTotal = model.QtyTotal,
+                    GrandTotal = Math.Truncate(model.GrandTotal),
+                    Note = model.Note
+                };
+
+                newPurchaseOrder.PurchaseOrderNumber = model.PurchaseOrderNumber;
+
+                var ItemsList = new List<PurchaseOrderDetail>();
+
+                foreach (var item in model.PurchaseOrderDetails)
+                {
+                    ItemsList.Add(new PurchaseOrderDetail
+                    {
+                        CreateDateTime = DateTime.Now,
+                        CreateBy = new Guid(getUser.Id),
+                        ProductNumber = item.ProductNumber,
+                        ProductName = item.ProductName,
+                        Supplier = item.Supplier,
+                        Measurement = item.Measurement,
+                        Qty = item.Qty,
+                        Price = Math.Truncate(item.Price),
+                        Discount = item.Discount,
+                        SubTotal = Math.Truncate(item.SubTotal)
+                    });
+                }
+
+                newPurchaseOrder.PurchaseOrderDetails = ItemsList;
+
+                _purchaseOrderRepository.Tambah(newPurchaseOrder);
+
+                TempData["SuccessMessage"] = "Number " + newPurchaseOrder.PurchaseOrderNumber + " Saved";
+                return Json(new { redirectToUrl = Url.Action("Index", "PurchaseOrder") });
             }
 
-            newPurchaseOrder.PurchaseOrderDetails = ItemsList;
-
-            _purchaseOrderRepository.Tambah(newPurchaseOrder);
-
-            TempData["SuccessMessage"] = "Number " + newPurchaseOrder.PurchaseOrderNumber + " Saved";
-            return Json(new { redirectToUrl = Url.Action("Index", "PurchaseOrder") });
+            return View();
         }
 
         public async Task<IActionResult> PrintPurchaseOrder(Guid Id)

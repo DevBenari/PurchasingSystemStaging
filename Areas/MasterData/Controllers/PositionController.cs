@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -47,7 +46,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
@@ -56,7 +54,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -68,7 +65,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> CreatePosition()
         {
             ViewBag.Active = "MasterData";
@@ -102,7 +98,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreatePosition(PositionViewModel vm)
         {
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -176,7 +171,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailPosition(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -202,7 +196,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailPosition(PositionViewModel viewModel)
         {
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -253,8 +246,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        //[Authorize]
         public async Task<IActionResult> DeletePosition(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -275,7 +266,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DeletePosition(PositionViewModel vm)
         {
             //Cek Relasi Principal dengan Produk

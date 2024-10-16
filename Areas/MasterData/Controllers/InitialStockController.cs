@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -63,7 +62,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         //}
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
@@ -72,7 +70,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -84,7 +81,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> CreateInitialStock()
         {
             ViewBag.Active = "MasterData";
@@ -99,7 +95,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateInitialStock(InitialStockViewModel vm)
         {            
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();

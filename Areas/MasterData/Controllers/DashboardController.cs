@@ -23,6 +23,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _applicationDbContext = applicationDbContext;
             _userActiveRepository = userActiveRepository;
         }
+
         public IActionResult Index()
         {
             ViewBag.Active = "MasterData";

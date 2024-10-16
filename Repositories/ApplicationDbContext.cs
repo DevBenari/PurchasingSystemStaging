@@ -50,6 +50,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<WarehouseTransfer> WarehouseTransfers { get; set; }
     public DbSet<WarehouseTransferDetail> WarehouseTransferDetails { get; set; }
     public DbSet<QtyDifference> QtyDifferences { get; set; }
+    public DbSet<QtyDifferenceDetail> QtyDifferenceDetails { get; set; }
     #endregion
 
     #region Areas Unit Request

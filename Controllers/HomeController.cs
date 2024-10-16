@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -259,7 +258,6 @@ namespace PurchasingSystemApps.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
 
         public async Task<IActionResult> GetProfile()
         {
@@ -271,6 +269,7 @@ namespace PurchasingSystemApps.Controllers
             ViewBag.UserId = userId;
             return Json(data);
         }
+
         public async Task<IActionResult> Logout()
         {
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PurchasingSystemApps.Areas.MasterData.Models;
 using PurchasingSystemApps.Areas.MasterData.Repositories;
@@ -29,10 +28,12 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _httpClient = httpClient;
             _productRepository = productRepository;
         }
+
         public IActionResult Index()
         {
             return View();
         }
+
         public IActionResult Getdata()
         {
             return View();
@@ -61,7 +62,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateProduct(List<Product> products)
         {
             var apiUrl = "http://192.168.15.250:7311/MasterData/Product/GetProduct";

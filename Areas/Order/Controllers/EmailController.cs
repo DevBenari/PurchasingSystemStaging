@@ -44,6 +44,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
 
             _hostingEnvironment = hostingEnvironment;
         }
+
         public IActionResult Index()
         {
             var emails = _emailRepository.GetAllEmails(); // Ambil semua email dari repository
@@ -51,7 +52,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> CreateEmail()
         {
             var model = new EmailViewModel(); // Gunakan EmailViewModel
@@ -59,7 +59,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateEmail(EmailViewModel model)
         {
             var getUser = _userActiveRepository.GetAllUserLogin().FirstOrDefault(u => u.UserName == User.Identity.Name);

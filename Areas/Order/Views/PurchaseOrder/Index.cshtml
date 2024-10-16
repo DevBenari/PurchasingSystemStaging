@@ -63,6 +63,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Create Date</th>
+                                        <th>Expired Date</th>
                                         <th>Create By</th>
                                         <th>Approve 1</th>
                                         <th>Approve 2</th>
@@ -79,6 +80,7 @@
                                         <tr data-href="@Url.Action("DetailPurchaseOrder", "PurchaseOrder", new {id=pr.PurchaseOrderId})">
                                             <th></th>
                                             <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
+                                            <td>@pr.ExpiredDate.ToString("dd MMMM yyyy")</td>
                                             <td>@pr.ApplicationUser.NamaUser</td>
                                             <td>@pr.UserApprove1.FullName</td>
                                             <td>@pr.UserApprove2.FullName</td>

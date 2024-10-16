@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PurchasingSystemApps.Areas.MasterData.Models;
@@ -50,7 +49,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
@@ -59,7 +57,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -71,7 +68,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> CreateLeadTime()
         {
             ViewBag.Active = "MasterData";
@@ -102,7 +98,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateLeadTime(LeadTimeViewModel vm)
         {
             var dateNow = DateTimeOffset.Now;
@@ -170,7 +165,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailLeadTime(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -192,7 +186,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailLeadTime(LeadTimeViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -237,8 +230,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        //[Authorize]
         public async Task<IActionResult> DeleteLeadTime(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -259,7 +250,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DeleteLeadTime(LeadTimeViewModel vm)
         {
             //Cek Relasi

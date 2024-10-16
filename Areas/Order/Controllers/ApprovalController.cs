@@ -61,24 +61,9 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "Approval";
-
-            //var countApproval = _applicationDbContext.Approvals.Where(p => p.Status == "Waiting Approval").GroupBy(u => u.PurchaseRequestId).Select(y => new
-            //{
-            //    ApprovalId = y.Key,
-            //    CountOfApprovals = y.Count()
-            //}).ToList();
-            //ViewBag.CountApproval= countApproval.Count;
-
-            //var countPurchaseRequest = _applicationDbContext.PurchaseRequests.Where(p => p.Status == "Waiting Approval").GroupBy(u => u.PurchaseRequestId).Select(y => new
-            //{
-            //    PurchaseRequestId = y.Key,
-            //    CountOfPurchaseRequests = y.Count()
-            //}).ToList();
-            //ViewBag.CountPurchaseRequest = countPurchaseRequest.Count;
 
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
@@ -210,7 +195,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "Approval";
@@ -222,7 +206,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
        
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> DetailApproval(Guid Id)
         {
             ViewBag.Active = "Approval";
@@ -288,7 +271,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailApproval(ApprovalViewModel viewModel)
         {
             ViewBag.Active = "Approval";

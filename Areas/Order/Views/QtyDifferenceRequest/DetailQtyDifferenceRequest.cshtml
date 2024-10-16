@@ -132,6 +132,7 @@
                                         <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">No</div></th>
                                         <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Product Number</div></th>
                                         <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Product Name</div></th>
+                                        <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Supplier</div></th>
                                         <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Measure</div></th>
                                         <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff">Qty Order</div></th>
                                         <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff">Qty Receive</div></th>
@@ -148,7 +149,8 @@
                                                 <td class="row-index text-center"><p>@no</p></td>
                                                 <td class="text-left row-productNumber"><input class="detkodeproduk" asp-for="@Model.QtyDifferenceDetails[i].ProductNumber" type="hidden" value="@Model.QtyDifferenceDetails[i].ProductNumber"><div style="color:red"><b>@Model.QtyDifferenceDetails[i].ProductNumber</b></div></td>
                                                 <td class="text-left row-productName"><input class="detnamaproduk" asp-for="@Model.QtyDifferenceDetails[i].ProductName" type="hidden" value="@Model.QtyDifferenceDetails[i].ProductName"><div style="color:red"><b>@Model.QtyDifferenceDetails[i].ProductName</b></div></td>
-                                                <td class="text-left"><input class="detsatuan" asp-for="@Model.QtyDifferenceDetails[i].Measure" type="hidden" value="@Model.QtyDifferenceDetails[i].Measure"><div style="color:red"><b>@Model.QtyDifferenceDetails[i].Measure</b></div></td>
+                                                <td class="text-left"><input class="detsatuan" asp-for="@Model.QtyDifferenceDetails[i].Measurement" type="hidden" value="@Model.QtyDifferenceDetails[i].Measurement"><div style="color:red"><b>@Model.QtyDifferenceDetails[i].Measurement</b></div></td>
+                                                <td class="text-left"><input class="detsupplier" asp-for="@Model.QtyDifferenceDetails[i].Supplier" type="hidden" value="@Model.QtyDifferenceDetails[i].Supplier"><div style="color:red"><b>@Model.QtyDifferenceDetails[i].Supplier</b></div></td>
                                                 <td class="text-center"><input class="detqty" asp-for="@Model.QtyDifferenceDetails[i].QtyOrder" type="hidden" value="@Model.QtyDifferenceDetails[i].QtyOrder"><div style="color:red"><b>@Model.QtyDifferenceDetails[i].QtyOrder</b></div></td>
                                                 <td class="text-center"><input class="detprice" asp-for="@Model.QtyDifferenceDetails[i].QtyReceive" type="hidden" value="@Model.QtyDifferenceDetails[i].QtyReceive"><div style="color:red"><b>@Model.QtyDifferenceDetails[i].QtyReceive</b></div></td>
                                             </tr>
@@ -159,7 +161,8 @@
                                                 <td class="row-index text-center"><p>@no</p></td>
                                                 <td class="text-left row-productNumber"><input class="detkodeproduk" asp-for="@Model.QtyDifferenceDetails[i].ProductNumber" type="hidden" value="@Model.QtyDifferenceDetails[i].ProductNumber">@Model.QtyDifferenceDetails[i].ProductNumber</td>
                                                 <td class="text-left row-productName"><input class="detnamaproduk" asp-for="@Model.QtyDifferenceDetails[i].ProductName" type="hidden" value="@Model.QtyDifferenceDetails[i].ProductName">@Model.QtyDifferenceDetails[i].ProductName</td>
-                                                <td class="text-left"><input class="detsatuan" asp-for="@Model.QtyDifferenceDetails[i].Measure" type="hidden" value="@Model.QtyDifferenceDetails[i].Measure">@Model.QtyDifferenceDetails[i].Measure</td>
+                                                <td class="text-left"><input class="detsatuan" asp-for="@Model.QtyDifferenceDetails[i].Measurement" type="hidden" value="@Model.QtyDifferenceDetails[i].Measurement">@Model.QtyDifferenceDetails[i].Measurement</td>
+                                                <td class="text-left"><input class="detsupplier" asp-for="@Model.QtyDifferenceDetails[i].Supplier" type="hidden" value="@Model.QtyDifferenceDetails[i].Supplier">@Model.QtyDifferenceDetails[i].Supplier</td>
                                                 <td class="text-center"><input class="detqty" asp-for="@Model.QtyDifferenceDetails[i].QtyOrder" type="hidden" value="@Model.QtyDifferenceDetails[i].QtyOrder">@Model.QtyDifferenceDetails[i].QtyOrder</td>
                                                 <td class="text-center"><input class="detprice" asp-for="@Model.QtyDifferenceDetails[i].QtyReceive" type="hidden" value="@Model.QtyDifferenceDetails[i].QtyReceive">@Model.QtyDifferenceDetails[i].QtyReceive</td>
                                             </tr>

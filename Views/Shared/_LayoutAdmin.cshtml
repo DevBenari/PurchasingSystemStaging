@@ -407,16 +407,15 @@
 
     @*UI Normal*@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>
-    
+    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>    
 
     <!-- script JS membuat session message  -->
     <script>
-        let warningTime = 10 * 1000; // 10 detik
-        let sessionExpireTime = 15 * 1000; // 15 detik
+        //let warningTime = 10 * 1000; // 10 detik
+        //let sessionExpireTime = 15 * 1000; // 15 detik
 
-        //let warningTime = 720 * 1000; // 12 Menit
-        //let sessionExpireTime = 900 * 1000; // 15 menit
+        let warningTime = 1500 * 1000; // 25 Menit
+        let sessionExpireTime = 1800 * 1000; // 30 menit
         let warningTimeout, expireTimeout;
 
         function extendSession() {
@@ -490,7 +489,7 @@
             console.log("Timer reset");  // Log ketika timer direset
 
             warningTimeout = setTimeout(showSessionExpireWarning, sessionExpireTime - warningTime);
-            expireTimeout = setTimeout(endSession, sessionExpireTime);
+            expireTimeout = setTimeout(sessionExpireTime);
         }
 
         //function endSession() {
