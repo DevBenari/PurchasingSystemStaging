@@ -25,8 +25,12 @@
                     <input asp-for="PurchaseOrderId" type="hidden" id="poList" onChange="poChange(this.value)" />
                     <input asp-for="Status" id="Status" type="hidden">
                     <input asp-for="UserAccessId" id="UserAccessId" type="hidden">
+                    <input asp-for="ExpiredDate" id="ExpiredDate" type="hidden">
                     <input asp-for="PurchaseRequestId" id="PurchaseRequestId" type="hidden">
                     <input asp-for="PurchaseRequestNumber" id="PurchaseRequestNumber" type="hidden">
+                    <input asp-for="ApproveStatusUser1" id="ApproveStatusUser1" type="hidden">
+                    <input asp-for="ApproveStatusUser2" id="ApproveStatusUser2" type="hidden">
+                    <input asp-for="ApproveStatusUser3" id="ApproveStatusUser3" type="hidden">
 
                     @if (signInManager.IsSignedIn(User))
                     {
@@ -101,17 +105,6 @@
                             <span asp-validation-for="TermOfPaymentId" class="error"></span>
                         </div>
                     </div>
-                    @* <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="DueDateId">
-                            Due Date
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="DueDateId" asp-items="@ViewBag.DueDate" class="form-control select2bs4" id="DueDateId" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose DueDate--</option>
-                            </select>
-                            <span asp-validation-for="DueDateId" class="error"></span>
-                        </div>
-                    </div> *@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
                         <div class="col-sm-9">
@@ -731,7 +724,9 @@
                 var isAllValid = true;
                 var detailItemDone = [];
                 var detailDone = {};
-                var UserApprovalId = $('#UserApprovalId').find(":selected").val();
+                var UserApprove1Id = $('#UserApprove1Id').find(":selected").val();
+                var UserApprove2Id = $('#UserApprove2Id').find(":selected").val();
+                var UserApprove3Id = $('#UserApprove3Id').find(":selected").val();                
                 var TermOfPayment = $('#TermOfPaymentId').find(":selected").val();
 
                 var detailTable = $('#tbldetailpr tbody').children().children().length / 10;
@@ -756,8 +751,14 @@
                     var PurchaseOrderNumber = $('#PurchaseOrderNumber').val();
                     var PurchaseRequestId = $('#PurchaseRequestId').val();
                     var PurchaseRequestNumber = $('#PurchaseRequestNumber').val();
+                    var ExpiredDate = $('#ExpiredDate').val();
                     var UserAccessId = $('#UserAccessId').val();
-                    var UserApprovalId = $('#UserApprovalId').val();
+                    var UserApprove1Id = $('#UserApprove1Id').val();
+                    var UserApprove2Id = $('#UserApprove2Id').val();
+                    var UserApprove3Id = $('#UserApprove3Id').val();
+                    var ApproveStatusUser1 = $('#ApproveStatusUser1').val();
+                    var ApproveStatusUser2 = $('#ApproveStatusUser2').val();
+                    var ApproveStatusUser3 = $('#ApproveStatusUser3').val();
                     var TermOfPaymentId = $('#TermOfPaymentId').val();
                     var Status = $('#Status').val();
                     var QtyTotal = $('.productTotalQty').text();
@@ -771,8 +772,14 @@
                         dataPost.PurchaseOrderNumber = PurchaseOrderNumber;
                         dataPost.PurchaseRequestId = PurchaseRequestId;
                         dataPost.PurchaseRequestNumber = PurchaseRequestNumber;
+                        dataPost.ExpiredDate = ExpiredDate;
                         dataPost.UserAccessId = UserAccessId;
-                        dataPost.UserApprovalId = UserApprovalId;
+                        dataPost.UserApprove1Id = UserApprove1Id;
+                        dataPost.UserApprove2Id = UserApprove2Id;
+                        dataPost.UserApprove3Id = UserApprove3Id;
+                        dataPost.ApproveStatusUser1 = ApproveStatusUser1;
+                        dataPost.ApproveStatusUser2 = ApproveStatusUser2;
+                        dataPost.ApproveStatusUser3 = ApproveStatusUser3;
                         dataPost.TermOfPaymentId = TermOfPaymentId;
                         dataPost.Status = Status;
                         dataPost.QtyTotal = QtyTotal;

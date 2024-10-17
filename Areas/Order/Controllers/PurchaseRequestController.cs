@@ -538,8 +538,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             if (ModelState.IsValid)
             {
                 var purchaseRequest = _purchaseRequestRepository.GetAllPurchaseRequest().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).FirstOrDefault();
-                var approval = _approvalRepository.GetAllApproval().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).ToList();
-                //var itemApproval = _approvalRepository.GetAllApproval().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).FirstOrDefault();
+                var approval = _approvalRepository.GetAllApproval().Where(p => p.PurchaseRequestNumber == model.PurchaseRequestNumber).ToList();               
 
                 if (purchaseRequest != null)
                 {
