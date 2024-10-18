@@ -65,8 +65,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 });
 
-
-
 AddScope();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
 

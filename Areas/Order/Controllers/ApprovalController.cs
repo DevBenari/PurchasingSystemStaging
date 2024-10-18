@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PurchasingSystemApps.Areas.MasterData.Models;
@@ -11,6 +12,7 @@ using PurchasingSystemApps.Areas.Order.Models;
 using PurchasingSystemApps.Areas.Order.Repositories;
 using PurchasingSystemApps.Areas.Order.ViewModels;
 using PurchasingSystemApps.Data;
+using PurchasingSystemApps.Hubs;
 using PurchasingSystemApps.Models;
 using PurchasingSystemApps.Repositories;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -30,6 +32,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         private readonly IPurchaseRequestRepository _purchaseRequestRepository;
         private readonly ITermOfPaymentRepository _termOfPaymentRepository;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
+        private readonly IHubContext<ChatHub> _hubContext;
 
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -43,6 +46,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             IPurchaseRequestRepository purchaseRequestRepository,
             ITermOfPaymentRepository termOfPaymentRepository,
             IPurchaseOrderRepository purchaseOrderRepository,
+            IHubContext<ChatHub> hubContext,
 
             IHostingEnvironment hostingEnvironment
         )
@@ -56,6 +60,7 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             _purchaseRequestRepository = purchaseRequestRepository;
             _termOfPaymentRepository = termOfPaymentRepository;
             _purchaseOrderRepository = purchaseOrderRepository;
+            _hubContext = hubContext;
 
             _hostingEnvironment = hostingEnvironment;
         }
@@ -387,6 +392,22 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                         _applicationDbContext.Entry(checkPR).State = EntityState.Modified;
                         _applicationDbContext.SaveChanges();
                     }
+
+                    //Signal R
+
+                    var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                    var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveId;
+                    var data2 = _purchaseRequestRepository.GetAllPurchaseRequest()
+                                    .Where(p => (p.UserApprove1Id == getUserActiveId && p.ApproveStatusUser1 == null)
+                                    || (p.UserApprove2Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == null)
+                                    || (p.UserApprove3Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == "Approve" && p.ApproveStatusUser3 == null))
+                                    .ToList();
+
+                    int totalKaryawan = data2.Count();
+                    ViewBag.TotalKaryawan = totalKaryawan;
+                    await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
+
+                    //End Signal R
 
                     //Jika semua sudah Approve langsung Generate Purchase Order
                     if (checkPR.ApproveStatusUser1 == "Approve" && checkPR.ApproveStatusUser2 == "Approve" && checkPR.ApproveStatusUser3 == "Approve")

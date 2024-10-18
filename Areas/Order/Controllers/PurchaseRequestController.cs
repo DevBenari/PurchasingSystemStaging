@@ -350,23 +350,9 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 _purchaseRequestRepository.Tambah(purchaseRequest);
 
                 //Signal R
-
                 var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
-                var loggerData = new List<string>();
-
-                foreach (var logger in data2)
-                {
-                    var detail = $"{logger.CreateBy}, {logger.PurchaseRequestNumber}, {logger.CreateDateTime}";
-                    loggerData.Add(detail);
-                }
-
                 int totalKaryawan = data2.Count();
-                var loggerDataJson = JsonConvert.SerializeObject(loggerData);
-                ViewBag.TotalKaryawan = totalKaryawan;
-                ViewBag.LoggerData = loggerDataJson;
                 await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
-                await _hubContext.Clients.All.SendAsync("UpdateDataLogger", loggerDataJson);
-
                 //End Signal R                
 
                 if (model.UserApprove1Id != null) 

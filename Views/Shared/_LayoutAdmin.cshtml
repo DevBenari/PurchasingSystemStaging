@@ -100,7 +100,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-danger navbar-badge" id="dataCountNotification"></span>
+                        <span class="badge badge-danger navbar-badge" id="notifikasiCount"></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; overflow-y: auto;" id="loggerContainer">
                         @* <a href="#" class="dropdown-item">
@@ -407,7 +407,10 @@
 
     @*UI Normal*@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>    
+    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Sisipkan data dari ViewBag ke dalam tag <script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- script JS membuat session message  -->
     <script>
@@ -461,23 +464,23 @@
             }, function (dismiss) {
                 if (dismiss === "cancel") {
                     fetch("/accountController/EndSession", {
-                                method: 'POST'
-                            }).then(response => {
-                                if (response.ok) {
-                                    swal({
-                                        title: "Session Berakhir",
-                                        text: "Session Anda telah berakhir",
-                                        type: "error",
-                                        timer: 1500,
-                                        showConfirmButton: false
-                                    });
+                        method: 'POST'
+                    }).then(response => {
+                        if (response.ok) {
+                            swal({
+                                title: "Session Berakhir",
+                                text: "Session Anda telah berakhir",
+                                type: "error",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
 
-                                    // Redirect user ke halaman login
-                                    setTimeout(function () {
-                                        window.location.href = '/Account/Login?ReturnUrl=%2F';
-                                    }, 1500);
-                                }
-                            });  // Akhiri sesi jika pengguna memilih untuk melakukannya
+                            // Redirect user ke halaman login
+                            setTimeout(function () {
+                                window.location.href = '/Account/Login?ReturnUrl=%2F';
+                            }, 1500);
+                        }
+                    });  // Akhiri sesi jika pengguna memilih untuk melakukannya
                 }
             });
         }
@@ -513,7 +516,7 @@
         //    });
         //}
 
-        // Inisialisasi timer saat halaman dimuat        
+        // Inisialisasi timer saat halaman dimuat
 
         // Tambahkan event listener untuk mereset timer saat ada aktivitas
         document.addEventListener('click', resetTimer);
@@ -525,15 +528,8 @@
 
     <!-- end message Session-->
 
-    <!-- Sisipkan data dari ViewBag ke dalam tag <script> -->
-    <script>
-        window.initialData = {
-            totalKaryawan: '@ViewBag.TotalKaryawan',
-            loggerData: '@ViewBag.LoggerData'
-        };
-    </script>
-    <script>
-        // Hubungkan ke SignalR
+    <script type="text/javascript">
+        // Inisialisasi koneksi SignalR
         var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
 
         // Event saat koneksi mulai
@@ -543,124 +539,80 @@
             return console.error(err.toString());
         });
 
-        // Fungsi untuk memperbarui tampilan jumlah karyawan
-        function updateData(totalKaryawan) {
-            var notificationElement = document.getElementById("dataCountNotification");
+        // Fungsi untuk mengambil data
+        function refreshData() {
+            $.ajax({
+                url: '@Url.Action("CountNotifikasi", "Home")', // Sesuaikan URL dengan controller Anda
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        // Menampilkan total karyawan
+                        $("#notifikasiCount").text(response.totalKaryawan);
+                        // Menyembunyikan atau menampilkan notifikasiCount
+                        if (response.totalKaryawan === 0) {
+                            $("#notifikasiCount").hide(); // Sembunyikan jika 0
+                        } else {
+                            $("#notifikasiCount").show(); // Tampilkan jika tidak 0
+                        }
+                        // Mengambil data logger dari response
+                        var loggerData = response.loggerDataJson;
 
-            console.log("Pangil Count .");
-            if (notificationElement) {
-                if (totalKaryawan == '0' || !totalKaryawan || isNaN(totalKaryawan)) {
-                    notificationElement.style.display = '0';
-                } else {
-                    notificationElement.textContent = `${totalKaryawan}`;
-                    localStorage.setItem('totalKaryawan', totalKaryawan);
-                }
-            }
-        }
-
-        // Menerima notifikasi dari SignalR dan memperbarui data
-        connection.on("UpdateDataCount", function (totalKaryawan) {
-            console.log("Total karyawan diterima  : ", totalKaryawan);
-            updateData(totalKaryawan);
-
-            // Simpan total karyawan ke Local Storage
-            localStorage.setItem('totalKaryawan', totalKaryawan);
-        });
-
-
-        //LONGER
-
-        // Fungsi untuk memperbarui tampilan jumlah karyawan
-        function updateDataLog(loggerData) {
-            var notificationElement = document.getElementById("loggerContainer");
-            localStorage.setItem('loggerData', loggerData);
-            // var loggerData = loggerData.replace(/[\[\]",]/g, '');
-          
-            if (notificationElement) {
-                // Kosongkan kontainer sebelumnya
-                notificationElement.innerHTML = "";
-
-                // Jika loggerData masih berbentuk string, parse menjadi array
-                if (typeof loggerData === "string") {
-                    var entries = loggerData.split(',').map(entry => entry.trim()).filter(Boolean); // Pisahkan dan hapus spasi
-
-                    var parsedData = [];
-                    for (var i = 0; i < entries.length; i += 3) {
-                        parsedData.push({
-                            FS_USERNAME: entries[i] ? entries[i] : "", // Username
-                            FS_PESAN: entries[i + 1] ? entries[i + 1] : "", // Pesan
-                            FS_JAM: entries[i + 2] ? entries[i + 2] : "" // Jam
-                        });
-                    }
-                    loggerData = parsedData;
-                }
-
-                // Pastikan loggerData sekarang berbentuk array
-                if (Array.isArray(loggerData)) {
-                    // Iterasi setiap elemen dan tambahkan HTML hanya jika data tidak kosong
-                    loggerData.forEach(function (empl) {
-                        var username = ((empl.FS_USERNAME || "Unknown User").replace(/["\[\]]/g, '')).replace(/&quot;/g, '');
-                        var message = ((empl.FS_PESAN || "No Message").replace(/["\[\]]/g, '')).replace(/&quot;/g, '');
-                        var time = ((empl.FS_JAM || "No Timestamp").replace(/["\[\]]/g, '')).replace(/&quot;/g, '');
-
-                        console.log("Dt : ", username);
-                        // Pastikan ada data valid sebelum menampilkan
-                        if (username && message && time) {
-                            var item = `
-                                <a href="#" class="dropdown-item">
+                        // Bersihkan konten sebelumnya, kecuali footer
+                        $("#loggerContainer").empty();
+                        var a = 0;
+                        // Loop untuk menampilkan data logger ke dalam loggerContainer
+                        $.each(loggerData, function (index, item) {
+                            var content = `
+                                <a href="${'@Url.Action("DetailApproval", "Approval", new { id = "__id__" })'.replace("__id__", item.approvalId)}" class="dropdown-item">
                                     <div class="media">
                                         <div class="media-body">
                                             <h3 class="dropdown-item-title">
-                                              ${message} Created, By ${username}
+                                                Created, By ${item.createdBy}
                                                 <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
                                             </h3>
-                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>${time}</p>
+                                            <p class="text-sm"><strong> ${item.purchaseRequestNumber}</strong></p>
+                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> ${item.createdDate}</p>
                                         </div>
                                     </div>
                                 </a>
-                            `;
-                            // Tambahkan elemen baru ke loggerContainer
-                            notificationElement.insertAdjacentHTML('beforeend', item);
+                                <div class="dropdown-divider"></div>`;
+
+                            // Append ke loggerContainer
+                            $("#loggerContainer").append(content);
+                            a++;
+                        });
+                        // Menambahkan tautan "See All Messages" setelah loop
+                        if (a > 0) {
+                            var footerLink = `
+                                    <a href="${'@Url.Action("Index", "Approval", new { area = "Order" })'}" class="dropdown-item dropdown-footer">See All Messages</a>
+                               `;
                         } else {
-                            var item = `
-                                         <a href="#" class="dropdown-item dropdown-footer">Data Kosong</a>
-                                            `;
-                            // Tambahkan elemen baru ke loggerContainer
-                            notificationElement.insertAdjacentHTML('beforeend', item);
+                            var footerLink = `
+                              <a href="#" class="dropdown-item dropdown-footer"><strong> No Messages</strong></a>
+                                `;
                         }
-                    });
+                        $("#loggerContainer").append(footerLink);
+                    } else {
+                        console.log(response.message); // Jika ada pesan error
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error: " + error); // Menangani error
                 }
-            }
+            });
         }
 
-
-        // Menerima notifikasi dari SignalR dan memperbarui data
-        connection.on("UpdateDataLogger", function (loggerData) {
-            console.log("Total karyawan diterima dari server ini: ", loggerData);
-            updateDataLog(loggerData);
-
-            // Simpan total karyawan ke Local Storage
-            localStorage.setItem('loggerData', loggerData);
+        // Ketika menerima update dari SignalR
+        connection.on("UpdateDataCount", function () {
+            // Panggil fungsi refreshData untuk mendapatkan data terbaru
+            refreshData();
         });
 
-        // Saat halaman dimuat, periksa Local Storage
-        window.onload = function () {
-            var storedTotalKaryawan = localStorage.getItem('totalKaryawan');
-            if (!storedTotalKaryawan) {
-                // Jika tidak ada di LocalStorage, gunakan data dari ViewBag
-                storedTotalKaryawan = window.initialData.totalKaryawan;
-            }
-            console.log("Total karyawan diterima dari Local Storage atau ViewBag: ", storedTotalKaryawan);
-            updateData(storedTotalKaryawan);
-
-            var storedLoggerData = localStorage.getItem('loggerData');
-            if (!storedLoggerData) {
-                // Jika tidak ada di LocalStorage, gunakan data dari ViewBag
-                storedLoggerData = window.initialData.loggerData;
-            }
-            console.log("Logger data diterima dari Local Storage atau ViewBag: ", storedLoggerData);
-            updateDataLog(storedLoggerData);
-        };
+        $(document).ready(function () {
+            // Panggil refreshData saat halaman dimuat pertama kali
+            refreshData();
+        });
     </script>
 </body>
 </html>
