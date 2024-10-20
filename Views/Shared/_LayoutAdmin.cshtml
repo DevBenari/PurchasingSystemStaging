@@ -62,7 +62,7 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="~/admin/dist/img/logo-loader-mmc.png" alt="PurchasingApps" height="60" width="60">
+            <img class="animation__wobble" src="~/admin/dist/img/logo-loader.png" alt="PurchasingApps" height="60" width="60">
         </div>
 
         <!-- Navbar -->
@@ -150,10 +150,8 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color:#347FC4">
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
-                <span class="logo-mini"><b>RS</b>MMC</span>
-                @* <span class="logo-lg"><b>RoleBased</b>Auth</span> *@
                 @*<img src="~/admin/dist/img/logo-mmc-dashboard.jpg" class="brand-image" style="opacity: .8" />*@
-                <span class="brand-text fw-bold" style="color:#FFFFFF">Purchasing System</span>
+                <span class="brand-text fw-bold" style="color:#FFFFFF">RS MMC</span>
             </a>
 
             <!-- Sidebar -->
@@ -411,6 +409,9 @@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>
 
+    <!-- Sisipkan data dari ViewBag ke dalam tag <script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <!-- script JS membuat session message  -->
     <script>
         //let warningTime = 10 * 1000; // 10 detik
@@ -492,7 +493,28 @@
 
             warningTimeout = setTimeout(showSessionExpireWarning, sessionExpireTime - warningTime);
             expireTimeout = setTimeout(sessionExpireTime);
-        }      
+        }
+
+        //function endSession() {
+        //    fetch("/accountController/EndSession", {
+        //        method: 'POST'
+        //    }).then(response => {
+        //        if (response.ok) {
+        //            swal({
+        //                title: "Session Berakhir",
+        //                text: "Session Anda telah berakhir",
+        //                type: "error",
+        //                timer: 1500,
+        //                showConfirmButton: false
+        //            });
+
+        //            // Redirect user ke halaman login
+        //            setTimeout(function () {
+        //                window.location.href = '/Account/Login?ReturnUrl=%2F';
+        //            }, 1500);
+        //        }
+        //    });
+        //}
 
         // Inisialisasi timer saat halaman dimuat
 
@@ -541,9 +563,8 @@
                         var a = 0;
                         // Loop untuk menampilkan data logger ke dalam loggerContainer
                         $.each(loggerData, function (index, item) {
-                            var url = '@Url.Action("DetailApproval", "Approval", new { area = "Order", id = "__id__" })'.replace("__id__", item.approvalId);
                             var content = `
-                                   <a href="${url}" class="dropdown-item">
+                                <a href="${'@Url.Action("DetailApproval", "Approval", new { id = "__id__" })'.replace("__id__", item.approvalId)}" class="dropdown-item">
                                     <div class="media">
                                         <div class="media-body">
                                             <h3 class="dropdown-item-title">

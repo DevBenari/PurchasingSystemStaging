@@ -1038,6 +1038,9 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
@@ -1079,6 +1082,60 @@ namespace PurchasingSystemApps.Migrations
                     b.HasIndex("UserApproveId");
 
                     b.ToTable("OrdApproval", "dbo");
+                });
+
+            modelBuilder.Entity("PurchasingSystemApps.Areas.Order.Models.Email", b =>
+                {
+                    b.Property<Guid?>("EmailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreateDateTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("DeleteDateTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Document")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCancel")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("To")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UpdateBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("UpdateDateTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("EmailId");
+
+                    b.ToTable("OrdPurchaseEmail", "dbo");
                 });
 
             modelBuilder.Entity("PurchasingSystemApps.Areas.Order.Models.PurchaseOrder", b =>
@@ -1308,6 +1365,15 @@ namespace PurchasingSystemApps.Migrations
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MessageApprove1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MessageApprove2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MessageApprove3")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -1828,15 +1894,21 @@ namespace PurchasingSystemApps.Migrations
                     b.Property<DateTimeOffset>("DeleteDateTime")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Measure")
+                    b.Property<string>("Measurement")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -1854,6 +1926,10 @@ namespace PurchasingSystemApps.Migrations
 
                     b.Property<int>("QtyReceive")
                         .HasColumnType("int");
+
+                    b.Property<string>("Supplier")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
