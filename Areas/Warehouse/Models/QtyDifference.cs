@@ -41,9 +41,12 @@ namespace PurchasingSystemApps.Areas.Warehouse.Models
         public Guid? QtyDifferenceId { get; set; }
         public string ProductNumber { get; set; }
         public string ProductName { get; set; }
-        public string Measure { get; set; }
+        public string Measurement { get; set; }
+        public string Supplier { get; set; }
         public int QtyOrder { get; set; }
         public int QtyReceive { get; set; }
+        public decimal Price { get; set; }
+        public int Discount { get; set; }
 
         //Relationship        
         [ForeignKey("QtyDifferenceId")]

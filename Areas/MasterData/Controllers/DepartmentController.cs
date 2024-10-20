@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PurchasingSystemApps.Areas.MasterData.Models;
@@ -42,7 +41,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
@@ -51,7 +49,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -63,7 +60,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> CreateDepartment()
         {
             ViewBag.Active = "MasterData";
@@ -94,7 +90,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateDepartment(DepartmentViewModel vm)
         {
             var dateNow = DateTimeOffset.Now;
@@ -163,7 +158,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailDepartment(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -186,7 +180,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailDepartment(DepartmentViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -232,8 +225,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        //[Authorize]
         public async Task<IActionResult> DeleteDepartment(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -254,7 +245,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DeleteDepartment(DepartmentViewModel vm)
         {
             //Cek Relasi Principal dengan Produk

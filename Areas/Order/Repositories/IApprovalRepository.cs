@@ -54,6 +54,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                     ApprovalDate = Approval.ApprovalDate,
                     ApprovalStatusUser = Approval.ApprovalStatusUser,
                     Status = Approval.Status,
+                    Message = Approval.Message,
                     Note = Approval.Note
                 };
                 return ApprovalDetail;
@@ -85,6 +86,7 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
                 ApprovalDate = Approval.ApprovalDate,
                 ApprovalStatusUser = Approval.ApprovalStatusUser,
                 Status = Approval.Status,
+                Message = Approval.Message,
                 Note = Approval.Note
             }).ToListAsync();
         }

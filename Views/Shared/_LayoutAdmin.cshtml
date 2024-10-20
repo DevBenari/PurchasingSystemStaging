@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity;
+﻿﻿@using Microsoft.AspNetCore.Identity;
 @using PurchasingSystemApps.Models;
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
 
@@ -62,7 +62,7 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="~/admin/dist/img/logo-loader.png" alt="PurchasingApps" height="60" width="60">
+            <img class="animation__wobble" src="~/admin/dist/img/logo-loader-mmc.png" alt="PurchasingApps" height="60" width="60">
         </div>
 
         <!-- Navbar -->
@@ -86,7 +86,7 @@
                         <a class="nav-link" role="button">
                             @if (user.IsOnline == true)
                             {
-                                <p><i class='fas fa-certificate' style='color:greenyellow'></i> Online</p>
+                                <p><i class='fas fa-circle' style='color:greenyellow'></i> Online</p>
                             }
                         </a>
                     </li>
@@ -95,6 +95,33 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+
+                <!-- Messages Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-bell"></i>
+                        <span class="badge badge-danger navbar-badge" id="notifikasiCount"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; overflow-y: auto;" id="loggerContainer">
+                        @* <a href="#" class="dropdown-item">
+                            <!-- Message Start -->
+                            <div class="media">
+                                <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle"> 
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Brad Diesel
+                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">Call me whenever you can...</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+                        </a> *@
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                    </div>
+                </li>
+
                 <!-- Navbar Search -->
                 @if (signInManager.IsSignedIn(User))
                 {
@@ -123,8 +150,10 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color:#347FC4">
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
+                <span class="logo-mini"><b>RS</b>MMC</span>
+                @* <span class="logo-lg"><b>RoleBased</b>Auth</span> *@
                 @*<img src="~/admin/dist/img/logo-mmc-dashboard.jpg" class="brand-image" style="opacity: .8" />*@
-                <span class="brand-text fw-bold" style="color:#FFFFFF">RS MMC</span>
+                <span class="brand-text fw-bold" style="color:#FFFFFF">Purchasing System</span>
             </a>
 
             <!-- Sidebar -->
@@ -151,7 +180,7 @@
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-header">Purchase</li>
+                        <li class="nav-header">Purchasing</li>
                         <li class="@(ViewBag.Active == "PurchaseRequest" ? "nav-item menu-open active":"")">
                             <a asp-action="Index" is-active-route asp-controller="PurchaseRequest" asp-area="Order" class="nav-link">
                                 <i class="nav-icon fas fa-cart-plus" style="color:#FFFFFF"></i>
@@ -159,21 +188,20 @@
                                     Purchase Request @*<span class="float-right badge bg-info">@ViewBag.CountPurchaseRequestStatus</span>*@
                                 </p>
                             </a>
-                        </li>                        
+                        </li>
+                        <li class="@(ViewBag.Active == "Approval" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="Approval" asp-area="Order" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    Approval Purchase Req @*<span class="float-right badge bg-info">@ViewBag.CountPurchaseRequestStatus</span>*@
+                                </p>
+                            </a>
+                        </li>
                         <li class="@(ViewBag.Active == "PurchaseOrder" ? "nav-item menu-open active":"")">
                             <a asp-action="Index" is-active-route asp-controller="PurchaseOrder" asp-area="Order" class="nav-link">
                                 <i class="nav-icon fas fa-shopping-bag" style="color:#FFFFFF"></i>
                                 <p style="color:#FFFFFF">
                                     Purchase Order @*<span class="float-right badge bg-info">@ViewBag.CountPurchaseRequestStatus</span>*@
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-header">Approval</li>
-                        <li class="@(ViewBag.Active == "Approval" ? "nav-item menu-open active":"")">
-                            <a asp-action="Index" is-active-route asp-controller="Approval" asp-area="Order" class="nav-link">
-                                <i class="nav-icon fas fa-cart-plus" style="color:#FFFFFF"></i>
-                                <p style="color:#FFFFFF">
-                                    Approval @*<span class="float-right badge bg-info">@ViewBag.CountPurchaseRequestStatus</span>*@
                                 </p>
                             </a>
                         </li>
@@ -186,6 +214,14 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="@(ViewBag.Active == "ApprovalRequest" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="ApprovalRequest" asp-area="Warehouse" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    Approval Unit Request
+                                </p>
+                            </a>
+                        </li>
                         <li class="nav-header">Warehouse Management</li>
                         <li class="@(ViewBag.Active == "ReceiveOrder" ? "nav-item menu-open active":"")">
                             <a asp-action="Index" is-active-route asp-controller="ReceiveOrder" asp-area="Warehouse" class="nav-link">
@@ -195,11 +231,36 @@
                                 </p>
                             </a>
                         </li>
-                        <li class="@(ViewBag.Active == "ApprovalRequest" ? "nav-item menu-open active":"")">
-                            <a asp-action="Index" is-active-route asp-controller="ApprovalRequest" asp-area="Warehouse" class="nav-link">
-                                <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i>
+                        <li class="@(ViewBag.Active == "QtyDifference" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="QtyDifference" asp-area="Warehouse" class="nav-link">
+                                <i class="nav-icon fas fa-truck-loading" style="color:#FFFFFF"></i>
                                 <p style="color:#FFFFFF">
-                                    Approval Request
+                                    Qty Difference
+                                </p>
+                            </a>
+                        </li>
+                        <li class="@(ViewBag.Active == "ApprovalQtyDifference" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="QtyDifferenceRequest" asp-area="Order" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    Approval Qty Difference
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-header">General</li>
+                        <li class="@(ViewBag.Active == "Stock Monitoring" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="StockMonitoring" asp-area="General" class="nav-link">
+                                <i class="nav-icon fas fa-clipboard-list" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    Stock Monitoring
+                                </p>
+                            </a>
+                        </li>
+                        <li class="@(ViewBag.Active == "KPI" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="KeyPerformanceIndicator" asp-area="Transaction" class="nav-link">
+                                <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    KPI
                                 </p>
                             </a>
                         </li>
@@ -344,9 +405,193 @@
     <script src="~/admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
     <script src="~/admin/dist/js/adminlte.js"></script>
+    <script src="~/admin/dist/js/signalr.min.js"></script>
 
     @*UI Normal*@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- script JS membuat session message  -->
+    <script>
+        //let warningTime = 10 * 1000; // 10 detik
+        //let sessionExpireTime = 15 * 1000; // 15 detik
+
+        let warningTime = 1500 * 1000; // 25 Menit
+        let sessionExpireTime = 1800 * 1000; // 30 menit
+        let warningTimeout, expireTimeout;
+
+        function extendSession() {
+            fetch("/accountController/ExtendSession", {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    swal({
+                        title: "Extend Session",
+                        text: "Your session time has been extended",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    resetTimer();
+                } else {
+                    swal({
+                        title: "Your Session Has Ended",
+                        text: "You failed to extend the session !",
+                        type: "error",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function showSessionExpireWarning() {
+            console.log("Showing session warning");  // Log ketika peringatan ditampilkan
+            swal({
+                title: "Your Session Will End !",
+                text: "Do you want to extend the session?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Extend Session",
+                cancelButtonText: "No, End Session",
+                confirmButtonClass: "btn btn-success",
+                cancelButtonClass: "btn btn-danger",
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then(function () {
+                return extendSession();
+            }, function (dismiss) {
+                if (dismiss === "cancel") {
+                    fetch("/accountController/EndSession", {
+                        method: 'POST'
+                    }).then(response => {
+                        if (response.ok) {
+                            swal({
+                                title: "Session Berakhir",
+                                text: "Session Anda telah berakhir",
+                                type: "error",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            // Redirect user ke halaman login
+                            setTimeout(function () {
+                                window.location.href = '/Account/Login?ReturnUrl=%2F';
+                            }, 1500);
+                        }
+                    });  // Akhiri sesi jika pengguna memilih untuk melakukannya
+                }
+            });
+        }
+
+        function resetTimer() {
+            clearTimeout(warningTimeout);
+            clearTimeout(expireTimeout);
+
+            console.log("Timer reset");  // Log ketika timer direset
+
+            warningTimeout = setTimeout(showSessionExpireWarning, sessionExpireTime - warningTime);
+            expireTimeout = setTimeout(sessionExpireTime);
+        }      
+
+        // Inisialisasi timer saat halaman dimuat
+
+        // Tambahkan event listener untuk mereset timer saat ada aktivitas
+        document.addEventListener('click', resetTimer);
+        document.addEventListener('keypress', resetTimer);
+        document.addEventListener('mousemove', resetTimer);
+
+        resetTimer();
+    </script>
+
+    <!-- end message Session-->
+
+    <script type="text/javascript">
+        // Inisialisasi koneksi SignalR
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+        // Event saat koneksi mulai
+        connection.start().then(function () {
+            console.log("SignalR connected.");
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        // Fungsi untuk mengambil data
+        function refreshData() {
+            $.ajax({
+                url: '@Url.Action("CountNotifikasi", "Home")', // Sesuaikan URL dengan controller Anda
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        // Menampilkan total karyawan
+                        $("#notifikasiCount").text(response.totalKaryawan);
+                        // Menyembunyikan atau menampilkan notifikasiCount
+                        if (response.totalKaryawan === 0) {
+                            $("#notifikasiCount").hide(); // Sembunyikan jika 0
+                        } else {
+                            $("#notifikasiCount").show(); // Tampilkan jika tidak 0
+                        }
+                        // Mengambil data logger dari response
+                        var loggerData = response.loggerDataJson;
+
+                        // Bersihkan konten sebelumnya, kecuali footer
+                        $("#loggerContainer").empty();
+                        var a = 0;
+                        // Loop untuk menampilkan data logger ke dalam loggerContainer
+                        $.each(loggerData, function (index, item) {
+                            var url = '@Url.Action("DetailApproval", "Approval", new { area = "Order", id = "__id__" })'.replace("__id__", item.approvalId);
+                            var content = `
+                                   <a href="${url}" class="dropdown-item">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <h3 class="dropdown-item-title">
+                                                Created, By ${item.createdBy}
+                                                <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                            </h3>
+                                            <p class="text-sm"><strong> ${item.purchaseRequestNumber}</strong></p>
+                                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> ${item.createdDate}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="dropdown-divider"></div>`;
+
+                            // Append ke loggerContainer
+                            $("#loggerContainer").append(content);
+                            a++;
+                        });
+                        // Menambahkan tautan "See All Messages" setelah loop
+                        if (a > 0) {
+                            var footerLink = `
+                                    <a href="${'@Url.Action("Index", "Approval", new { area = "Order" })'}" class="dropdown-item dropdown-footer">See All Messages</a>
+                               `;
+                        } else {
+                            var footerLink = `
+                              <a href="#" class="dropdown-item dropdown-footer"><strong> No Messages</strong></a>
+                                `;
+                        }
+                        $("#loggerContainer").append(footerLink);
+                    } else {
+                        console.log(response.message); // Jika ada pesan error
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error: " + error); // Menangani error
+                }
+            });
+        }
+
+        // Ketika menerima update dari SignalR
+        connection.on("UpdateDataCount", function () {
+            // Panggil fungsi refreshData untuk mendapatkan data terbaru
+            refreshData();
+        });
+
+        $(document).ready(function () {
+            // Panggil refreshData saat halaman dimuat pertama kali
+            refreshData();
+        });
+    </script>
 </body>
 </html>

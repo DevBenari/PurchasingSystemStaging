@@ -94,19 +94,18 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "QtyDifference";
             var data = _QtyDifferenceRepository.GetAllQtyDifference();
             return View(data);
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "QtyDifference";
+
             ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
             ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
 
@@ -115,9 +114,10 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateQtyDifference(string poList)
         {
+            ViewBag.Active = "QtyDifference";
+
             //Pembelian Pembelian = await _pembelianRepository.GetAllPembelian().Where(p => p.PembelianNumber == );
 
             _signInManager.IsSignedIn(User);
@@ -161,9 +161,10 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateQtyDifference(QtyDifference model)
         {
+            ViewBag.Active = "QtyDifference";
+
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.POFilter = new SelectList(await _purchaseOrderRepository.GetPurchaseOrdersFilters(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
@@ -244,9 +245,10 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailQtyDifference(Guid Id)
         {
+            ViewBag.Active = "QtyDifference";
+
             ViewBag.PO = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
             ViewBag.Head = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);

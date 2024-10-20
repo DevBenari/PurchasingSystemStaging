@@ -40,34 +40,43 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="UserApprove1Id">
-                            User Approve 1
+                            Approve 1
                         </label>
                         <div class="col-sm-10">
                             <select asp-for="UserApprove1Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove1List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
+                            </select>                          
+                            <div class="col-sm-12">
+                                <label asp-for="MessageApprove1" class="col-form-label text-success">Note : @Html.DisplayFor(x => x.MessageApprove1)</label>
+                            </div>
                             <span asp-validation-for="UserApprove1Id" class="error"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="UserApprove2Id">
-                            User Approve 2
+                            Approve 2
                         </label>
                         <div class="col-sm-10">
                             <select asp-for="UserApprove2Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove2List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
                             </select>
+                            <div class="col-sm-12">
+                                <label asp-for="MessageApprove2" class="col-form-label text-success">Note : @Html.DisplayFor(x => x.MessageApprove2)</label>
+                            </div>
                             <span asp-validation-for="UserApprove2Id" class="error"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="UserApprove3Id">
-                            User Approve 3
+                            Approve 3
                         </label>
                         <div class="col-sm-10">
                             <select asp-for="UserApprove3Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove3List" style="width: 100%;" disabled>
                                 <option value="" hidden disabled selected>--Choose User--</option>
                             </select>
+                            <div class="col-sm-12">
+                                <label asp-for="MessageApprove3" class="col-form-label text-success">Note : @Html.DisplayFor(x => x.MessageApprove3)</label>
+                            </div>
                             <span asp-validation-for="UserApprove3Id" class="error"></span>
                         </div>
                     </div>
@@ -81,18 +90,7 @@
                             </select>
                             <span asp-validation-for="TermOfPaymentId" class="error"></span>
                         </div>
-                    </div>
-                    @*<div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="DueDateId">
-                            Due Date
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="DueDateId" asp-items="@ViewBag.DueDate" class="form-control select2bs4" id="DueDateId" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose DueDate--</option>
-                            </select>
-                            <span asp-validation-for="DueDateId" class="error"></span>
-                        </div>
-                    </div>*@
+                    </div>                   
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="Note">Note</label>
                         <div class="col-sm-10">
@@ -111,6 +109,7 @@
                         {
                             <div class="form-group row" id="inputProduct">
                                 <div class="col-sm-5">
+                                    <span>Search Product</span>
                                     <div class="form-group">
                                         <select asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="produklist" data-placeholder="--Choose Product--">
                                             <option value="" hidden disabled selected>--Choose Product--</option>
@@ -118,10 +117,12 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-1">
+                                    <span>Qty</span>
                                     <input autocomplete="off" class="form-control" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==4) return false;" min="1" max="1000" id="qty" placeholder="Qty">
                                     <span class="error">Required !</span>
                                 </div>
                                 <div class="col-sm-2">
+                                    <span>&nbsp;</span>
                                     <div class="form-group">
                                         @if (signInManager.IsSignedIn(User))
                                         {
@@ -132,13 +133,16 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-1">
-                                    <input autocomplete="off" class="form-control" id="minstock" type="hidden" placeholder="Min Stock" readonly>
+                                    <span>Min Stock</span>
+                                    <input autocomplete="off" class="form-control" id="minstock" type="text" placeholder="Min Stock" readonly>
                                 </div>
                                 <div class="col-sm-1">
-                                    <input autocomplete="off" class="form-control" id="maxstock" type="hidden" placeholder="Max Stock" readonly>
+                                    <span>Max Stock</span>
+                                    <input autocomplete="off" class="form-control" id="maxstock" type="text" placeholder="Max Stock" readonly>
                                 </div>
                                 <div class="col-sm-2">
-                                    <input autocomplete="off" class="form-control" id="bufferstock" type="hidden" placeholder="Buffer Stock" readonly>
+                                    <span>Buffer Stock</span>
+                                    <input autocomplete="off" class="form-control" id="bufferstock" type="text" placeholder="Buffer Stock" readonly>
                                 </div>
                             </div>
                             <div class="form-group row" id="descriptionProduct">
@@ -225,9 +229,8 @@
                                     </tfoot>
                                 </table>
                             </div>
-                        }
-
-                        @* @if (Model.Status == "Waiting Approval")
+                        }                        
+                        else
                         { 
                             <div class="card-body table-responsive p-0">
                                 <table id="tbldetailpr" class="table table-head-fixed text-nowrap table-bordered table-hover table-striped">
@@ -242,7 +245,6 @@
                                             <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Price</div></th>
                                             <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Discount</div></th>
                                             <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Sub Total</div></th>
-                                            <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff"></div></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -259,8 +261,7 @@
                                                 <td class="text-center row-qty"><input class="detQty" asp-for="@Model.PurchaseRequestDetails[i].Qty" type="hidden" value="@Model.PurchaseRequestDetails[i].Qty">@Model.PurchaseRequestDetails[i].Qty</td>
                                                 <td class="text-right" hidden><input class="detPrice" asp-for="@Model.PurchaseRequestDetails[i].Price" type="hidden" value="@Model.PurchaseRequestDetails[i].Price">@Model.PurchaseRequestDetails[i].Price</td>
                                                 <td class="text-right" hidden><input class="detDiscount" asp-for="@Model.PurchaseRequestDetails[i].Discount" type="hidden" value="@Model.PurchaseRequestDetails[i].Discount">@Model.PurchaseRequestDetails[i].Discount</td>
-                                                <td class="text-right row-total" hidden><input class="detSubTotal" asp-for="@Model.PurchaseRequestDetails[i].SubTotal" type="hidden" value="@Model.PurchaseRequestDetails[i].SubTotal">@Model.PurchaseRequestDetails[i].SubTotal</td>
-                                                <td class="text-center"><button class="btn btn-danger btn-sm">X</button></td>
+                                                <td class="text-right row-total" hidden><input class="detSubTotal" asp-for="@Model.PurchaseRequestDetails[i].SubTotal" type="hidden" value="@Model.PurchaseRequestDetails[i].SubTotal">@Model.PurchaseRequestDetails[i].SubTotal</td>                                                
                                             </tr>
                                         }
                                     </tbody>
@@ -269,13 +270,13 @@
                                             <th colspan="5" class="text-right">Total Qty</th>
                                             <td id="producttotalqty" class="text-center productTotalQty">@Model.QtyTotal</td>
                                             <th colspan="2" class="text-right" hidden>Grand Total</th>
-                                            <td id="productgrandtotal" class="text-right productGrandTotal" hidden>@Math.Truncate(@Model.GrandTotal)</td>
-                                            <td></td>
+                                            <td id="productgrandtotal" class="text-right productGrandTotal" hidden>@Math.Truncate(@Model.GrandTotal)</td>                                            
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
-                        } else
+                        }
+                        @* else
                         {
                             <div class="card-body table-responsive p-0">
                                 <table id="tbldetailpr" class="table table-head-fixed text-nowrap table-bordered table-hover table-striped">
@@ -334,18 +335,18 @@
                             <a class="btn bg-indigo" id="btnubah">Change</a>
                             <a class="btn bg-indigo" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="fas fa-print" style="color:white"></i></a>
                             <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
-                            <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="PurchaseRequest">Batal</a>
+                            <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="PurchaseRequest">Cancel</a>
                         }
                         @* else if (Model.Status == "Approve")
                         {
                             <a class="btn btn-success" asp-action="GeneratePurchaseOrder" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId">Generate Purchase Order</a>
                             <a class="btn bg-indigo" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="fas fa-print" style="color:white"></i></a>
-                            <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="PurchaseRequest">Batal</a>
+                        <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="PurchaseRequest">Cancel</a>
                         } *@
                         else
                         {
                             <a class="btn bg-indigo" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="fas fa-print" style="color:white"></i></a>
-                            <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="PurchaseRequest">Batal</a>
+                            <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="PurchaseRequest">Cancel</a>
                         }
                     </div>
                 </div>

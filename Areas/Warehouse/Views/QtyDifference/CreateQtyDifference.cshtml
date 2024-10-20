@@ -128,6 +128,23 @@
                                 <input autocomplete="off" class="form-control row-QtyOrder" id="QtyOrder" placeholder="Qty Order" readonly>
                                 <span class="error">Required !</span>
                             </div>
+
+                            @*Hidden Column*@
+                            <div class="col-sm-2">
+                                <span hidden>supplier</span>
+                                <input autocomplete="off" class="form-control" id="supplier" placeholder="supplier" readonly hidden>
+                                <span class="error">Required !</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span hidden>price</span>
+                                <input autocomplete="off" class="form-control" id="price" placeholder="price" readonly hidden>
+                                <span class="error">Required !</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span hidden>discount</span>
+                                <input autocomplete="off" class="form-control" id="discount" placeholder="discount" readonly hidden>
+                                <span class="error">Required !</span>
+                            </div>
                         </div>
 
                         <div class="card-body table-responsive p-0">
@@ -224,7 +241,11 @@
                             $("#productnumber").val(item.productNumber);
                             $("#productname").val(item.productName);
                             $("#measure").val(item.measurement);
+                            $("#supplier").val(item.supplier);
                             $("#QtyOrder").val(item.qty);
+                            $("#QtyReceive").val(item.qty);
+                            $("#price").val(item.price);
+                            $("#discount").val(item.discount);
                         });
                     },
                     error: function (ex) {
@@ -236,13 +257,13 @@
         })
     </script>
 
-    <script>
+    @*<script>
         $(document).ready(function () {
             $("#produklist").change(function () {
                 $("#QtyReceive").val('1');
             });
         });
-    </script>
+    </script>*@
 
     <script>
         function qtyInput(qtySpecial) {
@@ -321,8 +342,11 @@
                             var productNumber = $('#productnumber').val().trim();
                             var productName = $('#productname').val().trim();
                             var measurement = $('#measure').val().trim();
+                            var supplier = $('#supplier').val().trim();
                             var QtyOrder = parseInt($('#QtyOrder').val().trim());
                             var QtyReceive = parseInt($('#QtyReceive').val().trim());
+                            var price = $('#price').val().trim();
+                            var discount = $('#discount').val().trim();
 
                             if ($('#tbldetailrcv tbody').children().children().length == 1) {
                                 $('#tbldetailrcv tbody').html('');
@@ -368,12 +392,15 @@
                                     var dynamicTr =
                                         `
                                                         <tr id="R${no}" class="detailProduct">
-                                                        <td class="row-index text-center"><p>${no}</p></td>
+                                                                        <td class="row-index text-center"><div style="color:red"><b>${no}</b></div></td>
                                                         <td class="text-left row-productNumber"><input class="detproductnumber" type="hidden" value="${productNumber}"><div style="color:red"><b>${productNumber}</b></div></td>
                                                         <td class="text-left row-productName"><input class="detproductname" type="hidden" value="${productName}"><div style="color:red"><b>${productName}</b></div></td>
                                                         <td class="text-left"><input class="detmeasure" type="hidden" value="${measurement}"><div style="color:red"><b>${measurement}</b></div></td>
+                                                                <input class="detsupplier" type="hidden" value="${supplier}">
                                                         <td class="text-center"><input class="detdiorder" type="hidden" value="${QtyOrder}"><div style="color:red"><b>${QtyOrder}</b></div></td>
                                                         <td class="text-center"><input class="detditerima" type="hidden" value="${QtyReceive}"><div style="color:red"><b>${QtyReceive}</b></div></td>
+                                                                <input class="detprice" type="hidden" value="${price}">
+                                                                <input class="detdiscount" type="hidden" value="${discount}">                                                                
                                                         <td class="text-center"> <button class="btn btn-danger btn-sm">X</button></td>
                                                         </tr>
                                                     `;
@@ -389,8 +416,11 @@
                                                         <td class="text-left row-productNumber"><input class="detproductnumber" type="hidden" value="${productNumber}">${productNumber}</td>
                                                         <td class="text-left row-productName"><input class="detproductname" type="hidden" value="${productName}">${productName}</td>
                                                         <td class="text-left"><input class="detmeasure" type="hidden" value="${measurement}">${measurement}</td>
+                                                                 <input class="detsupplier" type="hidden" value="${supplier}">
                                                         <td class="text-center"><input class="detdiorder" type="hidden" value="${QtyOrder}">${QtyOrder}</td>
                                                         <td class="text-center"><input class="detditerima" type="hidden" value="${QtyReceive}">${QtyReceive}</td>
+                                                                <input class="detprice" type="hidden" value="${price}">
+                                                                <input class="detdiscount" type="hidden" value="${discount}">
                                                         <td class="text-center"> <button class="btn btn-danger btn-sm">X</button></td>
                                                         </tr>
                                                     `;
@@ -453,6 +483,13 @@
                     $('#produklist').select2('val', 'selectedIndex', 0);
                     $("#produklist").data('placeholder');
                     $("#QtyReceive").val('');
+                } else if (QtyReceive > QtyOrder) {
+                    $('#QtyReceive').val(1);
+                    swal({
+                        title: "Warning",
+                        text: "Sorry, the Receive Qty cannot be greater than the Order Qty !",
+                        type: "warning"
+                    });
                 } else {
                     $('#QtyReceive').val(1);
                     swal({
@@ -507,7 +544,7 @@
                 var detailDone = {};
                 var purchaseOrderNumber = $('#poList').find(":selected").val();
 
-                var detailTable = $('#tbldetailrcv tbody').children().children().length / 7;
+                var detailTable = $('#tbldetailrcv tbody').children().children().length / 10;
                 var detailProdukList = document.getElementById("produklist").options.length - 1;
 
                 if (detailTable == detailProdukList) {
@@ -538,11 +575,14 @@
                     } else {
                         $("#tbldetailrcv").find("tbody").children("tr").each(function (index, element) {
                             //***Penggunaan nama detail harus sesuai dengan nama pada table. Misal productnumber,productname,dst harus sama.
-                            detailDone.productnumber = $(element).find(".detproductnumber").val();
-                            detailDone.productname = $(element).find(".detproductname").val();
-                            detailDone.measure = $(element).find(".detmeasure").val();
+                            detailDone.ProductNumber = $(element).find(".detproductnumber").val();
+                            detailDone.ProductName = $(element).find(".detproductname").val();
+                            detailDone.Measurement = $(element).find(".detmeasure").val();
+                            detailDone.Supplier = $(element).find(".detsupplier").val();
                             detailDone.QtyOrder = $(element).find(".detdiorder").val();
                             detailDone.QtyReceive = $(element).find(".detditerima").val();
+                            detailDone.Price = $(element).find(".detprice").val();
+                            detailDone.Discount = $(element).find(".detdiscount").val();
                             detailItemDone.push(detailDone);
                             detailDone = {};
                         });

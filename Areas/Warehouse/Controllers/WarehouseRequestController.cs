@@ -69,7 +69,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewBag.Active = "Warehouse";
@@ -78,7 +77,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "Warehouse";
@@ -90,7 +88,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailWarehouseRequest(Guid Id)
         {
             ViewBag.Active = "Warehouse";
@@ -155,7 +152,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> TransferUnit(Guid Id)
         {
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
@@ -241,7 +237,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> TransferUnit(WarehouseRequest model, WarehouseRequestViewModel vm)
         {
             WarehouseRequest warehouseRequest = await _warehouseRequestRepository.GetWarehouseRequestByIdNoTracking(model.WarehouseRequestId);

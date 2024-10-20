@@ -69,7 +69,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewBag.Active = "Warehouse";
@@ -78,7 +77,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "Warehouse";
@@ -90,7 +88,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailWarehouseTransfer(Guid Id)
         {
             ViewBag.Active = "Warehouse";

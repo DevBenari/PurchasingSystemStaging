@@ -70,7 +70,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "Warehouse";
@@ -90,7 +89,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "Warehouse";
@@ -102,7 +100,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> DetailApprovalRequest(Guid Id)
         {
             ViewBag.Active = "Warehouse";
@@ -161,7 +158,6 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailApprovalRequest(ApprovalRequestViewModel viewModel)
         {
             ViewBag.Active = "Warehouse";

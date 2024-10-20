@@ -25,8 +25,12 @@
                     <input asp-for="PurchaseOrderId" type="hidden" id="poList" onChange="poChange(this.value)" />
                     <input asp-for="Status" id="Status" type="hidden">
                     <input asp-for="UserAccessId" id="UserAccessId" type="hidden">
+                    <input asp-for="ExpiredDate" id="ExpiredDate" type="hidden">
                     <input asp-for="PurchaseRequestId" id="PurchaseRequestId" type="hidden">
                     <input asp-for="PurchaseRequestNumber" id="PurchaseRequestNumber" type="hidden">
+                    <input asp-for="ApproveStatusUser1" id="ApproveStatusUser1" type="hidden">
+                    <input asp-for="ApproveStatusUser2" id="ApproveStatusUser2" type="hidden">
+                    <input asp-for="ApproveStatusUser3" id="ApproveStatusUser3" type="hidden">
 
                     @if (signInManager.IsSignedIn(User))
                     {
@@ -101,17 +105,6 @@
                             <span asp-validation-for="TermOfPaymentId" class="error"></span>
                         </div>
                     </div>
-                    @* <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" asp-for="DueDateId">
-                            Due Date
-                        </label>
-                        <div class="col-sm-9">
-                            <select asp-for="DueDateId" asp-items="@ViewBag.DueDate" class="form-control select2bs4" id="DueDateId" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose DueDate--</option>
-                            </select>
-                            <span asp-validation-for="DueDateId" class="error"></span>
-                        </div>
-                    </div> *@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label" asp-for="Note">Note</label>
                         <div class="col-sm-9">
@@ -135,7 +128,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-1">
-                                    <input autocomplete="off" class="form-control" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==4) return false;" min="1" max="1000" id="qty" placeholder="Qty">
+                                    <input autocomplete="off" class="form-control" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==4) return false;" min="1" max="1000" id="qty" placeholder="Qty" readonly>
                                     <span class="error">Required !</span>
                                 </div>
                                 <div class="col-sm-2">
@@ -360,16 +353,17 @@
                         $.each(item, function () {
                             $("#productnumber").val(item.productNumber);
                             $("#productname").val(item.productName);
-                            $("#qtyorder").val(item.qty);
-                            $("#Supplier").val(item.Supplier);
-                            $("#measure").val(item.measurement);                            
+                            $("#qtyorder").val(item.qtyOrder);
+                            $("#Supplier").val(item.supplier);
+                            $("#measure").val(item.measurement);
                             $("#discount").val(item.discount);
                             $("#price").val(item.price);
+                            $("#qty").val(item.qtyReceive);
                         });
                     },
-                    error: function (ex) {
-                        alert('Please wait until the data..., ' + ex);
-                    }
+                    //error: function (ex) {
+                    //    alert('Please wait until the data..., ' + ex);
+                    //}
                 });
                 return false;
             })
@@ -509,8 +503,8 @@
                             var measurement = $('#measure').val().trim();
                             var qty = parseInt($('#qty').val().trim());
                             var price = parseFloat($('#price').val().trim());
-                            var discount = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) * (parseInt($('#discount').val().trim()) / 100);
-                            var total = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) - (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) * (parseInt($('#discount').val().trim()) / 100);
+                            var discount = parseInt($('#discount').val().trim());
+                            var total = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) - (parseInt($('#discount').val().trim()));
 
                             if ($('#tbldetailpr tbody').children().children().length == 1) {
                                 $('#tbldetailpr tbody').html('');
@@ -730,7 +724,9 @@
                 var isAllValid = true;
                 var detailItemDone = [];
                 var detailDone = {};
-                var UserApprovalId = $('#UserApprovalId').find(":selected").val();
+                var UserApprove1Id = $('#UserApprove1Id').find(":selected").val();
+                var UserApprove2Id = $('#UserApprove2Id').find(":selected").val();
+                var UserApprove3Id = $('#UserApprove3Id').find(":selected").val();                
                 var TermOfPayment = $('#TermOfPaymentId').find(":selected").val();
 
                 var detailTable = $('#tbldetailpr tbody').children().children().length / 10;
@@ -755,8 +751,14 @@
                     var PurchaseOrderNumber = $('#PurchaseOrderNumber').val();
                     var PurchaseRequestId = $('#PurchaseRequestId').val();
                     var PurchaseRequestNumber = $('#PurchaseRequestNumber').val();
+                    var ExpiredDate = $('#ExpiredDate').val();
                     var UserAccessId = $('#UserAccessId').val();
-                    var UserApprovalId = $('#UserApprovalId').val();
+                    var UserApprove1Id = $('#UserApprove1Id').val();
+                    var UserApprove2Id = $('#UserApprove2Id').val();
+                    var UserApprove3Id = $('#UserApprove3Id').val();
+                    var ApproveStatusUser1 = $('#ApproveStatusUser1').val();
+                    var ApproveStatusUser2 = $('#ApproveStatusUser2').val();
+                    var ApproveStatusUser3 = $('#ApproveStatusUser3').val();
                     var TermOfPaymentId = $('#TermOfPaymentId').val();
                     var Status = $('#Status').val();
                     var QtyTotal = $('.productTotalQty').text();
@@ -770,8 +772,14 @@
                         dataPost.PurchaseOrderNumber = PurchaseOrderNumber;
                         dataPost.PurchaseRequestId = PurchaseRequestId;
                         dataPost.PurchaseRequestNumber = PurchaseRequestNumber;
+                        dataPost.ExpiredDate = ExpiredDate;
                         dataPost.UserAccessId = UserAccessId;
-                        dataPost.UserApprovalId = UserApprovalId;
+                        dataPost.UserApprove1Id = UserApprove1Id;
+                        dataPost.UserApprove2Id = UserApprove2Id;
+                        dataPost.UserApprove3Id = UserApprove3Id;
+                        dataPost.ApproveStatusUser1 = ApproveStatusUser1;
+                        dataPost.ApproveStatusUser2 = ApproveStatusUser2;
+                        dataPost.ApproveStatusUser3 = ApproveStatusUser3;
                         dataPost.TermOfPaymentId = TermOfPaymentId;
                         dataPost.Status = Status;
                         dataPost.QtyTotal = QtyTotal;

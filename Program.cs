@@ -1,4 +1,5 @@
 using FastReport.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +10,7 @@ using PurchasingSystemApps.Areas.Order.Repositories;
 using PurchasingSystemApps.Areas.Transaction.Repositories;
 using PurchasingSystemApps.Areas.Warehouse.Repositories;
 using PurchasingSystemApps.Data;
+using PurchasingSystemApps.Hubs;
 using PurchasingSystemApps.Models;
 using PurchasingSystemApps.Repositories;
 
@@ -47,6 +49,22 @@ builder.Services.AddMvc(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
+// konfigurasi session 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(8);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// konfigurasi cookie Authentication 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
+
+});
+
 AddScope();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
 
@@ -66,6 +84,7 @@ builder.Services.AddScoped<IUnitLocationRepository>();
 builder.Services.AddScoped<IDueDateRepository>();
 builder.Services.AddScoped<IDepartmentRepository>();
 builder.Services.AddScoped<IPositionRepository>();
+builder.Services.AddSignalR();
 #endregion
 
 #region Areas Order
@@ -73,6 +92,7 @@ builder.Services.AddScoped<IPurchaseRequestRepository>();
 builder.Services.AddScoped<IApprovalRepository>();
 builder.Services.AddScoped<IPurchaseOrderRepository>();
 builder.Services.AddScoped<IQtyDifferenceRequestRepository>();
+builder.Services.AddScoped<IEmailRepository>();
 #endregion
 
 #region Areas Warehouse
@@ -112,11 +132,28 @@ app.UseFastReport();
 
 app.UseEndpoints(endpoints =>
 {
+    // SignalR
+    endpoints.MapHub<ChatHub>("/chathub");
+    // End SignalR
     endpoints.MapDefaultControllerRoute();
 
     endpoints.MapControllerRoute(
         name: "MyArea",
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+});
+
+//   konfigurasi end session 
+app.Use(async (context, next) =>
+{
+    if (!context.Session.Keys.Any())
+    {
+        await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
+        //context.Response.Redirect("./LoginWith2fa");
+        return ;
+    }
+    await next();
 });
 
 app.MapRazorPages();

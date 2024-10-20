@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -66,7 +65,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
@@ -75,7 +73,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "MasterData";
@@ -87,7 +84,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> CreateUserActive()
         {
             ViewBag.Active = "MasterData";
@@ -122,7 +118,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateUserActive(UserActiveViewModel vm)
         {
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -235,7 +230,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailUserActive(Guid Id)
         {
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -271,7 +265,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailUserActive(UserActiveViewModel viewModel)
         {
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -371,8 +364,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        //[Authorize]
         public async Task<IActionResult> DeleteUserActive(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -394,7 +385,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DeleteUserActive(UserActiveViewModel vm)
         {
             //Cek Relasi
@@ -489,27 +479,6 @@ namespace PurchasingSystemApps.Areas.MasterData.Controllers
                 return View(vm);
             }
         }
-
-        //private string ProcessUploadFile(UserActiveViewModel model)
-        //{
-        //    string uniqueFileName = null;
-        //    if (model.Foto != null)
-        //    {
-        //        string uploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, "UserPhoto");
-        //        if (!Directory.Exists(uploadFolder))
-        //        {
-        //            Directory.CreateDirectory(uploadFolder);
-        //        }
-        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + model.FullName + "_" + model.Foto.FileName;
-        //        string filePath = Path.Combine(uploadFolder, uniqueFileName);
-        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            model.Foto.CopyTo(fileStream);
-        //        }
-        //    }
-
-        //    return uniqueFileName;
-        //}
         private string ProcessUploadFile(UserActiveViewModel model)
         {
             string uniqueFileName = null;

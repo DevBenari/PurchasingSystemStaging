@@ -73,7 +73,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "Order";
@@ -87,13 +86,12 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
             }
             else
             {
-                var data = _qtyDifferenceRequestRepository.GetAllQtyDifferenceRequest().Where(u => u.HeadPurchasingManagerId == getUserActive.UserActiveId).ToList();
+                var data = _qtyDifferenceRequestRepository.GetAllQtyDifferenceRequest().Where(u => u.HeadWarehouseManagerId == getUserActive.UserActiveId).ToList();
                 return View(data);
             }
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "Order";
@@ -105,7 +103,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ViewResult> DetailQtyDifferenceRequest(Guid Id)
         {
             ViewBag.Active = "Order";
@@ -150,9 +147,12 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
                 {
                     ProductNumber = item.ProductNumber,
                     ProductName = item.ProductName,
-                    Measure = item.Measure,
+                    Measurement = item.Measurement,
+                    Supplier = item.Supplier,
                     QtyOrder = item.QtyOrder,
                     QtyReceive = item.QtyReceive,
+                    Price = item.Price,
+                    Discount = item.Discount,
                 });
             }
 
@@ -162,7 +162,6 @@ namespace PurchasingSystemApps.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailQtyDifferenceRequest(QtyDifferenceRequestViewModel viewModel)
         {
             ViewBag.Active = "Order";

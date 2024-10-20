@@ -43,6 +43,12 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
             {
                 var PurchaseOrderDetail = new PurchaseOrder()
                 {
+                    CreateDateTime = PurchaseOrder.CreateDateTime,
+                    CreateBy = PurchaseOrder.CreateBy,
+                    UpdateDateTime = PurchaseOrder.UpdateDateTime,
+                    UpdateBy = PurchaseOrder.UpdateBy,
+                    DeleteDateTime = PurchaseOrder.DeleteDateTime,
+                    DeleteBy = PurchaseOrder.DeleteBy,
                     PurchaseOrderId = PurchaseOrder.PurchaseOrderId,
                     PurchaseOrderNumber = PurchaseOrder.PurchaseOrderNumber,
                     PurchaseRequestId = PurchaseOrder.PurchaseRequestId,
@@ -92,6 +98,12 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
         {
             return await _context.PurchaseOrders.OrderBy(p => p.CreateDateTime).Select(PurchaseOrder => new PurchaseOrder()
             {
+                CreateDateTime = PurchaseOrder.CreateDateTime,
+                CreateBy = PurchaseOrder.CreateBy,
+                UpdateDateTime = PurchaseOrder.UpdateDateTime,
+                UpdateBy = PurchaseOrder.UpdateBy,
+                DeleteDateTime = PurchaseOrder.DeleteDateTime,
+                DeleteBy = PurchaseOrder.DeleteBy,
                 PurchaseOrderId = PurchaseOrder.PurchaseOrderId,
                 PurchaseOrderNumber = PurchaseOrder.PurchaseOrderNumber,
                 PurchaseRequestId = PurchaseOrder.PurchaseRequestId,
@@ -122,8 +134,14 @@ namespace PurchasingSystemApps.Areas.Order.Repositories
 
         public async Task<List<PurchaseOrder>> GetPurchaseOrdersFilters()
         {
-            return await _context.PurchaseOrders.Where(p => p.Status == "InProcess").OrderBy(p => p.CreateDateTime).Select(PurchaseOrder => new PurchaseOrder()
+            return await _context.PurchaseOrders.Where(p => p.Status == "In Order").OrderBy(p => p.CreateDateTime).Select(PurchaseOrder => new PurchaseOrder()
             {
+                CreateDateTime = PurchaseOrder.CreateDateTime,
+                CreateBy = PurchaseOrder.CreateBy,
+                UpdateDateTime = PurchaseOrder.UpdateDateTime,
+                UpdateBy = PurchaseOrder.UpdateBy,
+                DeleteDateTime = PurchaseOrder.DeleteDateTime,
+                DeleteBy = PurchaseOrder.DeleteBy,
                 PurchaseOrderId = PurchaseOrder.PurchaseOrderId,
                 PurchaseOrderNumber = PurchaseOrder.PurchaseOrderNumber,
                 PurchaseRequestId = PurchaseOrder.PurchaseRequestId,

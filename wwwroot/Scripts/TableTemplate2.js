@@ -1,12 +1,8 @@
 ﻿$(document).ready(function () {
     var table = new DataTable('#tblTemplate2', {
-        columnDefs: [
-            {
-                searchable: false,
-                orderable: false,
-                targets: 0
-            }
-        ]
+        "paging": false,
+        "ordering": false,
+        "searching": false
     });
 
     table

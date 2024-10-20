@@ -72,6 +72,7 @@ namespace PurchasingSystemApps.Areas.MasterData.Repositories
                 ProductId = Product.ProductId,
                 ProductCode = Product.ProductCode,
                 ProductName = Product.ProductName,
+                Supplier = Product.Supplier,
                 SupplierId = Product.SupplierId,
                 CategoryId = Product.CategoryId,
                 MeasurementId = Product.MeasurementId,

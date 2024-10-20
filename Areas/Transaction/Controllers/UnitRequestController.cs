@@ -84,7 +84,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewBag.Active = "UnitRequest";
@@ -93,7 +92,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
             ViewBag.Active = "UnitRequest";
@@ -105,7 +103,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateUnitRequest()
         {
             ViewBag.Active = "UnitRequest";
@@ -152,7 +149,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> CreateUnitRequest(UnitRequest model)
         {
             ViewBag.Active = "UnitRequest";
@@ -251,7 +247,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailUnitRequest(Guid Id)
         {
             ViewBag.Active = "UnitRequest";
@@ -303,7 +298,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> DetailUnitRequest(UnitRequest model)
         {
             ViewBag.Active = "UnitRequest";
@@ -371,7 +365,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GenerateRequest(Guid Id)
         {
             ViewBag.Active = "UnitRequest";
@@ -453,7 +446,6 @@ namespace PurchasingSystemApps.Areas.Transaction.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> GenerateRequest(UnitRequest model, UnitRequestViewModel vm)
         {
             ViewBag.Active = "UnitRequest";

@@ -39,7 +39,7 @@
                     @*Content Approve User 1*@
                     <div class="col-md-12 bg-white">
                         <div class="card-header bg-cyan">
-                            <h3 class="card-title fw-bold" style="color:#ffffff">User Approve 1</h3>
+                            <h3 class="card-title fw-bold" style="color:#ffffff">Approve 1</h3>
                         </div>
                         <div class="card-body">
                             <div class="form-group row">
@@ -81,7 +81,7 @@
                     @*Content Approve User 2*@
                     <div class="col-md-12 bg-white">
                         <div class="card-header bg-cyan">
-                            <h3 class="card-title fw-bold" style="color:#ffffff">User Approve 2</h3>
+                            <h3 class="card-title fw-bold" style="color:#ffffff">Approve 2</h3>
                         </div>
                         <div class="card-body">
                             <div class="form-group row">
@@ -123,7 +123,7 @@
                     @*Content Approve User 3*@
                     <div class="col-md-12 bg-white">
                         <div class="card-header bg-cyan">
-                            <h3 class="card-title fw-bold" style="color:#ffffff">User Approve 3</h3>
+                            <h3 class="card-title fw-bold" style="color:#ffffff">Approve 3</h3>
                         </div>
                         <div class="card-body">
                             <div class="form-group row">
@@ -160,63 +160,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    @*<div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UserApprove1Id">
-                            Department Name
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="UserApprove1Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove1Id" style="width: 100%;">
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="UserApprove1Id" class="error"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UserApprove1Id">
-                            Position Name
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="UserApprove1Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove1Id" style="width: 100%;">
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="UserApprove1Id" class="error"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UserApprove1Id">
-                            User Approve
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="UserApprove1Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove1Id" style="width: 100%;">
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="UserApprove1Id" class="error"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UserApprove2Id">
-                            Approve By User 2
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="UserApprove2Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove2Id" style="width: 100%;">
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="UserApprove2Id" class="error"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UserApprove3Id">
-                            Approve By User 3
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="UserApprove3Id" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="UserApprove3Id" style="width: 100%;">
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="UserApprove3Id" class="error"></span>
-                        </div>
-                    </div>*@
+                    </div>                   
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="TermOfPaymentId">
                             Term Of Payment
@@ -255,6 +199,7 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-sm-5">
+                                <span>Search Product</span>
                                 <div class="form-group">
                                     <select asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="produklist" data-placeholder="--Choose Product--">
                                         <option value="" hidden disabled selected>--Choose Product--</option>
@@ -262,10 +207,12 @@
                                 </div>
                             </div>
                             <div class="col-sm-1">
+                                <span>Qty</span>
                                 <input autocomplete="off" class="form-control" type="number" pattern="/^-?\d+\.?\d*$/" onKeyUp="qtyInput(this.value)" onKeyPress="if(this.value.length==6) return false;" min="1" max="1000" id="qty" placeholder="Qty">
                                 <span class="error">Required !</span>
                             </div>
                             <div class="col-sm-2">
+                                <span>&nbsp;</span>
                                 <div class="form-group">
                                     @if (signInManager.IsSignedIn(User))
                                     {
@@ -276,13 +223,16 @@
                                 </div>
                             </div>
                             <div class="col-sm-1">
-                                <input autocomplete="off" class="form-control" id="minstock" type="hidden" placeholder="Min Stock" readonly>                                
+                                <span>Min Stock</span>
+                                <input autocomplete="off" class="form-control" id="minstock" type="text" placeholder="Min Stock" readonly>                                
                             </div>
-                            <div class="col-sm-1">                                
-                                <input autocomplete="off" class="form-control" id="maxstock" type="hidden" placeholder="Max Stock" readonly>
+                            <div class="col-sm-1">
+                                <span>Max Stock</span>
+                                <input autocomplete="off" class="form-control" id="maxstock" type="text" placeholder="Max Stock" readonly>
                             </div>
-                            <div class="col-sm-2">                               
-                                <input autocomplete="off" class="form-control" id="bufferstock" type="hidden" placeholder="Buffer Stock" readonly>
+                            <div class="col-sm-2">
+                                <span>Buffer Stock</span>
+                                <input autocomplete="off" class="form-control" id="bufferstock" type="text" placeholder="Buffer Stock" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -359,7 +309,7 @@
                     <div class="card-body">
                         @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
                         <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
-                        <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseRequest">Batal</a>
+                        <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseRequest">Cancel</a>
                     </div>
                 </div>
                 <!-- /.end button footer -->
@@ -422,8 +372,8 @@
 
     <script>
         $(document).ready(function () {
-            $("#Position1List").empty().append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
-            $("#UserApprove1List").empty().append('<option value = "' + -1 + '">' + "--Choose User--" + '</option>');
+            $("#Position1List").empty();
+            $("#UserApprove1List").empty();
 
             $("#Department1List").change(function () {
                 $("#Position1List").empty();
@@ -433,7 +383,7 @@
                     dataType: 'json',
                     data: { id: $("#Department1List").val() },
                     success: function (positions) {
-                        $("#Position1List").append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
+                        $("#Position1List").append('<option value = "' + undefined + '">' + "--Choose Position--" + '</option>');
                         $.each(positions, function (i, position) {
                             $("#Position1List").append('<option value = "' + position.value + '">' + position.text + '</option>');
                         });
@@ -453,7 +403,7 @@
                     dataType: 'json',
                     data: { id: $("#Position1List").val() },
                     success: function (users) {
-                        $("#UserApprove1List").append('<option value = "' + -1 + '">' + "--Choose User--" + '</option>');
+                        $("#UserApprove1List").append('<option value = "' + undefined + '">' + "--Choose User--" + '</option>');
                         $.each(users, function (i, user) {
                             $("#UserApprove1List").append('<option value = "' + user.value + '">' + user.text + '</option>');
                         });
@@ -469,8 +419,8 @@
 
     <script>
         $(document).ready(function () {
-            $("#Position2List").empty().append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
-            $("#UserApprove2List").empty().append('<option value = "' + -1 + '">' + "--Choose User--" + '</option>');
+            $("#Position2List").empty();
+            $("#UserApprove2List").empty();
 
             $("#Department2List").change(function () {
                 $("#Position2List").empty();
@@ -480,7 +430,7 @@
                     dataType: 'json',
                     data: { id: $("#Department2List").val() },
                     success: function (positions) {
-                        $("#Position2List").append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
+                        $("#Position2List").append('<option value = "' + undefined + '">' + "--Choose Position--" + '</option>');
                         $.each(positions, function (i, position) {
                             $("#Position2List").append('<option value = "' + position.value + '">' + position.text + '</option>');
                         });
@@ -500,7 +450,7 @@
                     dataType: 'json',
                     data: { id: $("#Position2List").val() },
                     success: function (users) {
-                        $("#UserApprove2List").append('<option value = "' + -1 + '">' + "--Choose User--" + '</option>');
+                        $("#UserApprove2List").append('<option value = "' + undefined + '">' + "--Choose User--" + '</option>');
                         $.each(users, function (i, user) {
                             $("#UserApprove2List").append('<option value = "' + user.value + '">' + user.text + '</option>');
                         });
@@ -516,8 +466,8 @@
 
     <script>
         $(document).ready(function () {
-            $("#Position3List").empty().append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
-            $("#UserApprove3List").empty().append('<option value = "' + -1 + '">' + "--Choose User--" + '</option>');
+            $("#Position3List").empty();
+            $("#UserApprove3List").empty();
 
             $("#Department3List").change(function () {
                 $("#Position3List").empty();
@@ -527,7 +477,7 @@
                     dataType: 'json',
                     data: { id: $("#Department3List").val() },
                     success: function (positions) {
-                        $("#Position3List").append('<option value = "' + -1 + '">' + "--Choose Position--" + '</option>');
+                        $("#Position3List").append('<option value = "' + undefined + '">' + "--Choose Position--" + '</option>');
                         $.each(positions, function (i, position) {
                             $("#Position3List").append('<option value = "' + position.value + '">' + position.text + '</option>');
                         });
@@ -547,7 +497,7 @@
                     dataType: 'json',
                     data: { id: $("#Position3List").val() },
                     success: function (users) {
-                        $("#UserApprove3List").append('<option value = "' + -1 + '">' + "--Choose User--" + '</option>');
+                        $("#UserApprove3List").append('<option value = "' + undefined + '">' + "--Choose User--" + '</option>');
                         $.each(users, function (i, user) {
                             $("#UserApprove3List").append('<option value = "' + user.value + '">' + user.text + '</option>');
                         });
@@ -817,7 +767,8 @@
                             }
                         }
                     }                
-                } else if ($('#qty').val() == 0) {
+                } 
+                else if ($('#qty').val() == 0) {
                     swal({
                         title: "Warning",
                         text: "Qty cannot be 0 !!!",
@@ -826,19 +777,21 @@
                     $('#produklist').select2('val', 'selectedIndex', 0);
                     $("#produklist").data('placeholder');
                     $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
-                } else if ($('#minstock').val() == 0) {
+                } 
+                else if ($('#minstock').val() == 0) {
                     swal({
                         title: "Warning",
-                        text: "Sorry, Min Max Stock has not been determined !!!",
+                        text: "Sorry, Min Max Stock has not been determined!",
                         type: "warning"
                     });
                     $('#produklist').select2('val', 'selectedIndex', 0);
                     $("#produklist").data('placeholder');
                     $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
-                } else {
+                }                
+                else {
                     swal({
                         title: "Warning",
-                        text: "Please input correctly !",
+                        text: "Sorry, transactions cannot exceed Qty Order = " + qtyOrder + " !",
                         type: "warning"
                     });
                     $('#produklist').select2('val', 'selectedIndex', 0);
@@ -928,7 +881,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment == '' && Department1Id == '' && Position1Id == '' && UserApprove1Id == '' && Department2Id == '' && Position2Id == '' && UserApprove2Id == '' && Department3Id == '' && Position3Id == '' && UserApprove3Id == '') {
+                } else if (detailTable != 1 && TermOfPayment == '' && Department1Id == '' && Position1Id == undefined && UserApprove1Id == undefined && Department2Id == '' && Position2Id == undefined && UserApprove2Id == undefined && Department3Id == '' && Position3Id == undefined && UserApprove3Id == undefined) {
                     $('#Department1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#Position1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#UserApprove1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
@@ -944,16 +897,8 @@
                         text: "Sorry, please select...",
                         type: "warning"
                     });
-                    isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment == ''  && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
-                    $('#TermOfPayment').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
-                    swal({
-                        title: "Warning",
-                        text: "Sorry, please select...",
-                        type: "warning"
-                    });
                     isAllValid = false;                
-                } else if (detailTable != 1 && TermOfPayment != ''  && Department1Id == '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1  && Department1Id == '') {
                     $('#Department1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -961,7 +906,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id == '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && Position1Id == undefined || Position1Id == "undefined") {
                     $('#Position1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -969,7 +914,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id == '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && UserApprove1Id == undefined || UserApprove1Id == "undefined") {
                     $('#UserApprove1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -977,7 +922,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id == '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && Department2Id == '') {
                     $('#Department2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -985,7 +930,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id == '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && Position2Id == undefined || Position2Id == "undefined") {
                     $('#Position2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -993,15 +938,15 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id == '' && Department3Id != '' && Position3Id != '' && UserApprove3Id != '') {
-                    $('#UserApprove2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
+                } else if (detailTable != 1 && UserApprove2Id == undefined || UserApprove2Id == "undefined") {
+                    $('#Position2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
                         text: "Sorry, please select...",
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id == '' && Position3Id != '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && Department3Id == '') {
                     $('#Department3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1009,7 +954,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id == '' && UserApprove3Id != '') {
+                } else if (detailTable != 1 && Position3Id == undefined || Position3Id == "undefined") {
                     $('#Position3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1017,7 +962,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment != '' && Department1Id != '' && Position1Id != '' && UserApprove1Id != '' && Department2Id != '' && Position2Id != '' && UserApprove2Id != '' && Department3Id != '' && Position3Id != '' && UserApprove3Id == '') {
+                } else if (detailTable != 1 && UserApprove3Id == undefined || UserApprove3Id == "undefined") {
                     $('#UserApprove3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -1025,6 +970,14 @@
                         type: "warning"
                     });
                     isAllValid = false;
+                } else if (detailTable != 1 && TermOfPayment == '') {
+                    $('#TermOfPayment').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
+                    swal({
+                        title: "Warning",
+                        text: "Sorry, please select...",
+                        type: "warning"
+                    });
+                    isAllValid = false;                
                 } else {
                     //Sembunyikan pesan error
                     $('#Department1List').siblings('span.error').css('visibility', 'hidden')

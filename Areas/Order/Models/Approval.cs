@@ -22,6 +22,7 @@ namespace PurchasingSystemApps.Areas.Order.Models
         public string? ApprovalStatusUser { get; set; }
         public string Status { get; set; }
         public string? Note { get; set; }
+        public string? Message { get; set; }
 
         //Relationship
         [ForeignKey("PurchaseRequestId")]

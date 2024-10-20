@@ -19,6 +19,7 @@ namespace PurchasingSystemApps.Areas.Warehouse.Controllers
             _applicationDbContext = applicationDbContext;
             _userActiveRepository = userActiveRepository;
         }
+
         public IActionResult Index()
         {
             ViewBag.Active = "Warehouse";
