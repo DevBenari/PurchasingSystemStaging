@@ -22,6 +22,8 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.Active = "Report";
+
             return View();
         }
     }
