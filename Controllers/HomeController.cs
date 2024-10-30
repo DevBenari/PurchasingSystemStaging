@@ -107,7 +107,7 @@ namespace PurchasingSystemStaging.Controllers
             }).ToList();
             ViewBag.CountReceiveOrder = countReceiveOrder.Count;
 
-            var countApprovalUnitRequest = _applicationDbContext.ApprovalRequests.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.ApprovalRequestId).Select(y => new
+            var countApprovalUnitRequest = _applicationDbContext.ApprovalUnitRequests.Where(u => u.CreateBy == new Guid(checkUserLogin.Id)).GroupBy(u => u.ApprovalUnitRequestId).Select(y => new
             {
                 ApprovalRequestId = y.Key,
                 CountOfApprovalUnitRequests = y.Count()
