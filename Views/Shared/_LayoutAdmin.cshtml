@@ -246,6 +246,14 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="@(ViewBag.Active == "WarehouseRequest" ? "nav-item menu-open active":"")">
+                            <a asp-action="Index" is-active-route asp-controller="WarehouseRequest" asp-area="Warehouse" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i>
+                                <p style="color:#FFFFFF">
+                                    Warehouse Request
+                                </p>
+                            </a>
+                        </li>
                         <li class="nav-header">General</li>
                         <li class="@(ViewBag.Active == "Stock Monitoring" ? "nav-item menu-open active":"")">
                             <a asp-action="Index" is-active-route asp-controller="StockMonitoring" asp-area="General" class="nav-link">

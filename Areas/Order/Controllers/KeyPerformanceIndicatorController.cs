@@ -34,7 +34,6 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         private readonly IApprovalRepository _approvalRepository;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IPurchaseRequestRepository _purchaseRequestRepository;
-        private readonly IQtyDifferenceRequestRepository _qtyDifferenceRequestRepository;
         private readonly IUserActiveRepository _userActiveRepository;
 
         public KeyPerformanceIndicatorController(
@@ -44,7 +43,6 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             IApprovalRepository approvalRepository,
             IPurchaseOrderRepository purchaseOrderRepository,
             IPurchaseRequestRepository purchaseRequestRepository,
-            IQtyDifferenceRequestRepository qtyDifferenceRequestRepository,
             IUserActiveRepository userActiveRepository
         )
         {
@@ -54,7 +52,6 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             _approvalRepository = approvalRepository;   
             _purchaseOrderRepository = purchaseOrderRepository;
             _purchaseRequestRepository = purchaseRequestRepository;
-            _qtyDifferenceRequestRepository = qtyDifferenceRequestRepository;
             _userActiveRepository = userActiveRepository;
         }
 

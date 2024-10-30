@@ -7,7 +7,7 @@
 @using PurchasingSystemStaging.Models;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
-@model IEnumerable<WarehouseRequest>
+@model IEnumerable<UnitOrder>
 
 <!-- Main content -->
 <section class="content">
@@ -62,21 +62,21 @@
                                         <th>Create Date</th>
                                         <th>Create By</th>
                                         <th>Request Number</th>
-                                        <th>Warehouse Approve By</th>
-                                        <th>Transfer Number</th>
+                                        @*<th>Warehouse Approve By</th>
+                                        <th>Transfer Number</th>*@
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var pr in Model)
                                     {
-                                        <tr data-href="@Url.Action("DetailWarehouseRequest", "WarehouseRequest", new {id=pr.WarehouseRequestId})">
+                                        <tr data-href="@Url.Action("DetailWarehouseRequest", "WarehouseRequest", new {id=pr.UnitOrderId})">
                                             <th></th>
                                             <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
                                             <td>@pr.ApplicationUser.NamaUser</td>
                                             <td>@pr.UnitRequestNumber</td>
-                                            <td>@pr.WarehouseApproval.FullName</td>
-                                            <td>@pr.WarehouseRequestNumber</td>
+                                            @*<td>@pr.WarehouseApproval.FullName</td>
+                                            <td>@pr.WarehouseRequestNumber</td>*@
                                             @if (pr.Status == "Process")
                                             {
                                                 <td><div style="color:blue"><b>@pr.Status</b></div></td>

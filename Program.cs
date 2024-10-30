@@ -90,21 +90,20 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<IPurchaseRequestRepository>();
 builder.Services.AddScoped<IApprovalRepository>();
 builder.Services.AddScoped<IPurchaseOrderRepository>();
-builder.Services.AddScoped<IQtyDifferenceRequestRepository>();
 builder.Services.AddScoped<IEmailRepository>();
 builder.Services.AddScoped<IApprovalQtyDifferenceRepository>();
 #endregion
 
 #region Areas Warehouse
 builder.Services.AddScoped<IReceiveOrderRepository>();
-builder.Services.AddScoped<IWarehouseRequestRepository>();
+builder.Services.AddScoped<IUnitOrderRepository>();
 builder.Services.AddScoped<IWarehouseTransferRepository>();
 builder.Services.AddScoped<IQtyDifferenceRepository>();
 #endregion
 
 #region Areas Unit Request
 builder.Services.AddScoped<IUnitRequestRepository>();
-builder.Services.AddScoped<IApprovalRequestRepository>();
+builder.Services.AddScoped<IApprovalUnitRequestRepository>();
 #endregion
 
 //Initialize Fast Report

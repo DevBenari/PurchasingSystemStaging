@@ -1,6 +1,6 @@
 ﻿namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
 {
-    public class WarehouseRequestDetailViewModel
+    public class UnitOrderDetailViewModel
     {
         public Guid WarehouseRequestDetailId { get; set; }
         public Guid? WarehouseRequestId { get; set; }
