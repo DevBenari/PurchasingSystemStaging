@@ -78,16 +78,32 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             ViewBag.Active = "Warehouse";
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
+            var getUser1 = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(a => a.ApprovalStatusUser == "User1" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "Waiting Approval").ToList();
+            var getUser1Approve = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(a => a.ApprovalStatusUser == "User1" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "Approve").ToList();
 
-            if (getUserLogin.Id == "5f734880-f3d9-4736-8421-65a66d48020e")
+            var itemList = new List<ApprovalUnitRequest>();
+
+            if (getUser1 != null)
             {
-                var data = _approvalUnitRequestRepository.GetAllApprovalRequest();
-                return View(data);
-            }
+                itemList.AddRange(getUser1);
+                itemList.AddRange(getUser1Approve);
+                
+                return View(itemList);
+            }            
             else
             {
-                var data = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(u => u.UserApproveId == getUserActive.UserActiveId).ToList();
-                return View(data);
+                if (getUserLogin.Id == "5f734880-f3d9-4736-8421-65a66d48020e")
+                {
+                    var data = _approvalUnitRequestRepository.GetAllApprovalRequest();                    
+
+                    return View(data);
+                }
+                else
+                {
+                    var data = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(u => u.UserApproveId == getUserActive.UserActiveId && u.Status != "Waiting Approval" && u.Status != "Reject").ToList();                    
+
+                    return View(data);
+                }
             }
         }
 

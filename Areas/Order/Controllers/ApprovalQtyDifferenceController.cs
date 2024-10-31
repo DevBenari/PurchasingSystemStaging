@@ -117,7 +117,6 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             else if (getUser1 != null)
             {
                 itemList.AddRange(getUser1);
-
                 itemList.AddRange(getUser1Approve);
 
                 return View(itemList);
