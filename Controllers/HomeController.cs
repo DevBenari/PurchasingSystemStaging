@@ -7,6 +7,7 @@ using PurchasingSystemStaging.Areas.MasterData.Repositories;
 using PurchasingSystemStaging.Areas.MasterData.ViewModels;
 using PurchasingSystemStaging.Areas.Order.Models;
 using PurchasingSystemStaging.Areas.Order.Repositories;
+using PurchasingSystemStaging.Areas.Transaction.Repositories;
 using PurchasingSystemStaging.Areas.Warehouse.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Hubs;
@@ -33,6 +34,8 @@ namespace PurchasingSystemStaging.Controllers
         private readonly IApprovalRepository _approvalRepository;
         private readonly IQtyDifferenceRepository _qtyDifferenceRepository;
         private readonly IApprovalQtyDifferenceRepository _approvalQtyDifferenceRepository;
+        private readonly IUnitRequestRepository _unitRequestRepository;
+        private readonly IApprovalUnitRequestRepository _approvalUnitRequestRepository;
 
         public HomeController(ILogger<HomeController> logger,
             UserManager<ApplicationUser> userManager,
@@ -44,7 +47,9 @@ namespace PurchasingSystemStaging.Controllers
             IProductRepository productRepository,
             IApprovalRepository approvalRepository,
             IQtyDifferenceRepository qtyDifferenceRepository,
-            IApprovalQtyDifferenceRepository approvalQtyDifferenceRepository)
+            IApprovalQtyDifferenceRepository approvalQtyDifferenceRepository,
+            IUnitRequestRepository unitRequestRepository,
+            IApprovalUnitRequestRepository approvalUnitRequestRepository)
         {
             _logger = logger;
             _applicationDbContext = context;
@@ -57,6 +62,8 @@ namespace PurchasingSystemStaging.Controllers
             _approvalRepository = approvalRepository;
             _qtyDifferenceRepository = qtyDifferenceRepository;
             _approvalQtyDifferenceRepository = approvalQtyDifferenceRepository;
+            _unitRequestRepository = unitRequestRepository;
+            _approvalUnitRequestRepository = approvalUnitRequestRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -303,6 +310,7 @@ namespace PurchasingSystemStaging.Controllers
             var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveId;
             var loggerDataPR = new List<object>();
             var loggerDataQtyDiff = new List<object>();
+            var loggerDataUnitReq = new List<object>();
 
             var DataPR = _purchaseRequestRepository.GetAllPurchaseRequest()
                             .Where(p => (p.UserApprove1Id == getUserActiveId && p.ApproveStatusUser1 == null)
@@ -314,6 +322,11 @@ namespace PurchasingSystemStaging.Controllers
             var DataQtyDiff = _qtyDifferenceRepository.GetAllQtyDifference()
                             .Where(p => (p.UserApprove1Id == getUserActiveId && p.ApproveStatusUser1 == null)
                             || (p.UserApprove2Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == null))
+                            .OrderByDescending(a => a.CreateDateTime)
+                            .ToList();
+
+            var DataUnitReq = _unitRequestRepository.GetAllUnitRequest()
+                            .Where(p => (p.UserApprove1Id == getUserActiveId && p.ApproveStatusUser1 == null))
                             .OrderByDescending(a => a.CreateDateTime)
                             .ToList();
 
@@ -391,9 +404,26 @@ namespace PurchasingSystemStaging.Controllers
                 }
             }
 
-            var totalNotification = DataPR.Count + DataQtyDiff.Count;
+            foreach (var logger in DataUnitReq)
+            {
+                if (logger.ApproveStatusUser1 == null)
+                {
+                    var getUserApproveId = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.UnitRequestId == logger.UnitRequestId).FirstOrDefault().ApprovalUnitRequestId;
 
-            return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff });
+                    var detail = new
+                    {
+                        approvalId = getUserApproveId,
+                        createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
+                        unitRequestNumber = logger.UnitRequestNumber,
+                        createdDate = logger.CreateDateTime
+                    };
+                    loggerDataUnitReq.Add(detail);
+                }                
+            }
+
+            var totalNotification = DataPR.Count + DataQtyDiff.Count + DataUnitReq.Count;
+
+            return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq });
 
         }
 

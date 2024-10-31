@@ -71,7 +71,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "UnitOrder";
             var data = _unitOrderRepository.GetAllUnitOrder();
             return View(data);
         }
@@ -79,7 +79,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "UnitOrder";
             ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
             ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
 
@@ -90,7 +90,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> DetailUnitOrder(Guid Id)
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "UnitOrder";
 
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
             ViewBag.UnitLocation = new SelectList(await _unitLocationRepository.GetUnitLocations(), "UnitLocationId", "UnitLocationName", SortOrder.Ascending);
@@ -181,19 +181,19 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             var lastCode = _warehouseTransferRepository.GetAllWarehouseTransfer().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.WarehouseTransferNumber).FirstOrDefault();
             if (lastCode == null)
             {
-                wtf.WarehouseTransferNumber = "WTF" + setDateNow + "0001";
+                wtf.WarehouseTransferNumber = "TR" + setDateNow + "0001";
             }
             else
             {
-                var lastCodeTrim = lastCode.WarehouseTransferNumber.Substring(3, 6);
+                var lastCodeTrim = lastCode.WarehouseTransferNumber.Substring(2, 6);
 
                 if (lastCodeTrim != setDateNow)
                 {
-                    wtf.WarehouseTransferNumber = "WTF" + setDateNow + "0001";
+                    wtf.WarehouseTransferNumber = "TR" + setDateNow + "0001";
                 }
                 else
                 {
-                    wtf.WarehouseTransferNumber = "WTF" + setDateNow + (Convert.ToInt32(lastCode.WarehouseTransferNumber.Substring(9, lastCode.WarehouseTransferNumber.Length - 9)) + 1).ToString("D4");
+                    wtf.WarehouseTransferNumber = "TR" + setDateNow + (Convert.ToInt32(lastCode.WarehouseTransferNumber.Substring(9, lastCode.WarehouseTransferNumber.Length - 9)) + 1).ToString("D4");
                 }
             }
 
@@ -245,7 +245,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
 
-            string getWarehouseTransferNumber = Request.Form["WTFNumber"];
+            string getWarehouseTransferNumber = Request.Form["TRNumber"];
 
             var updateURequest = _unitRequestRepository.GetAllUnitRequest().Where(c => c.UnitRequestId == model.UnitRequestId).FirstOrDefault();
             if (updateURequest != null)
@@ -272,20 +272,20 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             newWarehouseTransfer.WarehouseTransferNumber = getWarehouseTransferNumber;
 
-            var updateWRQ = _unitOrderRepository.GetAllUnitOrder().Where(c => c.UnitOrderId == model.UnitOrderId).FirstOrDefault();
-            if (updateWRQ != null)
+            var updateStatusUO = _unitOrderRepository.GetAllUnitOrder().Where(c => c.UnitOrderId == model.UnitOrderId).FirstOrDefault();
+            if (updateStatusUO != null)
             {
                 {
-                    updateWRQ.Status = newWarehouseTransfer.WarehouseTransferNumber;
+                    updateStatusUO.Status = newWarehouseTransfer.WarehouseTransferNumber;
                 };
-                _applicationDbContext.Entry(updateWRQ).State = EntityState.Modified;
+                _applicationDbContext.Entry(updateStatusUO).State = EntityState.Modified;
             }
 
             var ItemsList = new List<WarehouseTransferDetail>();
 
             foreach (var item in vm.UnitOrderDetails)
             {
-                //Saat proses transfer stok barang di gudang akan berkurang
+                //Saat proses transfer, stok barang di gudang akan berkurang
                 var updateProduk = _productRepository.GetAllProduct().Where(c => c.ProductCode == item.ProductNumber).FirstOrDefault();
                 if (updateProduk != null)
                 {

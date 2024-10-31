@@ -12,6 +12,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
         public Guid? UnitLocationId { get; set; }
         public Guid? WarehouseLocationId { get; set; }
         public Guid? UserApproveId { get; set; }
+        public string? UserApprove { get; set; }
         public string ApproveBy { get; set; }
         public string? ApprovalTime { get; set; }
         public DateTimeOffset ApprovalDate { get; set; }
@@ -19,6 +20,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
         public string Status { get; set; }
         public string? Note { get; set; }
         public string? Message { get; set; }
+        public int QtyTotal { get; set; }
         public List<UnitRequestDetail> UnitRequestDetails { get; set; }
     }
 }

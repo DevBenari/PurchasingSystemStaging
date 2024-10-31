@@ -75,7 +75,8 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "ApprovalUnitRequest";
+
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
             var getUser1 = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(a => a.ApprovalStatusUser == "User1" && a.UserApproveId == getUserActive.UserActiveId && a.Status == "Waiting Approval").ToList();
@@ -110,7 +111,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "ApprovalUnitRequest";
             ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
             ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
 
@@ -119,9 +120,9 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewResult> DetailApprovalRequest(Guid Id)
+        public async Task<ViewResult> DetailApprovalUnitRequest(Guid Id)
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "ApprovalUnitRequest";
 
             ViewBag.UnitLocation = new SelectList(await _unitLocationRepository.GetUnitLocations(), "UnitLocationId", "UnitLocationName", SortOrder.Ascending);
             ViewBag.RequestBy = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -147,18 +148,19 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 UnitLocationId = ApprovalRequest.UnitLocationId,
                 WarehouseLocationId = ApprovalRequest.WarehouseLocationId,
                 UserApproveId = ApprovalRequest.UserApproveId,
-                ApproveBy = ApprovalRequest.ApproveBy,
-                ApprovalTime = ApprovalRequest.ApprovalTime,
-                ApprovalDate = ApprovalRequest.ApprovalDate,
+                UserApprove = getUser.Email,
+                ApprovalTime = "",
+                ApproveBy = getUser.NamaUser,
+                ApprovalDate = DateTime.Now,
                 ApprovalStatusUser = ApprovalRequest.ApprovalStatusUser,
                 Status = ApprovalRequest.Status,
                 Note = ApprovalRequest.Note,
-                Message = ApprovalRequest.Message,
+                Message = ApprovalRequest.Message,                
             };
 
             var getUrNumber = _unitRequestRepository.GetAllUnitRequest().Where(ur => ur.UnitRequestNumber == viewModel.UnitRequestNumber).FirstOrDefault();
 
-            //viewModel.QtyTotal = getUrNumber.QtyTotal;
+            viewModel.QtyTotal = getUrNumber.QtyTotal;
 
             var ItemsList = new List<UnitRequestDetail>();
 
@@ -180,9 +182,9 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DetailApprovalRequest(ApprovalUnitRequestViewModel viewModel)
+        public async Task<IActionResult> DetailApprovalUnitRequest(ApprovalUnitRequestViewModel viewModel)
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "ApprovalUnitRequest";
 
             if (ModelState.IsValid)
             {
@@ -223,26 +225,21 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
                         _applicationDbContext.Entry(checkUnitReq).State = EntityState.Modified;
                         _applicationDbContext.SaveChanges();
-
-                        var updateStatusUr = _unitRequestRepository.GetAllUnitRequest().Where(p => p.UnitRequestId == checkUnitReq.UnitRequestId).FirstOrDefault();
-                        if (updateStatusUr != null)
-                        {
-                            updateStatusUr.Status = "Process";
-                            _applicationDbContext.Entry(updateStatusUr).State = EntityState.Modified;
-                            _applicationDbContext.SaveChanges();
-                        }
-
+                        
                         //var openQtyDiff = _qtyDifferenceRepository.GetAllQtyDifference().FirstOrDefault();
                         //var getUO = _unio.GetAllPurchaseOrder().Where(p => p.PurchaseOrderId == viewModel.PurchaseOrderId).FirstOrDefault();
                         var getUR = _unitRequestRepository.GetAllUnitRequest().Where(a => a.UnitRequestId == viewModel.UnitRequestId).FirstOrDefault();
 
-                        //Proses Generate New Purchase Order
+                        //Proses Generate Unit Order
                         var unitOrder = new UnitOrder
                         {
                             CreateDateTime = DateTimeOffset.Now,
                             CreateBy = getUR.CreateBy,
                             UnitRequestId = getUR.UnitRequestId,
+                            UnitRequestNumber = getUR.UnitRequestNumber,
                             UserAccessId = getUR.CreateBy.ToString(),
+                            UnitLocationId = getUR.UnitLocationId,
+                            WarehouseLocationId = getUR.WarehouseLocationId,
                             UserApprove1Id = getUR.UserApprove1Id,
                             ApproveStatusUser1 = getUR.ApproveStatusUser1,
                             Status = "In Order",
@@ -292,18 +289,29 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                             }
                         }
 
+                        //Update Status UR Menjadi Nomor UO
+                        var updateUR = _unitRequestRepository.GetAllUnitRequest().Where(c => c.UnitRequestId == viewModel.UnitRequestId).FirstOrDefault();
+                        if (updateUR != null)
+                        {
+                            {
+                                updateUR.Status = unitOrder.UnitOrderNumber;
+                            };
+                            _applicationDbContext.Entry(updateUR).State = EntityState.Modified;
+                            _applicationDbContext.SaveChanges();
+                        }
+
                         _unitOrderRepository.Tambah(unitOrder);
 
                         _approvalUnitRequestRepository.Update(approvalUnitReq);
                         _applicationDbContext.SaveChanges();
 
                         TempData["SuccessMessage"] = "Approve And Success Create Unit Order";
-                        return RedirectToAction("Index", "ApprovalQtyDifference");
+                        return RedirectToAction("Index", "ApprovalUnitRequest");
                     }
                     else
                     {
                         TempData["SuccessMessage"] = "Update Success";
-                        return RedirectToAction("Index", "ApprovalQtyDifference");
+                        return RedirectToAction("Index", "ApprovalUnitRequest");
                     }
                 }
             }
