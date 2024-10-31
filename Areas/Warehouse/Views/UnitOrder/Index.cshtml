@@ -1,13 +1,13 @@
 ﻿@{
-    ViewData["Title"] = "List Qty Difference";
-    Layout = "~/Views/Shared/_TopNavbarWarehouseQtyDifference.cshtml";
+    ViewData["Title"] = "List Unit Order";
+    Layout = "~/Views/Shared/_TopNavbarWarehouseUnitOrder.cshtml";
 }
 
 @using PurchasingSystemStaging.Areas.Warehouse.Models;
 @using PurchasingSystemStaging.Models;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
-@model IEnumerable<QtyDifference>
+@model IEnumerable<UnitOrder>
 
 <!-- Main content -->
 <section class="content">
@@ -16,21 +16,12 @@
             <div class="card card-cyan">
                 <div class="card-header">
                     <h3 class="card-title" style="color:#ffffff">@ViewBag.Title</h3>
-
-                    <div class="card-tools">
-                        @if (signInManager.IsSignedIn(User))
-                        {
-                            <a class="btn btn-tool bg-indigo" asp-action="CreateQtyDifference" asp-controller="QtyDifference" asp-area="Warehouse">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        }
-                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form enctype="multipart/form-data" asp-action="Index" asp-controller="QtyDifference" method="post" class="form-horizontal">
+                    <form enctype="multipart/form-data" asp-action="Index" asp-controller="UnitOrder" method="post" class="form-horizontal">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <div class="input-group date" id="tglAwalPencarian" data-target-input="nearest">
                                         <div class="input-group-append" data-target="#tglAwalPencarian" data-toggle="datetimepicker">
@@ -40,7 +31,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <div class="input-group date" id="reservationdate" data-target-input="nearest">
                                         <div class="input-group date" id="tglAkhirPencarian" data-target-input="nearest">
@@ -55,13 +46,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-6">
                                 <div class="form-group">
-                                    <select class="form-control select2bs4" style="width: 100%;" id="btnFilterBy" data-placeholder="--Filter by--">
-                                        <option value="" hidden disabled selected>--Filter by--</option>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="Weekly">Weekly</option>
-                                        <option value="Daily">Daily</option>
+                                    <select class="form-control select2" style="width: 100%;" id="daterange-btn">
+                                        <option value="" hidden disabled selected>Pencarian Berdasarkan Waktu</option>
                                     </select>
                                 </div>
                             </div>
@@ -74,58 +62,28 @@
                                         <th>Create Date</th>
                                         <th>Create By</th>
                                         <th>Approve 1</th>
-                                        <th>Approve 2</th>
-                                        <th>QD Number</th>
-                                        <th>PO Number</th>
+                                        <th>Request Number</th>
+                                        <th>Order Number</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var ro in Model)
+                                    @foreach (var pr in Model)
                                     {
-                                        <tr data-href="@Url.Action("DetailQtyDifference", "QtyDifference", new {id=ro.QtyDifferenceId})">
+                                        <tr data-href="@Url.Action("DetailUnitOrder", "UnitOrder", new {id=pr.UnitOrderId})">
                                             <th></th>
-                                            <td>@ro.CreateDateTime.ToString("dd MMMM yyyy")</td>
-                                            <td>@ro.ApplicationUser.NamaUser</td>
-                                            @if (ro.ApproveStatusUser1 == "Approve")
+                                            <td>@pr.CreateDateTime.ToString("dd MMMM yyyy")</td>
+                                            <td>@pr.ApplicationUser.NamaUser</td>
+                                            <td>@pr.UserApprove1.FullName</td>
+                                            <td>@pr.UnitRequestNumber</td>
+                                            <td>@pr.UnitOrderNumber</td>
+                                            @if (pr.Status == "In Order")
                                             {
-                                                <td><span class="badge bg-success"><b>@ro.UserApprove1.FullName</b></span></td>
-                                            }
-                                            else if (ro.ApproveStatusUser1 == "Reject")
-                                            {
-                                                <td><span class="badge bg-danger"><b>@ro.UserApprove1.FullName</b></span></td>
-                                            }
-                                            else
-                                            {
-                                                <td><span class="badge"><b>@ro.UserApprove1.FullName</b></span></td>
-                                            }
-
-                                            @if (ro.ApproveStatusUser2 == "Approve")
-                                            {
-                                                <td><span class="badge bg-success"><b>@ro.UserApprove2.FullName</b></span></td>
-                                            }
-                                            else if (ro.ApproveStatusUser2 == "Reject")
-                                            {
-                                                <td><span class="badge bg-danger"><b>@ro.UserApprove2.FullName</b></span></td>
+                                                <td><b>@pr.Status</b></td>
                                             }
                                             else
                                             {
-                                                <td><span class="badge"><b>@ro.UserApprove2.FullName</b></span></td>
-                                            }
-                                            <td>@ro.QtyDifferenceNumber</td>
-                                            <td>@ro.PurchaseOrder.PurchaseOrderNumber</td>
-
-                                            @if (ro.Status == "Waiting Approval")
-                                            {
-                                                <td><span class="badge bg-danger"><b>@ro.Status</b></span></td>
-                                            }
-                                            else if (ro.Status == "Approve")
-                                            {
-                                                <td><span class="badge bg-success"><b>@ro.Status</b></span></td>
-                                            }
-                                            else
-                                            {
-                                                <td><b>@ro.Status</b></td>
+                                                <td><div style="color:forestgreen"><b>@pr.Status</b></div></td>
                                             }
                                         </tr>
                                     }
@@ -140,7 +98,7 @@
                 {
                     <script type="text/javascript">
                         window.onload = function () {
-                            swal("Success", '@TempData["SuccessMessage"]', "success");
+                            swal("Berhasil", '@TempData["SuccessMessage"]', "success");
                         };
                     </script>
                 }
@@ -148,7 +106,7 @@
                 {
                     <script type="text/javascript">
                         window.onload = function () {
-                            swal("Failed", '@TempData["WarningMessage"]', "warning");
+                            swal("Gagal Simpan", '@TempData["WarningMessage"]', "warning");
                         };
                     </script>
                 }
@@ -161,16 +119,7 @@
 <!-- /.content -->
 @section Scripts{
     <script src="~/scripts/tabletemplate.js"></script>
-    <script>
-        $(function () {
-            //Initialize Select2 Elements
-            $('.select2bs4').select2({
-                theme: 'bootstrap4'
-            })
 
-            $("#btnFilterBy").data('placeholder');
-        })
-    </script>
     <script>
         $(function () {
             $('#tglAwalPencarian').datetimepicker({

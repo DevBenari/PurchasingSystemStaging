@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Detail Warehouse Request";
-    Layout = "~/Views/Shared/_TopNavbarWarehouse.cshtml";
+    Layout = "~/Views/Shared/_TopNavbarWarehouseUnitOrder.cshtml";
 }
 
 @using Microsoft.AspNetCore.Identity;
@@ -19,7 +19,7 @@
                 <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
             </div>
 
-            <form enctype="multipart/form-data" asp-controller="WarehouseRequest" asp-action="DetailWarehouseRequest" method="post" class="form-horizontal">
+            <form enctype="multipart/form-data" asp-controller="UnitOrder" asp-action="DetailUnitOrder" method="post" class="form-horizontal">
                 <div class="card-body">
                     <input asp-for="UnitRequestId" type="hidden" />
                     <input asp-for="UserAccessId" id="UserAccessId" type="hidden">
@@ -29,12 +29,12 @@
                         <input asp-for="@User.Identity.Name" class="form-control" type="hidden">
                     }
 
-                    @*<div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="WarehouseRequestNumber">Warehouse Number</label>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="UnitOrderNumber">Order Number</label>
                         <div class="col-sm-10">
-                            <input type="text" asp-for="WarehouseRequestNumber" class="form-control form-control-border border-width-2" id="WarehouseRequestNumber" placeholder="Warehouse Number" readonly disabled>
+                            <input type="text" asp-for="UnitOrderNumber" class="form-control form-control-border border-width-2" id="UnitOrderNumber" placeholder="UnitOrderNumber" readonly disabled>
                         </div>
-                    </div>*@        
+                    </div>        
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="UnitRequestNumber">Request Number</label>
                         <div class="col-sm-10">
@@ -62,18 +62,7 @@
                             </select>
                             <span asp-validation-for="UnitLocationId" class="error"></span>
                         </div>
-                    </div>
-                    @*<div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UnitRequestManagerId">
-                            Request By
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="UnitRequestManagerId" asp-items="@ViewBag.RequestBy" class="form-control select2bs4" id="RequestBy" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="UnitRequestManagerId" class="error"></span>
-                        </div>
-                    </div>*@
+                    </div>                    
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="WarehouseLocationId">
                             Warehouse Location
@@ -85,17 +74,12 @@
                             <span asp-validation-for="WarehouseLocationId" class="error"></span>
                         </div>
                     </div>
-                    @*<div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="WarehouseApprovalId">
-                            Warehouse Approval
-                        </label>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Note">Note</label>
                         <div class="col-sm-10">
-                            <select asp-for="WarehouseApprovalId" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="WarehouseApproval" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="WarehouseApprovalId" class="error"></span>
+                            <input type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note" readonly disabled>
                         </div>
-                    </div>*@
+                    </div>
                 </div>
 
                 <div class="card card-default">
@@ -145,16 +129,16 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        @if (Model.Status == "Process")
+                        @if (Model.Status == "In Order")
                         {
-                            <a class="btn btn-success" asp-action="TransferUnit" asp-controller="WarehouseRequest" asp-area="Warehouse" asp-route-id="@Model.UnitOrderId">Process Transfer</a>
+                            <a class="btn btn-success" asp-action="TransferUnit" asp-controller="UnitOrder" asp-area="Warehouse" asp-route-id="@Model.UnitOrderId">Transfer</a>
                             @*<a class="btn bg-indigo" asp-action="PrintWarehouseRequest" asp-controller="WarehouseRequest" asp-area="Warehouse" asp-route-id="@Model.WarehouseRequestId"><i class="fas fa-print" style="color:white"></i></a>*@
-                            <a class="btn btn-default" asp-action="Index" asp-controller="WarehouseRequest">Batal</a>
+                            <a class="btn btn-default" asp-action="Index" asp-controller="UnitOrder">Batal</a>
                         }
                         else
                         {
                             @*<a class="btn bg-indigo" asp-action="PrintWarehouseRequest" asp-controller="WarehouseRequest" asp-area="Warehouse" asp-route-id="@Model.WarehouseRequestId"><i class="fas fa-print" style="color:white"></i></a>*@
-                            <a class="btn btn-default" asp-action="Index" asp-controller="WarehouseRequest">Batal</a>
+                            <a class="btn btn-default" asp-action="Index" asp-controller="UnitOrder">Batal</a>
                         }
                     </div>
                 </div>

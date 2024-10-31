@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Transfer Unit";
-    Layout = "~/Views/Shared/_TopNavbarWarehouse.cshtml";
+    Layout = "~/Views/Shared/_TopNavbarWarehouseUnitOrder.cshtml";
 }
 
 @using Microsoft.AspNetCore.Identity;
@@ -17,7 +17,7 @@
                 <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
             </div>
 
-            <form enctype="multipart/form-data" id="generateTrf" asp-controller="WarehouseRequest" asp-action="TransferUnit" method="post" class="form-horizontal">
+            <form enctype="multipart/form-data" id="generateTrf" asp-controller="UnitOrder" asp-action="TransferUnit" method="post" class="form-horizontal">
                 <div class="card-body">
                     <input type="hidden" asp-for="UnitOrderId" />
                     <input type="hidden" asp-for="UnitRequestId" />
@@ -29,20 +29,20 @@
                     }
 
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">W. Tranfer Number</label>
+                        <label class="col-sm-2 col-form-label">Tranfer Number</label>
                         <div class="col-sm-10">
-                            @Html.Hidden("WTFNumber", (object)ViewBag.WarehouseTransferNumber)
+                            @Html.Hidden("TRNumber", (object)ViewBag.WarehouseTransferNumber)
                             <input type="text" value="@ViewBag.WarehouseTransferNumber" class="form-control form-control-border border-width-2" readonly />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UnitOrderNumber">W. Request Number</label>
+                        <label class="col-sm-2 col-form-label" asp-for="UnitOrderNumber">Order Number</label>
                         <div class="col-sm-10">
                             <input type="text" asp-for="UnitOrderNumber" class="form-control form-control-border border-width-2" id="UnitOrderNumber" placeholder="Warehouse Number" readonly disabled>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UnitRequestNumber">U. Request Number</label>
+                        <label class="col-sm-2 col-form-label" asp-for="UnitRequestNumber">Request Number</label>
                         <div class="col-sm-10">
                             <input type="text" asp-for="UnitRequestNumber" class="form-control form-control-border border-width-2" id="UnitRequestNumber" placeholder="Unit Request Number" readonly disabled>
                         </div>
@@ -68,18 +68,7 @@
                             </select>
                             <span asp-validation-for="UnitLocationId" class="error"></span>
                         </div>
-                    </div>
-                    @*<div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="UnitRequestManagerId">
-                            Request By
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="UnitRequestManagerId" asp-items="@ViewBag.RequestBy" class="form-control select2bs4" id="RequestBy" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="UnitRequestManagerId" class="error"></span>
-                        </div>
-                    </div>*@
+                    </div>                    
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="WarehouseLocationId">
                             Warehouse Location
@@ -91,18 +80,7 @@
                             <span asp-validation-for="WarehouseLocationId" class="error"></span>
                         </div>
                     </div>
-                    @*<div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="WarehouseApprovalId">
-                            Warehouse Approval
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="WarehouseApprovalId" asp-items="@ViewBag.Approval" class="form-control select2bs4" id="WarehouseApproval" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose User--</option>
-                            </select>
-                            <span asp-validation-for="WarehouseApprovalId" class="error"></span>
-                        </div>
-                    </div>*@
-
+                    
                     <div class="card card-default">
                         <div class="card-header bg-cyan">
                             <h3 class="card-title fw-bold" style="color:#ffffff">Item</h3>
@@ -159,7 +137,7 @@
                         <div class="card-body">
                             @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
                             <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold">Simpan</button>
-                            <a class="btn btn-default" asp-action="Index" asp-controller="WarehouseRequest">Batal</a>
+                            <a class="btn btn-default" asp-action="Index" asp-controller="UnitOrder">Batal</a>
                         </div>
                     </div>
                     <!-- /.end button footer -->
