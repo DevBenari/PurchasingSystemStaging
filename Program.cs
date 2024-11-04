@@ -1,3 +1,4 @@
+using Azure;
 using FastReport.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -50,7 +51,7 @@ builder.Services.AddMvc(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";
+        options.LoginPath = "/Account/Login?ReturnUrl=%2F";
         options.LogoutPath = "/Account/Logout";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
     });
@@ -125,54 +126,34 @@ app.UseAuthorization();
 //   konfigurasi end session 
 app.Use(async (context, next) =>
 {
-    if (context.User.Identity?.IsAuthenticated ?? true && !context.Session.TryGetValue("LastActivity", out _))
+    // Hapus semua session & Hapus cookie UserName
+    context.Session.Clear();   
+    context.Response.Cookies.Delete("username");
+
+    if (context.User.Identity?.IsAuthenticated == true && !context.Session.TryGetValue("LastActivity", out _))
     {
         var username = context.User.Identity.Name;
 
         if (!string.IsNullOrEmpty(username))
-        {            
+        {
+            UpdateDataForExpiredSession(username, app);
+
+            // Hapus semua session
+            context.Session.Clear();
+            // Hapus cookie UserName
+            context.Response.Cookies.Delete("username");
+
             await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            context.Response.Redirect("/Account/Login");
+            context.Response.Redirect("/Account/Login?ReturnUrl=%2F");
+            return;
         }
     }
-    else if (context.User.Identity?.IsAuthenticated ?? true)
+    else
     {
         // Jika session masih aktif, perbarui waktu "LastActivity"
-        context.Session.SetString("LastActivity", DateTime.Now.ToString());
-        await next.Invoke();
+        context.Session.SetString("LastActivity", DateTime.Now.ToString());        
     }
     
-    //if (!context.User.Identity?.IsAuthenticated ?? true & !context.Session.TryGetValue("LastActivity", out _))
-    //{
-    //    var username = context.User.Identity.Name;
-
-    //    if (!string.IsNullOrEmpty(username))
-    //    {
-    //        UpdateDataForExpiredSession(username, app);
-
-    //        // Jika session dan cookie keduanya hilang, arahkan ke halaman logout
-    //        await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-    //        context.Response.Redirect("/Account/Logout");
-    //    }
-    //}
-    //else
-    //{
-    //    // Jika session masih aktif, perbarui waktu "LastActivity"
-    //    context.Session.SetString("LastActivity", DateTime.Now.ToString());
-    //    await next.Invoke();
-    //}
-
-    //if (string.IsNullOrEmpty(context.Session.GetString("Username")))
-    //{
-    //    // Cek apakah cookie masih ada
-    //    if (context.Request.Cookies["Username"] == null)
-    //    {
-    //        // Jika session dan cookie keduanya hilang, arahkan ke halaman logout
-    //        context.Response.Redirect("/Account/Logout");
-    //        return;
-    //    }
-    //}
-
     // Lanjutkan ke middleware berikutnya
     await next.Invoke();
 });
@@ -235,7 +216,7 @@ void UpdateDataForExpiredSession(string username, WebApplication app)
         //Cari User
         var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
         if (user != null)
-        {
+        {            
             user.IsOnline = false;
             dbContext.SaveChanges();
         }

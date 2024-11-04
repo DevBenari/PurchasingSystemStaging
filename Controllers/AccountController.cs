@@ -261,7 +261,7 @@ namespace PurchasingSystemStaging.Controllers
             HttpContext.Session.Clear();
 
             // Hapus cookie UserName
-            Response.Cookies.Delete("Username");
+            Response.Cookies.Delete("username");
 
             if (user != null)
             {
