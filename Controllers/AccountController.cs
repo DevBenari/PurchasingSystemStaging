@@ -63,10 +63,10 @@ namespace PurchasingSystemStaging.Controllers
         [Route("accountController/EndSession")]
         public async Task<IActionResult> EndSession()
         {
-            HttpContext.Session.Clear();
+            //HttpContext.Session.Clear();
 
-            // Hapus authentication cookies jika ada
-            Response.Cookies.Delete(".AspNetCore.Identity.Application");
+            //// Hapus authentication cookies jika ada
+            //Response.Cookies.Delete(".AspNetCore.Identity.Application");
 
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
@@ -119,13 +119,7 @@ namespace PurchasingSystemStaging.Controllers
                         new Claim("amr", "pwd"),
                         };
 
-                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                        //Membuat sesi pengguna
-                        HttpContext.Session.SetString("Username", user.Email);
-
-                        //Membuat cookies
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);                        
 
                         var authProperties = new AuthenticationProperties
                         {
@@ -146,8 +140,14 @@ namespace PurchasingSystemStaging.Controllers
                         await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
                         
                         // menyimpan data user yang sedang login berdasarkan NamaUser dan KodeUser
-                        HttpContext.Session.SetString("FullName", user.NamaUser);
-                        HttpContext.Session.SetString("KodeUser", user.KodeUser);
+                        //HttpContext.Session.SetString("FullName", user.NamaUser);
+                        //HttpContext.Session.SetString("KodeUser", user.KodeUser);
+
+                        //Membuat sesi pengguna
+                        HttpContext.Session.SetString("username", user.Email);
+
+                        //Membuat cookies
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
                         // Role
                         List<string> roleNames; // Deklarasikan di luar
@@ -254,14 +254,14 @@ namespace PurchasingSystemStaging.Controllers
 
         public async Task<IActionResult> Logout()
         {
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
+
             // Hapus semua session
             HttpContext.Session.Clear();
 
             // Hapus cookie UserName
             Response.Cookies.Delete("Username");
-
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
 
             if (user != null)
             {
