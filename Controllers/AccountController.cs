@@ -114,40 +114,44 @@ namespace PurchasingSystemStaging.Controllers
                     var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                     if (result.Succeeded)
                     {
-                        var claims = new List<Claim>
-                        {
-                        new Claim("amr", "pwd"),
-                        };
+                        //Membuat sesi pengguna
+                        HttpContext.Session.SetString("username", user.Email);
 
-                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);                        
+                        // Set cookie autentikasi
+                        var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
+                        var identity = new ClaimsIdentity(claims, "CookieAuth");
+                        var principal = new ClaimsPrincipal(identity);
+
+                        await HttpContext.SignInAsync("CookieAuth", principal);
+
+                        //var claims = new List<Claim>
+                        //{
+                        //new Claim("amr", "pwd"),
+                        //};                        
+
+                        //var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);                        
 
                         var authProperties = new AuthenticationProperties
                         {
                             IsPersistent = false, // Set ke true jika ingin session bertahan setelah browser ditutup
                         };
 
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                            new ClaimsPrincipal(claimsIdentity), authProperties);
+                        //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        //    new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                        var roles = await _signInManager.UserManager.GetRolesAsync(user);
+                        //var roles = await _signInManager.UserManager.GetRolesAsync(user);
 
-                        if (roles.Any())
-                        {
-                            var roleClaim = string.Join(",", roles);
-                            claims.Add(new Claim("Roles", roleClaim));
-                        }
+                        //if (roles.Any())
+                        //{
+                        //    var roleClaim = string.Join(",", roles);
+                        //    claims.Add(new Claim("Roles", roleClaim));
+                        //}
 
                         await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
                         
                         // menyimpan data user yang sedang login berdasarkan NamaUser dan KodeUser
                         //HttpContext.Session.SetString("FullName", user.NamaUser);
-                        //HttpContext.Session.SetString("KodeUser", user.KodeUser);
-
-                        //Membuat sesi pengguna
-                        HttpContext.Session.SetString("username", user.Email);
-
-                        //Membuat cookies
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                        //HttpContext.Session.SetString("KodeUser", user.KodeUser);                        
 
                         // Role
                         List<string> roleNames; // Deklarasikan di luar
@@ -173,7 +177,10 @@ namespace PurchasingSystemStaging.Controllers
                             {
                                 roleNames = new List<string>(); // Jika userId tidak ditemukan, set roleNames ke list kosong
                             }
-                        }
+                        }                        
+
+                        //Membuat cookies
+                        //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
                         // Menyimpan daftar roleNames ke dalam session
                         HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
@@ -257,17 +264,21 @@ namespace PurchasingSystemStaging.Controllers
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
 
-            // Hapus semua session
-            HttpContext.Session.Clear();
+            //// Hapus semua session
+            //HttpContext.Session.Clear();
 
-            // Hapus cookie UserName
-            Response.Cookies.Delete("username");
+            //// Hapus cookie UserName
+            //Response.Cookies.Delete("username");
 
             if (user != null)
             {
                 user.IsOnline = false;
                 await _userManager.UpdateAsync(user);
             }
+
+            // Hapus session dan sign out cookie
+            HttpContext.Session.Remove("username");
+            await HttpContext.SignOutAsync("CookieAuth");
 
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
