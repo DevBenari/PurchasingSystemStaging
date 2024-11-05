@@ -64,6 +64,13 @@
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
 
+        @* Alert Session *@
+        <div id="session-warning" class="alert alert-warning alert-dismissible fade" role="alert" style="position: fixed; bottom: 20px; right: 20px; display: none;">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h5><i class="icon fas fa-exclamation-triangle"></i> Alert!</h5>
+            <span id="session-warning-message">Session will end in 5 minutes.</span>
+        </div>
+
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="animation__wobble" src="~/admin/dist/img/logo-loader-mmc.png" alt="PurchasingApps" height="60" width="60">
@@ -354,7 +361,7 @@
                 <!-- /.sidebar-menu -->
             </div>
             <!-- /.sidebar -->
-        </aside>
+        </aside>        
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -447,8 +454,49 @@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>    
 
-    <!-- script JS membuat session message  -->
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Baca header "X-Session-Time-Remaining" dari server
+            fetch(window.location.href, { method: "HEAD" })
+                .then(response => {
+                    const timeRemainingHeader = response.headers.get("X-Session-Time-Remaining");
+                    if (timeRemainingHeader) {
+                        let timeRemaining = parseInt(timeRemainingHeader, 10); // Konversi ke detik
+
+                        // Jika ada waktu yang tersisa
+                        if (timeRemaining > 0) {
+                            const countdownInterval = setInterval(() => {
+                                timeRemaining--;
+
+                                // Jika waktu kurang dari 5 menit (300 detik), tampilkan notifikasi
+                                if (timeRemaining <= 300) { // 300 detik = 5 menit
+                                    const warningDiv = document.getElementById("session-warning");
+                                    const warningMessage = document.getElementById("session-warning-message");
+                                    warningDiv.style.display = "block";  // Tampilkan alert
+                                    warningDiv.classList.add("show");  // Tambahkan animasi fade in
+
+                                    // Perbarui pesan peringatan dengan waktu yang tersisa
+                                    const minutes = Math.floor(timeRemaining / 60);
+                                    const seconds = timeRemaining % 60;
+                                    warningMessage.textContent = `Session will end in ${minutes} minute(s) and ${seconds} second(s).`;
+                                }
+
+                                // Jika waktu habis, arahkan pengguna ke halaman login
+                                if (timeRemaining <= 0) {
+                                    clearInterval(countdownInterval);
+                                    // window.location.href = "/Account/Login";  // Arahkan ke halaman login
+                                }
+                            }, 1000); // Interval setiap 1 detik
+                        }
+                    }
+                });
+        });
+    </script>
+
+
+
+    <!-- script JS membuat session message  -->
+    @* <script>
         //let warningTime = 10 * 1000; // 10 detik
         //let sessionExpireTime = 15 * 1000; // 15 detik
 
@@ -536,7 +584,7 @@
         document.addEventListener('mousemove', resetTimer);
 
         resetTimer();
-    </script>
+    </script> *@
 
     <!-- end message Session-->
 
