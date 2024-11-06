@@ -53,7 +53,7 @@ builder.Services.AddSession(options =>
 {    
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.IdleTimeout = TimeSpan.FromSeconds(15);
+    options.IdleTimeout = TimeSpan.FromSeconds(60);
 });
 
 //Script Auto Show Login Account First Time
@@ -63,13 +63,8 @@ builder.Services.AddAuthentication("CookieAuth")
         options.Cookie.Name = "AuthCookie";
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromSeconds(15);
+        options.ExpireTimeSpan = TimeSpan.FromSeconds(60);
         options.SlidingExpiration = true;
-
-        //options.LoginPath = "/Account/Login";
-        //options.LogoutPath = "/Account/Logout";
-        //options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        //options.SlidingExpiration = true;
     });
 
 AddScope();
@@ -134,11 +129,9 @@ app.UseAuthorization();
 //   konfigurasi end session 
 app.Use(async (context, next) =>
 {
-    // Hapus semua session & Hapus cookie UserName
-    //context.Session.Clear();   
-    //context.Response.Cookies.Delete("username");
     var returnUrl = context.Request.Path + context.Request.QueryString;
     var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}";
+    var now = DateTimeOffset.UtcNow;
 
     if (context.Session.GetString("username") == null && context.Request.Path != loginUrl)
     {
@@ -147,16 +140,8 @@ app.Use(async (context, next) =>
         if (!string.IsNullOrEmpty(username))
         {
             
-
-            UpdateDataForExpiredSession(username, app, context, returnUrl);
-            
-
-            //// Hapus semua session & Hapus cookie UserName
-            //context.Session.Clear();
-            //context.Response.Cookies.Delete("username");
-
-            //await context.SignOutAsync("CookieAuth");
-            ////await dbContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            // Middleware Session And Cookie
+            UpdateDataForExpiredSession(username, app, context, returnUrl);            
 
             context.Response.Redirect(loginUrl);
             return;
@@ -165,9 +150,51 @@ app.Use(async (context, next) =>
     else
     {
         // Jika session masih aktif, perbarui waktu "LastActivity"
-        context.Session.SetString("LastActivity", DateTime.Now.ToString());        
+        context.Session.SetString("LastActivity", DateTimeOffset.Now.ToString());        
     }
-    
+
+    // Coba ambil `LastActivity` dari session
+    var lastActivity = context.Session.GetString("LastActivity");
+
+    if (lastActivity == null)
+    {
+        // Set `LastActivity` pada aktivitas pertama setelah login
+        context.Session.SetString("LastActivity", now.ToString("o"));
+    }
+    else if (DateTimeOffset.TryParse(lastActivity, out var lastActivityTime))
+    {
+        var sessionTimeout = TimeSpan.FromSeconds(60);
+
+        // Jika waktu hampir habis (misalnya 5 detik sebelum habis)
+        var timeRemaining = sessionTimeout - (now - lastActivityTime);
+        if (timeRemaining.TotalSeconds <= 30)
+        {
+            // Kirim waktu yang tersisa ke klien melalui header
+            context.Response.Headers["X-Session-Time-Remaining"] = timeRemaining.TotalSeconds.ToString();
+        }
+
+        // Perbarui `LastActivity` jika session belum habis
+        if (timeRemaining.TotalSeconds > 0)
+        {
+            context.Session.SetString("LastActivity", now.ToString("o"));
+        }
+        else
+        {
+            // Jika session habis, lakukan logout
+            var username = context.User.Identity.Name;
+
+            if (!string.IsNullOrEmpty(username))
+            {
+
+                // Middleware Session And Cookie
+                UpdateDataForExpiredSession(username, app, context, returnUrl);
+
+                context.Response.Redirect(loginUrl);
+                return;
+            }
+        }
+    }
+
     // Lanjutkan ke middleware berikutnya
     await next();
 });
