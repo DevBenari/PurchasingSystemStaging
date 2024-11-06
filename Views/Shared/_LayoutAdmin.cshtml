@@ -64,13 +64,6 @@
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
 
-        @* Alert Session *@
-        <div id="session-warning" class="alert alert-warning alert-dismissible fade" role="alert" style="position: fixed; bottom: 20px; right: 20px; display: none;">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <h5><i class="icon fas fa-exclamation-triangle"></i> Alert!</h5>
-            <span id="session-warning-message">Session will end in 5 minutes.</span>
-        </div>
-
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="animation__wobble" src="~/admin/dist/img/logo-loader-mmc.png" alt="PurchasingApps" height="60" width="60">
@@ -283,8 +276,8 @@
                                 </li>
                             }
 
-                            if (roles.Contains("Approval Qty Difference"))
-                            {
+                            @*if (roles.Contains("Approval Qty Difference"))
+                            {*@
                                 <li class="@(ViewBag.Active == "ApprovalQtyDifference" ? "nav-item menu-open active":"")">
                                     <a asp-action="Index" is-active-route asp-controller="ApprovalQtyDifference" asp-area="Order" class="nav-link">
                                         <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i>
@@ -293,10 +286,10 @@
                                         </p>
                                     </a>
                                 </li>
-                            }
+                            @*}*@
 
-                            if (roles.Contains("Unit Order"))
-                            {
+                            @*if (roles.Contains("Unit Order"))
+                            {*@
                                 <li class="@(ViewBag.Active == "UnitOrder" ? "nav-item menu-open active":"")">
                                     <a asp-action="Index" is-active-route asp-controller="UnitOrder" asp-area="Warehouse" class="nav-link">
                                         <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i>
@@ -305,10 +298,10 @@
                                         </p>
                                     </a>
                                 </li>
-                            }
+                            @*}*@
 
-                            if (roles.Contains("Warehouse Transfer"))
-                            {
+                            @*if (roles.Contains("Warehouse Transfer"))
+                            {*@
                                 <li class="@(ViewBag.Active == "WarehouseTransfer" ? "nav-item menu-open active":"")">
                                     <a asp-action="Index" is-active-route asp-controller="WarehouseTransfer" asp-area="Warehouse" class="nav-link">
                                         <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i>
@@ -317,7 +310,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            }
+                            @*}*@
+
                             if (roles.Contains("Stock Monitoring"))
                             {
                                 <li class="nav-header">General</li>
@@ -453,47 +447,6 @@
     @*UI Normal*@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>    
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Baca header "X-Session-Time-Remaining" dari server
-            fetch(window.location.href, { method: "HEAD" })
-                .then(response => {
-                    const timeRemainingHeader = response.headers.get("X-Session-Time-Remaining");
-                    if (timeRemainingHeader) {
-                        let timeRemaining = parseInt(timeRemainingHeader, 10); // Konversi ke detik
-
-                        // Jika ada waktu yang tersisa
-                        if (timeRemaining > 0) {
-                            const countdownInterval = setInterval(() => {
-                                timeRemaining--;
-
-                                // Jika waktu kurang dari 5 menit (300 detik), tampilkan notifikasi
-                                if (timeRemaining <= 300) { // 300 detik = 5 menit
-                                    const warningDiv = document.getElementById("session-warning");
-                                    const warningMessage = document.getElementById("session-warning-message");
-                                    warningDiv.style.display = "block";  // Tampilkan alert
-                                    warningDiv.classList.add("show");  // Tambahkan animasi fade in
-
-                                    // Perbarui pesan peringatan dengan waktu yang tersisa
-                                    const minutes = Math.floor(timeRemaining / 60);
-                                    const seconds = timeRemaining % 60;
-                                    warningMessage.textContent = `Session will end in ${minutes} minute(s) and ${seconds} second(s).`;
-                                }
-
-                                // Jika waktu habis, arahkan pengguna ke halaman login
-                                if (timeRemaining <= 0) {
-                                    clearInterval(countdownInterval);
-                                    // window.location.href = "/Account/Login";  // Arahkan ke halaman login
-                                }
-                            }, 1000); // Interval setiap 1 detik
-                        }
-                    }
-                });
-        });
-    </script>
-
-
 
     <!-- script JS membuat session message  -->
     @* <script>
@@ -741,5 +694,40 @@
             refreshData();
         });
     </script>
+
+   <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Baca header "X-Session-Time-Remaining" dari server
+        fetch(window.location.href, { method: "HEAD" })
+            .then(response => {
+                const timeRemainingHeader = response.headers.get("X-Session-Time-Remaining");
+                if (timeRemainingHeader) {
+                    let timeRemaining = parseInt(timeRemainingHeader, 10); // Convert to seconds
+
+                    // Jika waktu tersisa kurang dari 5 menit
+                    if (timeRemaining > 0) {
+                        const countdownInterval = setInterval(() => {
+                            timeRemaining--;
+
+                            // Tampilkan notifikasi jika waktu kurang dari 5 menit
+                            if (timeRemaining <= 300) { // 300 detik = 5 menit
+                                    if (timeRemaining === 300) {
+                                    alert("Session Anda akan habis dalam 5 menit. Silakan lakukan aktivitas untuk memperpanjang session.");
+                                }
+                            }
+
+                            // Hentikan interval jika waktu habis
+                            if (timeRemaining <= 0) {
+                                clearInterval(countdownInterval);
+                                alert("Session Anda telah berakhir. Anda akan diarahkan ke halaman login.");
+                                window.location.href = "/Account/Login"; // Arahkan ke halaman login
+                            }
+                        }, 1000); // Mengurangi setiap 1 detik
+                    }
+                }
+            });
+    });
+</script>
+
 </body>
 </html>

@@ -163,8 +163,8 @@ namespace PurchasingSystemStaging.Controllers
                             {
                                 roleNames = new List<string>(); // Jika userId tidak ditemukan, set roleNames ke list kosong
                             }
-                        }                        
-                      
+                        }
+
                         // Menyimpan daftar roleNames ke dalam session
                         HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
 
@@ -207,41 +207,7 @@ namespace PurchasingSystemStaging.Controllers
             }
             return View(model);
         }
-        
-        [HttpGet]
-        public async Task<IActionResult> ResetPassword(string token, string email)
-        {
-            if(token == null || email == null)
-            {
-                ModelState.AddModelError("", "Invalid password reset token");
-            }
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
-        {
-            if(ModelState.IsValid)
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if(user != null)
-                {
-                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
-                    if (result.Succeeded)
-                    {
-                        return View("ResetPasswordConfirmPasswordConfiguration");
-                    }
-                    foreach(var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                    return View(model);
-                }
-                return View("ResetPasswordConfirmation");
-            }
-            return View(model);
-        }
-
+                
         public async Task<IActionResult> Logout()
         {
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
