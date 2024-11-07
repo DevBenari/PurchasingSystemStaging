@@ -87,9 +87,15 @@ namespace PurchasingSystemStaging.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
-            var response = new LoginViewModel();
-            return View(response);
-            //return RedirectToAction("Index", "Login");
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                var response = new LoginViewModel();
+                return View(response);
+            }            
         }
 
         [HttpPost]
@@ -102,110 +108,116 @@ namespace PurchasingSystemStaging.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
-                if (user == null)
+                if (User.Identity.IsAuthenticated)
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
-                    TempData["WarningMessage"] = "Sorry, Username & Password Not Registered !";
-                    return View(model);
+                    return RedirectToAction("Index", "Home");
                 }
-                else if (user.IsActive == true) 
-                {
-                    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
-                    if (result.Succeeded)
+                else {
+                    var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
+                    if (user == null)
                     {
-                        //Membuat sesi pengguna
-                        HttpContext.Session.SetString("username", user.Email);
-
-                        // Set cookie autentikasi
-                        var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
-                        var identity = new ClaimsIdentity(claims, "CookieAuth");
-                        var principal = new ClaimsPrincipal(identity);
-
-                        await HttpContext.SignInAsync("CookieAuth", principal);
-                       
-                        var authProperties = new AuthenticationProperties
+                        ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
+                        TempData["WarningMessage"] = "Sorry, Username & Password Not Registered !";
+                        return View(model);
+                    }
+                    else if (user.IsActive == true)
+                    {
+                        var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
+                        if (result.Succeeded)
                         {
-                            IsPersistent = false, // Set ke true jika ingin session bertahan setelah browser ditutup
-                        };
-                       
-                        //var roles = await _signInManager.UserManager.GetRolesAsync(user);
+                            //Membuat sesi pengguna
+                            HttpContext.Session.SetString("username", user.Email);
 
-                        //if (roles.Any())
-                        //{
-                        //    var roleClaim = string.Join(",", roles);
-                        //    claims.Add(new Claim("Roles", roleClaim));
-                        //}
+                            // Set cookie autentikasi
+                            var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
+                            var identity = new ClaimsIdentity(claims, "CookieAuth");
+                            var principal = new ClaimsPrincipal(identity);
 
-                        await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);                                              
+                            await HttpContext.SignInAsync("CookieAuth", principal);
 
-                        // Role
-                        List<string> roleNames; // Deklarasikan di luar
-
-                        if (model.Email == "superadmin@admin.com")
-                        {
-                            roleNames = _roleRepository.GetRoles().Select(role => role.Name).ToList();
-                        }
-                        else
-                        {
-                            var userId = _userActiveRepository.GetAllUserLogin()
-                                .FirstOrDefault(u => u.UserName == model.Email)?.Id;
-
-                            if (userId != null) // Pastikan userId tidak null
+                            var authProperties = new AuthenticationProperties
                             {
-                                roleNames = (from role in _roleRepository.GetRoles()
-                                             join userRole in _groupRoleRepository.GetAllGroupRole()
-                                             on role.Id equals userRole.RoleId
-                                             where userRole.DepartemenId == userId // Gunakan userId langsung
-                                             select role.Name).ToList();
+                                IsPersistent = false, // Set ke true jika ingin session bertahan setelah browser ditutup
+                            };
+
+                            //var roles = await _signInManager.UserManager.GetRolesAsync(user);
+
+                            //if (roles.Any())
+                            //{
+                            //    var roleClaim = string.Join(",", roles);
+                            //    claims.Add(new Claim("Roles", roleClaim));
+                            //}
+
+                            await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
+
+                            // Role
+                            List<string> roleNames; // Deklarasikan di luar
+
+                            if (model.Email == "superadmin@admin.com")
+                            {
+                                roleNames = _roleRepository.GetRoles().Select(role => role.Name).ToList();
                             }
                             else
                             {
-                                roleNames = new List<string>(); // Jika userId tidak ditemukan, set roleNames ke list kosong
+                                var userId = _userActiveRepository.GetAllUserLogin()
+                                    .FirstOrDefault(u => u.UserName == model.Email)?.Id;
+
+                                if (userId != null) // Pastikan userId tidak null
+                                {
+                                    roleNames = (from role in _roleRepository.GetRoles()
+                                                 join userRole in _groupRoleRepository.GetAllGroupRole()
+                                                 on role.Id equals userRole.RoleId
+                                                 where userRole.DepartemenId == userId // Gunakan userId langsung
+                                                 select role.Name).ToList();
+                                }
+                                else
+                                {
+                                    roleNames = new List<string>(); // Jika userId tidak ditemukan, set roleNames ke list kosong
+                                }
                             }
+
+                            // Menyimpan daftar roleNames ke dalam session
+                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
+
+                            user.IsOnline = true;
+
+                            await _userManager.UpdateAsync(user);
+
+                            _logger.LogInformation("User logged in.");
+                            return RedirectToAction("Index", "Home");
                         }
 
-                        // Menyimpan daftar roleNames ke dalam session
-                        HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
+                        if (result.RequiresTwoFactor)
+                        {
+                            return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, model.RememberMe });
+                        }
 
-                        user.IsOnline = true;
+                        if (result.IsLockedOut)
+                        {
+                            _logger.LogWarning("User account locked out.");
+                            // HttpContext.session.Clear untuk menghapus session data pengguna tidak lagi tersimpan
+                            HttpContext.Session.Clear();
 
-                        await _userManager.UpdateAsync(user);
+                            // Hitung waktu yang tersisa
+                            var lockTime = await _userManager.GetLockoutEndDateAsync(user);
+                            var timeRemaining = lockTime.Value - DateTimeOffset.UtcNow;
 
-                        _logger.LogInformation("User logged in.");
-                        return RedirectToAction("Index", "Home");
+                            TempData["UserLockOut"] = "Sorry, your account is locked in " + timeRemaining.Minutes + " minutes " + timeRemaining.Seconds + " seconds";
+                            return View(model);
+                        }
+
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        TempData["WarningMessage"] = "Sorry, Wrong Password !";
+                        //return View(model);
                     }
-                    
-                    if (result.RequiresTwoFactor)
+                    else
                     {
-                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, model.RememberMe });
-                    }
-
-                    if (result.IsLockedOut)
-                    {
-                        _logger.LogWarning("User account locked out.");
-                        // HttpContext.session.Clear untuk menghapus session data pengguna tidak lagi tersimpan
-                        HttpContext.Session.Clear();
-
-                        // Hitung waktu yang tersisa
-                        var lockTime = await _userManager.GetLockoutEndDateAsync(user);
-                        var timeRemaining = lockTime.Value - DateTimeOffset.UtcNow;                        
-
-                        TempData["UserLockOut"] = "Sorry, your account is locked in " + timeRemaining.Minutes + " minutes " + timeRemaining.Seconds + " seconds";
+                        TempData["UserActiveMessage"] = "Sorry, your account is not active !";
                         return View(model);
                     }
-
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    TempData["WarningMessage"] = "Sorry, Wrong Password !";
-                    //return View(model);
-                }
-                else
-                {
-                    TempData["UserActiveMessage"] = "Sorry, your account is not active !";
-                    return View(model);
-                }             
+                }                            
             }
-            return View(model);
+            return View();
         }
                 
         public async Task<IActionResult> Logout()
