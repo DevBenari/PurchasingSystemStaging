@@ -355,7 +355,7 @@
                 <!-- /.sidebar-menu -->
             </div>
             <!-- /.sidebar -->
-        </aside>        
+        </aside>
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -447,6 +447,41 @@
     @*UI Normal*@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Baca header "X-Session-Time-Remaining" dari server
+            fetch(window.location.href, { method: "HEAD" })
+                .then(response => {
+                    const timeRemainingHeader = response.headers.get("X-Session-Time-Remaining");
+                    if (timeRemainingHeader) {
+                        let timeRemaining = parseInt(timeRemainingHeader, 10); // Convert to seconds
+
+                        // Jika waktu tersisa kurang dari 15 menit
+                        if (timeRemaining > 0) {
+                            const countdownInterval = setInterval(() => {
+                                timeRemaining--;
+
+                                // Tampilkan notifikasi jika waktu kurang dari 15 menit
+                                if (timeRemaining <= 900) { // 900 detik = 15 menit
+                                    if (timeRemaining == 900) {
+                                        alert("Session Anda akan habis dalam 60 detik. Silakan lakukan aktivitas untuk memperpanjang session.");
+                                    }
+                                }
+
+                                // Hentikan interval jika waktu habis
+                                if (timeRemaining <= 0) {
+                                    clearInterval(countdownInterval);
+                                    alert("Session Anda akan habis dalam 15 Menit. Silakan lakukan aktivitas untuk memperpanjang session.");
+                                    window.location.href = "/Account/Login"; // Arahkan ke halaman login
+                                }
+                            }, 1000); // Mengurangi setiap 1 detik
+                        }
+                    }
+                });
+        });
+    </script>
+
 
     <!-- script JS membuat session message  -->
     @* <script>
@@ -694,40 +729,5 @@
             refreshData();
         });
     </script>
-
-   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Baca header "X-Session-Time-Remaining" dari server
-        fetch(window.location.href, { method: "HEAD" })
-            .then(response => {
-                const timeRemainingHeader = response.headers.get("X-Session-Time-Remaining");
-                if (timeRemainingHeader) {
-                    let timeRemaining = parseInt(timeRemainingHeader, 10); // Convert to seconds
-
-                    // Jika waktu tersisa kurang dari 5 menit
-                    if (timeRemaining > 0) {
-                        const countdownInterval = setInterval(() => {
-                            timeRemaining--;
-
-                            // Tampilkan notifikasi jika waktu kurang dari 5 menit
-                            if (timeRemaining <= 300) { // 300 detik = 5 menit
-                                    if (timeRemaining === 300) {
-                                    alert("Session Anda akan habis dalam 5 menit. Silakan lakukan aktivitas untuk memperpanjang session.");
-                                }
-                            }
-
-                            // Hentikan interval jika waktu habis
-                            if (timeRemaining <= 0) {
-                                clearInterval(countdownInterval);
-                                alert("Session Anda telah berakhir. Anda akan diarahkan ke halaman login.");
-                                window.location.href = "/Account/Login"; // Arahkan ke halaman login
-                            }
-                        }, 1000); // Mengurangi setiap 1 detik
-                    }
-                }
-            });
-    });
-</script>
-
 </body>
 </html>
