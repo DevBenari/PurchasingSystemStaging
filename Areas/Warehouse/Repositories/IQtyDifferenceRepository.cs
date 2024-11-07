@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PurchasingSystemStaging.Areas.Transaction.Models;
 using PurchasingSystemStaging.Areas.Warehouse.Models;
 using PurchasingSystemStaging.Data;
 
@@ -46,6 +47,12 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
             {
                 var QtyDifferenceDetail = new QtyDifference()
                 {
+                    CreateDateTime = QtyDifference.CreateDateTime,
+                    CreateBy = QtyDifference.CreateBy,
+                    UpdateDateTime = QtyDifference.UpdateDateTime,
+                    UpdateBy = QtyDifference.UpdateBy,
+                    DeleteDateTime = QtyDifference.DeleteDateTime,
+                    DeleteBy = QtyDifference.DeleteBy,
                     QtyDifferenceId = QtyDifference.QtyDifferenceId,
                     QtyDifferenceNumber = QtyDifference.QtyDifferenceNumber,
                     PurchaseOrderId = QtyDifference.PurchaseOrderId,
@@ -86,6 +93,12 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
         {
             return await _context.QtyDifferences.OrderBy(p => p.CreateDateTime).Select(QtyDifference => new QtyDifference()
             {
+                CreateDateTime = QtyDifference.CreateDateTime,
+                CreateBy = QtyDifference.CreateBy,
+                UpdateDateTime = QtyDifference.UpdateDateTime,
+                UpdateBy = QtyDifference.UpdateBy,
+                DeleteDateTime = QtyDifference.DeleteDateTime,
+                DeleteBy = QtyDifference.DeleteBy,
                 QtyDifferenceId = QtyDifference.QtyDifferenceId,
                 QtyDifferenceNumber = QtyDifference.QtyDifferenceNumber,
                 PurchaseOrderId = QtyDifference.PurchaseOrderId,

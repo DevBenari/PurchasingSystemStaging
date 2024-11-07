@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PurchasingSystemStaging.Areas.Order.Models;
 using PurchasingSystemStaging.Areas.Transaction.Models;
 using PurchasingSystemStaging.Data;
 
@@ -43,6 +44,12 @@ namespace PurchasingSystemStaging.Areas.Transaction.Repositories
             {
                 var UnitRequestDetail = new UnitRequest()
                 {
+                    CreateDateTime = UnitRequest.CreateDateTime,
+                    CreateBy = UnitRequest.CreateBy,
+                    UpdateDateTime = UnitRequest.UpdateDateTime,
+                    UpdateBy = UnitRequest.UpdateBy,
+                    DeleteDateTime = UnitRequest.DeleteDateTime,
+                    DeleteBy = UnitRequest.DeleteBy,
                     UnitRequestId = UnitRequest.UnitRequestId,
                     UnitRequestNumber = UnitRequest.UnitRequestNumber,
                     UserAccessId = UnitRequest.UserAccessId,
@@ -78,6 +85,12 @@ namespace PurchasingSystemStaging.Areas.Transaction.Repositories
         {
             return await _context.UnitRequests./*OrderBy(p => p.CreateDateTime).*/Select(UnitRequest => new UnitRequest()
             {
+                CreateDateTime = UnitRequest.CreateDateTime,
+                CreateBy = UnitRequest.CreateBy,
+                UpdateDateTime = UnitRequest.UpdateDateTime,
+                UpdateBy = UnitRequest.UpdateBy,
+                DeleteDateTime = UnitRequest.DeleteDateTime,
+                DeleteBy = UnitRequest.DeleteBy,
                 UnitRequestId = UnitRequest.UnitRequestId,
                 UnitRequestNumber = UnitRequest.UnitRequestNumber,
                 UserAccessId = UnitRequest.UserAccessId,

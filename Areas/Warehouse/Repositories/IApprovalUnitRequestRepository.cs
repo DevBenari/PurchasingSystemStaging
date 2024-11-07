@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PurchasingSystemStaging.Areas.Transaction.Models;
 using PurchasingSystemStaging.Areas.Warehouse.Models;
 using PurchasingSystemStaging.Data;
 
@@ -41,6 +42,12 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
             {
                 var ApprovalRequestDetail = new ApprovalUnitRequest()
                 {
+                    CreateDateTime = ApprovalRequest.CreateDateTime,
+                    CreateBy = ApprovalRequest.CreateBy,
+                    UpdateDateTime = ApprovalRequest.UpdateDateTime,
+                    UpdateBy = ApprovalRequest.UpdateBy,
+                    DeleteDateTime = ApprovalRequest.DeleteDateTime,
+                    DeleteBy = ApprovalRequest.DeleteBy,
                     ApprovalUnitRequestId = ApprovalRequest.ApprovalUnitRequestId,
                     UnitRequestId = ApprovalRequest.UnitRequestId,
                     UnitRequestNumber = ApprovalRequest.UnitRequestNumber,
@@ -74,6 +81,12 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
         {
             return await _context.ApprovalUnitRequests./*OrderBy(p => p.CreateDateTime).*/Select(ApprovalRequest => new ApprovalUnitRequest()
             {
+                CreateDateTime = ApprovalRequest.CreateDateTime,
+                CreateBy = ApprovalRequest.CreateBy,
+                UpdateDateTime = ApprovalRequest.UpdateDateTime,
+                UpdateBy = ApprovalRequest.UpdateBy,
+                DeleteDateTime = ApprovalRequest.DeleteDateTime,
+                DeleteBy = ApprovalRequest.DeleteBy,
                 ApprovalUnitRequestId = ApprovalRequest.ApprovalUnitRequestId,
                 UnitRequestId = ApprovalRequest.UnitRequestId,
                 UnitRequestNumber = ApprovalRequest.UnitRequestNumber,
