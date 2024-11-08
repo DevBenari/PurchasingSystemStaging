@@ -13,7 +13,7 @@ namespace PurchasingSystemStaging.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Ingatkan Saya")]
+        [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
     }
 }

@@ -17,7 +17,7 @@
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="form-outline mb-2">
-            <input type="password" asp-for="Password" id="password" class="form-control" placeholder="Kata Sandi" maxlength="45" />
+            <input type="password" asp-for="Password" id="password" class="form-control" placeholder="Password" maxlength="45" />
             <span asp-validation-for="Password" class="text-danger"></span>
             <!-- password mata / toggle password to text -->
             <div class="input-group-app end position-absolute  border-0 " style="right:60px; margin-top:-40px; ">
@@ -34,7 +34,7 @@
                     </label>
             </div>-->
         </div>
-        <button type="submit" class="form-control btn btn-primary rounded submit px-3"><div style="color:white">Masuk</div></button>
+        <button type="submit" class="form-control btn btn-primary rounded submit px-3"><div style="color:white">Login</div></button>
     </form>
     <div class="form-check form-check-inline">
         <label asp-for="RememberMe">
@@ -42,9 +42,9 @@
             @Html.DisplayNameFor(m => m.RememberMe)
         </label>
     </div>
-    <div class="text-center">
+    @*<div class="text-center">
         <a href="#">Pusat Bantuan</a>
-    </div>
+    </div>*@
     @*<div class="text-center pt-1 mb-1 pb-1">
         <a href="#" onclick="forgot()" id="forgotPassword">Pusat Bantuan</a>
     </div>*@    
