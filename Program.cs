@@ -50,10 +50,10 @@ builder.Services.AddMvc(options =>
 
 // konfigurasi session 
 builder.Services.AddSession(options =>
-{    
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+{
     options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;    
 });
 
 //Script Auto Show Login Account First Time
@@ -114,7 +114,7 @@ FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -167,9 +167,9 @@ app.Use(async (context, next) =>
         {
             var sessionTimeout = TimeSpan.FromMinutes(30);
 
-            // Jika waktu hampir habis (misalnya 5 menit sebelum habis)
+            // Jika waktu hampir habis (misalnya 15 menit sebelum habis)
             var timeRemaining = sessionTimeout - (now - lastActivityTime);
-            if (timeRemaining.TotalMinutes <= 5)
+            if (timeRemaining.TotalMinutes <= 15)
             {
                 // Kirim waktu yang tersisa ke klien melalui header
                 context.Response.Headers["X-Session-Time-Remaining"] = timeRemaining.TotalSeconds.ToString();
@@ -188,7 +188,7 @@ app.Use(async (context, next) =>
                 if (!string.IsNullOrEmpty(username))
                 {
                     // Middleware Session And Cookie
-                    UpdateDataForExpiredSession(username, app, context, returnUrl);            
+                    UpdateDataForExpiredSession(username, app, context, returnUrl);
 
                     context.Response.Redirect(loginUrl);
                     return;

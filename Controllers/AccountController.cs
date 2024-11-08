@@ -117,10 +117,10 @@ namespace PurchasingSystemStaging.Controllers
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
-                        TempData["WarningMessage"] = "Sorry, Username & Password Not Registered !";
+                        TempData["WarningMessage"] = "Sorry, Username And Password Not Registered !";
                         return View(model);
                     }
-                    else if (user.IsActive == true)
+                    else if (user.IsActive == true && user.IsOnline == false)
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
@@ -209,6 +209,11 @@ namespace PurchasingSystemStaging.Controllers
                         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                         TempData["WarningMessage"] = "Sorry, Wrong Password !";
                         //return View(model);
+                    }
+                    else if (user.IsActive == true && user.IsOnline == true)
+                    {
+                        TempData["UserOnlineMessage"] = "Sorry, your account is online !";
+                        return View(model);
                     }
                     else
                     {
