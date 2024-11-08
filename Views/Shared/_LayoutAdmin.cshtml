@@ -464,7 +464,7 @@
 
                                 // Tampilkan notifikasi jika waktu kurang dari 15 menit
                                 if (timeRemaining <= 900) { // 900 detik = 15 menit
-                                    if (timeRemaining == 900) {
+                                    if (timeRemaining === 900) {
                                         alert("Session Anda akan habis dalam 60 detik. Silakan lakukan aktivitas untuk memperpanjang session.");
                                     }
                                 }
@@ -482,6 +482,12 @@
         });
     </script>
 
+    @*Script untuk mengirimkan perintah logout otomatis dan update status user online saat browser ditutup*@
+    @*<script>
+        window.onunload = function () {
+            navigator.sendBeacon('/Account/Logout'); // Pastikan rute benar untuk aplikasi Anda
+        };
+    </script>*@
 
     <!-- script JS membuat session message  -->
     @* <script>
