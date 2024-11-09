@@ -99,11 +99,6 @@
                         document.getElementById("password").focus();
                     });
                 };
-
-            @*window.onload = function () {
-        swal("Oops...", '@TempData["UserActiveMessage"]', "error");
-        document.getElementById("password").focus();
-        };*@
         </script>
     }
     else if (TempData["UserLockOut"] != null)
@@ -119,11 +114,6 @@
                         document.getElementById("password").focus();
                     });
                 };
-
-            @*window.onload = function () {
-                swal("Locked !", '@TempData["UserLockOut"]', "error");
-                document.getElementById("password").focus();
-            };*@
         </script>
     }
 

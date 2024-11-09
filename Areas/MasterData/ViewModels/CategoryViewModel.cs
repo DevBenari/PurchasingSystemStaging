@@ -1,9 +1,12 @@
-﻿namespace PurchasingSystemStaging.Areas.MasterData.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PurchasingSystemStaging.Areas.MasterData.ViewModels
 {
     public class CategoryViewModel
     {
         public Guid CategoryId { get; set; }
         public string CategoryCode { get; set; }
+        [Required(ErrorMessage = "Category Name is required !")]
         public string CategoryName { get; set; }
         public string? Note { get; set; }
     }

@@ -212,7 +212,11 @@ namespace PurchasingSystemStaging.Controllers
                     }
                     else if (user.IsActive == true && user.IsOnline == true)
                     {
-                        TempData["UserOnlineMessage"] = "Sorry, your account is online !";
+                        TempData["UserOnlineMessage"] = "Sorry, your account is online, has been logged out, please sign back in !";
+
+                        user.IsOnline = false;
+                        await _userManager.UpdateAsync(user);
+
                         return View(model);
                     }
                     else
