@@ -63,8 +63,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public async Task<IActionResult> Index(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
         {
             ViewBag.Active = "MasterData";
-            var data = _userActiveRepository.GetAllUser();
-            var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+
+            var data = _supplierRepository.GetAllSupplier();
 
             if (tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
             {
@@ -126,8 +126,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public async Task<IActionResult> NonActive(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
         {
             ViewBag.Active = "MasterData";
-            var data = _userActiveRepository.GetAllUser();
-            var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+
+            var data = _supplierRepository.GetAllSupplierNonActive();
 
             if (tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
             {
@@ -189,8 +189,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public async Task<IActionResult> NonPks(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
         {
             ViewBag.Active = "MasterData";
-            var data = _userActiveRepository.GetAllUser();
-            var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+
+            var data = _supplierRepository.GetAllSupplierNonPks();
 
             if (tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
             {
