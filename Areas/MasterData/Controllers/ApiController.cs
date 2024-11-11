@@ -206,11 +206,10 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateDiskon(string apiCode, decimal discValue)
+        public async Task<IActionResult> CreateDiskon(string apiCode)
         {
             var apiUrl = apiCode; // URL API untuk mengambil data supplier
-
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            
             // Menambahkan header Authorization
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "YWRtZWRpa2E6YWRtZWRpa2E"); // Pastikan token atau kredensial benar
@@ -305,7 +304,6 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View("Error", $"Terjadi kesalahan: {ex.Message}");
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct(List<Product> products)
