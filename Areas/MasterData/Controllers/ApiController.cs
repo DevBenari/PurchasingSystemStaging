@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PurchasingSystemStaging.Areas.MasterData.Models;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
+using PurchasingSystemStaging.Areas.MasterData.ViewModels;
 using PurchasingSystemStaging.Data;
 using System.Net.Http;
 using System.Security.Policy;
@@ -17,17 +18,20 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IDiscountRepository _discountRepository;
 
         public ApiController(
             ApplicationDbContext applicationDbContext,
             IUserActiveRepository userActiveRepository,
             IProductRepository productRepository,
+            IDiscountRepository discountRepository,
             HttpClient httpClient
         )
         {
             _applicationDbContext = applicationDbContext;
             _userActiveRepository = userActiveRepository;
             _httpClient = httpClient;
+            _discountRepository = discountRepository;
             _productRepository = productRepository;
         }
 
@@ -200,11 +204,12 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View("Error", $"Terjadi kesalahan: {ex.Message}");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> CreateDiskon(string apiCode)
         {
             var apiUrl = apiCode; // URL API untuk mengambil data supplier
-
+            
             // Menambahkan header Authorization
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "YWRtZWRpa2E6YWRtZWRpa2E"); // Pastikan token atau kredensial benar
@@ -214,13 +219,77 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 // Mengirimkan permintaan GET ke API
                 var response = await _httpClient.GetAsync(apiUrl);
 
+                var dateNow = DateTimeOffset.Now;
+                var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonData = await response.Content.ReadAsStringAsync();
+                    var responseObject = JsonConvert.DeserializeObject<dynamic>(jsonData);                    
+                    var diskoniList = responseObject.data.ToObject<List<dynamic>>();
 
-                    var responseObject = JsonConvert.DeserializeObject<dynamic>(jsonData);
                     var CreateDiskon = responseObject.data.ToObject<List<dynamic>>();
 
+                    // Buat list untuk menampung data yang difilter
+                    var filteredData = new List<dynamic>();
+
+                    // Iterasi manual untuk memfilter data
+                    foreach (var item in diskoniList)
+                    {
+                        var getDisc = _discountRepository.GetAllDiscount();
+
+                        foreach (var itemDisc in getDisc)
+                        {
+                            // Memeriksa apakah disc_persen cocok dengan parameter DiscountValue
+                            if (item.disc_persen == itemDisc.DiscountValue)
+                            {
+                                
+                            }
+                        }                        
+                    }
+
+                    foreach (var item in filteredData)
+                    {
+                        // Mendapatkan kode measurement terakhir berdasarkan hari ini
+                        var lastCode = _discountRepository.GetAllDiscount()
+                            .Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow && d.DiscountValue == item.disc_persen)
+                            .OrderByDescending(k => k.DiscountCode)
+                            .FirstOrDefault();
+
+
+                        string DiscountCode;
+                        if (lastCode == null)
+                        {
+                            DiscountCode = "DSC" + setDateNow + "0001";
+                        }
+                        else
+                        {
+                            var lastCodeTrim = lastCode.DiscountCode.Substring(3, 6);
+
+                            if (lastCodeTrim != setDateNow)
+                            {
+                                DiscountCode = "DSC" + setDateNow + "0001";
+                            }
+                            else
+                            {
+                                DiscountCode = "DSC" + setDateNow + (Convert.ToInt32(lastCode.DiscountCode.Substring(9, lastCode.DiscountCode.Length - 9)) + 1).ToString("D4");
+                            }
+                        }
+
+
+                        var Discount = new Discount
+                        {
+                            CreateDateTime = DateTime.Now,
+                            CreateBy = new Guid(getUser.Id),
+                            DiscountId = Guid.NewGuid(),
+                            DiscountCode = DiscountCode,
+                            DiscountValue = item.disc_persen,
+                        };
+
+                        _discountRepository.Tambah(Discount);
+
+                        // Simpan ke database
+
+                    }
                     return View("CreateDiskon", CreateDiskon); // Kirimkan data ke View
                 }
                 else
@@ -235,8 +304,6 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View("Error", $"Terjadi kesalahan: {ex.Message}");
             }
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct(List<Product> products)
