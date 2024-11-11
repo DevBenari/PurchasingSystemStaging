@@ -225,10 +225,10 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonData = await response.Content.ReadAsStringAsync();
-
                     var responseObject = JsonConvert.DeserializeObject<dynamic>(jsonData);                    
-                    var CreateDiskon = responseObject.data.ToObject<List<dynamic>>();
                     var diskoniList = responseObject.data.ToObject<List<dynamic>>();
+
+                    var CreateDiskon = responseObject.data.ToObject<List<dynamic>>();
 
                     // Buat list untuk menampung data yang difilter
                     var filteredData = new List<dynamic>();
@@ -236,18 +236,23 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     // Iterasi manual untuk memfilter data
                     foreach (var item in diskoniList)
                     {
-                        // Memeriksa apakah disc_value cocok dengan parameter discValue
-                        if (item.disc_persen != null && item.disc_persen == discValue)
+                        var getDisc = _discountRepository.GetAllDiscount();
+
+                        foreach (var itemDisc in getDisc)
                         {
-                            filteredData.Add(item);
-                        }
+                            // Memeriksa apakah disc_persen cocok dengan parameter DiscountValue
+                            if (item.disc_persen == itemDisc.DiscountValue)
+                            {
+                                
+                            }
+                        }                        
                     }
 
                     foreach (var item in filteredData)
                     {
                         // Mendapatkan kode measurement terakhir berdasarkan hari ini
                         var lastCode = _discountRepository.GetAllDiscount()
-                            .Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow)
+                            .Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow && d.DiscountValue == item.disc_persen)
                             .OrderByDescending(k => k.DiscountCode)
                             .FirstOrDefault();
 
