@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Model.Map;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,7 @@ using PurchasingSystemStaging.Data;
 using System.Data;
 using System.Net.Http;
 using System.Security.Policy;
+using static System.Net.WebRequestMethods;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 {
@@ -23,6 +25,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMeasurementRepository _MeasurementRepository;
         private readonly IDiscountRepository _discountRepository;
+        private readonly ISupplierRepository _supplierRepository;
 
         public ApiController(
             ApplicationDbContext applicationDbContext,
@@ -31,6 +34,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ICategoryRepository CategoryRepository,
             IMeasurementRepository MeasurementRepository,
             IDiscountRepository DiscountRepository,
+            ISupplierRepository supplierRepository,
 
             HttpClient httpClient
         )
@@ -42,6 +46,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _productRepository = productRepository;
             _MeasurementRepository = MeasurementRepository;
             _discountRepository = DiscountRepository;
+            _supplierRepository = supplierRepository;
         }
 
         public IActionResult Index()
@@ -49,7 +54,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             return View();
         }
 
-        public IActionResult GetData(){return View(); }
+        public IActionResult GetData() { return View(); }
         public IActionResult GetDataSupplier() { return View(); }
         public IActionResult GetDataSatuan() { return View(); }
         public IActionResult GetDataKategoriObat() { return View(); }
@@ -87,6 +92,11 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "YWRtZWRpa2E6YWRtZWRpa2E"); // Pastikan token atau kredensial benar
 
+            var getUser = _userActiveRepository.GetAllUserLogin()
+                .Where(u => u.UserName == User.Identity.Name)
+                .FirstOrDefault();
+            var dateNow = DateTimeOffset.Now;
+            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
             try
             {
                 // Mengirimkan permintaan GET ke API
@@ -98,6 +108,64 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
                     var responseObject = JsonConvert.DeserializeObject<dynamic>(jsonData);
                     var supplierData = responseObject.data.ToObject<List<dynamic>>();
+                    var filterDisc = new List<dynamic>();
+
+                    foreach (var item in supplierData)
+                    {
+                        //var getDiscVal = _supplierRepository.GetAllSupplier()
+                        //    .FirstOrDefault(d => d.SupplierName == (string)Convert.ToDouble(item.nama_supp));
+
+                        //if (getDiscVal == null)
+                        //{
+                        //filterDisc.Add(item);
+
+                        // Mendapatkan kode measurement terakhir berdasarkan hari ini
+                        var lastCode = _supplierRepository.GetAllSupplier()
+                        .Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow)
+                        .OrderByDescending(k => k.SupplierCode)
+                        .FirstOrDefault();
+
+                        string SupplierCode;
+
+                        if (lastCode == null)
+                        {
+                            SupplierCode = "PCP" + setDateNow + "0001";
+                        }
+                        else
+                        {
+                            var lastCodeTrim = lastCode.SupplierCode.Substring(3, 6);
+
+                            if (lastCodeTrim != setDateNow)
+                            {
+                                SupplierCode = "PCP" + setDateNow + "0001";
+                            }
+                            else
+                            {
+                                SupplierCode = "PCP" + setDateNow +
+                                                (Convert.ToInt32(lastCode.SupplierCode.Substring(9, lastCode.SupplierCode.Length - 9)) + 1)
+                                                .ToString("D4");
+                            }
+                        }
+
+                        var supplier = new Supplier
+                        {
+                            CreateDateTime = DateTime.Now,
+                            CreateBy = new Guid(getUser.Id),
+                            SupplierId = Guid.NewGuid(),
+                            SupplierCode = SupplierCode,
+                            SupplierName = item.nama_supp,
+                            LeadTimeId = new Guid("28D557A4-DFF5-45D8-7AF6-08DCAD5EBA2E"),// Set Id LeadTime = 7
+                            Address = item.alamat_supp,
+                            Handphone = item.hp,
+                            Email = "supplier@email.com",
+                            Note = item.ket,
+                            IsPKS = true,
+                            IsActive = true,
+                        };
+                        // Simpan ke database
+                        _supplierRepository.Tambah(supplier);
+                        //}
+                    }
 
                     return View("CreateSupplier", supplierData); // Kirimkan data ke View
                 }
@@ -113,6 +181,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View("Error", $"Terjadi kesalahan: {ex.Message}");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> CreateSatuan(string apiCode)
         {
@@ -195,37 +264,6 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> CreateObat(string apiCode, int page = 1, int pageSize = 100)
-        {
-            var apiUrl = $"{apiCode}?page={page}&pageSize={pageSize}"; // Ubah API untuk mendukung pagination
-
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "YWRtZWRpa2E6YWRtZWRpa2E");
-
-            try
-            {
-                var response = await _httpClient.GetAsync(apiUrl);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var jsonData = await response.Content.ReadAsStringAsync();
-                    var responseObject = JsonConvert.DeserializeObject<dynamic>(jsonData);
-                    var CreateObat = responseObject.data.ToObject<List<dynamic>>();
-                    return View("CreateObat", CreateObat);
-                }
-                else
-                {
-                    return View("Error", "Gagal mengambil data dari API");
-                }
-            }
-            catch (Exception ex)
-            {
-                return View("Error", $"Terjadi kesalahan: {ex.Message}");
-            }
-        }
-
         [HttpGet]
         public async Task<IActionResult> CreateKategoriObat(string apiCode)
         {
@@ -278,8 +316,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                                 kategoriCode = "CTG" + setDateNow + (Convert.ToInt32(lastCode.CategoryCode.Substring(9, lastCode.CategoryCode.Length - 9)) + 1).ToString("D4");
                             }
                         }
-                                // Buat objek measurement baru
-                                var Category = new Category
+                        // Buat objek measurement baru
+                        var Category = new Category
                         {
                             CreateDateTime = DateTime.Now,
                             CreateBy = new Guid(getUser.Id),
@@ -399,43 +437,168 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }
         }
 
-
-
-
-        [HttpPost]
-        public async Task<IActionResult> CreateProduct(List<Product> products)
+        [HttpGet]
+        public async Task<IActionResult> CreateObat(string apiCode, int limit = 20)
         {
-            var apiUrl = "http://192.168.15.250:7311/MasterData/Product/GetProduct";
+            var apiUrlObat = "https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_data_obat&return_type=json"; // URL API untuk mengambil data supplier
+            var apiUrlDiskon = "https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_diskon_obat&return_type=json";
+            var apiUrlKategori = "https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_kategori_obat&return_type=json";
+            var apiUrlSatuan = "https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_satuan&return_type=json";
+
+            var getUser = _userActiveRepository.GetAllUserLogin()
+                .Where(u => u.UserName == User.Identity.Name)
+                .FirstOrDefault();
+
+            // Menambahkan header Authorization
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "YWRtZWRpa2E6YWRtZWRpa2E"); // Pastikan token atau kredensial benar
 
             // Mengirimkan permintaan GET ke API
-            var response = await _httpClient.GetAsync(apiUrl);
+            var response = await _httpClient.GetAsync(apiUrlObat);
+            var responseDisc = await _httpClient.GetAsync(apiUrlDiskon);
+            var responseCat= await _httpClient.GetAsync(apiUrlKategori);
+            var responseSat = await _httpClient.GetAsync(apiUrlSatuan);
+
+            var dateNow = DateTimeOffset.Now;
+            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
+
+            // Membaca konten API
+            var jsonData = await response.Content.ReadAsStringAsync();
+            var jsonDataDisc = await responseDisc.Content.ReadAsStringAsync();
+            var jsonDataCat = await responseCat.Content.ReadAsStringAsync();
+            var jsonDataSat = await responseSat.Content.ReadAsStringAsync();
+
+            var responseObject = JsonConvert.DeserializeObject<dynamic>(jsonData);
+            var responseObjectDisc = JsonConvert.DeserializeObject<dynamic>(jsonDataDisc);
+            var responseObjectCat = JsonConvert.DeserializeObject<dynamic>(jsonDataCat);
+            var responseObjectSat = JsonConvert.DeserializeObject<dynamic>(jsonDataSat);
+
+            var productList = responseObject.data.ToObject<List<dynamic>>();
+            var diskonList = responseObjectDisc.data.ToObject<List<dynamic>>();
+            var kategoriList = responseObjectCat.data.ToObject<List<dynamic>>();
+            var satuanList = responseObjectSat.data.ToObject<List<dynamic>>();
+
+            var filterProd = new List<dynamic>();
 
             if (response.IsSuccessStatusCode)
             {
-                // Membaca data dari API
-                var jsonData = await response.Content.ReadAsStringAsync();
-
-
-                // Deserialisasi data JSON ke List<Product>
-                var productData = JsonConvert.DeserializeObject<List<Product>>(jsonData);
-
-                // Menyimpan produk ke dalam database
-                foreach (var product in productData)
+                foreach (var itemobat in productList)
                 {
-                    // Simpan produk satu per satu ke database
-                    //product.SupplierId = product.PrincipalId;
-                    _productRepository.Tambah(product);
+                    foreach (var itemDisc in diskonList)
+                    {
+                        if (itemobat.nama_brg == itemDisc.nama_brg)
+                        {
+                            var getSupplier = _supplierRepository.GetAllSupplier().Where(s => s.SupplierName == Convert.ToString(itemDisc.nama_supp)).FirstOrDefault();
+                            if (getSupplier != null)
+                            {
+                                var getDiskon = _discountRepository.GetAllDiscount().Where(s => s.DiscountValue == (int)Convert.ToDouble(itemDisc.disc_persen)).FirstOrDefault();
+                                if (getDiskon != null)
+                                {
+                                    foreach (var itemCat in kategoriList)
+                                    {
+                                        if (itemobat.commodity == null || itemobat.commodity == "")
+                                        {
+                                            continue;
+                                        }
+                                        else if (itemobat.commodity == itemCat.kel_brg)
+                                        {
+                                            var getKategori = _categoryRepository.GetAllCategory().Where(s => s.CategoryName == Convert.ToString(itemCat.kel_brg)).FirstOrDefault();
+                                            if (getKategori != null)
+                                            {
+                                                foreach (var itemSat in satuanList)
+                                                {
+                                                    if (itemobat.kode_satuan == itemSat.kode_satuan)
+                                                    {
+                                                        var getSatuan = _MeasurementRepository.GetAllMeasurement().Where(s => s.MeasurementName == Convert.ToString(itemSat.satuang)).FirstOrDefault();
+                                                        if (getSatuan != null)
+                                                        {
+                                                            if (getKategori != null)
+                                                            {
+                                                                var getProduct = _productRepository.GetAllProduct().Where(d => d.ProductName == Convert.ToString(itemobat.nama_brg)).FirstOrDefault();
+
+                                                                if (getSupplier != null)
+                                                                {
+                                                                    if (getProduct == null)
+                                                                    {
+                                                                        filterProd.Add(itemobat);
+
+                                                                        // Mendapatkan kode measurement terakhir berdasarkan hari ini
+                                                                        var lastCode = _productRepository.GetAllProduct()
+                                                                        .Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow)
+                                                                        .OrderByDescending(k => k.ProductCode)
+                                                                        .FirstOrDefault();
+
+                                                                        string ProductCode;
+
+                                                                        if (lastCode == null)
+                                                                        {
+                                                                            ProductCode = "PDC" + setDateNow + "0001";
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            var lastCodeTrim = lastCode.ProductCode.Substring(3, 6);
+
+                                                                            if (lastCodeTrim != setDateNow)
+                                                                            {
+                                                                                ProductCode = "PDC" + setDateNow + "0001";
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                ProductCode = "PDC" + setDateNow +
+                                                                                                (Convert.ToInt32(lastCode.ProductCode.Substring(9, lastCode.ProductCode.Length - 9)) + 1)
+                                                                                                .ToString("D4");
+                                                                            }
+                                                                        }
+
+                                                                        var product = new Product
+                                                                        {
+                                                                            CreateDateTime = DateTime.Now,
+                                                                            CreateBy = new Guid(getUser.Id),
+                                                                            ProductId = Guid.NewGuid(),
+                                                                            ProductCode = ProductCode,
+                                                                            ProductName = itemobat.nama_brg,
+                                                                            SupplierId = getSupplier.SupplierId,
+                                                                            CategoryId = getKategori.CategoryId,
+                                                                            MeasurementId = getSatuan.MeasurementId,
+                                                                            DiscountId = getDiskon.DiscountId,
+                                                                            WarehouseLocationId = new Guid("4218A796-79B1-4F59-7767-08DCAE28EBBE"),
+                                                                            MinStock = 0,
+                                                                            MaxStock = 0,
+                                                                            BufferStock = 0,
+                                                                            Stock = 0,
+                                                                            Cogs = 0,
+                                                                            BuyPrice = 0,
+                                                                            RetailPrice = 0,
+                                                                            StorageLocation = "",
+                                                                            RackNumber = "",
+                                                                            Note = ""
+                                                                        };
+
+                                                                        // Simpan ke database
+                                                                        _productRepository.Tambah(product);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }                        
+                    }                    
                 }
-                // Memeriksa apakah model valid
-                // Setelah menyimpan, arahkan ke halaman sukses atau index
-                return RedirectToAction("Index", "Api");
+
+                // Kirimkan data ke View
+                return View("CreateDiskon", filterProd); // Kirimkan hanya 100 data
             }
-
-            // Jika ada kesalahan, kembali ke view dengan data yang ada
-            // Anda mungkin ingin mengisi ViewBag untuk memberikan pesan error kepada pengguna
-            ViewBag.ErrorMessage = "Terjadi kesalahan saat menyimpan produk. Silakan periksa input Anda.";
-            return View("Impor", products);
+            else
+            {
+                // Jika request gagal, tampilkan pesan error
+                return View("Error", "Gagal mengambil data dari API");
+            }
         }
-
     }
 }
