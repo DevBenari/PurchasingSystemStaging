@@ -10,6 +10,7 @@ using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
 using PurchasingSystemStaging.ViewModels;
+using System.Reflection;
 using System.Security.Claims;
 
 namespace PurchasingSystemStaging.Controllers
@@ -117,10 +118,10 @@ namespace PurchasingSystemStaging.Controllers
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
-                        TempData["WarningMessage"] = "Sorry, Username & Password Not Registered !";
+                        TempData["WarningMessage"] = "Sorry, Username And Password Not Registered !";
                         return View(model);
                     }
-                    else if (user.IsActive == true)
+                    else if (user.IsActive == true && user.IsOnline == false)
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
@@ -167,8 +168,17 @@ namespace PurchasingSystemStaging.Controllers
                                     roleNames = (from role in _roleRepository.GetRoles()
                                                  join userRole in _groupRoleRepository.GetAllGroupRole()
                                                  on role.Id equals userRole.RoleId
-                                                 where userRole.DepartemenId == userId // Gunakan userId langsung
+                                                 where userRole.DepartemenId == userId 
                                                  select role.Name).ToList();
+                                    // ambil juga judul modul
+                                    roleNames = (from role in _roleRepository.GetRoles()
+                                                 join userRole in _groupRoleRepository.GetAllGroupRole()
+                                                 on role.Id equals userRole.RoleId
+                                                 where userRole.DepartemenId == userId
+                                                 select role.ConcurrencyStamp)
+                                                 .Distinct().ToList();
+
+
                                 }
                                 else
                                 {
@@ -209,6 +219,15 @@ namespace PurchasingSystemStaging.Controllers
                         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                         TempData["WarningMessage"] = "Sorry, Wrong Password !";
                         //return View(model);
+                    }
+                    else if (user.IsActive == true && user.IsOnline == true)
+                    {
+                        TempData["UserOnlineMessage"] = "Sorry, your account is online, has been logged out, please sign back in !";
+
+                        user.IsOnline = false;
+                        await _userManager.UpdateAsync(user);
+
+                        return View(model);
                     }
                     else
                     {
