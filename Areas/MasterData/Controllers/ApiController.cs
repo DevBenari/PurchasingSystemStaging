@@ -437,6 +437,17 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }
         }
 
+        private async Task<T> GetApiDataAsync<T>(string url)
+        {
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<T>(jsonData);
+            }
+            return default(T); // Mengembalikan nilai default jika gagal
+        }
+
         [HttpGet]
         public async Task<IActionResult> CreateObat(string apiCode, int limit = 20)
         {
@@ -482,113 +493,147 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                foreach (var itemobat in productList)
+                foreach (var itemObat in productList)
                 {
-                    foreach (var itemDisc in diskonList)
+                    var getObat = _productRepository.GetAllProduct().Where(d => d.ProductName == Convert.ToString(itemObat.nama_brg)).FirstOrDefault();
+
+                    if (getObat == null)
                     {
-                        if (itemobat.nama_brg == itemDisc.nama_brg)
+                        var apiDiscountUrl = $"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_diskon_obat&return_type=json&diskon_obat={itemObat.kode_brg}";
+                        var apiCategoryUrl = $"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_kategori_obat&return_type=json&kategori_obat={itemObat.commodity}";
+                        var apiSatuanUrl = $"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_satuan&return_type=json&satuan={itemObat.kode_satuan}";
+                        var responseDiscount = GetApiDataAsync<dynamic>(apiDiscountUrl);
+                        var responseCategory = GetApiDataAsync<dynamic>($"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_kategori_obat&return_type=json&kategori_obat={itemObat.commodity}");
+                        var responseMeasurement = GetApiDataAsync<dynamic>($"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_satuan&return_type=json&satuan={itemObat.kode_satuan}");                        
+
+                        // Tunggu semua hasil API
+                        await Task.WhenAll(responseDiscount, responseCategory, responseMeasurement);
+
+                        // Mendapatkan hasil API
+                        var discountData = await responseDiscount;
+                        var categoryData = await responseCategory;
+                        var measurementData = await responseMeasurement;
+
+                        if (discountData?.data == null)
                         {
-                            var getSupplier = _supplierRepository.GetAllSupplier().Where(s => s.SupplierName == Convert.ToString(itemDisc.nama_supp)).FirstOrDefault();
-                            if (getSupplier != null)
-                            {
-                                var getDiskon = _discountRepository.GetAllDiscount().Where(s => s.DiscountValue == (int)Convert.ToDouble(itemDisc.disc_persen)).FirstOrDefault();
-                                if (getDiskon != null)
+                            /*supplierName = discountData.data[0]?.nama_supp?.ToString();*/ // Menggunakan nilai default jika kel_brg null
+                            continue;
+                        }
+                        else
+                       {
+                            var getDiscountResponse = await _httpClient.GetAsync(apiDiscountUrl);
+                            var getCategoryResponse = await _httpClient.GetAsync(apiCategoryUrl);
+
+                            // 2. Baca konten sebagai string
+                            var jsonDiscountResponse = await getDiscountResponse.Content.ReadAsStringAsync();
+                            var jsonCategoryResponse = await getCategoryResponse.Content.ReadAsStringAsync();
+
+                            // Parsing JSON ke JObject
+                            var jObjectDiscount = JObject.Parse(jsonDiscountResponse);
+                            var jObjectCategory = JObject.Parse(jsonCategoryResponse);
+
+                            // 3. Cek apakah "data" ada dan merupakan objek
+                            if (jObjectDiscount.TryGetValue("data", out JToken discountToken) && discountToken is JObject dataObjDiscount)
+                            {                                                               
+                                // 4. Ambil nilai "nama_supp" dari dataObj
+                                var supplierName = dataObjDiscount["nama_supp"]?.ToString();
+                                var discPersen = dataObjDiscount["disc_persen"]?.ToString();
+                                var hargaObat = dataObjDiscount["harga"]?.ToString();
+
+                                var getSupplier = _supplierRepository.GetAllSupplier().Where(s => s.SupplierName == supplierName).FirstOrDefault();
+                                if (getSupplier != null)
                                 {
-                                    foreach (var itemCat in kategoriList)
+                                    var getDiscount = _discountRepository.GetAllDiscount().Where(s => s.DiscountValue == (int)Convert.ToDouble(discPersen)).FirstOrDefault();
+                                    if (getDiscount != null)
                                     {
-                                        if (itemobat.commodity == null || itemobat.commodity == "")
+                                        if (jObjectCategory["response"] != null)
                                         {
-                                            continue;
-                                        }
-                                        else if (itemobat.commodity == itemCat.kel_brg)
-                                        {
-                                            var getKategori = _categoryRepository.GetAllCategory().Where(s => s.CategoryName == Convert.ToString(itemCat.kel_brg)).FirstOrDefault();
-                                            if (getKategori != null)
+                                            // 5. Cek apakah "data" ada dan tipe datanya array
+                                            var dataArray = jObjectCategory["response"]["data"] as JArray; /*InvalidOperationException: Cannot access child value on Newtonsoft.Json.Linq.JValue.*/
+                                            if (dataArray != null && dataArray.Count > 0)
                                             {
-                                                foreach (var itemSat in satuanList)
+                                                // 6. Ambil elemen pertama dari array "data" dan cari "nama_supp"
+                                                var firstItem = dataArray[0];
+                                                var namaSupp = firstItem["kel_brg"]?.ToString();
+                                            }
+                                            
+                                            // 4. Ambil nilai "nama_supp" dari dataObj
+                                            var kategory = dataObjDiscount["kel_brg"]?.ToString();
+
+                                            var getCategory = _categoryRepository.GetAllCategory().Where(c => c.CategoryName == kategory).FirstOrDefault();
+                                            if (getCategory != null)
+                                            {
+                                                var satuan = itemObat.kode_satuan;
+                                                var getSatuan = _MeasurementRepository.GetAllMeasurement().Where(s => s.MeasurementName == satuan).FirstOrDefault();
+                                                if (getSatuan != null)
                                                 {
-                                                    if (itemobat.kode_satuan == itemSat.kode_satuan)
+                                                    var lastCode = _productRepository.GetAllProduct().Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow).OrderByDescending(k => k.ProductCode).FirstOrDefault();
+
+                                                    string ProductCode;
+
+                                                    if (lastCode == null)
                                                     {
-                                                        var getSatuan = _MeasurementRepository.GetAllMeasurement().Where(s => s.MeasurementName == Convert.ToString(itemSat.satuang)).FirstOrDefault();
-                                                        if (getSatuan != null)
+                                                        ProductCode = "PDC" + setDateNow + "0001";
+                                                    }
+                                                    else
+                                                    {
+                                                        var lastCodeTrim = lastCode.ProductCode.Substring(3, 6);
+
+                                                        if (lastCodeTrim != setDateNow)
                                                         {
-                                                            if (getKategori != null)
-                                                            {
-                                                                var getProduct = _productRepository.GetAllProduct().Where(d => d.ProductName == Convert.ToString(itemobat.nama_brg)).FirstOrDefault();
-
-                                                                if (getSupplier != null)
-                                                                {
-                                                                    if (getProduct == null)
-                                                                    {
-                                                                        filterProd.Add(itemobat);
-
-                                                                        // Mendapatkan kode measurement terakhir berdasarkan hari ini
-                                                                        var lastCode = _productRepository.GetAllProduct()
-                                                                        .Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow)
-                                                                        .OrderByDescending(k => k.ProductCode)
-                                                                        .FirstOrDefault();
-
-                                                                        string ProductCode;
-
-                                                                        if (lastCode == null)
-                                                                        {
-                                                                            ProductCode = "PDC" + setDateNow + "0001";
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            var lastCodeTrim = lastCode.ProductCode.Substring(3, 6);
-
-                                                                            if (lastCodeTrim != setDateNow)
-                                                                            {
-                                                                                ProductCode = "PDC" + setDateNow + "0001";
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                ProductCode = "PDC" + setDateNow +
-                                                                                                (Convert.ToInt32(lastCode.ProductCode.Substring(9, lastCode.ProductCode.Length - 9)) + 1)
-                                                                                                .ToString("D4");
-                                                                            }
-                                                                        }
-
-                                                                        var product = new Product
-                                                                        {
-                                                                            CreateDateTime = DateTime.Now,
-                                                                            CreateBy = new Guid(getUser.Id),
-                                                                            ProductId = Guid.NewGuid(),
-                                                                            ProductCode = ProductCode,
-                                                                            ProductName = itemobat.nama_brg,
-                                                                            SupplierId = getSupplier.SupplierId,
-                                                                            CategoryId = getKategori.CategoryId,
-                                                                            MeasurementId = getSatuan.MeasurementId,
-                                                                            DiscountId = getDiskon.DiscountId,
-                                                                            WarehouseLocationId = new Guid("4218A796-79B1-4F59-7767-08DCAE28EBBE"),
-                                                                            MinStock = 0,
-                                                                            MaxStock = 0,
-                                                                            BufferStock = 0,
-                                                                            Stock = 0,
-                                                                            Cogs = 0,
-                                                                            BuyPrice = 0,
-                                                                            RetailPrice = 0,
-                                                                            StorageLocation = "",
-                                                                            RackNumber = "",
-                                                                            Note = ""
-                                                                        };
-
-                                                                        // Simpan ke database
-                                                                        _productRepository.Tambah(product);
-                                                                    }
-                                                                }
-                                                            }
+                                                            ProductCode = "PDC" + setDateNow + "0001";
+                                                        }
+                                                        else
+                                                        {
+                                                            ProductCode = "PDC" + setDateNow +
+                                                                            (Convert.ToInt32(lastCode.ProductCode.Substring(9, lastCode.ProductCode.Length - 9)) + 1)
+                                                                            .ToString("D4");
                                                         }
                                                     }
+
+                                                    var product = new Product
+                                                    {
+                                                        CreateDateTime = DateTime.Now,
+                                                        CreateBy = new Guid(getUser.Id),
+                                                        ProductId = Guid.NewGuid(),
+                                                        ProductCode = ProductCode,
+                                                        ProductName = itemObat.nama_brg,
+                                                        SupplierId = getSupplier.SupplierId,
+                                                        CategoryId = getCategory.CategoryId,
+                                                        MeasurementId = getSatuan.MeasurementId,
+                                                        DiscountId = getDiscount.DiscountId,
+                                                        WarehouseLocationId = new Guid("4218A796-79B1-4F59-7767-08DCAE28EBBE"),
+                                                        MinStock = 0,
+                                                        MaxStock = 0,
+                                                        BufferStock = 0,
+                                                        Stock = 0,
+                                                        Cogs = 0,
+                                                        BuyPrice = Convert.ToDecimal(hargaObat),
+                                                        RetailPrice = 0,
+                                                        StorageLocation = "",
+                                                        RackNumber = "",
+                                                        Note = ""
+                                                    };
+
+                                                    // Simpan ke database
+                                                    _productRepository.Tambah(product);
                                                 }
                                             }
                                         }
-                                    }
+                                        else
+                                        { 
+                                        
+                                        }
+                                    }                                    
                                 }
                             }
-                        }                        
-                    }                    
+                            else
+                            {
+                                Console.WriteLine("Data is not an object or is missing.");
+                            }
+                        }                                                
+                    }
+
                 }
 
                 // Kirimkan data ke View
