@@ -499,12 +499,14 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
                     if (getObat == null)
                     {
+                        filterProd.Add(itemObat);
+
                         var apiDiscountUrl = $"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_diskon_obat&return_type=json&diskon_obat={itemObat.kode_brg}";
                         var apiCategoryUrl = $"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_kategori_obat&return_type=json&kategori_obat={itemObat.commodity}";
                         var apiSatuanUrl = $"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_satuan&return_type=json&satuan={itemObat.kode_satuan}";
                         var responseDiscount = GetApiDataAsync<dynamic>(apiDiscountUrl);
-                        var responseCategory = GetApiDataAsync<dynamic>($"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_kategori_obat&return_type=json&kategori_obat={itemObat.commodity}");
-                        var responseMeasurement = GetApiDataAsync<dynamic>($"https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_satuan&return_type=json&satuan={itemObat.kode_satuan}");                        
+                        var responseCategory = GetApiDataAsync<dynamic>(apiCategoryUrl);
+                        var responseMeasurement = GetApiDataAsync<dynamic>(apiSatuanUrl);                        
 
                         // Tunggu semua hasil API
                         await Task.WhenAll(responseDiscount, responseCategory, responseMeasurement);
@@ -516,11 +518,74 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
                         if (discountData?.data == null)
                         {
-                            /*supplierName = discountData.data[0]?.nama_supp?.ToString();*/ // Menggunakan nilai default jika kel_brg null
-                            continue;
-                        }
+                            if (categoryData?.data != null && categoryData.data.Count > 0)
+                            {
+                                //var kategory = dataObj["kel_brg"]?.ToString();
+                                var kategory = categoryData.data[0]?.kel_brg?.ToString() ?? "OBAT";
+
+                                var getCategory = _categoryRepository.GetAllCategory().Where(c => c.CategoryName == kategory).FirstOrDefault();
+                                if (getCategory != null)
+                                {
+                                    var satuan = itemObat.kode_satuan;
+                                    var getSatuan = _MeasurementRepository.GetAllMeasurement().Where(s => s.MeasurementName == Convert.ToString(satuan)).FirstOrDefault();
+                                    if (getSatuan != null)
+                                    {
+                                        var lastCode = _productRepository.GetAllProduct().Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow).OrderByDescending(k => k.ProductCode).FirstOrDefault();
+
+                                        string ProductCode;
+
+                                        if (lastCode == null)
+                                        {
+                                            ProductCode = "PDC" + setDateNow + "0001";
+                                        }
+                                        else
+                                        {
+                                            var lastCodeTrim = lastCode.ProductCode.Substring(3, 6);
+
+                                            if (lastCodeTrim != setDateNow)
+                                            {
+                                                ProductCode = "PDC" + setDateNow + "0001";
+                                            }
+                                            else
+                                            {
+                                                ProductCode = "PDC" + setDateNow +
+                                                                (Convert.ToInt32(lastCode.ProductCode.Substring(9, lastCode.ProductCode.Length - 9)) + 1)
+                                                                .ToString("D4");
+                                            }
+                                        }
+
+                                        var product = new Product
+                                        {
+                                            CreateDateTime = DateTime.Now,
+                                            CreateBy = new Guid(getUser.Id),
+                                            ProductId = Guid.NewGuid(),
+                                            ProductCode = ProductCode,
+                                            ProductName = itemObat.nama_brg,
+                                            SupplierId = new Guid("C8E1A315-BDC8-44EA-A0FB-A24C2F9558C8"),
+                                            CategoryId = getCategory.CategoryId,
+                                            MeasurementId = getSatuan.MeasurementId,
+                                            DiscountId = new Guid("f75bb704-4a30-4c0a-e8e6-08dcacc5243f"),
+                                            WarehouseLocationId = new Guid("4218A796-79B1-4F59-7767-08DCAE28EBBE"),
+                                            MinStock = 0,
+                                            MaxStock = 0,
+                                            BufferStock = 0,
+                                            Stock = 0,
+                                            Cogs = 0,
+                                            BuyPrice = 0,
+                                            RetailPrice = 0,
+                                            StorageLocation = "",
+                                            RackNumber = "",
+                                            Note = ""
+                                        };
+
+                                        // Simpan ke database
+                                        _productRepository.Tambah(product);
+                                    }
+                                }
+                            }
+                        }                       
                         else
-                       {
+                        {
                             var getDiscountResponse = await _httpClient.GetAsync(apiDiscountUrl);
                             var getCategoryResponse = await _httpClient.GetAsync(apiCategoryUrl);
 
@@ -534,7 +599,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
                             // 3. Cek apakah "data" ada dan merupakan objek
                             if (jObjectDiscount.TryGetValue("data", out JToken discountToken) && discountToken is JObject dataObjDiscount)
-                            {                                                               
+                            {
                                 // 4. Ambil nilai "nama_supp" dari dataObj
                                 var supplierName = dataObjDiscount["nama_supp"]?.ToString();
                                 var discPersen = dataObjDiscount["disc_persen"]?.ToString();
@@ -546,25 +611,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                                     var getDiscount = _discountRepository.GetAllDiscount().Where(s => s.DiscountValue == (int)Convert.ToDouble(discPersen)).FirstOrDefault();
                                     if (getDiscount != null)
                                     {
-                                        if (jObjectCategory["response"] != null)
-                                        {
-                                            // 5. Cek apakah "data" ada dan tipe datanya array
-                                            var dataArray = jObjectCategory["response"]["data"] as JArray; /*InvalidOperationException: Cannot access child value on Newtonsoft.Json.Linq.JValue.*/
-                                            if (dataArray != null && dataArray.Count > 0)
-                                            {
-                                                // 6. Ambil elemen pertama dari array "data" dan cari "nama_supp"
-                                                var firstItem = dataArray[0];
-                                                var namaSupp = firstItem["kel_brg"]?.ToString();
-                                            }
-                                            
-                                            // 4. Ambil nilai "nama_supp" dari dataObj
-                                            var kategory = dataObjDiscount["kel_brg"]?.ToString();
+                                        if (categoryData?.data != null && categoryData.data.Count > 0)
+                                        {                                            
+                                            //var kategory = dataObj["kel_brg"]?.ToString();
+                                            var kategory = categoryData.data[0]?.kel_brg?.ToString() ?? "OBAT";
 
                                             var getCategory = _categoryRepository.GetAllCategory().Where(c => c.CategoryName == kategory).FirstOrDefault();
                                             if (getCategory != null)
                                             {
                                                 var satuan = itemObat.kode_satuan;
-                                                var getSatuan = _MeasurementRepository.GetAllMeasurement().Where(s => s.MeasurementName == satuan).FirstOrDefault();
+                                                var getSatuan = _MeasurementRepository.GetAllMeasurement().Where(s => s.MeasurementName == Convert.ToString(satuan)).FirstOrDefault();
                                                 if (getSatuan != null)
                                                 {
                                                     var lastCode = _productRepository.GetAllProduct().Where(d => d.CreateDateTime.ToString("yyMMdd") == setDateNow).OrderByDescending(k => k.ProductCode).FirstOrDefault();
@@ -620,20 +676,11 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                                                 }
                                             }
                                         }
-                                        else
-                                        { 
-                                        
-                                        }
-                                    }                                    
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Data is not an object or is missing.");
-                            }
+                            }                            
                         }                                                
                     }
-
                 }
 
                 // Kirimkan data ke View
