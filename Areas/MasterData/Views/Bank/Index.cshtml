@@ -21,7 +21,7 @@
                     <div class="card-tools">
                         @if (signInManager.IsSignedIn(User))
                         {
-                            <a class="btn btn-tool bg-indigo" asp-action="CreateBank" asp-controller="Bank" asp-area="MasterData">
+                            <a class="btn btn-tool bg-indigo" asp-action="RedirectToCreate" asp-controller="Bank" asp-area="MasterData">
                                 <i class="fas fa-plus"></i>
                             </a>
                         }
@@ -29,7 +29,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form enctype="multipart/form-data" asp-action="Index" asp-controller="Bank" method="post" class="form-horizontal">
+                    <form enctype="multipart/form-data" asp-action="RedirectToIndex" asp-controller="Bank" asp-area="MasterData" method="post" class="form-horizontal">
                         <div class="row">                            
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -52,7 +52,7 @@
                                             <button type="submit" class="btn btn-default">
                                                 <i class="fa fa-search"></i>
                                             </button>
-                                            <a class="btn bg-indigo" asp-action="Index" asp-controller="Bank" asp-area="MasterData">
+                                            <a class="btn bg-indigo" asp-action="RedirectToIndex" asp-controller="Bank" asp-area="MasterData">
                                                 <i class="fa-solid fa-arrows-rotate"></i>
                                             </a>
                                         </div>
@@ -90,7 +90,7 @@
                                     @foreach (var Bank in Model)
                                     {
 
-                                        <tr data-href="@Url.Action("DetailBank", "Bank", new {id=Bank.BankId})">
+                                        <tr data-href="@Url.Action("RedirectToDetail", "Bank", new { id = Bank.BankId })">
                                             <th class="text-center"></th>
                                             <td class="text-left">@Bank.CreateDateTime.ToString("dd MMMM yyyy")</td>
                                             <td class="text-left">@Bank.BankCode</td>

@@ -102,7 +102,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
                 .AsNoTracking();
         }
 
-        public async Task<(IEnumerable<Product> products, int totalCountProducts)> GetAllProductPageSize(int page, int pageSize)
+        public async Task<(IEnumerable<Product> products, int totalCountProducts)> GetAllProductPageSize(string searchTerm, int page, int pageSize)
         {
             var query = _context.Products
                 .OrderByDescending(d => d.CreateDateTime)
@@ -112,13 +112,22 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
                 .Include(d => d.Discount)
                 .Include(w => w.WarehouseLocation)
                 .AsQueryable();
+
+            // Filter berdasarkan searchTerm jika ada
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(p => p.ProductName.Contains(searchTerm) || p.Supplier.SupplierName.Contains(searchTerm));
+            }
+
             var totalCount = await query.CountAsync();
 
-            var product = await query.Skip((page - 1) * pageSize)
+            // Ambil data paginated
+            var products = await query
+                .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            return (product, totalCount);
+            return (products, totalCount);
         }
 
         public Product Update(Product update)
