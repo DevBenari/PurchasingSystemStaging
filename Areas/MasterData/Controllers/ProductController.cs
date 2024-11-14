@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FastReport.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -65,14 +66,24 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _httpClient = httpClient;
 
             _hostingEnvironment = hostingEnvironment;
-        }
+        }      
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "MasterData";
-            var data = _productRepository.GetAllProduct();
-            return View(data);
+            
+            var data = await _productRepository.GetAllProductPageSize(page, pageSize);
+
+            var model = new Pagination<Product>
+            {
+                Items = data.products,
+                TotalCount = data.totalCountProducts,
+                PageSize = pageSize,
+                CurrentPage = page,
+            };
+
+            return View(model);
         }
 
         [HttpPost]

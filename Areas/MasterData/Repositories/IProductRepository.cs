@@ -102,6 +102,25 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
                 .AsNoTracking();
         }
 
+        public async Task<(IEnumerable<Product> products, int totalCountProducts)> GetAllProductPageSize(int page, int pageSize)
+        {
+            var query = _context.Products
+                .OrderByDescending(d => d.CreateDateTime)
+                .Include(p => p.Supplier)
+                .Include(c => c.Category)
+                .Include(m => m.Measurement)
+                .Include(d => d.Discount)
+                .Include(w => w.WarehouseLocation)
+                .AsQueryable();
+            var totalCount = await query.CountAsync();
+
+            var product = await query.Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (product, totalCount);
+        }
+
         public Product Update(Product update)
         {
             var Product = _context.Products.Attach(update);

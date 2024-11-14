@@ -54,7 +54,7 @@
                                 <a class="btn btn-orange" style="color:#ffffff" asp-action="Index" asp-controller="TermOfPayment" asp-area="MasterData">Term Of Payment</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-orange" style="color:#ffffff" asp-action="Index" asp-controller="Bank" asp-area="MasterData">Bank</a>
+                                <a class="btn btn-orange" style="color:#ffffff" asp-action="RedirectToIndex" asp-controller="Bank" asp-area="MasterData">Bank</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <button class="btn btn-orange dropdown-toggle" style="color:#ffffff" data-bs-toggle="dropdown" aria-expanded="false">Warehouse</button>
@@ -155,7 +155,7 @@
                                 if (roles.Contains("Bank"))
                                 {
                                     <li class="nav-item">
-                                        <a class="btn btn-orange" style="color:#ffffff" asp-action="Index" asp-controller="Bank" asp-area="MasterData">Bank</a>
+                                        <a class="btn btn-orange" style="color:#ffffff" asp-action="RedirectToIndex" asp-controller="Bank" asp-area="MasterData">Bank</a>
                                     </li>
                                 }
                                 @if (roles.Any(role => role == "WarehouseLocation" || role == "UnitLocation"))
