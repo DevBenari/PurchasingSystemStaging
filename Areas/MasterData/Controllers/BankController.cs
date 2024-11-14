@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PurchasingSystemStaging.Areas.MasterData.Models;
@@ -7,6 +9,7 @@ using PurchasingSystemStaging.Areas.MasterData.ViewModels;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
+using System.Reflection;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
@@ -20,6 +23,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IBankRepository _bankRepository;
+        private readonly IDataProtector _protector;
 
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -29,6 +33,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ApplicationDbContext applicationDbContext,
             IBankRepository BankRepository,
             IUserActiveRepository userActiveRepository,
+            IDataProtectionProvider provider,
 
             IHostingEnvironment hostingEnvironment
         )
@@ -38,11 +43,27 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _applicationDbContext = applicationDbContext;
             _bankRepository = BankRepository;
             _userActiveRepository = userActiveRepository;
+            _protector = provider.CreateProtector("UrlProtector");
 
             _hostingEnvironment = hostingEnvironment;
         }
 
+        public IActionResult RedirectToIndex()
+        {
+            var controllers = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(type => typeof(Controller).IsAssignableFrom(type) && !type.IsAbstract)
+                .ToList();
+
+            // Enkripsi path URL untuk "Index"
+            string originalPath = "MasterData/Bank/Index";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Redirect ke URL terenkripsi
+            return Redirect("/" + encryptedPath);
+        }
+
         [HttpGet]
+        //[Authorize(Roles = "IndexBank")]
         public async Task<IActionResult> Index()
         {
             ViewBag.Active = "MasterData";
@@ -103,7 +124,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
             ViewBag.SelectedFilter = filterOptions;
             return View(data);
-        }
+        }        
 
         [HttpGet]
         public async Task<ViewResult> CreateBank()
@@ -185,7 +206,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     {
                         _bankRepository.Tambah(Bank);
                         TempData["SuccessMessage"] = "Name " + vm.BankName + " Saved";
-                        return RedirectToAction("Index", "Bank");
+                        return RedirectToAction("RedirectToIndex", "Bank");
                     }
                     else
                     {
@@ -256,7 +277,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                         _applicationDbContext.SaveChanges();
 
                         TempData["SuccessMessage"] = "Name " + viewModel.BankName + " Success Changes";
-                        return RedirectToAction("Index", "Bank");
+                        return RedirectToAction("RedirectToIndex", "Bank");
                     }
                     else
                     {
@@ -306,7 +327,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _applicationDbContext.SaveChanges();
 
             TempData["SuccessMessage"] = "Name " + vm.BankName + " Success Deleted";
-            return RedirectToAction("Index", "Bank");
+            return RedirectToAction("RedirectToIndex", "Bank");
         }
     }
 }
