@@ -112,6 +112,8 @@ builder.Services.AddScoped<IApprovalUnitRequestRepository>();
 FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
 var app = builder.Build();
 
+builder.Services.AddDataProtection();
+
 // Tambahkan middleware untuk dekripsi URL
 app.UseMiddleware<DecryptUrlMiddleware>();
 

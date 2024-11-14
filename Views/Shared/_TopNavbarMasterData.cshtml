@@ -44,7 +44,7 @@
                             <li class="nav-item dropdown">
                                 <button class="btn btn-orange dropdown-toggle" style="color:#ffffff" data-bs-toggle="dropdown" aria-expanded="false">Product</button>
                                 <ul class="dropdown-menu dropdown-menu-dark">
-                                    <li><a class="dropdown-item" asp-action="Index" asp-controller="Product" asp-area="MasterData">Product</a></li>
+                                    <li><a class="dropdown-item" asp-action="RedirectToIndex" asp-controller="Product" asp-area="MasterData">Product</a></li>
                                     <li><a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="MasterData">Category</a></li>
                                     <li><a class="dropdown-item" asp-action="Index" asp-controller="Measurement" asp-area="MasterData">Measurement</a></li>
                                     <li><a class="dropdown-item" asp-action="Index" asp-controller="Discount" asp-area="MasterData">Discount</a></li>                                    
@@ -129,7 +129,7 @@
                                         <ul class="dropdown-menu dropdown-menu-dark">
                                             @if (roles.Contains("Product"))
                                             {
-                                                <li><a class="dropdown-item" asp-action="Index" asp-controller="Product" asp-area="MasterData">Product</a></li>
+                                                <li><a class="dropdown-item" asp-action="RedirectToIndex" asp-controller="Product" asp-area="MasterData">Product</a></li>
                                             }
                                             @if (roles.Contains("Category"))
                                             {

@@ -436,7 +436,7 @@ namespace PurchasingSystemStaging.Controllers
 
                 foreach (var logger in DataPR)
                 {
-                    if (logger.ApproveStatusUser1 == null)
+                    if (logger.ApproveStatusUser1 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -449,7 +449,7 @@ namespace PurchasingSystemStaging.Controllers
                         };
                         loggerDataPR.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -462,7 +462,7 @@ namespace PurchasingSystemStaging.Controllers
                         };
                         loggerDataPR.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User3" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -479,7 +479,7 @@ namespace PurchasingSystemStaging.Controllers
 
                 foreach (var logger in DataQtyDiff)
                 {
-                    if (logger.ApproveStatusUser1 == null)
+                    if (logger.ApproveStatusUser1 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
                     {
                         var getUserApproveId = _approvalQtyDifferenceRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.QtyDifferenceId == logger.QtyDifferenceId).FirstOrDefault().ApprovalQtyDifferenceId;
 
@@ -492,7 +492,7 @@ namespace PurchasingSystemStaging.Controllers
                         };
                         loggerDataQtyDiff.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
                     {
                         var getUserApproveId = _approvalQtyDifferenceRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.QtyDifferenceId == logger.QtyDifferenceId).FirstOrDefault().ApprovalQtyDifferenceId;
 
@@ -509,7 +509,7 @@ namespace PurchasingSystemStaging.Controllers
 
                 foreach (var logger in DataUnitReq)
                 {
-                    if (logger.ApproveStatusUser1 == null)
+                    if (logger.ApproveStatusUser1 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
                     {
                         var getUserApproveId = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.UnitRequestId == logger.UnitRequestId).FirstOrDefault().ApprovalUnitRequestId;
 
@@ -524,9 +524,16 @@ namespace PurchasingSystemStaging.Controllers
                     }
                 }
 
-                var totalNotification = DataPR.Count + DataQtyDiff.Count + DataUnitReq.Count;
-
-                return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq });
+                if (loggerDataPR.Count == 0 && loggerDataQtyDiff.Count == 0 && loggerDataUnitReq.Count == 0)
+                {
+                    var totalNotification = 0;
+                    return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq });
+                }
+                else 
+                {
+                    var totalNotification = DataPR.Count + DataQtyDiff.Count + DataUnitReq.Count;
+                    return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq });
+                }                
             }                       
         }
 

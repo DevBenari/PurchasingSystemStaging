@@ -21,13 +21,26 @@ namespace PurchasingSystemStaging.Repositories
             {
                 try
                 {
-                    // Dekripsi path
+                    // Dekripsi URL path
                     string decryptedPath = _protector.Unprotect(path.Trim('/'));
-                    context.Request.Path = new PathString("/" + decryptedPath);
+
+                    // Pisahkan path menjadi segmen (misalnya: area/controller/action/id)
+                    var segments = decryptedPath.Split('/');
+                    if (segments.Length >= 3)
+                    {
+                        // Ganti request path ke path asli
+                        context.Request.Path = new PathString("/" + string.Join("/", segments.Take(3)));
+
+                        // Tambahkan id sebagai query string jika ada
+                        if (segments.Length == 4)
+                        {
+                            context.Request.QueryString = new QueryString($"?id={segments[3]}");
+                        }
+                    }
                 }
                 catch
                 {
-                    // Jika gagal, lanjutkan tanpa perubahan
+                    // Jika dekripsi gagal, biarkan URL tidak berubah
                 }
             }
 

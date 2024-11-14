@@ -50,10 +50,6 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
         public IActionResult RedirectToIndex()
         {
-            var controllers = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => typeof(Controller).IsAssignableFrom(type) && !type.IsAbstract)
-                .ToList();
-
             // Enkripsi path URL untuk "Index"
             string originalPath = "MasterData/Bank/Index";
             string encryptedPath = _protector.Protect(originalPath);
@@ -124,7 +120,17 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
             ViewBag.SelectedFilter = filterOptions;
             return View(data);
-        }        
+        }
+
+        public IActionResult RedirectToCreate()
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = "MasterData/Bank/CreateBank";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Redirect ke URL terenkripsi
+            return Redirect("/" + encryptedPath);
+        }
 
         [HttpGet]
         public async Task<ViewResult> CreateBank()
@@ -225,6 +231,15 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View(vm);
             }            
         }
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = $"MasterData/Bank/DetailBank/{Id}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Redirect ke URL terenkripsi
+            return Redirect("/" + encryptedPath);
+        }
 
         [HttpGet]
         public async Task<IActionResult> DetailBank(Guid Id)
@@ -295,6 +310,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             {                
                 return View(viewModel);
             }
+        }
+
+        public IActionResult RedirectToDelete(Guid Id)
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = $"MasterData/Bank/DeleteBank/{Id}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Redirect ke URL terenkripsi
+            return Redirect("/" + encryptedPath);
         }
 
         [HttpGet]

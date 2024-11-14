@@ -1,4 +1,5 @@
 ﻿using FastReport.Data;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,6 +33,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly IDiscountRepository _discountRepository;
         private readonly IWarehouseLocationRepository _warehouseLocationRepository;
         private readonly HttpClient _httpClient;
+        private readonly IDataProtector _protector;
 
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -48,6 +50,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             IDiscountRepository discountRepository,
             IWarehouseLocationRepository warehouseLocationRepository,
             HttpClient httpClient,
+            IDataProtectionProvider provider,
 
             IHostingEnvironment hostingEnvironment
         )
@@ -64,16 +67,28 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _discountRepository = discountRepository;
             _warehouseLocationRepository = warehouseLocationRepository;
             _httpClient = httpClient;
+            _protector = provider.CreateProtector("UrlProtector");
 
             _hostingEnvironment = hostingEnvironment;
-        }      
+        }
+
+        public IActionResult RedirectToIndex()
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = "MasterData/Product/Index";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Redirect ke URL terenkripsi
+            return Redirect("/" + encryptedPath);
+        }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string searchTerm = "", int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "MasterData";
-            
-            var data = await _productRepository.GetAllProductPageSize(page, pageSize);
+            ViewBag.SearchTerm = searchTerm;
+
+            var data = await _productRepository.GetAllProductPageSize(searchTerm, page, pageSize);
 
             var model = new Pagination<Product>
             {
@@ -140,6 +155,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ViewBag.SelectedFilter = filterOptions;
 
             return View(data);
+        }
+
+        public IActionResult RedirectToCreate()
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = "MasterData/Product/CreateProduct";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Redirect ke URL terenkripsi
+            return Redirect("/" + encryptedPath);
         }
 
         [HttpGet]
@@ -279,6 +304,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }                       
         }
 
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = $"MasterData/Product/DetailProduct/{Id}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Redirect ke URL terenkripsi
+            return Redirect("/" + encryptedPath);
+        }
+
         [HttpGet]
         public async Task<IActionResult> DetailProduct(Guid Id)
         {
@@ -391,6 +426,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
             ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
             return View(viewModel);
+        }
+
+        public IActionResult RedirectToDelete(Guid Id)
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = $"MasterData/Product/DeleteProduct/{Id}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Redirect ke URL terenkripsi
+            return Redirect("/" + encryptedPath);
         }
 
         [HttpGet]
