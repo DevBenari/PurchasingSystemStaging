@@ -102,7 +102,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
                 .AsNoTracking();
         }
 
-        public async Task<(IEnumerable<Product> products, int totalCountProducts)> GetAllProductPageSize(string searchTerm, int page, int pageSize)
+        public async Task<(IEnumerable<Product> products, int totalCountProducts)> GetAllProductPageSize(string searchTerm, int page, int pageSize, DateTimeOffset? startDate, DateTimeOffset? endDate)
         {
             var query = _context.Products
                 .OrderByDescending(d => d.CreateDateTime)
@@ -117,6 +117,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 query = query.Where(p => p.ProductName.Contains(searchTerm) || p.Supplier.SupplierName.Contains(searchTerm));
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(p => p.CreateDateTime >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(p => p.CreateDateTime <= endDate.Value);
             }
 
             var totalCount = await query.CountAsync();

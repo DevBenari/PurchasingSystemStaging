@@ -13,6 +13,7 @@ using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
 using System.Net.Http;
+using System.Web.WebPages;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
@@ -72,10 +73,14 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public IActionResult RedirectToIndex()
+        public IActionResult RedirectToIndex(string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
-            // Enkripsi path URL untuk "Index"
-            string originalPath = "MasterData/Product/Index";
+            // Format tanggal tanpa waktu
+            string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+            string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:MasterData/Product/Index?searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
             string encryptedPath = _protector.Protect(originalPath);
 
             // Redirect ke URL terenkripsi
@@ -83,34 +88,34 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string encryptedPath, string searchTerm = "", int page = 1, int pageSize = 10)
-        {
-            try
+        public async Task<IActionResult> Index(string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {            
+            ViewBag.Active = "MasterData";
+            ViewBag.SearchTerm = searchTerm;
+
+            // Format tanggal untuk input[type="date"]
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            // Format tanggal untuk tampilan (Indonesia)
+            ViewBag.StartDateReadable = startDate?.ToString("dd MMMM yyyy");
+            ViewBag.EndDateReadable = endDate?.ToString("dd MMMM yyyy");
+
+            // Normalisasi tanggal untuk mengabaikan waktu
+            if (startDate.HasValue) startDate = startDate.Value.Date;
+            if (endDate.HasValue) endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // Sampai akhir hari
+
+            var data = await _productRepository.GetAllProductPageSize(searchTerm, page, pageSize, startDate, endDate);
+
+            var model = new Pagination<Product>
             {
-                // Dekripsi path jika ada
-                string originalPath = encryptedPath != null ? _protector.Unprotect(encryptedPath) : "MasterData/Product/Index";
+                Items = data.products,
+                TotalCount = data.totalCountProducts,
+                PageSize = pageSize,
+                CurrentPage = page,
+            };
 
-                ViewBag.Active = "MasterData";
-                ViewBag.SearchTerm = searchTerm;
-
-                var data = await _productRepository.GetAllProductPageSize(searchTerm, page, pageSize);
-
-                var model = new Pagination<Product>
-                {
-                    Items = data.products,
-                    TotalCount = data.totalCountProducts,
-                    PageSize = pageSize,
-                    CurrentPage = page,
-                };
-
-                return View(model);
-            }
-            catch (Exception ex)
-            {
-                // Log error jika terjadi kesalahan
-                // Redirect ke halaman error atau ke halaman awal
-                return RedirectToAction("Error", "Home");
-            }            
+            return View(model);
         }
 
         [HttpPost]
@@ -172,7 +177,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public IActionResult RedirectToCreate()
         {
             // Enkripsi path URL untuk "Index"
-            string originalPath = "MasterData/Product/CreateProduct";
+            string originalPath = $"Create:MasterData/Product/CreateProduct";
             string encryptedPath = _protector.Protect(originalPath);
 
             // Redirect ke URL terenkripsi
@@ -319,7 +324,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public IActionResult RedirectToDetail(Guid Id)
         {
             // Enkripsi path URL untuk "Index"
-            string originalPath = $"MasterData/Product/DetailProduct/{Id}";
+            string originalPath = $"Detail:MasterData/Product/DetailProduct/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
 
             // Redirect ke URL terenkripsi

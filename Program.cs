@@ -14,8 +14,13 @@ using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Hubs;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var cultureInfo = new CultureInfo("id-ID");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
