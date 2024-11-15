@@ -83,22 +83,34 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchTerm = "", int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string encryptedPath, string searchTerm = "", int page = 1, int pageSize = 10)
         {
-            ViewBag.Active = "MasterData";
-            ViewBag.SearchTerm = searchTerm;
-
-            var data = await _productRepository.GetAllProductPageSize(searchTerm, page, pageSize);
-
-            var model = new Pagination<Product>
+            try
             {
-                Items = data.products,
-                TotalCount = data.totalCountProducts,
-                PageSize = pageSize,
-                CurrentPage = page,
-            };
+                // Dekripsi path jika ada
+                string originalPath = encryptedPath != null ? _protector.Unprotect(encryptedPath) : "MasterData/Product/Index";
 
-            return View(model);
+                ViewBag.Active = "MasterData";
+                ViewBag.SearchTerm = searchTerm;
+
+                var data = await _productRepository.GetAllProductPageSize(searchTerm, page, pageSize);
+
+                var model = new Pagination<Product>
+                {
+                    Items = data.products,
+                    TotalCount = data.totalCountProducts,
+                    PageSize = pageSize,
+                    CurrentPage = page,
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                // Log error jika terjadi kesalahan
+                // Redirect ke halaman error atau ke halaman awal
+                return RedirectToAction("Error", "Home");
+            }            
         }
 
         [HttpPost]
