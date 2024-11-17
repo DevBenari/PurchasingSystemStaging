@@ -21,20 +21,50 @@ namespace PurchasingSystemStaging.Repositories
             {
                 try
                 {
-                    // Dekripsi URL path
+                    // Dekripsi URL
                     string decryptedPath = _protector.Unprotect(path.Trim('/'));
 
-                    // Pisahkan path menjadi segmen (misalnya: area/controller/action/id)
-                    var segments = decryptedPath.Split('/');
-                    if (segments.Length >= 3)
+                    // Periksa prefix untuk menentukan jenis URL
+                    if (decryptedPath.StartsWith("Create:"))
                     {
-                        // Ganti request path ke path asli
-                        context.Request.Path = new PathString("/" + string.Join("/", segments.Take(3)));
-
-                        // Tambahkan id sebagai query string jika ada
-                        if (segments.Length == 4)
+                        // URL untuk detail produk
+                        var actualPath = decryptedPath.Substring(7); // Hilangkan prefix "Detail:"
+                        context.Request.Path = new PathString("/" + actualPath);
+                    }
+                    else if (decryptedPath.StartsWith("Detail:"))
+                    {
+                        // URL untuk detail produk
+                        var actualPath = decryptedPath.Substring(7); // Hilangkan prefix "Detail:"
+                        var parts = actualPath.Split('/');
+                        if (parts.Length == 4)
                         {
-                            context.Request.QueryString = new QueryString($"?id={segments[3]}");
+                            context.Request.Path = new PathString("/" + string.Join("/", parts.Take(3)));
+                            context.Request.QueryString = new QueryString($"?id={parts[3]}");
+                        }
+                    }
+                    else if (decryptedPath.StartsWith("Delete:"))
+                    {
+                        // URL untuk detail produk
+                        var actualPath = decryptedPath.Substring(7); // Hilangkan prefix "Detail:"
+                        var parts = actualPath.Split('/');
+                        if (parts.Length == 4)
+                        {
+                            context.Request.Path = new PathString("/" + string.Join("/", parts.Take(3)));
+                            context.Request.QueryString = new QueryString($"?id={parts[3]}");
+                        }
+                    }
+                    else if (decryptedPath.StartsWith("Page:"))
+                    {
+                        // URL untuk paginasi
+                        var actualPath = decryptedPath.Substring(5); // Hilangkan prefix "Page:"
+                        var parts = actualPath.Split('?');
+                        if (parts.Length > 0)
+                        {
+                            context.Request.Path = new PathString("/" + parts[0]);
+                            if (parts.Length > 1)
+                            {
+                                context.Request.QueryString = new QueryString("?" + parts[1]);
+                            }
                         }
                     }
                 }
