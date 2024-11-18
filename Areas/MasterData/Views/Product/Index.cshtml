@@ -24,73 +24,33 @@
                 <div class="card-header">
                     <h3 class="card-title" style="color:#ffffff"><b>@ViewBag.Title</b></h3>
 
-                    <div class="card-tools">
+                    @* <div class="card-tools">
                         @if (signInManager.IsSignedIn(User))
                         {
                             <a class="btn btn-tool bg-indigo" asp-action="RedirectToCreate" asp-controller="Product" asp-area="MasterData">
                                 <i class="fas fa-plus"></i>
                             </a>
                         }
-                    </div>
+                    </div> *@
                 </div>
+                @* <tr data-href="@Url.Action("RedirectToDetail", "Product", new { id = Product.ProductId })"> *@
                 <!-- /.card-header -->
-                <div class="card-body">
-                    <form enctype="multipart/form-data" asp-action="RedirectToIndex" asp-controller="Product" method="get" class="form-horizontal">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="date-container">
-                                            @*<label class="date-label" for="startDate">Start Date</label>*@
-                                            <input type="date" name="startDate" id="startDate" class="date-input" value="@ViewBag.StartDate" placeholder="Select Start Date">
-                                        </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="Product" method="get" class="form-horizontal">
+                            <div class="row">
+                                <div class="col-md-3 input-group">
+                                    <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "Product")">
+                                        <i class="fas fa-plus"></i>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="date-container form-group">                                            
-                                            <input type="date" name="endDate" id="endDate" class="date-input" value="@ViewBag.EndDate" placeholder="Select End Date">
-                                            <button type="submit" class="btn btn-default" id="btn-search"><i class="fa fa-search"></i></button>
-                                        </div>                                        
-                                    </div>
-                                    @*<div class="col-md-2">
-                                        <label></label>
-                                        <button type="reset" class="btn-reset">Reset</button>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label></label>
-                                        <button type="submit" class="btn-submit">Search</button>
-                                    </div>*@
-                                </div>                                                                
-                                @*<div class="form-group">
-                                <div class="input-group date" id="tglAwalPencarian" data-target-input="nearest">
-                                <div class="input-group-append" data-target="#tglAwalPencarian" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    <input type="date" name="startDate" id="startDate" class="date-input" value="@ViewBag.StartDate" placeholder="Select Start Date">
                                 </div>
-                                <input autocomplete="off" readonly value="@ViewBag.tglAwalPencarian" name="tglAwalPencarian" type="text" class="form-control datetimepicker-input" placeholder="Search start date..." />
+                                <div class="col-md-3 input-group">
+                                    <input type="date" name="endDate" id="endDate" class="date-input" value="@ViewBag.EndDate" placeholder="Select End Date">
+                                    <button type="submit" class="btn btn-default bg-indigo" id="btn-search"><i class="fa fa-search"></i></button>
                                 </div>
-                                </div>*@
-                            </div>
-                            @*<div class="col-md-5">
-                                <div class="form-group">
-                                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                        <div class="input-group date" id="tglAkhirPencarian" data-target-input="nearest">
-                                            <div class="input-group-append" data-target="#tglAkhirPencarian" data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                            <input autocomplete="off" readonly value="@ViewBag.tglAkhirPencarian" name="tglAkhirPencarian" type="text" class="form-control datetimepicker-input" placeholder="Search end date..." />
-                                            <button type="submit" class="btn btn-default" id="btn-search">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                            <a class="btn bg-indigo" asp-action="RedirectToIndex" asp-controller="Product" asp-area="MasterData">
-                                                <i class="fa-solid fa-arrows-rotate"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <input type="datetime-local" name="endDate" value="@ViewBag.EndDate" />
-                                </div>
-                            </div>*@
-                            <div class="form-group col-md-3">
-                                <div class="form-group">
-                                    <select class="form-control" name="filterOptions" id="btnFilterBy">
+                                <div class="col-md-2 input-group">
+                                    <select class="form-control" name="filterOptions" id="filterOptions">
                                         <option value="" hidden disabled selected>--Filter by--</option>
                                         <option value="Today" selected=@(ViewBag.SelectedFilter == "Today")>Today</option>
                                         <option value="Last Day" selected=@(ViewBag.SelectedFilter == "Last Day")>Last Day</option>
@@ -100,20 +60,20 @@
                                         <option value="Last Month" selected=@(ViewBag.SelectedFilter == "Last Month")>Last Month</option>
                                     </select>
                                 </div>
+                                <div class="col-md-4 input-group" data-target-input="nearest">
+                                    <input autocomplete="off" maxlength="50" type="text" class="form-control form-control-border border-width-2" id="searchIn" name="searchTerm" value="@searchTerm" placeholder="Search products..." />
+                                    <button type="submit" class="btn btn-default bg-indigo" id="btn-search"><i class="fa fa-search"></i></button>
+                                    <a class="btn btn-default bg-indigo" id="btn-search" asp-action="RedirectToIndex" asp-controller="Product" asp-area="MasterData">
+                                        <i class="fa-solid fa-arrows-rotate"></i>
+                                    </a>
+                                    @* <button type="reset" class="btn btn-default btn-reset bg-indigo" id="btn-search"><i class="fa fa-refresh"></i></button>                                     *@
+                                    <input type="hidden" name="page" value="1" />
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                    <form method="get" action="">
-                        <div class="row">
-                            <div class="col-md-12 input-group">
-                                <input autocomplete="off" type="text" class="form-control form-control-border border-width-2" name="searchTerm" value="@searchTerm" placeholder="Search products..." />
-                                <button type="submit" class="btn btn-default" id="btn-search">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                                <input type="hidden" name="page" value="1" />
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>                    
+                </div>
+                <div class="card-body">                    
                     <div class="card-body table-responsive p-0">
                         <table id="tblTemplate" class="table table-hover table-head-fixed text-nowrap">
                             <thead>
@@ -164,6 +124,50 @@
 
                         @* Pagination *@
                         <div>
+                            <p class="pagination-info">Page @Model.CurrentPage of @Model.TotalPages</p>
+                            <div class="pagination-container">
+                                <ul class="pagination">
+                                    @if (Model.CurrentPage > 1)
+                                    {
+                                        <li>
+                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(Model.CurrentPage - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
+                                        </li>
+                                    }
+
+                                    @{
+                                        int startPage = ((Model.CurrentPage - 1) / 10) * 10 + 1;
+                                        int endPage = Math.Min(startPage + 9, Model.TotalPages);
+                                    }
+
+                                    @for (int i = startPage; i <= endPage; i++)
+                                    {
+                                        <li class="@(i == Model.CurrentPage ? "active" : "")">
+                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                                        </li>
+                                    }
+
+                                    @if (Model.CurrentPage < Model.TotalPages)
+                                    {
+                                        <li>
+                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
+                                        </li>
+                                    }
+                                </ul>
+
+                                <div class="pagination-block-navigation">
+                                    @if (startPage > 1)
+                                    {
+                                        <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(startPage - 10)" asp-route-pageSize="@Model.PageSize">Previous 10</a>
+                                    }
+
+                                    @if (endPage < Model.TotalPages)
+                                    {
+                                        <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(endPage + 1)" asp-route-pageSize="@Model.PageSize">Next 10</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        @* <div>
                             <p>Page @Model.CurrentPage of @Model.TotalPages</p>
                             <div>
                                 <!-- Pagination with 10 numbered pages at a time -->
@@ -185,29 +189,14 @@
                                     }
 
                                     @for (int i = startPage; i <= endPage; i++)
-                                    {
-                                        @*<li class="@(i == Model.CurrentPage ? "active" : "")">
-                                    <a asp-action="RedirectToIndex"
-                                    asp-route-searchTerm="@ViewBag.SearchTerm"
-                                    asp-route-page="@i"
-                                    asp-route-pageSize="@Model.PageSize">@i</a>
-                                    </li>*@
+                                    {                                        
                                         <li class="@(i == Model.CurrentPage ? "active" : "")">
                                             <a asp-action="RedirectToIndex" asp-route-encryptedPath="@ViewBag.EncryptedPath" asp-route-page="@i" asp-route-pageSize="@Model.PageSize" asp-route-searchTerm="@ViewBag.SearchTerm">@i</a>
                                         </li>
                                     }
 
                                     @if (Model.CurrentPage < Model.TotalPages)
-                                    {
-                                        @*<li>
-                                    <a asp-action="RedirectToIndex" asp-route-searchTerm="@searchTerm" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
-                                    </li>*@
-                                        @*<li>
-                                    <a asp-action="RedirectToIndex"
-                                    asp-route-searchTerm="@ViewBag.SearchTerm"
-                                    asp-route-page="@(Model.CurrentPage + 1)"
-                                    asp-route-pageSize="@Model.PageSize">Next</a>
-                                    </li>*@
+                                    {                                        
                                         <li>
                                             <a asp-action="RedirectToIndex" asp-route-encryptedPath="@ViewBag.EncryptedPath" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize" asp-route-searchTerm="@ViewBag.SearchTerm">Next</a>
                                         </li>
@@ -227,7 +216,7 @@
                                     }
                                 </div>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
                     <span class="error">* Double click in the table row to open data</span>
                 </div>
@@ -255,52 +244,11 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>*@
         @* <script src="~/scripts/tabletemplate.js"></script> *@
     <script>
-        $(document).ready(function () {
-            $("#btnFilterBy").data('placeholder');
-
-            $('#btnFilterBy').on('change', function () {
-                $('.datetimepicker-input').val('');
-                $(this).closest('form').submit();
-            });
-
-            $('#tglAwalPencarian').datetimepicker({
-                format: 'DD MMMM YYYY',
-                timepicker: false,
-                enableHours: false,
-                ignoreReadonly: true,
-                allowInputToggle: true,
-                useCurrent: false,
-                keepOpen: false,
-                mask: true
-
-            })
-
-            $('#tglAkhirPencarian').datetimepicker({
-                format: 'DD MMMM YYYY',
-                timepicker: false,
-                enableHours: false,
-                ignoreReadonly: true,
-                allowInputToggle: true,
-                useCurrent: false,
-                keepOpen: false,
-                mask: true
-
-            })
-
-            $('#btn-search').on('click', function () {
-                $('#btnFilterBy').val('');
-            })
-            $('.datetimepicker-input').on('keydown paste ', function (e) {
-                e.preventDefault();
-                return false;
-            });
-
-
-            $('.datetimepicker-input').on('focus', function () {
-                $(this).closest('.input-group').find('.input-group-append').click();
-            });
+        document.getElementById("filterOptions").addEventListener("change", function () {
+            // Kirim form secara otomatis saat opsi dipilih
+            document.getElementById("filterForm").submit();
         });
-    </script>
+    </script>    
 
     <style>
         tr[data-href] {
@@ -314,6 +262,16 @@
 
             rows.forEach(row => {
                 row.addEventListener("dblclick", () => {
+                    window.location.href = row.dataset.href;
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const rows = document.querySelectorAll("div[data-href]");
+
+            rows.forEach(row => {
+                row.addEventListener("click", () => {
                     window.location.href = row.dataset.href;
                 });
             });
@@ -354,18 +312,101 @@
         flatpickr("#endDate", {
             dateFormat: "Y-m-d",
             //defaultDate: "today"
-        });
+        });        
+    </script>
 
-        document.querySelector('.btn-reset').addEventListener('click', function (event) {
-            event.preventDefault(); // Mencegah perilaku reset bawaan
-            const startDateInput = document.getElementById('startDate');
-            const endDateInput = document.getElementById('endDate');
+    <!-- CSS -->
+    <style>
+        .pagination-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
 
-            // Atur nilai default (kosongkan atau gunakan tanggal tertentu)
-            startDateInput.value = ''; // Atau gunakan nilai default, misalnya: '2024-01-01'
-            endDateInput.value = ''; // Atau gunakan nilai default, misalnya: '2024-01-31'
+        .pagination {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+            .pagination li {
+                margin: 0;
+            }
+
+        .pagination-link {
+            text-decoration: none;
+            padding: 10px 15px;
+            border: 2px solid #007bff;
+            border-radius: 20px;
+            color: #007bff;
+            font-size: 14px;
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+        }
+
+            .pagination-link:hover {
+                background-color: #007bff;
+                color: white;
+                transform: scale(1.1);
+            }
+
+        .pagination .active .pagination-link {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            border-color: #0056b3;
+        }
+
+        .pagination-info {
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #555;
+        }
+
+        .pagination-block-navigation {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .pagination-link-block {
+            text-decoration: none;
+            padding: 8px 20px;
+            border: 2px solid #28a745;
+            border-radius: 20px;
+            color: #28a745;
+            font-size: 14px;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .pagination-link-block:hover {
+                background-color: #28a745;
+                color: white;
+                transform: scale(1.1);
+            }
+    </style>
+
+    <!-- jQuery -->
+    <script>
+        $(document).ready(function () {
+            // Add a smooth scroll effect for better navigation
+            $('.pagination-link, .pagination-link-block').on('click', function (e) {
+                e.preventDefault();
+                const targetUrl = $(this).attr('href');
+                $('html, body').animate({ scrollTop: 0 }, 500, function () {
+                    window.location.href = targetUrl;
+                });
+            });
         });
     </script>
+
 
     <style>
         span.error {

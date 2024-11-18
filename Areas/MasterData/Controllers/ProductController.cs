@@ -73,14 +73,14 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public IActionResult RedirectToIndex(string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             // Format tanggal tanpa waktu
             string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
             string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
             // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/Product/Index?searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+            string originalPath = $"Page:MasterData/Product/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
             string encryptedPath = _protector.Protect(originalPath);
 
             // Redirect ke URL terenkripsi
@@ -88,10 +88,11 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {            
             ViewBag.Active = "MasterData";
             ViewBag.SearchTerm = searchTerm;
+            ViewBag.SelectedFilter = filterOptions;
 
             // Format tanggal untuk input[type="date"]
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
@@ -105,6 +106,12 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             if (startDate.HasValue) startDate = startDate.Value.Date;
             if (endDate.HasValue) endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // Sampai akhir hari
 
+            // Tentukan range tanggal berdasarkan filterOptions
+            if (!string.IsNullOrEmpty(filterOptions))
+            {
+                (startDate, endDate) = GetDateRange(filterOptions);
+            }
+
             var data = await _productRepository.GetAllProductPageSize(searchTerm, page, pageSize, startDate, endDate);
 
             var model = new Pagination<Product>
@@ -116,6 +123,23 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             };
 
             return View(model);
+        }
+
+        private (DateTimeOffset?, DateTimeOffset?) GetDateRange(string filterOptions)
+        {
+            var now = DateTimeOffset.Now;
+            return filterOptions switch
+            {
+                "Today" => (now.Date, now.Date),
+                "Last Day" => (now.AddDays(-1).Date, now.AddDays(-1).Date),
+                "Last 7 Days" => (now.AddDays(-7).Date, now.Date),
+                "Last 30 Days" => (now.AddDays(-30).Date, now.Date),
+                "This Month" => (new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset), now.Date),
+                "Last Month" =>
+                    (new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset).AddMonths(-1),
+                     new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset).AddDays(-1)),
+                _ => (null, null),
+            };
         }
 
         [HttpPost]
