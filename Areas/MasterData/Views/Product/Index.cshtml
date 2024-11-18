@@ -23,21 +23,11 @@
             <div class="card card-cyan">
                 <div class="card-header">
                     <h3 class="card-title" style="color:#ffffff"><b>@ViewBag.Title</b></h3>
-
-                    @* <div class="card-tools">
-                        @if (signInManager.IsSignedIn(User))
-                        {
-                            <a class="btn btn-tool bg-indigo" asp-action="RedirectToCreate" asp-controller="Product" asp-area="MasterData">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        }
-                    </div> *@
                 </div>
-                @* <tr data-href="@Url.Action("RedirectToDetail", "Product", new { id = Product.ProductId })"> *@
                 <!-- /.card-header -->
                 <div class="card">
                     <div class="card-body">
-                        <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="Product" method="get" class="form-horizontal">
+                        <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="Product" asp-area="MasterData" method="post" class="form-horizontal">
                             <div class="row">
                                 <div class="col-md-3 input-group">
                                     <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "Product")">
@@ -63,10 +53,9 @@
                                 <div class="col-md-4 input-group" data-target-input="nearest">
                                     <input autocomplete="off" maxlength="50" type="text" class="form-control form-control-border border-width-2" id="searchIn" name="searchTerm" value="@searchTerm" placeholder="Search products..." />
                                     <button type="submit" class="btn btn-default bg-indigo" id="btn-search"><i class="fa fa-search"></i></button>
-                                    <a class="btn btn-default bg-indigo" id="btn-search" asp-action="RedirectToIndex" asp-controller="Product" asp-area="MasterData">
+                                    <div class="btn btn-default bg-indigo" id="btn-search" data-href="@Url.Action("RedirectToIndex", "Product")">
                                         <i class="fa-solid fa-arrows-rotate"></i>
-                                    </a>
-                                    @* <button type="reset" class="btn btn-default btn-reset bg-indigo" id="btn-search"><i class="fa fa-refresh"></i></button>                                     *@
+                                    </div>                                    
                                     <input type="hidden" name="page" value="1" />
                                 </div>
                             </div>
@@ -127,21 +116,37 @@
                             <p class="pagination-info">Page @Model.CurrentPage of @Model.TotalPages</p>
                             <div class="pagination-container">
                                 <ul class="pagination">
-                                    @if (Model.CurrentPage > 1)
-                                    {
-                                        <li>
-                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(Model.CurrentPage - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
-                                        </li>
-                                    }
-
                                     @{
                                         int startPage = ((Model.CurrentPage - 1) / 10) * 10 + 1;
                                         int endPage = Math.Min(startPage + 9, Model.TotalPages);
                                     }
 
+                                    @if (startPage > 1)
+                                    {
+                                        <li>
+                                            @*<div class="pagination-link" data-href="@Url.Action("RedirectToIndex", "Product", new { page = startPage - 10, pageSize = Model.PageSize })">
+                                                Previous 10
+                                            </div>*@
+                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(startPage - 10)" asp-route-pageSize="@Model.PageSize">Previous 10</a>
+                                        </li>
+                                    }
+
+                                    @if (Model.CurrentPage > 1)
+                                    {
+                                        <li>
+                                            @*<div class="pagination-link" id="btn-previous" data-href="@Url.Action("RedirectToIndex", "Product", new { page = Model.CurrentPage - 1, pageSize = Model.PageSize })">
+                                                Previous
+                                            </div>*@
+                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(Model.CurrentPage - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
+                                        </li>
+                                    }
+
                                     @for (int i = startPage; i <= endPage; i++)
                                     {
                                         <li class="@(i == Model.CurrentPage ? "active" : "")">
+                                            @*<div class="pagination-link" data-href="@Url.Action("RedirectToIndex", "Product", new { page = i, pageSize = Model.PageSize })">
+                                                @i
+                                            </div>*@
                                             <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
                                         </li>
                                     }
@@ -149,74 +154,26 @@
                                     @if (Model.CurrentPage < Model.TotalPages)
                                     {
                                         <li>
-                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
+                                            @*<div class="pagination-link" id="btn-next" data-href="@Url.Action("RedirectToIndex", "Product", new { page = Model.CurrentPage + 1, pageSize = Model.PageSize })">
+                                                Next
+                                            </div>*@
+                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-encryptedPath="@ViewBag.EncryptedPath" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize" asp-route-searchTerm="@ViewBag.SearchTerm">Next</a>
                                         </li>
-                                    }
-                                </ul>
-
-                                <div class="pagination-block-navigation">
-                                    @if (startPage > 1)
-                                    {
-                                        <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(startPage - 10)" asp-route-pageSize="@Model.PageSize">Previous 10</a>
                                     }
 
                                     @if (endPage < Model.TotalPages)
                                     {
-                                        <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(endPage + 1)" asp-route-pageSize="@Model.PageSize">Next 10</a>
+                                        <li>
+                                            <a class="pagination-link" asp-action="RedirectToIndex" asp-route-page="@(endPage + 1)" asp-route-pageSize="@Model.PageSize">Next 10</a>
+                                            @*<div class="pagination-link" data-href="@Url.Action("RedirectToIndex", "Product", new { page = endPage + 1, pageSize = Model.PageSize })">
+                                                Next 10
+                                            </div>*@
+                                        </li>
                                     }
-                                </div>
+                                </ul>
                             </div>
                         </div>
-                        @* <div>
-                            <p>Page @Model.CurrentPage of @Model.TotalPages</p>
-                            <div>
-                                <!-- Pagination with 10 numbered pages at a time -->
-                                <ul class="pagination">
-                                    @if (Model.CurrentPage > 1)
-                                    {
-                                        <a asp-action="RedirectToIndex" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-startDate="@ViewBag.StartDate" asp-route-endDate="@ViewBag.EndDate" asp-route-page="@(Model.CurrentPage - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
-                                    }
 
-                                    @if (Model.CurrentPage * Model.PageSize < Model.TotalCount)
-                                    {
-                                        <a asp-action="RedirectToIndex" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-startDate="@ViewBag.StartDate" asp-route-endDate="@ViewBag.EndDate" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
-                                    }
-
-                                    @{
-                                        // Determine the range of pagination numbers
-                                        int startPage = ((Model.CurrentPage - 1) / 10) * 10 + 1;
-                                        int endPage = Math.Min(startPage + 9, Model.TotalPages);
-                                    }
-
-                                    @for (int i = startPage; i <= endPage; i++)
-                                    {                                        
-                                        <li class="@(i == Model.CurrentPage ? "active" : "")">
-                                            <a asp-action="RedirectToIndex" asp-route-encryptedPath="@ViewBag.EncryptedPath" asp-route-page="@i" asp-route-pageSize="@Model.PageSize" asp-route-searchTerm="@ViewBag.SearchTerm">@i</a>
-                                        </li>
-                                    }
-
-                                    @if (Model.CurrentPage < Model.TotalPages)
-                                    {                                        
-                                        <li>
-                                            <a asp-action="RedirectToIndex" asp-route-encryptedPath="@ViewBag.EncryptedPath" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize" asp-route-searchTerm="@ViewBag.SearchTerm">Next</a>
-                                        </li>
-                                    }
-                                </ul>
-
-                                <!-- Pagination navigation for previous/next blocks -->
-                                <div>
-                                    @if (startPage > 1)
-                                    {
-                                        <a asp-action="RedirectToIndex" asp-route-searchTerm="@searchTerm" asp-route-page="@(startPage - 10)" asp-route-pageSize="@Model.PageSize">Previous 10</a>
-                                    }
-
-                                    @if (endPage < Model.TotalPages)
-                                    {
-                                        <a asp-action="RedirectToIndex" asp-route-searchTerm="@searchTerm" asp-route-page="@(endPage + 1)" asp-route-pageSize="@Model.PageSize">Next 10</a>
-                                    }
-                                </div>
-                            </div>
-                        </div> *@
                     </div>
                     <span class="error">* Double click in the table row to open data</span>
                 </div>
@@ -237,12 +194,12 @@
 </section>
 <!-- /.content -->
 @section Scripts{
+    <link href="~/scripts/pagination.css" rel="stylesheet" />
+    <script src="~/scripts/paginationjquery.js"></script>
     <link href="~/scripts/buttonsejajarindex.css" rel="stylesheet" />
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        @*<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>*@
-        @* <script src="~/scripts/tabletemplate.js"></script> *@
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>        
     <script>
         document.getElementById("filterOptions").addEventListener("change", function () {
             // Kirim form secara otomatis saat opsi dipilih
@@ -256,28 +213,7 @@
         }
     </style>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const rows = document.querySelectorAll("tr[data-href]");
-
-            rows.forEach(row => {
-                row.addEventListener("dblclick", () => {
-                    window.location.href = row.dataset.href;
-                });
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const rows = document.querySelectorAll("div[data-href]");
-
-            rows.forEach(row => {
-                row.addEventListener("click", () => {
-                    window.location.href = row.dataset.href;
-                });
-            });
-        });
-    </script>
-
+    @*Start Jquery Date Range Tidak Bisa Dipisah Beda Halaman*@
     <script>
         $(document).ready(function () {
             // Ketika input difokuskan
@@ -314,233 +250,5 @@
             //defaultDate: "today"
         });        
     </script>
-
-    <!-- CSS -->
-    <style>
-        .pagination-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-            font-family: Arial, sans-serif;
-        }
-
-        .pagination {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-            .pagination li {
-                margin: 0;
-            }
-
-        .pagination-link {
-            text-decoration: none;
-            padding: 10px 15px;
-            border: 2px solid #007bff;
-            border-radius: 20px;
-            color: #007bff;
-            font-size: 14px;
-            transition: all 0.3s ease-in-out;
-            display: inline-block;
-        }
-
-            .pagination-link:hover {
-                background-color: #007bff;
-                color: white;
-                transform: scale(1.1);
-            }
-
-        .pagination .active .pagination-link {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
-            border-color: #0056b3;
-        }
-
-        .pagination-info {
-            font-size: 16px;
-            margin-bottom: 10px;
-            text-align: center;
-            color: #555;
-        }
-
-        .pagination-block-navigation {
-            margin-top: 15px;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .pagination-link-block {
-            text-decoration: none;
-            padding: 8px 20px;
-            border: 2px solid #28a745;
-            border-radius: 20px;
-            color: #28a745;
-            font-size: 14px;
-            transition: all 0.3s ease-in-out;
-        }
-
-            .pagination-link-block:hover {
-                background-color: #28a745;
-                color: white;
-                transform: scale(1.1);
-            }
-    </style>
-
-    <!-- jQuery -->
-    <script>
-        $(document).ready(function () {
-            // Add a smooth scroll effect for better navigation
-            $('.pagination-link, .pagination-link-block').on('click', function (e) {
-                e.preventDefault();
-                const targetUrl = $(this).attr('href');
-                $('html, body').animate({ scrollTop: 0 }, 500, function () {
-                    window.location.href = targetUrl;
-                });
-            });
-        });
-    </script>
-
-
-    <style>
-        span.error {
-            display: block;
-            color: #347FC4;
-            font-size: 90%;
-        }
-
-        tr.error {
-            background-color: rgba(255,0,0,0.35);
-        }
-
-        /*css for table*/
-        .container td {
-            vertical-align: top;
-        }
-
-        .tablecontainer table {
-            width: 100%;
-            border-collapse: collapse;
-            border-top: 1px solid #BFAEAE;
-            border-right: 1px solid #BFAEAE;
-        }
-
-        .tablecontainer th {
-            border-bottom: 2px solid #BFAEAE;
-        }
-
-        .tablecontainer th, .tablecontainer td {
-            text-align: center;
-            border-left: 1px solid #BFAEAE;
-            padding: 5px;
-            border-bottom: 1px solid #BFAEAE;
-        }
-
-        .ui-widget {
-            font-size: 12px !important;
-        }
-    </style>
-
-    <style>
-        .pagination {
-            list-style: none;
-            display: flex;
-            gap: 5px;
-            padding: 0;
-        }
-
-            .pagination li {
-                display: inline-block;
-                margin: 0;
-            }
-
-                .pagination li a {
-                    text-decoration: none;
-                    padding: 5px 10px;
-                    border: 1px solid #ccc;
-                    border-radius: 3px;
-                }
-
-                .pagination li.active a {
-                    background-color: #007bff;
-                    color: #fff;
-                    pointer-events: none;
-                }
-
-        /* Gaya untuk input tanggal */
-        .date-input {
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #007BFF;
-            border-radius: 5px;
-            outline: none;
-            transition: 0.3s ease-in-out;
-        }
-
-            /* Fokus pada input */
-            .date-input:focus {
-                border-color: #0056b3;
-                box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-            }
-
-        /* Gaya untuk label */
-        .date-label {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-            color: #333;
-        }
-
-        /* Gaya container */
-        .date-container {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            max-width: 300px;
-        }
-
-        /* Gaya untuk tombol */
-        .btn-submit {
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.3s ease-in-out;
-        }
-
-            /* Hover pada tombol */
-            .btn-submit:hover {
-                background-color: #0056b3;
-                box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-            }
-
-        .btn-reset {
-            background-color: #f8f9fa;
-            color: #000;
-            border: 1px solid #ccc;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-left: 10px;
-            transition: 0.3s ease-in-out;
-        }
-
-            .btn-reset:hover {
-                background-color: #e9ecef;
-                border-color: #007BFF;
-                color: #007BFF;
-            }
-
-    </style>
+    @*End Jquery Date Range Tidak Bisa Dipisah Beda Halaman*@
 }

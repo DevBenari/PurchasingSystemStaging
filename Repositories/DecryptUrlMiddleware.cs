@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
+using System.IO.Compression;
+using System.Text;
 
 namespace PurchasingSystemStaging.Repositories
 {
@@ -22,7 +24,7 @@ namespace PurchasingSystemStaging.Repositories
                 try
                 {
                     // Dekripsi URL
-                    string decryptedPath = _protector.Unprotect(path.Trim('/'));
+                    string decryptedPath = DecompressAndDecrypt(path.Trim('/'));
 
                     // Periksa prefix untuk menentukan jenis URL
                     if (decryptedPath.StartsWith("Create:"))
@@ -75,6 +77,23 @@ namespace PurchasingSystemStaging.Repositories
             }
 
             await _next(context);
+        }       
+
+        private string DecompressAndDecrypt(string encrypted)
+        {
+            // Decode Base62 ke byte array
+            byte[] encryptedData = Base62Encoder.Decode(encrypted);
+
+            // Dekripsi data
+            byte[] decryptedData = _protector.Unprotect(encryptedData);
+
+            // Dekompresi data
+            using var compressedStream = new MemoryStream(decryptedData);
+            using var decompressionStream = new GZipStream(compressedStream, CompressionMode.Decompress);
+            using var resultStream = new MemoryStream();
+            decompressionStream.CopyTo(resultStream);
+
+            return Encoding.UTF8.GetString(resultStream.ToArray());
         }
-    }    
+    }
 }

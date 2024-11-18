@@ -12,7 +12,9 @@ using PurchasingSystemStaging.Areas.MasterData.ViewModels;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
+using System.IO.Compression;
 using System.Net.Http;
+using System.Text;
 using System.Web.WebPages;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -73,6 +75,25 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        public string CompressAndEncrypt(string input)
+        {
+            // Kompresi data
+            byte[] inputData = Encoding.UTF8.GetBytes(input);
+            using var compressedStream = new MemoryStream();
+            using (var gzipStream = new GZipStream(compressedStream, CompressionMode.Compress))
+            {
+                gzipStream.Write(inputData, 0, inputData.Length);
+            }
+
+            byte[] compressedData = compressedStream.ToArray();
+
+            // Enkripsi data
+            byte[] encryptedData = _protector.Protect(compressedData);
+
+            // Base62 encode untuk URL-safe hasil
+            return Base62Encoder.Encode(encryptedData);
+        }
+
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             // Format tanggal tanpa waktu
@@ -81,9 +102,9 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
             // Bangun originalPath dengan format tanggal ISO 8601
             string originalPath = $"Page:MasterData/Product/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-            string encryptedPath = _protector.Protect(originalPath);
+            string encryptedPath = CompressAndEncrypt(originalPath);
 
-            // Redirect ke URL terenkripsi
+            // Redirect ke URL pendek
             return Redirect("/" + encryptedPath);
         }
 
@@ -142,61 +163,61 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             };
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Index(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
-        {
-            ViewBag.Active = "MasterData";
+        //[HttpPost]
+        //public async Task<IActionResult> Index(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
+        //{
+        //    ViewBag.Active = "MasterData";
 
-            var data = _productRepository.GetAllProduct();
+        //    var data = _productRepository.GetAllProduct();
 
-            if(tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
-            {
-                data = data.Where(u => u.CreateDateTime.Date >= tglAwalPencarian.Value.Date &&
-                                       u.CreateDateTime.Date <= tglAkhirPencarian.Value.Date);
-            }
-            else if (!string.IsNullOrEmpty(filterOptions))
-            {
-                var today = DateTime.Today;
-                switch (filterOptions)
-                {
-                    case "Today":
-                        data = data.Where(u => u.CreateDateTime.Date == today);
-                        break;
-                    case "Last Day":
-                        data = data.Where(x => x.CreateDateTime.Date == today.AddDays(-1));
-                        break;
+        //    if(tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
+        //    {
+        //        data = data.Where(u => u.CreateDateTime.Date >= tglAwalPencarian.Value.Date &&
+        //                               u.CreateDateTime.Date <= tglAkhirPencarian.Value.Date);
+        //    }
+        //    else if (!string.IsNullOrEmpty(filterOptions))
+        //    {
+        //        var today = DateTime.Today;
+        //        switch (filterOptions)
+        //        {
+        //            case "Today":
+        //                data = data.Where(u => u.CreateDateTime.Date == today);
+        //                break;
+        //            case "Last Day":
+        //                data = data.Where(x => x.CreateDateTime.Date == today.AddDays(-1));
+        //                break;
 
-                    case "Last 7 Days":
-                        var last7Days = today.AddDays(-7);
-                        data = data.Where(x => x.CreateDateTime.Date >= last7Days && x.CreateDateTime.Date <= today);
-                        break;
+        //            case "Last 7 Days":
+        //                var last7Days = today.AddDays(-7);
+        //                data = data.Where(x => x.CreateDateTime.Date >= last7Days && x.CreateDateTime.Date <= today);
+        //                break;
 
-                    case "Last 30 Days":
-                        var last30Days = today.AddDays(-30);
-                        data = data.Where(x => x.CreateDateTime.Date >= last30Days && x.CreateDateTime.Date <= today);
-                        break;
+        //            case "Last 30 Days":
+        //                var last30Days = today.AddDays(-30);
+        //                data = data.Where(x => x.CreateDateTime.Date >= last30Days && x.CreateDateTime.Date <= today);
+        //                break;
 
-                    case "This Month":
-                        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfMonth && x.CreateDateTime.Date <= today);
-                        break;
+        //            case "This Month":
+        //                var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
+        //                data = data.Where(x => x.CreateDateTime.Date >= firstDayOfMonth && x.CreateDateTime.Date <= today);
+        //                break;
 
-                    case "Last Month":
-                        var firstDayOfLastMonth = today.AddMonths(-1).Date.AddDays(-(today.Day - 1));
-                        var lastDayOfLastMonth = today.Date.AddDays(-today.Day);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfLastMonth && x.CreateDateTime.Date <= lastDayOfLastMonth);
-                        break;
-                    default:
-                        break;
-                }
-            }
+        //            case "Last Month":
+        //                var firstDayOfLastMonth = today.AddMonths(-1).Date.AddDays(-(today.Day - 1));
+        //                var lastDayOfLastMonth = today.Date.AddDays(-today.Day);
+        //                data = data.Where(x => x.CreateDateTime.Date >= firstDayOfLastMonth && x.CreateDateTime.Date <= lastDayOfLastMonth);
+        //                break;
+        //            default:
+        //                break;
+        //        }
+        //    }
 
-            ViewBag.tglAwalPencarian = tglAwalPencarian?.ToString("dd MMMM yyyy");
-            ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
-            ViewBag.SelectedFilter = filterOptions;
+        //    ViewBag.tglAwalPencarian = tglAwalPencarian?.ToString("dd MMMM yyyy");
+        //    ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
+        //    ViewBag.SelectedFilter = filterOptions;
 
-            return View(data);
-        }
+        //    return View(data);
+        //}
 
         public IActionResult RedirectToCreate()
         {
