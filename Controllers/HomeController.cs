@@ -22,6 +22,9 @@ using System.Security.Claims;
 using System.Web.Helpers;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.DataProtection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PurchasingSystemStaging.Controllers
 {
@@ -43,6 +46,8 @@ namespace PurchasingSystemStaging.Controllers
         private readonly IUnitRequestRepository _unitRequestRepository;
         private readonly IApprovalUnitRequestRepository _approvalUnitRequestRepository;
 
+        private readonly IDataProtector _protector;
+        private readonly UrlMappingService _urlMappingService;
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public HomeController(ILogger<HomeController> logger,
@@ -58,11 +63,13 @@ namespace PurchasingSystemStaging.Controllers
             IApprovalRepository approvalRepository,
             IQtyDifferenceRepository qtyDifferenceRepository,
             IApprovalQtyDifferenceRepository approvalQtyDifferenceRepository,
-
-            IHostingEnvironment hostingEnvironment,
-            
             IUnitRequestRepository unitRequestRepository,
-            IApprovalUnitRequestRepository approvalUnitRequestRepository)
+            IApprovalUnitRequestRepository approvalUnitRequestRepository,
+
+            IDataProtectionProvider provider,
+            UrlMappingService urlMappingService,
+            IHostingEnvironment hostingEnvironment
+        )
         {
             _logger = logger;
             _applicationDbContext = context;
@@ -77,12 +84,30 @@ namespace PurchasingSystemStaging.Controllers
             _approvalRepository = approvalRepository;
             _qtyDifferenceRepository = qtyDifferenceRepository;
             _approvalQtyDifferenceRepository = approvalQtyDifferenceRepository;
-
-            _hostingEnvironment = hostingEnvironment;
-
             _unitRequestRepository = unitRequestRepository;
             _approvalUnitRequestRepository = approvalUnitRequestRepository;
 
+            _protector = provider.CreateProtector("UrlProtector");
+            _urlMappingService = urlMappingService;
+            _hostingEnvironment = hostingEnvironment;
+        }
+
+        public IActionResult RedirectToIndex()
+        {
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:Home/Index";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         public async Task<IActionResult> Index()
@@ -195,6 +220,24 @@ namespace PurchasingSystemStaging.Controllers
 
                 return View(dashboard);
             }
+        }
+
+        public IActionResult RedirectToProfile()
+        {           
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:Home/MyProfile";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
@@ -411,6 +454,7 @@ namespace PurchasingSystemStaging.Controllers
             else 
             {
                 var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveId;
+                var getUserActiveCode = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveCode;
                 var loggerDataPR = new List<object>();
                 var loggerDataQtyDiff = new List<object>();
                 var loggerDataUnitReq = new List<object>();
@@ -436,7 +480,7 @@ namespace PurchasingSystemStaging.Controllers
 
                 foreach (var logger in DataPR)
                 {
-                    if (logger.ApproveStatusUser1 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
+                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -449,7 +493,7 @@ namespace PurchasingSystemStaging.Controllers
                         };
                         loggerDataPR.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -462,7 +506,7 @@ namespace PurchasingSystemStaging.Controllers
                         };
                         loggerDataPR.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User3" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -479,7 +523,7 @@ namespace PurchasingSystemStaging.Controllers
 
                 foreach (var logger in DataQtyDiff)
                 {
-                    if (logger.ApproveStatusUser1 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
+                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
                     {
                         var getUserApproveId = _approvalQtyDifferenceRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.QtyDifferenceId == logger.QtyDifferenceId).FirstOrDefault().ApprovalQtyDifferenceId;
 
@@ -492,7 +536,7 @@ namespace PurchasingSystemStaging.Controllers
                         };
                         loggerDataQtyDiff.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
                     {
                         var getUserApproveId = _approvalQtyDifferenceRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.QtyDifferenceId == logger.QtyDifferenceId).FirstOrDefault().ApprovalQtyDifferenceId;
 
@@ -509,7 +553,7 @@ namespace PurchasingSystemStaging.Controllers
 
                 foreach (var logger in DataUnitReq)
                 {
-                    if (logger.ApproveStatusUser1 == null && new Guid(logger.ApplicationUser.Id) == getUserActiveId)
+                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
                     {
                         var getUserApproveId = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.UnitRequestId == logger.UnitRequestId).FirstOrDefault().ApprovalUnitRequestId;
 

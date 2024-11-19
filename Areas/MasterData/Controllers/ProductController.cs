@@ -39,9 +39,9 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly IDiscountRepository _discountRepository;
         private readonly IWarehouseLocationRepository _warehouseLocationRepository;
         private readonly HttpClient _httpClient;
+        
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
-
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public ProductController(
@@ -57,9 +57,9 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             IDiscountRepository discountRepository,
             IWarehouseLocationRepository warehouseLocationRepository,
             HttpClient httpClient,
+
             IDataProtectionProvider provider,
             UrlMappingService urlMappingService,
-
             IHostingEnvironment hostingEnvironment
         )
         {
@@ -75,9 +75,9 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _discountRepository = discountRepository;
             _warehouseLocationRepository = warehouseLocationRepository;
             _httpClient = httpClient;
+            
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
-
             _hostingEnvironment = hostingEnvironment;
         }
         
@@ -101,7 +101,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
             return Redirect("/" + guidLikeCode);
-        }        
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
@@ -125,7 +125,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             // Tentukan range tanggal berdasarkan filterOptions
             if (!string.IsNullOrEmpty(filterOptions))
             {
-                (startDate, endDate) = GetDateRange(filterOptions);
+                (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
             var data = await _productRepository.GetAllProductPageSize(searchTerm, page, pageSize, startDate, endDate);
@@ -140,80 +140,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
             return View(model);
         }
-
-        private (DateTimeOffset?, DateTimeOffset?) GetDateRange(string filterOptions)
-        {
-            var now = DateTimeOffset.Now;
-            return filterOptions switch
-            {
-                "Today" => (now.Date, now.Date),
-                "Last Day" => (now.AddDays(-1).Date, now.AddDays(-1).Date),
-                "Last 7 Days" => (now.AddDays(-7).Date, now.Date),
-                "Last 30 Days" => (now.AddDays(-30).Date, now.Date),
-                "This Month" => (new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset), now.Date),
-                "Last Month" =>
-                    (new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset).AddMonths(-1),
-                     new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset).AddDays(-1)),
-                _ => (null, null),
-            };
-        }
-
-        //[HttpPost]
-        //public async Task<IActionResult> Index(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
-        //{
-        //    ViewBag.Active = "MasterData";
-
-        //    var data = _productRepository.GetAllProduct();
-
-        //    if(tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
-        //    {
-        //        data = data.Where(u => u.CreateDateTime.Date >= tglAwalPencarian.Value.Date &&
-        //                               u.CreateDateTime.Date <= tglAkhirPencarian.Value.Date);
-        //    }
-        //    else if (!string.IsNullOrEmpty(filterOptions))
-        //    {
-        //        var today = DateTime.Today;
-        //        switch (filterOptions)
-        //        {
-        //            case "Today":
-        //                data = data.Where(u => u.CreateDateTime.Date == today);
-        //                break;
-        //            case "Last Day":
-        //                data = data.Where(x => x.CreateDateTime.Date == today.AddDays(-1));
-        //                break;
-
-        //            case "Last 7 Days":
-        //                var last7Days = today.AddDays(-7);
-        //                data = data.Where(x => x.CreateDateTime.Date >= last7Days && x.CreateDateTime.Date <= today);
-        //                break;
-
-        //            case "Last 30 Days":
-        //                var last30Days = today.AddDays(-30);
-        //                data = data.Where(x => x.CreateDateTime.Date >= last30Days && x.CreateDateTime.Date <= today);
-        //                break;
-
-        //            case "This Month":
-        //                var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
-        //                data = data.Where(x => x.CreateDateTime.Date >= firstDayOfMonth && x.CreateDateTime.Date <= today);
-        //                break;
-
-        //            case "Last Month":
-        //                var firstDayOfLastMonth = today.AddMonths(-1).Date.AddDays(-(today.Day - 1));
-        //                var lastDayOfLastMonth = today.Date.AddDays(-today.Day);
-        //                data = data.Where(x => x.CreateDateTime.Date >= firstDayOfLastMonth && x.CreateDateTime.Date <= lastDayOfLastMonth);
-        //                break;
-        //            default:
-        //                break;
-        //        }
-        //    }
-
-        //    ViewBag.tglAwalPencarian = tglAwalPencarian?.ToString("dd MMMM yyyy");
-        //    ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
-        //    ViewBag.SelectedFilter = filterOptions;
-
-        //    return View(data);
-        //}
-
+             
         public IActionResult RedirectToCreate()
         {
             // Enkripsi path URL untuk "Index"
@@ -504,7 +431,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public IActionResult RedirectToDelete(Guid Id)
         {
             // Enkripsi path URL untuk "Index"
-            string originalPath = $"MasterData/Product/DeleteProduct/{Id}";
+            string originalPath = $"Delete:MasterData/Product/DeleteProduct/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
 
             // Hash GUID-like code (SHA256 truncated to 36 characters)

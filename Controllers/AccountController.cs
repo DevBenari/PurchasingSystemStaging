@@ -111,7 +111,7 @@ namespace PurchasingSystemStaging.Controllers
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("RedirectToIndex", "Home");
                 }
                 else {
                     var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
@@ -194,7 +194,7 @@ namespace PurchasingSystemStaging.Controllers
                             await _userManager.UpdateAsync(user);
 
                             _logger.LogInformation("User logged in.");
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("RedirectToIndex", "Home");
                         }
 
                         if (result.RequiresTwoFactor)
@@ -255,7 +255,7 @@ namespace PurchasingSystemStaging.Controllers
             await HttpContext.SignOutAsync("CookieAuth");
 
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("RedirectToIndex", "Home");
         }
     }
 }

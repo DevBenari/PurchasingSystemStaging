@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,8 @@ using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
 using System.Data.SqlClient;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
@@ -26,6 +29,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly IProductRepository _productRepository;
         private readonly ILeadTimeRepository _leadTimeRepository;
 
+        private readonly IDataProtector _protector;
+        private readonly UrlMappingService _urlMappingService;
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public SupplierController(
@@ -37,6 +42,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             IProductRepository productRepository,
             ILeadTimeRepository leadTimeRepository,
 
+            IDataProtectionProvider provider,
+            UrlMappingService urlMappingService,
             IHostingEnvironment hostingEnvironment
         )
         {
@@ -48,196 +55,207 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _productRepository = productRepository;
             _leadTimeRepository = leadTimeRepository;
 
+            _protector = provider.CreateProtector("UrlProtector");
+            _urlMappingService = urlMappingService;
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
-            ViewBag.Active = "MasterData";
-            var data = _supplierRepository.GetAllSupplier();
-            return View(data);
-        }
+            // Format tanggal tanpa waktu
+            string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+            string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
-        [HttpPost]
-        public async Task<IActionResult> Index(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
-        {
-            ViewBag.Active = "MasterData";
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:MasterData/Supplier/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+            string encryptedPath = _protector.Protect(originalPath);
 
-            var data = _supplierRepository.GetAllSupplier();
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
 
-            if (tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
-            {
-                data = data.Where(u => u.CreateDateTime.Date >= tglAwalPencarian.Value.Date
-                                    && u.CreateDateTime.Date <= tglAkhirPencarian.Value.Date);
-            }
-            else if (!string.IsNullOrEmpty(filterOptions))
-            {
-                var today = DateTime.Today;
-                switch (filterOptions)
-                {
-                    case "Today":
-                        data = data.Where(u => u.CreateDateTime.Date == today);
-                        break;
-                    case "Last Day":
-                        data = data.Where(x => x.CreateDateTime.Date == today.AddDays(-1));
-                        break;
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-                    case "Last 7 Days":
-                        var last7Days = today.AddDays(-7);
-                        data = data.Where(x => x.CreateDateTime.Date >= last7Days && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "Last 30 Days":
-                        var last30Days = today.AddDays(-30);
-                        data = data.Where(x => x.CreateDateTime.Date >= last30Days && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "This Month":
-                        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfMonth && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "Last Month":
-                        var firstDayOfLastMonth = today.AddMonths(-1).Date.AddDays(-(today.Day - 1));
-                        var lastDayOfLastMonth = today.Date.AddDays(-today.Day);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfLastMonth && x.CreateDateTime.Date <= lastDayOfLastMonth);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            ViewBag.tglAwalPencarian = tglAwalPencarian?.ToString("dd MMMM yyyy");
-            ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
-            ViewBag.SelectedFilter = filterOptions;
-            return View(data);
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
-        public async Task<IActionResult> NonActive()
+        public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "MasterData";
-            var data = _supplierRepository.GetAllSupplierNonActive();
-            return View(data);
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SelectedFilter = filterOptions;
+
+            // Format tanggal untuk input[type="date"]
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            // Format tanggal untuk tampilan (Indonesia)
+            ViewBag.StartDateReadable = startDate?.ToString("dd MMMM yyyy");
+            ViewBag.EndDateReadable = endDate?.ToString("dd MMMM yyyy");
+
+            // Normalisasi tanggal untuk mengabaikan waktu
+            if (startDate.HasValue) startDate = startDate.Value.Date;
+            if (endDate.HasValue) endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // Sampai akhir hari
+
+            // Tentukan range tanggal berdasarkan filterOptions
+            if (!string.IsNullOrEmpty(filterOptions))
+            {
+                (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
+            }
+
+            var data = await _supplierRepository.GetAllSupplierPageSize(searchTerm, page, pageSize, startDate, endDate);
+
+            var model = new Pagination<Supplier>
+            {
+                Items = data.suppliers,
+                TotalCount = data.totalCountSuppliers,
+                PageSize = pageSize,
+                CurrentPage = page,
+            };
+
+            return View(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> NonActive(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
+        public IActionResult RedirectToNonActive(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
-            ViewBag.Active = "MasterData";
+            // Format tanggal tanpa waktu
+            string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+            string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
-            var data = _supplierRepository.GetAllSupplierNonActive();
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:MasterData/Supplier/NonActive?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+            string encryptedPath = _protector.Protect(originalPath);
 
-            if (tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
-            {
-                data = data.Where(u => u.CreateDateTime.Date >= tglAwalPencarian.Value.Date
-                                    && u.CreateDateTime.Date <= tglAkhirPencarian.Value.Date);
-            }
-            else if (!string.IsNullOrEmpty(filterOptions))
-            {
-                var today = DateTime.Today;
-                switch (filterOptions)
-                {
-                    case "Today":
-                        data = data.Where(u => u.CreateDateTime.Date == today);
-                        break;
-                    case "Last Day":
-                        data = data.Where(x => x.CreateDateTime.Date == today.AddDays(-1));
-                        break;
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
 
-                    case "Last 7 Days":
-                        var last7Days = today.AddDays(-7);
-                        data = data.Where(x => x.CreateDateTime.Date >= last7Days && x.CreateDateTime.Date <= today);
-                        break;
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-                    case "Last 30 Days":
-                        var last30Days = today.AddDays(-30);
-                        data = data.Where(x => x.CreateDateTime.Date >= last30Days && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "This Month":
-                        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfMonth && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "Last Month":
-                        var firstDayOfLastMonth = today.AddMonths(-1).Date.AddDays(-(today.Day - 1));
-                        var lastDayOfLastMonth = today.Date.AddDays(-today.Day);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfLastMonth && x.CreateDateTime.Date <= lastDayOfLastMonth);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            ViewBag.tglAwalPencarian = tglAwalPencarian?.ToString("dd MMMM yyyy");
-            ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
-            ViewBag.SelectedFilter = filterOptions;
-            return View(data);
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
-        public async Task<IActionResult> NonPks()
+        public async Task<IActionResult> NonActive(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "MasterData";
-            var data = _supplierRepository.GetAllSupplierNonPks();
-            return View(data);
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SelectedFilter = filterOptions;
+
+            // Format tanggal untuk input[type="date"]
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            // Format tanggal untuk tampilan (Indonesia)
+            ViewBag.StartDateReadable = startDate?.ToString("dd MMMM yyyy");
+            ViewBag.EndDateReadable = endDate?.ToString("dd MMMM yyyy");
+
+            // Normalisasi tanggal untuk mengabaikan waktu
+            if (startDate.HasValue) startDate = startDate.Value.Date;
+            if (endDate.HasValue) endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // Sampai akhir hari
+
+            // Tentukan range tanggal berdasarkan filterOptions
+            if (!string.IsNullOrEmpty(filterOptions))
+            {
+                (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
+            }
+
+            var data = await _supplierRepository.GetAllSupplierNonActivePageSize(searchTerm, page, pageSize, startDate, endDate);
+
+            var model = new Pagination<Supplier>
+            {
+                Items = data.suppliers,
+                TotalCount = data.totalCountSuppliers,
+                PageSize = pageSize,
+                CurrentPage = page,
+            };
+
+            return View(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> NonPks(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
+        public IActionResult RedirectToNonPks(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {
+            // Format tanggal tanpa waktu
+            string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+            string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:MasterData/Supplier/NonPks?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> NonPks(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "MasterData";
-
-            var data = _supplierRepository.GetAllSupplierNonPks();
-
-            if (tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
-            {
-                data = data.Where(u => u.CreateDateTime.Date >= tglAwalPencarian.Value.Date
-                                    && u.CreateDateTime.Date <= tglAkhirPencarian.Value.Date);
-            }
-            else if (!string.IsNullOrEmpty(filterOptions))
-            {
-                var today = DateTime.Today;
-                switch (filterOptions)
-                {
-                    case "Today":
-                        data = data.Where(u => u.CreateDateTime.Date == today);
-                        break;
-                    case "Last Day":
-                        data = data.Where(x => x.CreateDateTime.Date == today.AddDays(-1));
-                        break;
-
-                    case "Last 7 Days":
-                        var last7Days = today.AddDays(-7);
-                        data = data.Where(x => x.CreateDateTime.Date >= last7Days && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "Last 30 Days":
-                        var last30Days = today.AddDays(-30);
-                        data = data.Where(x => x.CreateDateTime.Date >= last30Days && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "This Month":
-                        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfMonth && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "Last Month":
-                        var firstDayOfLastMonth = today.AddMonths(-1).Date.AddDays(-(today.Day - 1));
-                        var lastDayOfLastMonth = today.Date.AddDays(-today.Day);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfLastMonth && x.CreateDateTime.Date <= lastDayOfLastMonth);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            ViewBag.tglAwalPencarian = tglAwalPencarian?.ToString("dd MMMM yyyy");
-            ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
+            ViewBag.SearchTerm = searchTerm;
             ViewBag.SelectedFilter = filterOptions;
-            return View(data);
+
+            // Format tanggal untuk input[type="date"]
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            // Format tanggal untuk tampilan (Indonesia)
+            ViewBag.StartDateReadable = startDate?.ToString("dd MMMM yyyy");
+            ViewBag.EndDateReadable = endDate?.ToString("dd MMMM yyyy");
+
+            // Normalisasi tanggal untuk mengabaikan waktu
+            if (startDate.HasValue) startDate = startDate.Value.Date;
+            if (endDate.HasValue) endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // Sampai akhir hari
+
+            // Tentukan range tanggal berdasarkan filterOptions
+            if (!string.IsNullOrEmpty(filterOptions))
+            {
+                (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
+            }
+
+            var data = await _supplierRepository.GetAllSupplierNonPksPageSize(searchTerm, page, pageSize, startDate, endDate);
+
+            var model = new Pagination<Supplier>
+            {
+                Items = data.suppliers,
+                TotalCount = data.totalCountSuppliers,
+                PageSize = pageSize,
+                CurrentPage = page,
+            };
+
+            return View(model);
+        }
+
+        public IActionResult RedirectToCreate()
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = $"Create:MasterData/Supplier/CreateSupplier";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
@@ -350,6 +368,24 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);               
                 return View(vm);
             }
+        }
+
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = $"Detail:MasterData/Supplier/DetailSupplier/{Id}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
@@ -528,6 +564,24 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
             ViewBag.LeadTime = new SelectList(await _leadTimeRepository.GetLeadTimes(), "LeadTimeId", "LeadTimeValue", SortOrder.Ascending);                
             return View(viewModel);
+        }
+
+        public IActionResult RedirectToDelete(Guid Id)
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = $"Delete:MasterData/Supplier/DeleteSupplier/{Id}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]

@@ -116,7 +116,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
             // Filter berdasarkan searchTerm jika ada
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                query = query.Where(p => p.ProductName.Contains(searchTerm) || p.Supplier.SupplierName.Contains(searchTerm));
+                query = query.Where(p => p.ProductCode.Contains(searchTerm) || p.ProductName.Contains(searchTerm) || p.Supplier.SupplierName.Contains(searchTerm));
             }
 
             if (startDate.HasValue)
