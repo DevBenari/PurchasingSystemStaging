@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient.Server;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PurchasingSystemStaging.Areas.MasterData.Models;
@@ -14,8 +15,10 @@ using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web.WebPages;
+using System.Windows.Forms;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
@@ -37,6 +40,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly IWarehouseLocationRepository _warehouseLocationRepository;
         private readonly HttpClient _httpClient;
         private readonly IDataProtector _protector;
+        private readonly UrlMappingService _urlMappingService;
 
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -54,6 +58,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             IWarehouseLocationRepository warehouseLocationRepository,
             HttpClient httpClient,
             IDataProtectionProvider provider,
+            UrlMappingService urlMappingService,
 
             IHostingEnvironment hostingEnvironment
         )
@@ -71,29 +76,11 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _warehouseLocationRepository = warehouseLocationRepository;
             _httpClient = httpClient;
             _protector = provider.CreateProtector("UrlProtector");
+            _urlMappingService = urlMappingService;
 
             _hostingEnvironment = hostingEnvironment;
         }
-
-        public string CompressAndEncrypt(string input)
-        {
-            // Kompresi data
-            byte[] inputData = Encoding.UTF8.GetBytes(input);
-            using var compressedStream = new MemoryStream();
-            using (var gzipStream = new GZipStream(compressedStream, CompressionMode.Compress))
-            {
-                gzipStream.Write(inputData, 0, inputData.Length);
-            }
-
-            byte[] compressedData = compressedStream.ToArray();
-
-            // Enkripsi data
-            byte[] encryptedData = _protector.Protect(compressedData);
-
-            // Base62 encode untuk URL-safe hasil
-            return Base62Encoder.Encode(encryptedData);
-        }
-
+        
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             // Format tanggal tanpa waktu
@@ -102,11 +89,19 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
             // Bangun originalPath dengan format tanggal ISO 8601
             string originalPath = $"Page:MasterData/Product/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-            string encryptedPath = CompressAndEncrypt(originalPath);
+            string encryptedPath = _protector.Protect(originalPath);
 
-            // Redirect ke URL pendek
-            return Redirect("/" + encryptedPath);
-        }
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
+        }        
 
         [HttpGet]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
@@ -225,8 +220,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             string originalPath = $"Create:MasterData/Product/CreateProduct";
             string encryptedPath = _protector.Protect(originalPath);
 
-            // Redirect ke URL terenkripsi
-            return Redirect("/" + encryptedPath);
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
@@ -372,8 +375,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             string originalPath = $"Detail:MasterData/Product/DetailProduct/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
 
-            // Redirect ke URL terenkripsi
-            return Redirect("/" + encryptedPath);
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
@@ -496,8 +507,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             string originalPath = $"MasterData/Product/DeleteProduct/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
 
-            // Redirect ke URL terenkripsi
-            return Redirect("/" + encryptedPath);
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]

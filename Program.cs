@@ -22,6 +22,8 @@ var cultureInfo = new CultureInfo("id-ID");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
+builder.Services.AddSingleton<UrlMappingService>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
