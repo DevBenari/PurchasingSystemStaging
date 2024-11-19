@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Hosting;
 using System.Reflection;
 using PurchasingSystemStaging.Controllers;
 using System;
+using System.Text;
+using Microsoft.AspNetCore.DataProtection;
+using System.Security.Cryptography;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 {
@@ -31,13 +34,19 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly IRoleRepository _roleRepository;
         private readonly IHubContext<ChatHub> _hubContext;
 
+        private readonly IDataProtector _protector;
+        private readonly UrlMappingService _urlMappingService;
+
         public GroupRoleController(ApplicationDbContext applicationDbContext,
             IUserActiveRepository userActiveRepository,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
             IGroupRoleRepository groupRoleRepository,
             IRoleRepository roleRepository,
-            IHubContext<ChatHub> hubContext
+            IHubContext<ChatHub> hubContext,
+
+            IDataProtectionProvider provider,
+            UrlMappingService urlMappingService
         )
         {
             _applicationDbContext = applicationDbContext;
@@ -47,111 +56,33 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _userActiveRepository = userActiveRepository;
             _groupRoleRepository = groupRoleRepository;
             _roleRepository = roleRepository;
+
+            _protector = provider.CreateProtector("UrlProtector");
+            _urlMappingService = urlMappingService;
+        }
+
+        public IActionResult RedirectToIndex()
+        {            
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:MasterData/GroupRole/Index";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         public IActionResult Index()
         {
             return View(); // Kirim data role ke view
-        }
-
-        [HttpGet]     
-        public async Task<IActionResult> CreateRole()
-        {
-            var roles = await _roleManager.Roles
-                      .Select(r => new
-                      {
-                          r.Id,
-                          r.Name,
-                          r.NormalizedName
-                      })
-                      .ToListAsync();
-            // Kirim data role langsung ke view
-            return View(roles);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateRole(GroupRoleViewModel vm)
-        {
-            var dateNow = DateTimeOffset.Now;
-            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
-
-            var getUser = _userActiveRepository.GetAllUserLogin()
-                .FirstOrDefault(u => u.UserName == vm.DepartemenId);
-
-            var departemenId = getUser.Id;
-            var roleIds = vm.RoleId;
-            _groupRoleRepository.DeleteByDepartmentId(departemenId);
-            if (ModelState.IsValid)
-            {
-                // Simpan ID Peran
-                foreach (var roleId in roleIds)
-                {
-                    var groupRole = new GroupRole
-                    {
-                        DepartemenId = departemenId,
-                        RoleId = roleId, // Gunakan roleId dari loop
-                        CreateDateTime = DateTime.Now,
-                        CreateBy = new Guid(getUser.Id)
-                    };
-
-                    _groupRoleRepository.Tambah(groupRole);
-                }
-            }
-            return RedirectToAction("Index"); // atau aksi lain sesuai kebutuhan
-
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateRoleNavbar()
-        {
-            var controllers = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => typeof(Controller).IsAssignableFrom(type) && !type.IsAbstract)
-                .ToList();
-
-            foreach (var controllerType in controllers)
-            {
-                var controllerName = controllerType.Name.Replace("Controller", ""); // Nama controller tanpa "Controller"
-                var controllerActions = controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(method => method.IsPublic && !method.IsSpecialName && method.DeclaringType == controllerType)
-                    .Select(method => method.Name)
-                    .ToList();
-
-                foreach (var action in controllerActions)
-                {
-                    string roleName = action;
-
-                    // Jika aksi adalah "Index", tambahkan nama controller ke role
-                    if (action == "Index")
-                    {
-                        roleName = $"Index{controllerName}";  // Misalnya, "AdminIndex"
-                    }
-
-                    // Periksa apakah role sudah ada
-                    var roleExists = await _roleManager.RoleExistsAsync(roleName);
-                    if (!roleExists)
-                    {
-                        IdentityRole role = new IdentityRole
-                        {
-                            Name = roleName,  // Nama asli role (misalnya, "AdminIndex")
-                            ConcurrencyStamp = controllerName
-                        };
-
-                        var result = await _roleManager.CreateAsync(role);
-                        if (!result.Succeeded)
-                        {
-                            foreach (var error in result.Errors)
-                            {
-                                Console.WriteLine($"Error creating role {roleName}: {error.Description}");
-                            }
-                        }
-                    }
-                }
-            }
-
-            await _hubContext.Clients.All.SendAsync("UpdateDataCount", '0');
-            return Json(new { success = true, message = "Role untuk semua controller berhasil dibuat." });
-        }
-
+        }        
 
         [HttpGet]
         [AllowAnonymous]
