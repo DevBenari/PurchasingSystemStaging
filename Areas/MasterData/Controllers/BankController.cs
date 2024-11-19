@@ -10,6 +10,8 @@ using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
@@ -23,8 +25,9 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IBankRepository _bankRepository;
-        private readonly IDataProtector _protector;
 
+        private readonly IDataProtector _protector;
+        private readonly UrlMappingService _urlMappingService;
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public BankController(
@@ -33,8 +36,9 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ApplicationDbContext applicationDbContext,
             IBankRepository BankRepository,
             IUserActiveRepository userActiveRepository,
-            IDataProtectionProvider provider,
 
+            IDataProtectionProvider provider,
+            UrlMappingService urlMappingService,
             IHostingEnvironment hostingEnvironment
         )
         {
@@ -43,93 +47,89 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _applicationDbContext = applicationDbContext;
             _bankRepository = BankRepository;
             _userActiveRepository = userActiveRepository;
-            _protector = provider.CreateProtector("UrlProtector");
 
+            _protector = provider.CreateProtector("UrlProtector");
+            _urlMappingService = urlMappingService;
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public IActionResult RedirectToIndex()
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
-            // Enkripsi path URL untuk "Index"
-            string originalPath = "MasterData/Bank/Index";
+            // Format tanggal tanpa waktu
+            string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+            string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:MasterData/Bank/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
             string encryptedPath = _protector.Protect(originalPath);
 
-            // Redirect ke URL terenkripsi
-            return Redirect("/" + encryptedPath);
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
         //[Authorize(Roles = "IndexBank")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "MasterData";
-            var data = _bankRepository.GetAllBank();
-            return View(data);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Index(DateTime? tglAwalPencarian, DateTime? tglAkhirPencarian, string filterOptions)
-        {
-            ViewBag.Active = "MasterData";
-
-            var data = _bankRepository.GetAllBank();
-
-            if (tglAwalPencarian.HasValue && tglAkhirPencarian.HasValue)
-            {
-                data = data.Where(u => u.CreateDateTime.Date >= tglAwalPencarian.Value.Date &&
-                                       u.CreateDateTime.Date <= tglAkhirPencarian.Value.Date);
-            }
-            else if (!string.IsNullOrEmpty(filterOptions))
-            {
-                var today = DateTime.Today;
-                switch (filterOptions)
-                {
-                    case "Today":
-                        data = data.Where(u => u.CreateDateTime.Date == today);
-                        break;
-                    case "Last Day":
-                        data = data.Where(x => x.CreateDateTime.Date == today.AddDays(-1));
-                        break;
-
-                    case "Last 7 Days":
-                        var last7Days = today.AddDays(-7);
-                        data = data.Where(x => x.CreateDateTime.Date >= last7Days && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "Last 30 Days":
-                        var last30Days = today.AddDays(-30);
-                        data = data.Where(x => x.CreateDateTime.Date >= last30Days && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "This Month":
-                        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfMonth && x.CreateDateTime.Date <= today);
-                        break;
-
-                    case "Last Month":
-                        var firstDayOfLastMonth = today.AddMonths(-1).Date.AddDays(-(today.Day - 1));
-                        var lastDayOfLastMonth = today.Date.AddDays(-today.Day);
-                        data = data.Where(x => x.CreateDateTime.Date >= firstDayOfLastMonth && x.CreateDateTime.Date <= lastDayOfLastMonth);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            ViewBag.tglAwalPencarian = tglAwalPencarian?.ToString("dd MMMM yyyy");
-            ViewBag.tglAkhirPencarian = tglAkhirPencarian?.ToString("dd MMMM yyyy");
+            ViewBag.SearchTerm = searchTerm;
             ViewBag.SelectedFilter = filterOptions;
-            return View(data);
+
+            // Format tanggal untuk input[type="date"]
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            // Format tanggal untuk tampilan (Indonesia)
+            ViewBag.StartDateReadable = startDate?.ToString("dd MMMM yyyy");
+            ViewBag.EndDateReadable = endDate?.ToString("dd MMMM yyyy");
+
+            // Normalisasi tanggal untuk mengabaikan waktu
+            if (startDate.HasValue) startDate = startDate.Value.Date;
+            if (endDate.HasValue) endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // Sampai akhir hari
+
+            // Tentukan range tanggal berdasarkan filterOptions
+            if (!string.IsNullOrEmpty(filterOptions))
+            {
+                (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
+            }
+
+            var data = await _bankRepository.GetAllBankPageSize(searchTerm, page, pageSize, startDate, endDate);
+
+            var model = new Pagination<Bank>
+            {
+                Items = data.banks,
+                TotalCount = data.totalCountBanks,
+                PageSize = pageSize,
+                CurrentPage = page,
+            };
+
+            return View(model);
         }
 
         public IActionResult RedirectToCreate()
         {
             // Enkripsi path URL untuk "Index"
-            string originalPath = "MasterData/Bank/CreateBank";
+            string originalPath = $"Create:MasterData/Bank/CreateBank";
             string encryptedPath = _protector.Protect(originalPath);
 
-            // Redirect ke URL terenkripsi
-            return Redirect("/" + encryptedPath);
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
@@ -234,11 +234,19 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public IActionResult RedirectToDetail(Guid Id)
         {
             // Enkripsi path URL untuk "Index"
-            string originalPath = $"MasterData/Bank/DetailBank/{Id}";
+            string originalPath = $"Detail:MasterData/Bank/DetailBank/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
 
-            // Redirect ke URL terenkripsi
-            return Redirect("/" + encryptedPath);
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
@@ -315,11 +323,19 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public IActionResult RedirectToDelete(Guid Id)
         {
             // Enkripsi path URL untuk "Index"
-            string originalPath = $"MasterData/Bank/DeleteBank/{Id}";
+            string originalPath = $"Delete:MasterData/Bank/DeleteBank/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
 
-            // Redirect ke URL terenkripsi
-            return Redirect("/" + encryptedPath);
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]
