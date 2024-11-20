@@ -1,4 +1,5 @@
 ﻿﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +16,8 @@ using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Hubs;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
+using System.Security.Cryptography;
+using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystemStaging.Areas.Order.Controllers
@@ -34,6 +37,8 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IHubContext<ChatHub> _hubContext;
 
+        private readonly IDataProtector _protector;
+        private readonly UrlMappingService _urlMappingService;
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public ApprovalController(
@@ -48,6 +53,8 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             IPurchaseOrderRepository purchaseOrderRepository,
             IHubContext<ChatHub> hubContext,
 
+            IDataProtectionProvider provider,
+            UrlMappingService urlMappingService,
             IHostingEnvironment hostingEnvironment
         )
         {
@@ -62,21 +69,65 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             _purchaseOrderRepository = purchaseOrderRepository;
             _hubContext = hubContext;
 
+            _protector = provider.CreateProtector("UrlProtector");
+            _urlMappingService = urlMappingService;
             _hostingEnvironment = hostingEnvironment;
         }
 
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {
+            // Format tanggal tanpa waktu
+            string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+            string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:Order/Approval/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
+        }
+
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "Approval";
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SelectedFilter = filterOptions;
+
+            // Format tanggal untuk input[type="date"]
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            // Format tanggal untuk tampilan (Indonesia)
+            ViewBag.StartDateReadable = startDate?.ToString("dd MMMM yyyy");
+            ViewBag.EndDateReadable = endDate?.ToString("dd MMMM yyyy");
+
+            // Normalisasi tanggal untuk mengabaikan waktu
+            if (startDate.HasValue) startDate = startDate.Value.Date;
+            if (endDate.HasValue) endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // Sampai akhir hari
+
+            // Tentukan range tanggal berdasarkan filterOptions
+            if (!string.IsNullOrEmpty(filterOptions))
+            {
+                (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
+            }
 
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             
             if (getUserLogin.Email == "superadmin@admin.com")
             {
-                var data = _approvalRepository.GetAllApproval();
+                var data = await _approvalRepository.GetAllApprovalPageSize(searchTerm, page, pageSize, startDate, endDate);
 
-                foreach (var item in data)
+                foreach (var item in data.approvals)
                 {
                     var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
                     var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
@@ -90,7 +141,15 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                     }
                 }
 
-                return View(data);
+                var model = new Pagination<Approval>
+                {
+                    Items = data.approvals,
+                    TotalCount = data.totalCountApprovals,
+                    PageSize = pageSize,
+                    CurrentPage = page,
+                };
+
+                return View(model);
             }
             else
             {
@@ -179,18 +238,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                 }
             }
             return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Index(DateTime tglAwalPencarian, DateTime tglAkhirPencarian)
-        {
-            ViewBag.Active = "Approval";
-            ViewBag.tglAwalPencarian = tglAwalPencarian.ToString("dd MMMM yyyy");
-            ViewBag.tglAkhirPencarian = tglAkhirPencarian.ToString("dd MMMM yyyy");
-
-            var data = _approvalRepository.GetAllApproval().Where(r => r.CreateDateTime.Date >= tglAwalPencarian && r.CreateDateTime.Date <= tglAkhirPencarian).ToList();
-            return View(data);
-        }
+        }        
        
         [HttpGet]
         public async Task<ViewResult> DetailApproval(Guid Id)
