@@ -82,7 +82,161 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         public IActionResult Index()
         {
             return View(); // Kirim data role ke view
+        }      
+
+        [HttpGet]
+        public async Task<IActionResult> CreateRole()
+        {
+            var roles = await _roleManager.Roles
+                      .Select(r => new
+                      {
+                          r.Id,
+                          r.Name,
+                          r.NormalizedName
+                      })
+                      .ToListAsync();
+            // Kirim data role langsung ke view
+            return View(roles);
         }        
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRole(GroupRoleViewModel vm)
+        {
+            var dateNow = DateTimeOffset.Now;
+            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
+
+            var getUser = _userActiveRepository.GetAllUserLogin()
+                .FirstOrDefault(u => u.UserName == vm.DepartemenId);
+
+            if (getUser == null)
+            {
+                TempData["WarningMessage"] = "Sorry, please select a user first !!!";
+                return RedirectToAction("RedirectToIndex"); // atau aksi lain sesuai kebutuhan                
+            }
+            else
+            {
+                var departemenId = getUser.Id;
+                var roleIds = vm.RoleId;
+                // Hapus semua user roles terkait
+                _groupRoleRepository.DeleteByDepartmentId(departemenId);
+                var userRoles = _applicationDbContext.UserRoles
+                                                      .Where(ur => ur.UserId == departemenId)
+                                                      .ToList();
+                if (userRoles.Any())
+                {
+                    _applicationDbContext.UserRoles.RemoveRange(userRoles);
+                    _applicationDbContext.SaveChanges();  // Simpan perubahan ke database
+                }
+                // End Hapus 
+
+                if (ModelState.IsValid)
+                {
+                    // Simpan ID Peran
+                    foreach (var roleId in roleIds)
+                    {
+                        var groupRole = new GroupRole
+                        {
+                            DepartemenId = departemenId,
+                            RoleId = roleId, // Gunakan roleId dari loop
+                            CreateDateTime = DateTime.Now,
+                            CreateBy = new Guid(getUser.Id)
+                        };
+
+                        _groupRoleRepository.Tambah(groupRole);
+
+
+                        var role = await _roleManager.FindByIdAsync(roleId.ToString());
+                        if (role != null)
+                        {
+                            // Membuat entri baru untuk AspNetUserRoles
+                            var userRole = new IdentityUserRole<string>
+                            {
+                                UserId = getUser.Id,  // Menggunakan UserId dari pengguna
+                                RoleId = roleId.ToString()  // Menggunakan RoleId sebagai string
+                            };
+
+                            // Menambahkan entri ke tabel AspNetUserRoles
+                            _applicationDbContext.UserRoles.Add(userRole);
+                            await _applicationDbContext.SaveChangesAsync();  // Menyimpan perubahan ke database
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", $"Role dengan ID {roleId} tidak ditemukan.");
+                            return View();
+                        }
+                    }
+                }
+
+                TempData["SuccessMessage"] = "Role successfully assigned to user";
+                return RedirectToAction("RedirectToIndex"); // atau aksi lain sesuai kebutuhan
+            }                        
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRoleNavbar()
+        {
+            var controllers = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(type => typeof(Controller).IsAssignableFrom(type) && !type.IsAbstract)
+                .ToList();
+
+            foreach (var controllerType in controllers)
+            {
+                var controllerName = controllerType.Name.Replace("Controller", ""); // Nama controller tanpa "Controller"
+                var controllerActions = controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(method => method.IsPublic && !method.IsSpecialName && method.DeclaringType == controllerType)
+                    .Select(method => method.Name)
+                    .ToList();
+
+                foreach (var action in controllerActions)
+                {
+                    string roleName = action;
+
+                    // Jika aksi adalah "Index", tambahkan nama controller ke role
+                    if (action == "Index")
+                    {
+                        roleName = $"Index{controllerName}";  // Misalnya, "AdminIndex"
+                    }
+
+                    // Periksa apakah role sudah ada
+                    var roleExists = await _roleManager.RoleExistsAsync(roleName);
+                    if (!roleExists)
+                    {
+                        IdentityRole role = new IdentityRole
+                        {
+                            Name = roleName,  // Nama asli role (misalnya, "AdminIndex")
+                            ConcurrencyStamp = controllerName
+                        };
+
+                        var result = await _roleManager.CreateAsync(role);
+                        if (!result.Succeeded)
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                Console.WriteLine($"Error creating role {roleName}: {error.Description}");
+                            }
+                        }
+                    }
+                }
+            }
+
+            await _hubContext.Clients.All.SendAsync("UpdateDataCount", '0');
+            return Json(new { success = true, message = "Role untuk semua controller berhasil dibuat." });
+        }
+
+        public void DeleteUserRoleByDepartmentId(string departemenId)
+        {
+            // Cari semua user roles yang terkait dengan departemenId (UserId)
+            var userRoles = _applicationDbContext.UserRoles
+                                                  .Where(ur => ur.UserId == departemenId)
+                                                  .ToList();
+
+            if (userRoles.Any())
+            {
+                // Hapus semua user roles terkait
+                _applicationDbContext.UserRoles.RemoveRange(userRoles);
+                _applicationDbContext.SaveChanges();  // Simpan perubahan ke database
+            }
+        }
 
         [HttpGet]
         [AllowAnonymous]

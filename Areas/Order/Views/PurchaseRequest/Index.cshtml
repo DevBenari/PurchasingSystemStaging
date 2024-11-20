@@ -87,7 +87,7 @@
                                         <tr data-href="@Url.Action("RedirectToDetail", "PurchaseRequest", new { id=pr.PurchaseRequestId })">
                                             <th class="text-center">@itemNumber</th>
                                             <td class="text-left">@pr.CreateDateTime.ReadStringDate()</td>
-                                            <td class="text-left">@pr.ExpiredDate.ToString("dd MMMM yyyy")</td>
+                                            <td class="text-left">@pr.ExpiredDate.ReadStringDate()</td>
                                             <td class="text-left">@pr.ExpiredDay day</td>
                                             <td class="text-left">@pr.RemainingDay day</td>
                                             <td class="text-left">@pr.ApplicationUser.NamaUser</td>
