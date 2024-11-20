@@ -23,7 +23,6 @@
             <div class="card card-cyan">
                 <div class="card-header">
                     <h3 class="card-title" style="color:#ffffff"><b>@ViewBag.Title</b></h3>                    
-                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card">
@@ -79,7 +78,6 @@
                                 { 
                                     @foreach (var Department in Model.Items)
                                     {
-
                                         <tr data-href="@Url.Action("RedirectToDetail", "Department", new { id=Department.DepartmentId })">
                                             <th class="text-center">@itemNumber</th>
                                             <td class="text-left">@Department.CreateDateTime.ReadStringDate()</td>
