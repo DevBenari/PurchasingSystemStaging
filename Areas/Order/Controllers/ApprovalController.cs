@@ -188,7 +188,15 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                         }
                     }
 
-                    return View(itemList);
+                    var model = new Pagination<Approval>
+                    {
+                        Items = itemList,
+                        TotalCount = itemList.Count,
+                        PageSize = pageSize,
+                        CurrentPage = page,
+                    };
+
+                    return View(model);
                 }
                 else if (getUser1 != null && getUser2 != null)
                 {
@@ -212,7 +220,15 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                         }
                     }
 
-                    return View(itemList);
+                    var model = new Pagination<Approval>
+                    {
+                        Items = itemList,
+                        TotalCount = itemList.Count,
+                        PageSize = pageSize,
+                        CurrentPage = page,
+                    };
+
+                    return View(model);
                 }
                 else if (getUser1 != null)
                 {
@@ -234,12 +250,38 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                         }
                     }
 
-                    return View(itemList);
+                    var model = new Pagination<Approval>
+                    {
+                        Items = itemList,
+                        TotalCount = itemList.Count,
+                        PageSize = pageSize,
+                        CurrentPage = page,
+                    };
+
+                    return View(model);
                 }
             }
             return View();
-        }        
-       
+        }
+
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            // Enkripsi path URL untuk "Index"
+            string originalPath = $"Detail:Order/Approval/DetailApproval/{Id}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
+        }
+
         [HttpGet]
         public async Task<ViewResult> DetailApproval(Guid Id)
         {
