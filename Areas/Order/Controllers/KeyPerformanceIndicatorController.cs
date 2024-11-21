@@ -3,6 +3,7 @@ using FastReport.Data;
 using FastReport.Export.PdfSimple;
 using FastReport.Web;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,10 +19,13 @@ using PurchasingSystemStaging.Areas.Order.ViewModels;
 using PurchasingSystemStaging.Areas.Transaction.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
+using PurchasingSystemStaging.Repositories;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.Metrics;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography;
+using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace PurchasingSystemStaging.Areas.Order.Controllers
 {
@@ -37,6 +41,9 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         private readonly IPurchaseRequestRepository _purchaseRequestRepository;
         private readonly IUserActiveRepository _userActiveRepository;
 
+        private readonly IDataProtector _protector;
+        private readonly UrlMappingService _urlMappingService;
+
         public KeyPerformanceIndicatorController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -44,7 +51,10 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             IApprovalRepository approvalRepository,
             IPurchaseOrderRepository purchaseOrderRepository,
             IPurchaseRequestRepository purchaseRequestRepository,
-            IUserActiveRepository userActiveRepository
+            IUserActiveRepository userActiveRepository,
+
+            IDataProtectionProvider provider,
+            UrlMappingService urlMappingService
         )
         {
             _userManager = userManager;
@@ -54,6 +64,26 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             _purchaseOrderRepository = purchaseOrderRepository;
             _purchaseRequestRepository = purchaseRequestRepository;
             _userActiveRepository = userActiveRepository;
+
+            _protector = provider.CreateProtector("UrlProtector");
+            _urlMappingService = urlMappingService;
+        }
+
+        public IActionResult RedirectToIndex()
+        {            
+            string originalPath = $"Page:Order/KeyPerformanceIndicator/Index";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         [HttpGet]

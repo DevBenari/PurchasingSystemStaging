@@ -51,7 +51,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 input-group" data-target-input="nearest">
-                                    <input autocomplete="off" maxlength="50" type="text" class="form-control form-control-border border-width-2" id="searchIn" name="searchTerm" value="@searchTerm" placeholder="Search products..." />
+                                    <input autocomplete="off" maxlength="50" type="text" class="form-control form-control-border border-width-2" id="searchIn" name="searchTerm" value="@searchTerm" placeholder="Search discounts..." />
                                     <button type="submit" class="btn btn-default bg-indigo" id="btn-search"><i class="fa fa-search"></i></button>
                                     <div class="btn btn-default bg-indigo" id="btn-search" data-href="@Url.Action("RedirectToIndex", "Discount")">
                                         <i class="fa-solid fa-arrows-rotate"></i>
@@ -91,7 +91,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="4">No products found.</td>
+                                        <td class="text-center" colspan="4">No discounts found.</td>
                                     </tr>
                                 }
                             </tbody>
