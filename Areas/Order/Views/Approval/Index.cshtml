@@ -28,10 +28,7 @@
                     <div class="card-body">
                         <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="Approval" asp-area="Order" method="post" class="form-horizontal">
                             <div class="row">
-                                <div class="col-md-3 input-group">
-                                    <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "Approval")">
-                                        <i class="fas fa-plus"></i>
-                                    </div>
+                                <div class="col-md-3 input-group">                                    
                                     <input type="date" name="startDate" id="startDate" class="date-input" value="@ViewBag.StartDate" placeholder="Select Start Date">
                                 </div>
                                 <div class="col-md-3 input-group">

@@ -218,7 +218,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             }
             else
             {
-                var data = await _purchaseRequestRepository.GetAllPurchaseRequestPageSize(searchTerm, page, pageSize, startDate, endDate);                
+                var data = await _purchaseRequestRepository.GetAllPurchaseRequestPageSize(searchTerm, page, pageSize, startDate, endDate);
 
                 foreach (var item in data.purchaseRequests)
                 {

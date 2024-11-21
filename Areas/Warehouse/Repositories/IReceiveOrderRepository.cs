@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PurchasingSystemStaging.Areas.Order.Models;
 using PurchasingSystemStaging.Areas.Warehouse.Models;
 using PurchasingSystemStaging.Data;
 
@@ -92,6 +93,43 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
                 .Include(r => r.ReceiveOrderDetails)
                 .Include(u => u.ApplicationUser)
                 .ToList();
+        }
+
+        public async Task<(IEnumerable<ReceiveOrder> receiveOrders, int totalCountReceiveOrders)> GetAllReceiveOrderPageSize(string searchTerm, int page, int pageSize, DateTimeOffset? startDate, DateTimeOffset? endDate)
+        {
+            var query = _context.ReceiveOrders
+                .Include(d => d.PurchaseOrder)
+                .Include(d => d.PurchaseOrderDetails)
+                .Include(r => r.ReceiveOrderDetails)
+                .Include(u => u.ApplicationUser)
+                .OrderByDescending(d => d.CreateDateTime)
+                .AsQueryable();
+
+            // Filter berdasarkan searchTerm jika ada
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(p => p.ReceiveOrderNumber.Contains(searchTerm) || p.PurchaseOrder.PurchaseOrderNumber.Contains(searchTerm));
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(p => p.CreateDateTime >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(p => p.CreateDateTime <= endDate.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            // Ambil data paginated
+            var receiveOrders = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (receiveOrders, totalCount);
         }
     }
 }
