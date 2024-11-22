@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using PurchasingSystemStaging.Areas.MasterData.Models;
@@ -9,6 +10,8 @@ using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Hubs;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PurchasingSystemStaging.Areas.General.Controllers
 {
@@ -18,10 +21,41 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
     {
         private readonly IProductRepository _productRepository;
 
+        private readonly IDataProtector _protector;
+        private readonly UrlMappingService _urlMappingService;
+
         public StockMonitoringController(
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+
+            IDataProtectionProvider provider,
+            UrlMappingService urlMappingService)
         {
             _productRepository = productRepository;
+
+            _protector = provider.CreateProtector("UrlProtector");
+            _urlMappingService = urlMappingService;
+        }
+
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {
+            // Format tanggal tanpa waktu
+            string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+            string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+            // Bangun originalPath dengan format tanggal ISO 8601
+            string originalPath = $"Page:Warehouse/UnitOrder/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+            string encryptedPath = _protector.Protect(originalPath);
+
+            // Hash GUID-like code (SHA256 truncated to 36 characters)
+            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Substring(0, 36);
+
+            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+            return Redirect("/" + guidLikeCode);
         }
 
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
@@ -45,7 +79,7 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
             // Tentukan range tanggal berdasarkan filterOptions
             if (!string.IsNullOrEmpty(filterOptions))
             {
-                (startDate, endDate) = GetDateRange(filterOptions);
+                (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
             var data = await _productRepository.GetAllProductPageSize(searchTerm, page, pageSize, startDate, endDate);
@@ -59,23 +93,6 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
             };
 
             return View(model);
-        }
-
-        private (DateTimeOffset?, DateTimeOffset?) GetDateRange(string filterOptions)
-        {
-            var now = DateTimeOffset.Now;
-            return filterOptions switch
-            {
-                "Today" => (now.Date, now.Date),
-                "Last Day" => (now.AddDays(-1).Date, now.AddDays(-1).Date),
-                "Last 7 Days" => (now.AddDays(-7).Date, now.Date),
-                "Last 30 Days" => (now.AddDays(-30).Date, now.Date),
-                "This Month" => (new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset), now.Date),
-                "Last Month" =>
-                    (new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset).AddMonths(-1),
-                     new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, now.Offset).AddDays(-1)),
-                _ => (null, null),
-            };
-        }
+        }        
     }
 }
