@@ -146,6 +146,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         public IActionResult RedirectToCreate()
         {
+            ViewBag.Active = "ReceiveOrder";
             // Enkripsi path URL untuk "Index"
             string originalPath = $"Create:Warehouse/ReceiveOrder/CreateReceiveOrder";
             string encryptedPath = _protector.Protect(originalPath);
@@ -165,6 +166,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateReceiveOrder(string poList)
         {
+            ViewBag.Active = "ReceiveOrder";
             //Pembelian Pembelian = await _pembelianRepository.GetAllPembelian().Where(p => p.PembelianNumber == );
 
             _signInManager.IsSignedIn(User);
@@ -209,6 +211,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReceiveOrder(ReceiveOrder model)
         {
+            ViewBag.Active = "ReceiveOrder";
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.POFilter = new SelectList(await _purchaseOrderRepository.GetPurchaseOrdersFilters(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
@@ -304,6 +307,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         public IActionResult RedirectToDetail(Guid Id)
         {
+            ViewBag.Active = "ReceiveOrder";
             // Enkripsi path URL untuk "Index"
             string originalPath = $"Detail:Warehouse/ReceiveOrder/DetailReceiveOrder/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
@@ -323,6 +327,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> DetailReceiveOrder(Guid Id)
         {
+            ViewBag.Active = "ReceiveOrder";
             ViewBag.PO = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
 

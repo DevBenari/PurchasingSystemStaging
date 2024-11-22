@@ -112,7 +112,8 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        <a class="btn btn-default" asp-action="Index" asp-controller="ReceiveOrder">Cancel</a>
+                        @*<a class="btn btn-default" asp-action="Index" asp-controller="ReceiveOrder">Cancel</a>*@
+                        <div class="btn btn-default" data-href="@Url.Action("RedirectToIndex", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
                     </div>
                 </div>
                 <!-- /.end button footer -->

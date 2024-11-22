@@ -38,12 +38,13 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
 
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
+            ViewBag.Active = "StockMonitoring";
             // Format tanggal tanpa waktu
             string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
             string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
             // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:Warehouse/UnitOrder/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+            string originalPath = $"Page:General/StockMonitoring/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
             string encryptedPath = _protector.Protect(originalPath);
 
             // Hash GUID-like code (SHA256 truncated to 36 characters)
@@ -60,7 +61,7 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
 
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
-            ViewBag.Active = "General";
+            ViewBag.Active = "StockMonitoring";
             ViewBag.SearchTerm = searchTerm;
             ViewBag.SelectedFilter = filterOptions;
 

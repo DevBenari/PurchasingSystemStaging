@@ -140,6 +140,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
+            ViewBag.Active = "QtyDifference";
             // Format tanggal tanpa waktu
             string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
             string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
@@ -203,6 +204,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         public IActionResult RedirectToCreate()
         {
+            ViewBag.Active = "QtyDifference";
             // Enkripsi path URL untuk "Index"
             string originalPath = $"Create:Warehouse/QtyDifference/CreateQtyDifference";
             string encryptedPath = _protector.Protect(originalPath);
@@ -396,6 +398,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         public IActionResult RedirectToDetail(Guid Id)
         {
+            ViewBag.Active = "QtyDifference";
             // Enkripsi path URL untuk "Index"
             string originalPath = $"Detail:Warehouse/QtyDifference/DetailQtyDifference/{Id}";
             string encryptedPath = _protector.Protect(originalPath);

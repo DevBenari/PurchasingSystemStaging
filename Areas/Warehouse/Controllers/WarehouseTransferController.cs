@@ -80,6 +80,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
+            ViewBag.Active = "WarehouseTransfer";
             // Format tanggal tanpa waktu
             string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
             string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
@@ -103,7 +104,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "WarehouseTransfer";
             ViewBag.SearchTerm = searchTerm;
             ViewBag.SelectedFilter = filterOptions;
 
@@ -140,6 +141,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         public IActionResult RedirectToDetail(Guid Id)
         {
+            ViewBag.Active = "WarehouseTransfer";
             // Enkripsi path URL untuk "Index"
             string originalPath = $"Detail:Warehouse/WarehouseTransfer/DetailWarehouseTransfer/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
@@ -159,7 +161,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> DetailWarehouseTransfer(Guid Id)
         {
-            ViewBag.Active = "Warehouse";
+            ViewBag.Active = "WarehouseTransfer";
 
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
             ViewBag.UnitLocation = new SelectList(await _unitLocationRepository.GetUnitLocations(), "UnitLocationId", "UnitLocationName", SortOrder.Ascending);
