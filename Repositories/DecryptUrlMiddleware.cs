@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.DataProtection;
 using System.Text;
 using PurchasingSystemStaging.Repositories;
+using System.Security.Cryptography;
 
 public class DecryptUrlMiddleware
 {
@@ -19,6 +20,37 @@ public class DecryptUrlMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var path = context.Request.Path.Value.Trim('/');
+
+        // Redirect '/Account/Login' ke URL terenkripsi
+        if (string.Equals(path, "Account/Login", StringComparison.OrdinalIgnoreCase))
+        {
+            string originalPath = "Page:Account/Login";
+
+            try
+            {
+                // Enkripsi path asli
+                var encryptedPath1 = _protector.Protect(originalPath);
+
+                // GUID-like code
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath1)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath1;
+
+                // Redirect ke URL terenkripsi
+                context.Response.Redirect("/" + guidLikeCode);
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating encrypted URL: {ex.Message}");
+                context.Response.Redirect("/ErrorPage");
+                return;
+            }
+        }
 
         // Periksa apakah path adalah GUID-like code
         if (!string.IsNullOrEmpty(path) && path.Length == 36 && _urlMappingService.InMemoryMapping.TryGetValue(path, out var encryptedPath))
@@ -75,8 +107,7 @@ public class DecryptUrlMiddleware
             catch
             {
                 // Jika dekripsi gagal, kembalikan error
-                context.Response.StatusCode = 400;
-                await context.Response.WriteAsync("Invalid URL");
+                context.Response.Redirect("/Home/RedirectToIndex");
                 return;
             }
         }

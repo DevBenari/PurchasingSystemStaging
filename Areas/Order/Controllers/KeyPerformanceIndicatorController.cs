@@ -70,7 +70,8 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         }
 
         public IActionResult RedirectToIndex()
-        {            
+        {
+            ViewBag.Active = "KeyPerformanceIndikator";
             string originalPath = $"Page:Order/KeyPerformanceIndicator/Index";
             string encryptedPath = _protector.Protect(originalPath);
 
@@ -90,6 +91,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         public IActionResult Index()
         {
             ViewBag.Active = "KeyPerformanceIndikator";
+
             var data = _purchaseRequestRepository.GetAllPurchaseRequest();
 
             var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
@@ -137,6 +139,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> PostData(Selected model)
         {
+            ViewBag.Active = "KeyPerformanceIndikator";
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
             var user = await _userManager.GetUserAsync(User);
@@ -204,6 +207,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
         public async Task<IActionResult> KpiJson(Selected model)
         {
+            ViewBag.Active = "KeyPerformanceIndikator";
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
 
             if (getUserLogin.Email == "superadmin@admin.com")

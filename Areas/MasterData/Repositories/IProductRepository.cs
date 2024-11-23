@@ -67,8 +67,11 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
 
         public async Task<List<Product>> GetProducts()
         {
-            return await _context.Products.OrderBy(p => p.CreateDateTime).Select(Product => new Product()
-            {
+            return await _context.Products
+                .Include(s => s.Supplier)
+                .OrderBy(p => p.CreateDateTime)
+                //.Take(20)
+                .Select(Product => new Product() {
                 ProductId = Product.ProductId,
                 ProductCode = Product.ProductCode,
                 ProductName = Product.ProductName,

@@ -91,6 +91,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
+            ViewBag.Active = "ApprovalQtyDifference";
             // Format tanggal tanpa waktu
             string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
             string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
@@ -225,6 +226,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
         public IActionResult RedirectToDetail(Guid Id)
         {
+            ViewBag.Active = "ApprovalQtyDifference";
             // Enkripsi path URL untuk "Index"
             string originalPath = $"Detail:Order/ApprovalQtyDifference/DetailApprovalQtyDifference/{Id}";
             string encryptedPath = _protector.Protect(originalPath);
@@ -244,7 +246,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         [HttpGet]
         public async Task<ViewResult> DetailApprovalQtyDifference(Guid Id)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "ApprovalQtyDifference";
 
             ViewBag.QtyDifference = new SelectList(await _qtyDifferenceRepository.GetQtyDifferences(), "QtyDifferenceId", "QtyDifferenceNumber", SortOrder.Ascending);
             ViewBag.PO = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
@@ -308,7 +310,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> DetailApprovalQtyDifference(ApprovalQtyDifferenceViewModel viewModel)
         {
-            ViewBag.Active = "Order";
+            ViewBag.Active = "ApprovalQtyDifference";
 
             if (ModelState.IsValid)
             {

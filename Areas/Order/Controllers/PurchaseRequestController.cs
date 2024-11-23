@@ -262,16 +262,16 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
             return Redirect("/" + guidLikeCode);
-        }
+        }        
 
         [HttpGet]
-        public async Task<IActionResult> CreatePurchaseRequest()
+        public async Task<IActionResult> CreatePurchaseRequest(string searchTerm)
         {
             ViewBag.Active = "PurchaseRequest";
 
             _signInManager.IsSignedIn(User);
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-
+           
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
             //ViewBag.Product = from p in _applicationDbContext.Products.Include(s => s.Supplier).ToList() select new { ProductId = p.ProductId, ProductName = p.ProductName, Supplier = p.Supplier.SupplierName };            
             ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);            
@@ -308,8 +308,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             }
 
             return View(purchaseRequest);
-        }
-
+        }        
 
         [HttpPost]
         public async Task<IActionResult> CreatePurchaseRequest(PurchaseRequest model)
