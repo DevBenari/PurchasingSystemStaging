@@ -53,26 +53,35 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        //[Authorize(Roles = "IndexBank")]
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
-            // Format tanggal tanpa waktu
-            string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-            string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+            try
+            {
+                // Format tanggal tanpa waktu
+                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
-            // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/Bank/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-            string encryptedPath = _protector.Protect(originalPath);
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/Bank/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         [HttpGet]
@@ -114,25 +123,35 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             return View(model);
         }
 
+        //[Authorize(Roles = "CreateBank")]
         public IActionResult RedirectToCreate()
         {
-            // Enkripsi path URL untuk "Index"
-            string originalPath = $"Create:MasterData/Bank/CreateBank";
-            string encryptedPath = _protector.Protect(originalPath);
+            try
+            {
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Create:MasterData/Bank/CreateBank";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         [HttpGet]
+        //[Authorize(Roles = "CreateBank")]
         public async Task<ViewResult> CreateBank()
         {
             ViewBag.Active = "MasterData";
@@ -163,6 +182,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "CreateBank")]
         public async Task<IActionResult> CreateBank(BankViewModel vm)
         {
             var dateNow = DateTimeOffset.Now;
@@ -231,25 +251,36 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View(vm);
             }            
         }
+
+        //[Authorize(Roles = "DetailBank")]
         public IActionResult RedirectToDetail(Guid Id)
         {
-            // Enkripsi path URL untuk "Index"
-            string originalPath = $"Detail:MasterData/Bank/DetailBank/{Id}";
-            string encryptedPath = _protector.Protect(originalPath);
+            try
+            {
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Detail:MasterData/Bank/DetailBank/{Id}";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
-
+        
         [HttpGet]
+        //[Authorize(Roles = "DetailBank")]
         public async Task<IActionResult> DetailBank(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -274,6 +305,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "DetailBank")]
         public async Task<IActionResult> DetailBank(BankViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -320,25 +352,35 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }
         }
 
+        //[Authorize(Roles = "DeleteBank")]
         public IActionResult RedirectToDelete(Guid Id)
         {
-            // Enkripsi path URL untuk "Index"
-            string originalPath = $"Delete:MasterData/Bank/DeleteBank/{Id}";
-            string encryptedPath = _protector.Protect(originalPath);
+            try
+            {
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Delete:MasterData/Bank/DeleteBank/{Id}";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         [HttpGet]
+        //[Authorize(Roles = "DeleteBank")]
         public async Task<IActionResult> DeleteBank(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -359,6 +401,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "DeleteBank")]
         public async Task<IActionResult> DeleteBank(BankViewModel vm)
         {
             //Hapus Data Profil

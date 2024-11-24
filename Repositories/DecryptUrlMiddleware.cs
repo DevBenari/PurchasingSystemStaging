@@ -47,7 +47,7 @@ public class DecryptUrlMiddleware
             catch (Exception ex)
             {
                 Console.WriteLine($"Error creating encrypted URL: {ex.Message}");
-                context.Response.Redirect("/ErrorPage");
+                context.Response.Redirect("Account/Login");
                 return;
             }
         }
