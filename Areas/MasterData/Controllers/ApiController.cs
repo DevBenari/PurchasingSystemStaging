@@ -30,6 +30,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly IMeasurementRepository _measurementRepository;
         private readonly IDiscountRepository _discountRepository;
         private readonly ISupplierRepository _supplierRepository;
+        public readonly IWarehouseLocationRepository _warehouseLocationRepository;
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
@@ -43,6 +44,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             IDiscountRepository DiscountRepository,
             ISupplierRepository supplierRepository,
             HttpClient httpClient,
+            IWarehouseLocationRepository warehouseLocationRepository,
 
             IDataProtectionProvider provider,
             UrlMappingService urlMappingService
@@ -56,6 +58,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _measurementRepository = MeasurementRepository;
             _discountRepository = DiscountRepository;
             _supplierRepository = supplierRepository;
+            _warehouseLocationRepository = warehouseLocationRepository;
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
@@ -63,20 +66,28 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
         public IActionResult RedirectToIndex()
         {
-            // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/Api/Index";
-            string encryptedPath = _protector.Protect(originalPath);
+            try
+            {
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/Api/Index";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         public IActionResult Index()
@@ -85,21 +96,29 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         public IActionResult RedirectToGetDataSupplier()
-        {           
-            // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/Api/GetDataSupplier";
-            string encryptedPath = _protector.Protect(originalPath);
+        {
+            try
+            {
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/Api/GetDataSupplier";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         public IActionResult GetDataSupplier() 
@@ -208,20 +227,28 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
         public IActionResult RedirectToGetDataSatuan()
         {
-            // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/Api/GetDataSatuan";
-            string encryptedPath = _protector.Protect(originalPath);
+            try
+            {
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/Api/GetDataSatuan";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         public IActionResult GetDataSatuan() 
@@ -320,20 +347,28 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
         public IActionResult RedirectToGetDataKategoriObat()
         {
-            // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/Api/GetDataKategoriObat";
-            string encryptedPath = _protector.Protect(originalPath);
+            try
+            {
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/Api/GetDataKategoriObat";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         public IActionResult GetDataKategoriObat() 
@@ -431,20 +466,28 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
         public IActionResult RedirectToGetDataObat()
         {
-            // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/Api/GetDataObat";
-            string encryptedPath = _protector.Protect(originalPath);
+            try
+            {
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/Api/GetDataObat";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         public IActionResult GetDataObat() 
@@ -558,6 +601,10 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                                             }
                                         }
 
+                                        var getSupplier = _supplierRepository.GetAllSupplier().Where(n => n.SupplierName == "RS MMC").FirstOrDefault();
+                                        var getDiscount = _discountRepository.GetAllDiscount().Where(d => Convert.ToString(d.DiscountValue) == "0").FirstOrDefault();
+                                        var getWarehouse = _warehouseLocationRepository.GetAllWarehouseLocation().Where(w => w.WarehouseLocationName == "Gudang 01").FirstOrDefault();
+
                                         var product = new Product
                                         {
                                             CreateDateTime = DateTime.Now,
@@ -565,11 +612,11 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                                             ProductId = Guid.NewGuid(),
                                             ProductCode = ProductCode,
                                             ProductName = itemObat.nama_brg,
-                                            SupplierId = new Guid("C8E1A315-BDC8-44EA-A0FB-A24C2F9558C8"),
+                                            SupplierId = getSupplier.SupplierId,
                                             CategoryId = getCategory.CategoryId,
                                             MeasurementId = getSatuan.MeasurementId,
-                                            DiscountId = new Guid("f75bb704-4a30-4c0a-e8e6-08dcacc5243f"),
-                                            WarehouseLocationId = new Guid("4218A796-79B1-4F59-7767-08DCAE28EBBE"),
+                                            DiscountId = getDiscount.DiscountId,
+                                            WarehouseLocationId = getWarehouse.WarehouseLocationId,
                                             MinStock = 0,
                                             MaxStock = 0,
                                             BufferStock = 0,
@@ -699,20 +746,28 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
         public IActionResult RedirectToGetDataDiskon()
         {
-            // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/Api/GetDataDiskon";
-            string encryptedPath = _protector.Protect(originalPath);
+            try
+            {
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/Api/GetDataDiskon";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         public IActionResult GetDataDiskon() 

@@ -62,31 +62,41 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         public IActionResult RedirectToIndex()
-        {            
-            // Bangun originalPath dengan format tanggal ISO 8601
-            string originalPath = $"Page:MasterData/GroupRole/Index";
-            string encryptedPath = _protector.Protect(originalPath);
+        {
+            try
+            {
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/GroupRole/Index";
+                string encryptedPath = _protector.Protect(originalPath);
 
-            // Hash GUID-like code (SHA256 truncated to 36 characters)
-            string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Substring(0, 36);
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
 
-            // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-            _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-            return Redirect("/" + guidLikeCode);
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return View();
+            }            
         }
 
         public IActionResult Index()
         {
+            ViewBag.Active = "MasterData";
             return View(); // Kirim data role ke view
         }      
 
         [HttpGet]
         public async Task<IActionResult> CreateRole()
         {
+            ViewBag.Active = "MasterData";
             var roles = await _roleManager.Roles
                       .Select(r => new
                       {
@@ -102,6 +112,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRole(GroupRoleViewModel vm)
         {
+            ViewBag.Active = "MasterData";
             var dateNow = DateTimeOffset.Now;
             var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
 
@@ -175,6 +186,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRoleNavbar()
         {
+            ViewBag.Active = "MasterData";
             var controllers = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(type => typeof(Controller).IsAssignableFrom(type) && !type.IsAbstract)
                 .ToList();
@@ -242,7 +254,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         [AllowAnonymous]
         public IActionResult LoadRoles(string Email)
         {
-
+            ViewBag.Active = "MasterData";
             if (!string.IsNullOrEmpty(Email))
             {
                 var userId = _userActiveRepository.GetAllUserLogin()
