@@ -25,6 +25,8 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography;
 using System.Text;
+using System.IO;
+using System.Web.WebPages;
 
 namespace PurchasingSystemStaging.Controllers
 {
@@ -45,7 +47,8 @@ namespace PurchasingSystemStaging.Controllers
         private readonly IApprovalQtyDifferenceRepository _approvalQtyDifferenceRepository;
         private readonly IUnitRequestRepository _unitRequestRepository;
         private readonly IApprovalUnitRequestRepository _approvalUnitRequestRepository;
-
+        private readonly IPurchaseOrderRepository _purchaseOrderRepository;
+        
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
         private readonly IHostingEnvironment _hostingEnvironment;
@@ -65,6 +68,7 @@ namespace PurchasingSystemStaging.Controllers
             IApprovalQtyDifferenceRepository approvalQtyDifferenceRepository,
             IUnitRequestRepository unitRequestRepository,
             IApprovalUnitRequestRepository approvalUnitRequestRepository,
+            IPurchaseOrderRepository purchaseOrderRepository,
 
             IDataProtectionProvider provider,
             UrlMappingService urlMappingService,
@@ -86,6 +90,7 @@ namespace PurchasingSystemStaging.Controllers
             _approvalQtyDifferenceRepository = approvalQtyDifferenceRepository;
             _unitRequestRepository = unitRequestRepository;
             _approvalUnitRequestRepository = approvalUnitRequestRepository;
+            _purchaseOrderRepository = purchaseOrderRepository;
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
@@ -118,15 +123,37 @@ namespace PurchasingSystemStaging.Controllers
             }            
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "Dashboard";
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SelectedFilter = filterOptions;
+
+            // Format tanggal untuk input[type="date"]
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            // Format tanggal untuk tampilan (Indonesia)
+            ViewBag.StartDateReadable = startDate?.ToString("dd MMMM yyyy");
+            ViewBag.EndDateReadable = endDate?.ToString("dd MMMM yyyy");
+
+            // Normalisasi tanggal untuk mengabaikan waktu
+            if (startDate.HasValue) startDate = startDate.Value.Date;
+            if (endDate.HasValue) endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // Sampai akhir hari
+
+            // Tentukan range tanggal berdasarkan filterOptions
+            if (!string.IsNullOrEmpty(filterOptions))
+            {
+                (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
+            }
 
             var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
             var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).ToList();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
-            var product = _productRepository.GetAllProduct().Where(p => p.Stock < p.MinStock).ToList();
+            var data = await _productRepository
+                .GetAllProductPageSize(searchTerm, page, pageSize, startDate, endDate)
+                /*.Where(p => p.Stock < p.MinStock).ToList()*/;
 
             if (user == null && checkUserLogin.Email == "superadmin@admin.com")
             {
@@ -141,7 +168,7 @@ namespace PurchasingSystemStaging.Controllers
                 {
                     dashboard.UserActiveViewModels = viewModel;
                     dashboard.UserOnlines = userLogin;
-                    dashboard.Products = product;
+                    dashboard.Products = data.products;
                 }
 
                 return View(dashboard);
@@ -171,8 +198,8 @@ namespace PurchasingSystemStaging.Controllers
                 {
                     dashboard.UserActiveViewModels = viewModel;
                     dashboard.UserOnlines = userLogin;
-                    dashboard.Products = product;
-                }                
+                    dashboard.Products = data.products;
+                }
 
                 var userOnline = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).GroupBy(u => u.Id).Select(y => new
                 {
@@ -224,7 +251,7 @@ namespace PurchasingSystemStaging.Controllers
                     WarehouseTransferId = y.Key,
                     CountOfWarehouseTransfers = y.Count()
                 }).ToList();
-                ViewBag.CountWarehouseTransfer = countWarehouseTransfer.Count;
+                ViewBag.CountWarehouseTransfer = countWarehouseTransfer.Count;                
 
                 return View(dashboard);
             }
@@ -384,6 +411,33 @@ namespace PurchasingSystemStaging.Controllers
             ViewBag.UserId = userId;
             return Json(data);
         }
+
+        public IActionResult GetMonitoringProduct()
+        {
+            var warning = _productRepository.GetAllProduct().Where(product => product.Stock <= product.MinStock).Count();
+            var save = _productRepository.GetAllProduct().Where(product => product.Stock >= product.MinStock).Count();
+            var result = new
+            {
+                Warning = warning,
+                Save = save
+            };
+            return Json(result);
+        }
+
+        public IActionResult GetMonitoringStatus()
+        {
+            var complited = _purchaseOrderRepository.GetAllPurchaseOrder().Where(po => po.Status.StartsWith("RO")).Count();
+            var inorder = _purchaseOrderRepository.GetAllPurchaseOrder().Where(po => po.Status == "In Order").Count();
+            var cancelled = _purchaseOrderRepository.GetAllPurchaseOrder().Where(po => po.Status == "Cancelled").Count();
+            var result = new
+            {
+                Complited = complited,
+                Inorder = inorder,
+                Cancelled = cancelled
+            };
+            return Json(result);
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string password)
