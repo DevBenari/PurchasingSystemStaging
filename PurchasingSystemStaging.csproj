@@ -15,7 +15,6 @@
     <Folder Include="Areas\Report\Models\" />
     <Folder Include="Areas\Report\Repositories\" />
     <Folder Include="Areas\Report\ViewModels\" />
-    <Folder Include="Areas\Report\Views\" />
     <Folder Include="Areas\Transaction\Data\" />
     <Folder Include="Areas\Warehouse\Data\" />
   </ItemGroup>

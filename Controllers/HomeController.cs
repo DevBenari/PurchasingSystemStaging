@@ -414,8 +414,13 @@ namespace PurchasingSystemStaging.Controllers
 
         public IActionResult GetMonitoringProduct()
         {
-            var warning = _productRepository.GetAllProduct().Where(product => product.Stock <= product.MinStock).Count();
-            var save = _productRepository.GetAllProduct().Where(product => product.Stock >= product.MinStock).Count();
+            var alldata = _productRepository.GetAllProduct();
+            var warning = alldata.Where(product => product.Stock < product.MinStock).Count(); // Data Stock Dibawah Minimal Stock (Minstock) bukan termasuk data stock yang save
+            var save = alldata.Where(product => product.Stock >= product.MinStock).Count(); // Data Stock Sama Atau Diatas Minimal Stock (Minstock) termasuk data stock yang aman
+
+            //var warning = _productRepository.GetAllProduct().Where(product => product.Stock <= product.MinStock).Count();
+            //var save = _productRepository.GetAllProduct().Where(product => product.Stock >= product.MinStock).Count();
+            
             var result = new
             {
                 Warning = warning,
@@ -426,12 +431,12 @@ namespace PurchasingSystemStaging.Controllers
 
         public IActionResult GetMonitoringStatus()
         {
-            var complited = _purchaseOrderRepository.GetAllPurchaseOrder().Where(po => po.Status.StartsWith("RO")).Count();
+            var completed = _purchaseOrderRepository.GetAllPurchaseOrder().Where(po => po.Status.StartsWith("RO")).Count();
             var inorder = _purchaseOrderRepository.GetAllPurchaseOrder().Where(po => po.Status == "In Order").Count();
             var cancelled = _purchaseOrderRepository.GetAllPurchaseOrder().Where(po => po.Status == "Cancelled").Count();
             var result = new
             {
-                Complited = complited,
+                Completed = completed,
                 Inorder = inorder,
                 Cancelled = cancelled
             };
