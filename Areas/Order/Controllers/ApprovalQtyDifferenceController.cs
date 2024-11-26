@@ -149,12 +149,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
             if (getUserLogin.Email == "superadmin@admin.com")
             {
-                var data = await _approvalQtyDifferenceRepository.GetAllApprovalQtyDifferencePageSize(searchTerm, page, pageSize, startDate, endDate);
-
-                foreach (var item in data.approvalQtyDifferences)
-                {
-                    var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;                    
-                }
+                var data = await _approvalQtyDifferenceRepository.GetAllApprovalQtyDifferencePageSize(searchTerm, page, pageSize, startDate, endDate);               
 
                 var model = new Pagination<ApprovalQtyDifference>
                 {
@@ -183,7 +178,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                     itemList.AddRange(getUser2);
 
                     itemList.AddRange(getUser1Approve);
-                    itemList.AddRange(getUser2Approve);
+                    itemList.AddRange(getUser2Approve);                    
 
                     var model = new Pagination<ApprovalQtyDifference>
                     {
@@ -201,7 +196,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                     itemList.AddRange(getUser2);
 
                     itemList.AddRange(getUser1Approve);
-                    itemList.AddRange(getUser2Approve);
+                    itemList.AddRange(getUser2Approve);                    
 
                     var model = new Pagination<ApprovalQtyDifference>
                     {
@@ -216,7 +211,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                 else if (getUser1 != null)
                 {
                     itemList.AddRange(getUser1);
-                    itemList.AddRange(getUser1Approve);
+                    itemList.AddRange(getUser1Approve);                    
 
                     var model = new Pagination<ApprovalQtyDifference>
                     {

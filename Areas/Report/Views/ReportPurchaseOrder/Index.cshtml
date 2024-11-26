@@ -1,0 +1,68 @@
+﻿@using PurchasingSystemStaging.Areas.Order.Models;
+@using PurchasingSystemStaging.Models;
+@using PurchasingSystemStaging.Repositories;
+
+@model IEnumerable<PurchaseOrder>
+@{
+    ViewData["Title"] = "Laporan Purchase Order Bulanan";
+    decimal grandTotal = ViewBag.GrandTotal;
+    var months = ViewBag.Months as IEnumerable<dynamic>;
+    var years = ViewBag.Years as IEnumerable<int>;
+    int selectedMonth = ViewBag.SelectedMonth;
+    int selectedYear = ViewBag.SelectedYear;
+}
+
+<h1>Laporan Purchase Order Bulanan</h1>
+<form method="get">
+    <label for="month">Bulan:</label>
+    <select name="month" id="month">
+        @foreach (var month in months)
+        {
+            <option value="@month.Value" @(selectedMonth == month.Value ? "selected" : "")>
+                @month.Text
+            </option>
+        }
+    </select>
+
+    <label for="year">Tahun:</label>
+    <select name="year" id="year">
+        @foreach (var year in years)
+        {
+            <option value="@year" @(selectedYear == year ? "selected" : "")>
+                @year
+            </option>
+        }
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nomor PO</th>
+            <th>Tanggal PO</th>
+            <th>Jumlah Barang</th>
+            <th>TermOfPaymentName</th>
+            <th>GrandTotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var po in Model)
+        {
+            <tr>
+                <td>@po.PurchaseOrderNumber</td>
+                <td>@po.CreateDateTime.ReadStringDate()</td>
+                <td>@po.Status</td>
+                <td>@po.TermOfPayment.TermOfPaymentName</td>
+                <td>@po.GrandTotal.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="5"><strong>Grand Total</strong></td>
+            <td colspan="2">@grandTotal.ToString("C")</td>
+        </tr>
+    </tfoot>
+</table>

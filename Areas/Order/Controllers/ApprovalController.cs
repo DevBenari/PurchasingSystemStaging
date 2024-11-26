@@ -137,16 +137,28 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                 foreach (var item in data.approvals)
                 {
-                    var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
-                    var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
-
-                    if (updateData.RemainingDay != 0)
+                    if (item.Status == "Approve")
                     {
-                        updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+                        var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                        updateData.RemainingDay = 0;
 
                         _applicationDbContext.Approvals.Update(updateData);
                         _applicationDbContext.SaveChanges();
                     }
+                    else
+                    {
+                        var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
+                        var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                        if (updateData.RemainingDay != 0)
+                        {
+                            updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                            _applicationDbContext.Approvals.Update(updateData);
+                            _applicationDbContext.SaveChanges();
+                        }
+                    }                        
                 }
 
                 var model = new Pagination<Approval>
@@ -182,18 +194,32 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                     itemList.AddRange(getUser2Approve);
                     itemList.AddRange(getUser3Approve);
 
+                    //Cek apakah sudah di Approve? Jika belum jalankan Remaining Day, jika sudah lewatkan Remaining Day
+
                     foreach (var item in itemList)
                     {
-                        var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
-                        var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
-
-                        if (updateData.RemainingDay != 0)
+                        if (item.Status == "Approve")
                         {
-                            updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+                            var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                            updateData.RemainingDay = 0;
 
                             _applicationDbContext.Approvals.Update(updateData);
                             _applicationDbContext.SaveChanges();
                         }
+                        else
+                        {
+                            var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
+                            var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                            if (updateData.RemainingDay != 0)
+                            {
+                                updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                                _applicationDbContext.Approvals.Update(updateData);
+                                _applicationDbContext.SaveChanges();
+                            }
+                        }                        
                     }
 
                     var model = new Pagination<Approval>
@@ -216,16 +242,28 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                     foreach (var item in itemList)
                     {
-                        var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
-                        var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
-
-                        if (updateData.RemainingDay != 0)
+                        if (item.Status == "Approve")
                         {
-                            updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+                            var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                            updateData.RemainingDay = 0;
 
                             _applicationDbContext.Approvals.Update(updateData);
                             _applicationDbContext.SaveChanges();
                         }
+                        else
+                        {
+                            var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
+                            var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                            if (updateData.RemainingDay != 0)
+                            {
+                                updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                                _applicationDbContext.Approvals.Update(updateData);
+                                _applicationDbContext.SaveChanges();
+                            }
+                        }                            
                     }
 
                     var model = new Pagination<Approval>
@@ -246,16 +284,28 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                     foreach (var item in itemList)
                     {
-                        var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
-                        var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
-
-                        if (updateData.RemainingDay != 0)
+                        if (item.Status == "Approve")
                         {
-                            updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+                            var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                            updateData.RemainingDay = 0;
 
                             _applicationDbContext.Approvals.Update(updateData);
                             _applicationDbContext.SaveChanges();
                         }
+                        else
+                        {
+                            var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
+                            var updateData = _approvalRepository.GetAllApproval().Where(u => u.ApprovalId == item.ApprovalId).FirstOrDefault();
+
+                            if (updateData.RemainingDay != 0)
+                            {
+                                updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                                _applicationDbContext.Approvals.Update(updateData);
+                                _applicationDbContext.SaveChanges();
+                            }
+                        }                            
                     }
 
                     var model = new Pagination<Approval>
@@ -483,17 +533,20 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                     //Signal R
 
-                    var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                    var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveId;
-                    var data2 = _purchaseRequestRepository.GetAllPurchaseRequest()
-                                    .Where(p => (p.UserApprove1Id == getUserActiveId && p.ApproveStatusUser1 == null)
-                                    || (p.UserApprove2Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == null)
-                                    || (p.UserApprove3Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == "Approve" && p.ApproveStatusUser3 == null))
-                                    .ToList();
+                    //var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                    //if (getUserId.Email != "superadmin@admin.com")
+                    //{
+                    //    var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveId;
+                    //    var data2 = _purchaseRequestRepository.GetAllPurchaseRequest()
+                    //                    .Where(p => (p.UserApprove1Id == getUserActiveId && p.ApproveStatusUser1 == null)
+                    //                    || (p.UserApprove2Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == null)
+                    //                    || (p.UserApprove3Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == "Approve" && p.ApproveStatusUser3 == null))
+                    //                    .ToList();
 
-                    int totalKaryawan = data2.Count();
-                    ViewBag.TotalKaryawan = totalKaryawan;
-                    await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
+                    //    int totalKaryawan = data2.Count();
+                    //    ViewBag.TotalKaryawan = totalKaryawan;
+                    //    await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
+                    //}                    
 
                     //End Signal R
 
