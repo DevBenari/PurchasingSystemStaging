@@ -4,6 +4,8 @@ using PurchasingSystemStaging.Data;
 
 namespace PurchasingSystemStaging.Areas.Report.Controllers
 {
+    [Area("Report")]
+    [Route("Report/[Controller]/[Action]")]
     public class ReportPurchaseOrderController : Controller
     {
         private readonly ApplicationDbContext _applicationDbContext;
@@ -25,6 +27,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             var selectedYear = year ?? currentYear;
 
             var orders = await _applicationDbContext.PurchaseOrders
+                .Include (t => t.TermOfPayment)
                 .Where(po => po.CreateDateTime.Month == selectedMonth && po.CreateDateTime.Year == selectedYear)
                 .ToListAsync();
 

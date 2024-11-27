@@ -164,7 +164,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
@@ -222,6 +222,12 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                     CurrentPage = page,
                 };
 
+                // Sertakan semua parameter untuk pagination
+                ViewBag.FilterOptions = filterOptions;
+                ViewBag.StartDateParam = startDate?.ToString("yyyy-MM-dd");
+                ViewBag.EndDateParam = endDate?.ToString("yyyy-MM-dd");
+                ViewBag.PageSize = pageSize;
+
                 return View(model);
             }
             else
@@ -276,7 +282,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }        
 
@@ -537,7 +543,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 

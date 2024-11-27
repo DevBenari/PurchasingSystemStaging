@@ -96,7 +96,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
@@ -160,7 +160,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 

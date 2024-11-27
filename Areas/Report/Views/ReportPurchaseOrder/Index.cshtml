@@ -40,10 +40,10 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Nomor PO</th>
-            <th>Tanggal PO</th>
-            <th>Jumlah Barang</th>
+            <th>Date</th>
+            <th>Purchase Order Number</th>
             <th>TermOfPaymentName</th>
+            <th>Jumlah Barang</th>            
             <th>GrandTotal</th>
         </tr>
     </thead>
@@ -51,18 +51,18 @@
         @foreach (var po in Model)
         {
             <tr>
-                <td>@po.PurchaseOrderNumber</td>
                 <td>@po.CreateDateTime.ReadStringDate()</td>
-                <td>@po.Status</td>
+                <td>@po.PurchaseOrderNumber</td>
                 <td>@po.TermOfPayment.TermOfPaymentName</td>
-                <td>@po.GrandTotal.ToString("C")</td>
+                <td>@po.QtyTotal</td>                
+                <td>@po.GrandTotal.ToString("C0")</td>
             </tr>
         }
     </tbody>
     <tfoot>
         <tr>
             <td colspan="5"><strong>Grand Total</strong></td>
-            <td colspan="2">@grandTotal.ToString("C")</td>
+            <td colspan="2">@grandTotal.ToString("C0")</td>
         </tr>
     </tfoot>
 </table>

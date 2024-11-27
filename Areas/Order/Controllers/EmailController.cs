@@ -83,7 +83,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
@@ -147,7 +147,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
