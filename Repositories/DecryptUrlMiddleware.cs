@@ -107,7 +107,7 @@ public class DecryptUrlMiddleware
             catch
             {
                 // Jika dekripsi gagal, kembalikan error
-                context.Response.Redirect("/Home/RedirectToIndex");
+                context.Response.Redirect(context.Request.Path);
                 return;
             }
         }

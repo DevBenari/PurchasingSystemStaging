@@ -16,6 +16,7 @@ using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
 using System.Data;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -131,7 +132,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
@@ -195,7 +196,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
@@ -237,6 +238,8 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             };
 
             var ItemsList = new List<PurchaseOrderDetail>();
+
+            var culture = new CultureInfo("id-ID");
 
             foreach (var item in purchaseOrder.PurchaseOrderDetails)
             {

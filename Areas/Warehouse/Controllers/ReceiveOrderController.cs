@@ -110,7 +110,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
@@ -149,6 +149,12 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 CurrentPage = page,
             };
 
+            // Sertakan semua parameter untuk pagination
+            ViewBag.FilterOptions = filterOptions;
+            ViewBag.StartDateParam = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDateParam = endDate?.ToString("yyyy-MM-dd");
+            ViewBag.PageSize = pageSize;
+
             return View(model);
         }
 
@@ -175,7 +181,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
@@ -270,6 +276,11 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                         ReceiveOrderNumber = model.ReceiveOrderNumber,
                         PurchaseOrderId = model.PurchaseOrderId,
                         ReceiveById = getUser.Id,
+                        ShippingNumber = model.ShippingNumber,
+                        DeliveryServiceName = model.DeliveryServiceName,
+                        DeliveryDate = model.DeliveryDate,
+                        WaybillNumber = model.WaybillNumber,
+                        InvoiceNumber = model.InvoiceNumber,
                         Status = model.Status,
                         Note = model.Note,
                         ReceiveOrderDetails = model.ReceiveOrderDetails,
@@ -344,7 +355,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             catch
             {
                 // Jika enkripsi gagal, kembalikan view
-                return View();
+                return Redirect(Request.Path);
             }            
         }
 
@@ -369,6 +380,11 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 ReceiveOrderNumber = receiveOrder.ReceiveOrderNumber,
                 PurchaseOrderId = receiveOrder.PurchaseOrderId,
                 ReceiveById = receiveOrder.ReceiveById,
+                ShippingNumber = receiveOrder.ShippingNumber,
+                DeliveryServiceName = receiveOrder.DeliveryServiceName,
+                DeliveryDate = receiveOrder.DeliveryDate,
+                WaybillNumber = receiveOrder.WaybillNumber,
+                InvoiceNumber = receiveOrder.InvoiceNumber,
                 Status = receiveOrder.Status,
                 Note = receiveOrder.Note,
                 ReceiveOrderDetails = receiveOrder.ReceiveOrderDetails,

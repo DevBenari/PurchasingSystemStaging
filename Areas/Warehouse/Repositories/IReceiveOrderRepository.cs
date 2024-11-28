@@ -51,6 +51,11 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
                     ReceiveOrderNumber = receiveOrder.ReceiveOrderNumber,
                     PurchaseOrderId = receiveOrder.PurchaseOrderId,
                     ReceiveById = receiveOrder.ReceiveById,
+                    ShippingNumber = receiveOrder.ShippingNumber,
+                    DeliveryServiceName = receiveOrder.DeliveryServiceName,
+                    DeliveryDate = receiveOrder.DeliveryDate,
+                    WaybillNumber = receiveOrder.WaybillNumber,
+                    InvoiceNumber = receiveOrder.InvoiceNumber,
                     Status = receiveOrder.Status,
                     Note = receiveOrder.Note,
                     ReceiveOrderDetails = receiveOrder.ReceiveOrderDetails
@@ -79,6 +84,11 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
                 ReceiveOrderNumber = receiveOrder.ReceiveOrderNumber,
                 PurchaseOrderId = receiveOrder.PurchaseOrderId,
                 ReceiveById = receiveOrder.ReceiveById,
+                ShippingNumber = receiveOrder.ShippingNumber,
+                DeliveryServiceName = receiveOrder.DeliveryServiceName,
+                DeliveryDate = receiveOrder.DeliveryDate,
+                WaybillNumber = receiveOrder.WaybillNumber,
+                InvoiceNumber = receiveOrder.InvoiceNumber,
                 Status = receiveOrder.Status,
                 Note = receiveOrder.Note,
                 ReceiveOrderDetails = receiveOrder.ReceiveOrderDetails
