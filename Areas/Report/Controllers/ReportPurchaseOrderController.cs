@@ -136,6 +136,11 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> ClosingPurchaseOrder()
+        {
+            return View();
+        }
+
         public class PurchaseOrderWithDetailSupplier
         {            
             public DateTimeOffset CreateDateTime { get; set; }
