@@ -118,7 +118,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
             // Filter berdasarkan searchTerm jika ada
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                query = query.Where(p => p.ReceiveOrderNumber.Contains(searchTerm) || p.PurchaseOrder.PurchaseOrderNumber.Contains(searchTerm));
+                query = query.Where(p => p.ReceiveOrderNumber.Contains(searchTerm) || p.PurchaseOrder.PurchaseOrderNumber.Contains(searchTerm) || p.ShippingNumber.Contains(searchTerm) || p.WaybillNumber.Contains(searchTerm) || p.InvoiceNumber.Contains(searchTerm));
             }
 
             if (startDate.HasValue)
