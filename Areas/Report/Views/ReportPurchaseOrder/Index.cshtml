@@ -63,11 +63,11 @@
                                         <button type="submit" class="filter-button">Filter</button>
                                     </div>
 
-                                    <div class="right-column">                                        
-                                        <button type="button" class="reset-button">Closing Purchase Order</button>
+                                    <div class="right-column">
+                                        <div class="btn btn-default reset-button" data-href="@Url.Action("ClosingPurchaseOrder", "ReportPurchaseOrder")">Closing Purchase Order</div>
+                                        @* <button type="button" class="reset-button">Closing Purchase Order</button> *@
                                     </div>
                                 </div>
-
                             </div>
                         </form>
                     </div>
@@ -78,7 +78,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 5%;">No</th>
-                                    <th class="text-center" style="width: 15%;">Date</th>
+                                    <th class="text-left" style="width: 15%;">Create Date PO</th>
                                     <th class="text-left" style="width: 15%;">Purchase Order Number</th>
                                     <th class="text-left" style="width: 10%;">T.O.P</th>
                                     <th class="text-left" style="width: 10%;">Supplier</th>
@@ -93,10 +93,10 @@
                                     {
                                         <tr>
                                             <th class="text-center">@itemNumber</th>
-                                            <td class="text-center">@po.CreateDateTime.ReadStringDate()</td>
+                                            <td class="text-left">@po.CreateDateTime.ReadStringDate()</td>
                                             <td class="text-left">@po.PurchaseOrderNumber</td>
                                             <td class="text-left">@po.TermOfPayment</td>
-                                            <td class="text-center">@po.SupplierName</td>
+                                            <td class="text-left">@po.SupplierName</td>
                                             <td class="text-center">@po.QtyTotal</td>
                                             <td class="text-right">@po.GrandTotal.ToString("C0")</td>
                                         </tr>

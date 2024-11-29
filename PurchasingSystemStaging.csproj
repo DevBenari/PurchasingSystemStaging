@@ -12,7 +12,6 @@
     <Folder Include="Areas\MasterData\Data\" />
     <Folder Include="Areas\Order\Data\" />
     <Folder Include="Areas\Report\Data\" />
-    <Folder Include="Areas\Report\Models\" />
     <Folder Include="Areas\Report\Repositories\" />
     <Folder Include="Areas\Report\ViewModels\" />
     <Folder Include="Areas\Transaction\Data\" />
