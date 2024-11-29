@@ -1,11 +1,14 @@
 using FastReport.Data;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
 using PurchasingSystemStaging.Areas.Order.Repositories;
 using PurchasingSystemStaging.Areas.Transaction.Repositories;
@@ -15,6 +18,7 @@ using PurchasingSystemStaging.Hubs;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
 using System.Globalization;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +29,32 @@ CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 builder.Services.AddSingleton<UrlMappingService>();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new IgnoreAntiforgeryTokenAttribute());
+});
 
+// Konfigurasi JWT
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
 
 //Tambahan Baru
 builder.Services.AddHttpClient();
@@ -142,7 +170,7 @@ app.Use(async (context, next) =>
 {
     var returnUrl = context.Request.Path + context.Request.QueryString;
     var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}";
-    var now = DateTimeOffset.UtcNow;
+    var now = DateTimeOffset.UtcNow;   
 
     if (context.Session.GetString("username") == null && context.Request.Path != loginUrl)
     {
@@ -229,26 +257,6 @@ app.UseEndpoints(endpoints =>
         name: "MyArea",
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 });
-
-app.MapRazorPages();
-
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    //var roles = new[] {
-    //    #region Area Master Data Menu Role Pengguna
-    //    "Role", "IndexRole", "CreateRole", "DetailRole", "DeleteRole",
-    //    #endregion
-        
-    //};
-
-    //foreach (var role in roles)
-    //{
-    //    if (!await roleManager.RoleExistsAsync(role))
-    //        await roleManager.CreateAsync(new IdentityRole(role));
-    //}
-}
 
 app.Run();
 
