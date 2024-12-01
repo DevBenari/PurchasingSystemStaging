@@ -45,27 +45,26 @@
                                         <select name="month" id="month" class="filter-select">
                                             @foreach (var month in months)
                                             {
-                                                <option value="@month.Value" @(selectedMonth == month.Value ? "selected" : "")>
+                                                <option value="@month.Value" selected="@(selectedMonth == month.Value ? "selected" : "")">
                                                     @month.Text
                                                 </option>
-                                            }
+                                            }                                            
                                         </select>
 
                                         <label for="year" class="filter-label">Year:</label>
                                         <select name="year" id="year" class="filter-select">
                                             @foreach (var year in years)
                                             {
-                                                <option value="@year" @(selectedYear == year ? "selected" : "")>
+                                                <option value="@year" selected="@(selectedYear == year ? "selected" : "")">
                                                     @year
                                                 </option>
                                             }
-                                        </select>
+                                        </select>                                        
                                         <button type="submit" class="filter-button">Filter</button>
                                     </div>
 
                                     <div class="right-column">
-                                        <div class="btn btn-default reset-button" data-href="@Url.Action("ClosingPurchaseOrder", "ReportPurchaseOrder")">Closing Purchase Order</div>
-                                        @* <button type="button" class="reset-button">Closing Purchase Order</button> *@
+                                        <div class="btn btn-default reset-button" data-href="@Url.Action("ClosingPurchaseOrder", "ReportPurchaseOrder")">Closing Purchase Order</div>                                        
                                     </div>
                                 </div>
                             </div>
@@ -81,6 +80,7 @@
                                     <th class="text-left" style="width: 15%;">Create Date PO</th>
                                     <th class="text-left" style="width: 15%;">Purchase Order Number</th>
                                     <th class="text-left" style="width: 10%;">T.O.P</th>
+                                    <th class="text-center" style="width: 10%;">Status</th>
                                     <th class="text-left" style="width: 10%;">Supplier</th>
                                     <th class="text-center" style="width: 5%;">Jumlah</th>
                                     <th class="text-right" style="width: 15%;">Total</th>
@@ -96,6 +96,7 @@
                                             <td class="text-left">@po.CreateDateTime.ReadStringDate()</td>
                                             <td class="text-left">@po.PurchaseOrderNumber</td>
                                             <td class="text-left">@po.TermOfPayment</td>
+                                            <td class="text-center">@po.Status</td>
                                             <td class="text-left">@po.SupplierName</td>
                                             <td class="text-center">@po.QtyTotal</td>
                                             <td class="text-right">@po.GrandTotal.ToString("C0")</td>
@@ -106,13 +107,13 @@
                                 else
                                 {
                                     <tr>
-                                        <td class="text-center" colspan="7">No purchase orders found.</td>
+                                        <td class="text-center" colspan="8">No purchase orders found.</td>
                                     </tr>
                                 }
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td class="text-right" colspan="6"><strong>Grand Total</strong></td>
+                                    <td class="text-right" colspan="7"><strong>Grand Total</strong></td>
                                     <td class="text-right" colspan="1">@grandTotal.ToString("C0")</td>
                                 </tr>
                             </tfoot>
