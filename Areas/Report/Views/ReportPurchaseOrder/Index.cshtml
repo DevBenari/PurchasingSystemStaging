@@ -18,12 +18,12 @@
     var pageSize = ViewBag.PageSize as int?;
     // Hitung nomor awal berdasarkan halaman dan ukuran halaman
     int itemNumber = (Model.CurrentPage - 1) * Model.PageSize + 1;
-
+    
+    var months = ViewBag.Months as IEnumerable<SelectListItem>;
+    var years = ViewBag.Years as IEnumerable<SelectListItem>;
+    var selectedMonth = ViewBag.SelectedMonth;
+    var selectedYear = ViewBag.SelectedYear;
     decimal grandTotal = ViewBag.GrandTotal;
-    var months = ViewBag.Months as IEnumerable<dynamic>;
-    var years = ViewBag.Years as IEnumerable<int>;
-    int selectedMonth = ViewBag.SelectedMonth;
-    int selectedYear = ViewBag.SelectedYear;
 }
 
 <!-- Main content -->
@@ -37,40 +37,71 @@
                 <!-- /.card-header -->
                 <div class="card">
                     <div class="card-body">
-                        <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="ReportPurchaseOrder" asp-area="Report" method="post" class="form-horizontal">
-                            <div class="row">
-                                <div class="filter-container">
+                        <div class="row">
+                            <div class="filter-container">
+                                <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="ReportPurchaseOrder" asp-area="Report" method="post" class="form-horizontal">
                                     <div class="left-column">
+                                        <!-- Filter Bulan -->
                                         <label for="month" class="filter-label">Month:</label>
-                                        <select name="month" id="month" class="filter-select">
-                                            @foreach (var month in months)
-                                            {
-                                                <option value="@month.Value" selected="@(selectedMonth == month.Value ? "selected" : "")">
-                                                    @month.Text
-                                                </option>
-                                            }                                            
+                                        <select name="month" id="month" class="filter-select" asp-for="SelectedMonth" asp-items="@Model.Months">                                            
+                                            <option value="@selectedMonth">-- Select Month --</option>
                                         </select>
 
+                                        <!-- Filter Tahun -->
                                         <label for="year" class="filter-label">Year:</label>
-                                        <select name="year" id="year" class="filter-select">
-                                            @foreach (var year in years)
-                                            {
-                                                <option value="@year" selected="@(selectedYear == year ? "selected" : "")">
-                                                    @year
-                                                </option>
-                                            }
-                                        </select>                                        
+                                        <select name="year" id="year" class="filter-select" asp-for="SelectedYear" asp-items="@Model.Years">                                            
+                                            <option value="@selectedYear">-- Select Year --</option>
+                                        </select>
+                                        
                                         <button type="submit" class="filter-button">Filter</button>
                                     </div>
+                                </form>
 
-                                    <div class="right-column">
-                                        <div class="btn btn-default reset-button" data-href="@Url.Action("ClosingPurchaseOrder", "ReportPurchaseOrder")">Closing Purchase Order</div>                                        
-                                    </div>
+                                @*<div class="right-column">
+                                <div class="btn btn-default closing-button" data-href="@Url.Action("ClosingPurchaseOrder", "ReportPurchaseOrder")">Closing Purchase Order</div>
+                                </div>*@
+                                <!-- Tombol Closing Bulanan -->
+                                <div class="right-column">
+                                    <button class="btn btn-default closing-button" data-bs-toggle="modal" data-bs-target="#rekapModal">Closing Purchase Order</button>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Modal untuk Memilih Bulan dan Tahun -->
+                <div class="modal fade" id="rekapModal" tabindex="-1" aria-labelledby="rekapModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="rekapModalLabel">Select Month & Year</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="rekapForm">
+                                    <div class="mb-3">
+                                        <!-- Filter Bulan -->
+                                        <label for="monthModal" class="filter-label">Month:</label>
+                                        <select name="month" id="monthModal" class="filter-select" asp-for="SelectedMonth" asp-items="@Model.Months">
+                                            <option value="">-- Select Month --</option>
+                                        </select>
+
+                                        <!-- Filter Tahun -->
+                                        <label for="yearModal" class="filter-label">Year:</label>
+                                        <select name="year" id="yearModal" class="filter-select" asp-for="SelectedYear" asp-items="@Model.Years">
+                                            <option value="">-- Select Year --</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-default bg-indigo" id="rekapButton">Process</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     <div class="card-body table-responsive p-0">
                         <table id="tblTemplate" class="table table-hover table-head-fixed text-nowrap">
@@ -323,7 +354,7 @@
                 background-color: #45a049;
             }
 
-        .reset-button {
+        .closing-button {
             padding: 10px 15px;
             background-color: #f44336;
             color: white;
@@ -334,7 +365,7 @@
             transition: background-color 0.3s ease;
         }
 
-            .reset-button:hover {
+            .closing-button:hover {
                 background-color: #e53935;
             }
 
@@ -413,5 +444,44 @@
             //defaultDate: "today"
         });
     </script>
-        @*End Jquery Date Range Tidak Bisa Dipisah Beda Halaman*@
+    @*End Jquery Date Range Tidak Bisa Dipisah Beda Halaman*@
+
+    @*Popup Modal Closing Bulanan*@
+    <script>
+        $(document).ready(function () {
+            $('#rekapButton').on('click', function () {
+                // Ambil nilai bulan dan tahun dari modal
+                const month = $('#monthModal').val();
+                const year = $('#yearModal').val();
+
+                if (!month || !year) {
+                    alert('Please select both month and year.');
+                    return;
+                }
+
+                // Panggil endpoint untuk mendapatkan URL terenkripsi
+                $.ajax({
+                    url: '/Report/ReportPurchaseOrder/RedirectToClosing', // Endpoint untuk enkripsi URL
+                    type: 'GET',
+                    data: { month: month, year: year }, // Kirim parameter bulan dan tahun
+                    success: function (response) {
+                        if (response.encryptedUrl) {
+                            // Redirect ke URL terenkripsi
+                            window.location.href = response.encryptedUrl;
+                        } else if (response.success) {
+                            // Redirect ke Index jika sukses tanpa enkripsi
+                            window.location.href = '/Report/ReportPurchaseOrder/RedirectToClosing';
+                        } else {
+                            alert('Failed to process the request.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('An error occurred while processing the request.');
+                    }
+                });
+
+            });
+        });
+    </script>
 }
