@@ -30,12 +30,9 @@
                 <!-- /.card-header -->
                 <div class="card">
                     <div class="card-body">
-                        <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="ClosingPurchaseOrder" asp-area="Order" method="post" class="form-horizontal">
+                        <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="ClosingPurchaseOrder" asp-area="Report" method="post" class="form-horizontal">
                             <div class="row">
-                                <div class="col-md-3 input-group">
-                                    <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "ClosingPurchaseOrder")">
-                                        <i class="fas fa-plus"></i>
-                                    </div>
+                                <div class="col-md-3 input-group">                                    
                                     <input type="date" name="startDate" id="startDate" class="date-input" value="@ViewBag.StartDate" placeholder="Select Start Date">
                                 </div>
                                 <div class="col-md-3 input-group">
@@ -73,11 +70,12 @@
                                     <th class="text-center" style="width: 5%;">No</th>
                                     <th class="text-left" style="width: 15%;">Create Date</th>
                                     <th class="text-left" style="width: 15%;">Create By</th>
+                                    <th class="text-left" style="width: 15%;">Closing Number</th>
                                     <th class="text-left" style="width: 10%;">Month</th>
                                     <th class="text-left" style="width: 15%;">Year</th>
-                                    <th class="text-left" style="width: 10%;">Total PO</th>
-                                    <th class="text-left" style="width: 10%;">Total Qty</th>
-                                    <th class="text-left" style="width: 10%;">Grand Total</th>
+                                    <th class="text-center" style="width: 10%;">Total PO</th>
+                                    <th class="text-center" style="width: 10%;">Total Qty</th>
+                                    <th class="text-right" style="width: 10%;">Grand Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,16 +83,18 @@
                                 {
                                     @foreach (var ur in Model.Items)
                                     {
+                                        var bulan = new[] { "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember" };
+
                                         <tr data-href="@Url.Action("RedirectToDetail", "ClosingPurchaseOrder", new { id = ur.ClosingPurchaseOrderId })">
                                             <th class="text-center">@itemNumber</th>
                                             <td class="text-left">@ur.CreateDateTime.ReadStringDate()</td>
                                             <td class="text-left">@ur.ApplicationUser.NamaUser</td>                                            
                                             <td class="text-left">@ur.ClosingPurchaseOrderNumber</td>
-                                            <td class="text-left">@ur.Month</td>
+                                            <td class="text-left">@bulan[ur.Month - 1]</td> <!-- Ambil nama bulan dari array -->
                                             <td class="text-left">@ur.Year</td>
-                                            <td class="text-left">@ur.TotalPo</td>
-                                            <td class="text-left">@ur.TotalQty</td>
-                                            <td class="text-left">@ur.GrandTotal</td>
+                                            <td class="text-center">@ur.TotalPo</td>
+                                            <td class="text-center">@ur.TotalQty</td>
+                                            <td class="text-right">@ur.GrandTotal.ToString("C0")</td>
                                         </tr>
                                         itemNumber++;
                                     }
@@ -102,7 +102,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td class="text-center" colspan="8">No closing purchase orders found.</td>
+                                        <td class="text-center" colspan="9">No closing purchase orders found.</td>
                                     </tr>
                                 }
                             </tbody>
@@ -215,7 +215,7 @@
                 {
                     <script type="text/javascript">
                         window.onload = function () {
-                            swal("Berhasil", '@TempData["SuccessMessage"]', "success");
+                            swal("Success", '@TempData["SuccessMessage"]', "success");
                         };
                     </script>
                 }
@@ -223,7 +223,7 @@
                 {
                     <script type="text/javascript">
                         window.onload = function () {
-                            swal("Gagal Simpan", '@TempData["WarningMessage"]', "warning");
+                            swal("Failed", '@TempData["WarningMessage"]', "warning");
                         };
                     </script>
                 }

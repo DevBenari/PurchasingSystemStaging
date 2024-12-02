@@ -45,7 +45,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             _urlMappingService = urlMappingService;
         }
 
-        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        public IActionResult RedirectToIndex(int? month, int? year, string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
                 string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
                 // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Report/ClosingPurchaseOrder/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string originalPath = $"Page:Report/ClosingPurchaseOrder/Index?month={month}&year={year}&filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
                 string encryptedPath = _protector.Protect(originalPath);
 
                 // Hash GUID-like code (SHA256 truncated to 36 characters)
