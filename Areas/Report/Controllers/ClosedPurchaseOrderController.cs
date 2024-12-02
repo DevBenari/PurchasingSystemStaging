@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
+using PurchasingSystemStaging.Areas.Order.Repositories;
 using PurchasingSystemStaging.Areas.Report.Models;
 using PurchasingSystemStaging.Areas.Report.Repositories;
-using PurchasingSystemStaging.Areas.Transaction.Models;
-using PurchasingSystemStaging.Areas.Transaction.Repositories;
+using PurchasingSystemStaging.Areas.Warehouse.Models;
+using PurchasingSystemStaging.Areas.Warehouse.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
@@ -16,7 +16,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
 {
     [Area("Report")]
     [Route("Report/[Controller]/[Action]")]
-    public class ClosingPurchaseOrderController : Controller
+    public class ClosedPurchaseOrderController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -26,7 +26,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
 
-        public ClosingPurchaseOrderController(
+        public ClosedPurchaseOrderController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext applicationDbContext,
@@ -54,7 +54,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
                 string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
                 // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Report/ClosingPurchaseOrder/Index?month={month}&year={year}&filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string originalPath = $"Page:Report/ClosedPurchaseOrder/Index?month={month}&year={year}&filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
                 string encryptedPath = _protector.Protect(originalPath);
 
                 // Hash GUID-like code (SHA256 truncated to 36 characters)
@@ -119,6 +119,61 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             ViewBag.EndDateParam = endDate?.ToString("yyyy-MM-dd");
             ViewBag.PageSize = pageSize;
 
+            return View(model);
+        }
+
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            try
+            {
+                ViewBag.Active = "Report";
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Detail:Report/ClosedPurchaseOrder/DetailClosedPurchaseOrder/{Id}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DetailClosedPurchaseOrder(Guid Id)
+        {
+            ViewBag.Active = "Report";            
+
+            var closedPO = await _closingPurchaseOrderRepository.GetClosingPurchaseOrderById(Id);
+
+            if (closedPO == null)
+            {
+                Response.StatusCode = 404;
+                return View("ClosedPurchaseOrderNotFound", Id);
+            }
+
+            var model = new ClosingPurchaseOrder
+            {
+                ClosingPurchaseOrderId = closedPO.ClosingPurchaseOrderId,
+                ClosingPurchaseOrderNumber = closedPO.ClosingPurchaseOrderNumber,
+                UserAccessId = closedPO.UserAccessId,
+                Month = closedPO.Month,
+                Year = closedPO.Year,
+                TotalPo = closedPO.TotalPo,
+                TotalQty = closedPO.TotalQty,
+                GrandTotal = closedPO.GrandTotal,
+                ClosingPurchaseOrderDetails = closedPO.ClosingPurchaseOrderDetails,
+            };
             return View(model);
         }
     }
