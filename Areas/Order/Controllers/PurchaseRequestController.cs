@@ -202,16 +202,28 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                 foreach (var item in data.purchaseRequests)
                 {
-                    var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
-                    var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
-
-                    if (updateData.RemainingDay != 0)
+                    if (item.Status != "Waiting Approval")
                     {
-                        updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+                        var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
+
+                        updateData.RemainingDay = 0;
 
                         _applicationDbContext.PurchaseRequests.Update(updateData);
                         _applicationDbContext.SaveChanges();
                     }
+                    else
+                    {
+                        var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
+                        var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
+
+                        if (updateData.RemainingDay != 0)
+                        {
+                            updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                            _applicationDbContext.PurchaseRequests.Update(updateData);
+                            _applicationDbContext.SaveChanges();
+                        }
+                    }                        
                 }
 
                 var model = new Pagination<PurchaseRequest>
@@ -236,16 +248,28 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                 foreach (var item in data.purchaseRequests)
                 {
-                    var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
-                    var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
-
-                    if (updateData.RemainingDay != 0)
+                    if (item.Status != "Waiting Approval")
                     {
-                        updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+                        var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
+
+                        updateData.RemainingDay = 0;
 
                         _applicationDbContext.PurchaseRequests.Update(updateData);
                         _applicationDbContext.SaveChanges();
-                    }                        
+                    }
+                    else
+                    {
+                        var remainingDay = DateTimeOffset.Now.Date - item.CreateDateTime.Date;
+                        var updateData = _purchaseRequestRepository.GetAllPurchaseRequest().Where(u => u.PurchaseRequestId == item.PurchaseRequestId).FirstOrDefault();
+
+                        if (updateData.RemainingDay != 0)
+                        {
+                            updateData.RemainingDay = item.ExpiredDay - remainingDay.Days;
+
+                            _applicationDbContext.PurchaseRequests.Update(updateData);
+                            _applicationDbContext.SaveChanges();
+                        }
+                    }
                 }
 
                 var model = new Pagination<PurchaseRequest>

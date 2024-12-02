@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
 using PurchasingSystemStaging.Areas.Order.Repositories;
+using PurchasingSystemStaging.Areas.Report.Repositories;
 using PurchasingSystemStaging.Areas.Transaction.Repositories;
 using PurchasingSystemStaging.Areas.Warehouse.Repositories;
 using PurchasingSystemStaging.Data;
@@ -141,6 +142,10 @@ builder.Services.AddScoped<IQtyDifferenceRepository>();
 #region Areas Unit Request
 builder.Services.AddScoped<IUnitRequestRepository>();
 builder.Services.AddScoped<IApprovalUnitRequestRepository>();
+#endregion
+
+#region Areas Report
+builder.Services.AddScoped<IClosingPurchaseOrderRepository>();
 #endregion
 
 //Initialize Fast Report
