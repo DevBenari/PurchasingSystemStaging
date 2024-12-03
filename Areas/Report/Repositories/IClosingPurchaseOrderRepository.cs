@@ -48,7 +48,12 @@ namespace PurchasingSystemStaging.Areas.Report.Repositories
                     ClosingPurchaseOrderId = ClosingPurchaseOrder.ClosingPurchaseOrderId,
                     ClosingPurchaseOrderNumber = ClosingPurchaseOrder.ClosingPurchaseOrderNumber,
                     UserAccessId = ClosingPurchaseOrder.UserAccessId,                    
-                    ApplicationUser = ClosingPurchaseOrder.ApplicationUser,                    
+                    ApplicationUser = ClosingPurchaseOrder.ApplicationUser,
+                    Month = ClosingPurchaseOrder.Month,
+                    Year = ClosingPurchaseOrder.Year,
+                    TotalPo = ClosingPurchaseOrder.TotalPo,
+                    TotalQty = ClosingPurchaseOrder.TotalQty,
+                    GrandTotal = ClosingPurchaseOrder.GrandTotal,
                     ClosingPurchaseOrderDetails = ClosingPurchaseOrder.ClosingPurchaseOrderDetails,
                 };
                 return ClosingPurchaseOrderDetail;
@@ -74,11 +79,12 @@ namespace PurchasingSystemStaging.Areas.Report.Repositories
                 ClosingPurchaseOrderId = ClosingPurchaseOrder.ClosingPurchaseOrderId,
                 ClosingPurchaseOrderNumber = ClosingPurchaseOrder.ClosingPurchaseOrderNumber,
                 UserAccessId = ClosingPurchaseOrder.UserAccessId,
+                ApplicationUser = ClosingPurchaseOrder.ApplicationUser,
                 Month = ClosingPurchaseOrder.Month,
                 Year = ClosingPurchaseOrder.Year,
                 TotalPo = ClosingPurchaseOrder.TotalPo,
                 TotalQty = ClosingPurchaseOrder.TotalQty,
-                GrandTotal = ClosingPurchaseOrder.GrandTotal,                
+                GrandTotal = ClosingPurchaseOrder.GrandTotal,
                 ClosingPurchaseOrderDetails = ClosingPurchaseOrder.ClosingPurchaseOrderDetails,
             }).ToListAsync();
         }

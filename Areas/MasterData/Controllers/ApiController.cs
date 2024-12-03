@@ -542,7 +542,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             {
                 foreach (var itemObat in productList)
                 {
-                    var getObat = _productRepository.GetAllProduct().Where(d => d.ProductName == Convert.ToString(itemObat.nama_brg)).FirstOrDefault();
+                    var getObat = _productRepository.GetAllProduct().Where(d => d.ProductName == Convert.ToString(itemObat.nama_brg) && d.Measurement.MeasurementName == Convert.ToString(itemObat.kode_satuan)).FirstOrDefault();
 
                     if (getObat == null)
                     {

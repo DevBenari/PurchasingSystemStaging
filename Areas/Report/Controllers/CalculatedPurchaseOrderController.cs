@@ -126,7 +126,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
                 .Where(po => po.CreateDateTime.Month == selectedMonth && po.CreateDateTime.Year == selectedYear);
 
             // Gabungkan data yang sudah di-filter dalam pagination
-            var ordersWithSupplier = filteredOrders.Select(po => new PurchaseOrderWithDetailSupplier
+            var ordersWithSupplier = filteredOrders.Where(po => po.Status == "In Order" || po.Status.StartsWith("RO")).Select(po => new PurchaseOrderWithDetailSupplier
             {
                 CreateDateTime = po.CreateDateTime,
                 CreateBy = po.CreateBy,
@@ -156,7 +156,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             ViewBag.SelectedMonth = model.SelectedMonth;
             ViewBag.SelectedYear = model.SelectedYear;            
 
-            ViewBag.GrandTotal = filteredOrders.Sum(o => o.GrandTotal);
+            ViewBag.GrandTotal = ordersWithSupplier.Sum(o => o.GrandTotal);
 
             return View(model);
         }
@@ -209,12 +209,52 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             var filteredOrders = data.purchaseOrders
                 .Where(po => po.CreateDateTime.Month == selectedMonth && po.CreateDateTime.Year == selectedYear);
 
+            var ordersWithSupplier = filteredOrders.Where(po => po.Status == "In Order" || po.Status.StartsWith("RO"));
+
             if (ModelState.IsValid)
             {
                 if (filteredOrders != null && filteredOrders.Any()) 
                 {
-                    var checkMonth = _closingPurchaseOrderRepository.GetAllClosingPurchaseOrder().Where(m => m.Month == month && m.Year == year).FirstOrDefault();
-                    if (checkMonth == null)
+                    var checkMonthNow = _closingPurchaseOrderRepository.GetAllClosingPurchaseOrder().FirstOrDefault(m => m.Month == selectedMonth && m.Year == selectedYear);
+
+                    // Periksa bulan sebelumnya
+                    var previousMonth = selectedMonth == 1 ? 12 : selectedMonth - 1;
+                    var previousYear = selectedMonth == 1 ? selectedYear - 1 : selectedYear;
+
+                    // Periksa pada table PO Bulan Sebelumnya
+                    var checkMonthPreviousInPO = filteredOrders.Where(po => po.CreateDateTime.Month == previousMonth && po.CreateDateTime.Year == previousYear).FirstOrDefault();
+
+                    var checkMonthPrevious = _closingPurchaseOrderRepository
+                        .GetAllClosingPurchaseOrder()
+                        .FirstOrDefault(m => m.Month == previousMonth && m.Year == previousYear);
+
+                    // Periksa bulan setelahnya
+                    var nextMonth = selectedMonth == 12 ? 1 : selectedMonth + 1;
+                    var nextYear = selectedMonth == 12 ? selectedYear + 1 : selectedYear;
+
+                    // Periksa pada table PO Bulan Setelahnya
+                    var checkMonthNextInPO = filteredOrders.Where(po => po.CreateDateTime.Month == nextMonth && po.CreateDateTime.Year == nextYear).FirstOrDefault();
+
+                    var checkMonthNext = _closingPurchaseOrderRepository
+                        .GetAllClosingPurchaseOrder()
+                        .FirstOrDefault(m => m.Month == nextMonth && m.Year == nextYear);
+
+                    // Validasi: Bulan sebelumnya harus sudah di-close, dan bulan setelahnya belum boleh di-close
+                    if (checkMonthPreviousInPO != null && checkMonthPrevious == null)
+                    {
+                        TempData["WarningMessage"] = "Sorry, the previous month has not been closed yet!";
+                        return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                    }
+
+                    if (checkMonthNextInPO != null && checkMonthNext != null)
+                    {
+                        TempData["WarningMessage"] = "Sorry, the next month has already been closed!";
+                        return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                    }
+
+                    //var checkMonthNow = _closingPurchaseOrderRepository.GetAllClosingPurchaseOrder().Where(m => m.Month == month && m.Year == year).FirstOrDefault();
+
+                    if (checkMonthNow == null)
                     {
                         var cpo = new ClosingPurchaseOrder
                         {
@@ -223,21 +263,22 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
                             UserAccessId = getUser.Id,
                             Month = selectedMonth,
                             Year = selectedYear,
-                            TotalPo = filteredOrders.Count(),
-                            TotalQty = filteredOrders.Sum(po => po.QtyTotal),
-                            GrandTotal = filteredOrders.Sum(po => po.GrandTotal),
+                            TotalPo = ordersWithSupplier.Count(),
+                            TotalQty = ordersWithSupplier.Sum(po => po.QtyTotal),
+                            GrandTotal = ordersWithSupplier.Sum(po => po.GrandTotal),
                         };
 
                         var ItemsList = new List<ClosingPurchaseOrderDetail>();
 
-                        var statusInOrder = filteredOrders.Where(i => i.Status == "In Order").Count();
-                        var statusCancelled = filteredOrders.Where(i => i.Status == "Cancelled").Count();
+                        var statusInOrder = ordersWithSupplier.Where(i => i.Status == "In Order").Count();
 
-                        if (statusInOrder == 0 && statusCancelled == 0) 
+                        if (statusInOrder == 0) 
                         {
-                            foreach (var item in filteredOrders)
+                            foreach (var item in ordersWithSupplier)
                             {
-                                foreach (var pod in item.PurchaseOrderDetails)
+                                var pod = item.PurchaseOrderDetails.Where(p => p.PurchaseOrderId == item.PurchaseOrderId).FirstOrDefault();
+
+                                if (pod != null)
                                 {
                                     if (item.PurchaseOrderId == pod.PurchaseOrderId && item.Status.StartsWith("RO"))
                                     {
