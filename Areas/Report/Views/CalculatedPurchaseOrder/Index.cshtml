@@ -1,11 +1,11 @@
 ﻿@using PurchasingSystemStaging.Areas.Order.Models;
 @using PurchasingSystemStaging.Models;
 @using PurchasingSystemStaging.Repositories;
-@using static PurchasingSystemStaging.Areas.Report.Controllers.ReportPurchaseOrderController;
+@using static PurchasingSystemStaging.Areas.Report.Controllers.CalculatedPurchaseOrderController
 
 @{
-    ViewData["Title"] = "Purchase Order Calculation";
-    Layout = "~/Views/Shared/_TopNavbarReport.cshtml";
+    ViewData["Title"] = "List Calculated Purchase Order";
+    Layout = "~/Views/Shared/_TopNavbarReportPurchaseOrder.cshtml";
 }
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
@@ -39,7 +39,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="filter-container">
-                                <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="ReportPurchaseOrder" asp-area="Report" method="post" class="form-horizontal">
+                                <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="CalculatedPurchaseOrder" asp-area="Report" method="post" class="form-horizontal">
                                     <div class="left-column">
                                         <!-- Filter Bulan -->
                                         <label for="month" class="filter-label">Month:</label>
@@ -461,7 +461,7 @@
 
                 // Panggil endpoint untuk mendapatkan URL terenkripsi
                 $.ajax({
-                    url: '/Report/ReportPurchaseOrder/RedirectToClosing', // Endpoint untuk enkripsi URL
+                    url: '/Report/CalculatedPurchaseOrder/RedirectToClosed', // Endpoint untuk enkripsi URL
                     type: 'GET',
                     data: { month: month, year: year }, // Kirim parameter bulan dan tahun
                     success: function (response) {
@@ -470,7 +470,7 @@
                             window.location.href = response.encryptedUrl;
                         } else if (response.success) {
                             // Redirect ke Index jika sukses tanpa enkripsi
-                            window.location.href = '/Report/ReportPurchaseOrder/RedirectToClosing';
+                            window.location.href = '/Report/CalculatedPurchaseOrder/RedirectToClosed';
                         } else {
                             alert('Failed to process the request.');
                         }

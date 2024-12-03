@@ -1,27 +1,20 @@
-﻿using FastReport.Data;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.Order.Models;
 using PurchasingSystemStaging.Areas.Order.Repositories;
 using PurchasingSystemStaging.Areas.Report.Models;
 using PurchasingSystemStaging.Areas.Report.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Repositories;
-using System.Drawing.Printing;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web.WebPages;
 
 namespace PurchasingSystemStaging.Areas.Report.Controllers
 {
     [Area("Report")]
     [Route("Report/[Controller]/[Action]")]
-    public class ReportPurchaseOrderController : Controller
+    public class CalculatedPurchaseOrderController : Controller
     {
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
@@ -31,7 +24,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
 
-        public ReportPurchaseOrderController(
+        public CalculatedPurchaseOrderController(
             ApplicationDbContext applicationDbContext,
             IPurchaseOrderRepository purchaseOrderRepository,
             IUserActiveRepository userActiveRepository,
@@ -59,7 +52,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
                 string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
                 // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Report/ReportPurchaseOrder/Index?month={month}&year={year}&filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string originalPath = $"Page:Report/CalculatedPurchaseOrder/Index?month={month}&year={year}&filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
                 string encryptedPath = _protector.Protect(originalPath);
                 
                 // Hash GUID-like code (SHA256 truncated to 36 characters)
@@ -168,12 +161,12 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             return View(model);
         }
 
-        public IActionResult RedirectToClosing(int? month, int? year)
+        public IActionResult RedirectToClosed(int? month, int? year)
         {
             try
             {
                 // Bangun originalPath
-                string originalPath = $"Page:Report/ReportPurchaseOrder/ClosingPurchaseOrder?month={month}&year={year}";                
+                string originalPath = $"Page:Report/CalculatedPurchaseOrder/ClosedPurchaseOrder?month={month}&year={year}";                
                 string encryptedPath = _protector.Protect(originalPath);
 
                 // Hash GUID-like code (SHA256 truncated to 36 characters)
@@ -197,9 +190,9 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             }
         }
 
-        public async Task<IActionResult> ClosingPurchaseOrder(int? month, int? year)
+        public async Task<IActionResult> ClosedPurchaseOrder(int? month, int? year)
         {
-            ViewBag.Active = "ClosingPurchaseOrder";
+            ViewBag.Active = "Report";
 
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
 
@@ -237,66 +230,77 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
 
                         var ItemsList = new List<ClosingPurchaseOrderDetail>();
 
-                        foreach (var item in filteredOrders)
+                        var statusInOrder = filteredOrders.Where(i => i.Status == "In Order").Count();
+                        var statusCancelled = filteredOrders.Where(i => i.Status == "Cancelled").Count();
+
+                        if (statusInOrder == 0 && statusCancelled == 0) 
                         {
-                            foreach (var pod in item.PurchaseOrderDetails)
+                            foreach (var item in filteredOrders)
                             {
-                                if (item.PurchaseOrderId == pod.PurchaseOrderId)
+                                foreach (var pod in item.PurchaseOrderDetails)
                                 {
-                                    ItemsList.Add(new ClosingPurchaseOrderDetail
+                                    if (item.PurchaseOrderId == pod.PurchaseOrderId && item.Status.StartsWith("RO"))
                                     {
-                                        CreateDateTime = DateTimeOffset.Now,
-                                        CreateBy = new Guid(getUser.Id),
-                                        PurchaseOrderNumber = item.PurchaseOrderNumber,
-                                        TermOfPaymentName = item.TermOfPayment.TermOfPaymentName,
-                                        Status = item.Status,
-                                        SupplierName = pod.Supplier,
-                                        Qty = item.QtyTotal,
-                                        TotalPrice = Math.Truncate(pod.SubTotal)
-                                    });
+                                        ItemsList.Add(new ClosingPurchaseOrderDetail
+                                        {
+                                            CreateDateTime = DateTimeOffset.Now,
+                                            CreateBy = new Guid(getUser.Id),
+                                            PurchaseOrderNumber = item.PurchaseOrderNumber,
+                                            TermOfPaymentName = item.TermOfPayment.TermOfPaymentName,
+                                            Status = item.Status,
+                                            SupplierName = pod.Supplier,
+                                            Qty = item.QtyTotal,
+                                            TotalPrice = Math.Truncate(pod.SubTotal)
+                                        });
+                                    }
                                 }
                             }
-                        }
 
-                        cpo.ClosingPurchaseOrderDetails = ItemsList;
+                            cpo.ClosingPurchaseOrderDetails = ItemsList;
 
-                        var dateNow = DateTimeOffset.Now;
-                        var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
+                            var dateNow = DateTimeOffset.Now;
+                            var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
 
-                        var lastCode = _closingPurchaseOrderRepository.GetAllClosingPurchaseOrder().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.ClosingPurchaseOrderNumber).FirstOrDefault();
-                        if (lastCode == null)
-                        {
-                            cpo.ClosingPurchaseOrderNumber = "CPO" + setDateNow + "0001";
-                        }
-                        else
-                        {
-                            var lastCodeTrim = lastCode.ClosingPurchaseOrderNumber.Substring(2, 6);
-
-                            if (lastCodeTrim != setDateNow)
+                            var lastCode = _closingPurchaseOrderRepository.GetAllClosingPurchaseOrder().Where(d => d.CreateDateTime.ToString("yyMMdd") == dateNow.ToString("yyMMdd")).OrderByDescending(k => k.ClosingPurchaseOrderNumber).FirstOrDefault();
+                            if (lastCode == null)
                             {
                                 cpo.ClosingPurchaseOrderNumber = "CPO" + setDateNow + "0001";
                             }
                             else
                             {
-                                cpo.ClosingPurchaseOrderNumber = "CPO" + setDateNow + (Convert.ToInt32(lastCode.ClosingPurchaseOrderNumber.Substring(9, lastCode.ClosingPurchaseOrderNumber.Length - 9)) + 1).ToString("D4");
+                                var lastCodeTrim = lastCode.ClosingPurchaseOrderNumber.Substring(2, 6);
+
+                                if (lastCodeTrim != setDateNow)
+                                {
+                                    cpo.ClosingPurchaseOrderNumber = "CPO" + setDateNow + "0001";
+                                }
+                                else
+                                {
+                                    cpo.ClosingPurchaseOrderNumber = "CPO" + setDateNow + (Convert.ToInt32(lastCode.ClosingPurchaseOrderNumber.Substring(9, lastCode.ClosingPurchaseOrderNumber.Length - 9)) + 1).ToString("D4");
+                                }
                             }
+
+                            _closingPurchaseOrderRepository.Tambah(cpo);
+
+                            TempData["SuccessMessage"] = "Closed Month " + cpo.Month + " Success...";
+                            return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
                         }
-
-                        _closingPurchaseOrderRepository.Tambah(cpo);
-
-                        TempData["SuccessMessage"] = "Closed Month " + cpo.Month + " Success...";
-                        return RedirectToAction("Index", "ClosingPurchaseOrder");
+                        else
+                        {
+                            TempData["WarningMessage"] = "Sorry, there is still a PO status that has not been completed !";
+                            return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                        }
                     }
                     else
                     {
                         TempData["WarningMessage"] = "Sorry, that month has been closed !";
-                        return RedirectToAction("Index", "ClosingPurchaseOrder");
+                        return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
                     }
                 }                
                 else 
                 {
                     TempData["WarningMessage"] = "Sorry, data this month empty !";
-                    return RedirectToAction("Index", "ClosingPurchaseOrder");
+                    return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
                 }
             }
 
