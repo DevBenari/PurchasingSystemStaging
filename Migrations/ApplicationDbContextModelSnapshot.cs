@@ -996,7 +996,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstWarehouseLocation", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.Approval", b =>
+            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.ApprovalPurchaseRequest", b =>
                 {
                     b.Property<Guid>("ApprovalId")
                         .ValueGeneratedOnAdd()
@@ -1080,7 +1080,7 @@ namespace PurchasingSystemStaging.Migrations
 
                     b.HasIndex("UserApproveId");
 
-                    b.ToTable("OrdApproval", "dbo");
+                    b.ToTable("OrdApprovalPurchaseRequest", "dbo");
                 });
 
             modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.ApprovalQtyDifference", b =>
@@ -2814,7 +2814,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("WarehouseManager");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.Approval", b =>
+            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.ApprovalPurchaseRequest", b =>
                 {
                     b.HasOne("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
                         .WithMany()

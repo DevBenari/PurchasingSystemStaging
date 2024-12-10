@@ -42,7 +42,7 @@ namespace PurchasingSystemStaging.Controllers
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly IPurchaseRequestRepository _purchaseRequestRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IApprovalRepository _approvalRepository;
+        private readonly IApprovalPurchaseRequestRepository _approvalRepository;
         private readonly IQtyDifferenceRepository _qtyDifferenceRepository;
         private readonly IApprovalQtyDifferenceRepository _approvalQtyDifferenceRepository;
         private readonly IUnitRequestRepository _unitRequestRepository;
@@ -65,7 +65,7 @@ namespace PurchasingSystemStaging.Controllers
             IDepartmentRepository departmentRepository,
             IPositionRepository positionRepository,
             IProductRepository productRepository,
-            IApprovalRepository approvalRepository,
+            IApprovalPurchaseRequestRepository approvalRepository,
             IQtyDifferenceRepository qtyDifferenceRepository,
             IApprovalQtyDifferenceRepository approvalQtyDifferenceRepository,
             IUnitRequestRepository unitRequestRepository,
@@ -497,11 +497,14 @@ namespace PurchasingSystemStaging.Controllers
 
         public IActionResult GetPRByApprove()
         {
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+
             var getAllData = _approvalRepository.GetAllApproval();
-            var waiting = getAllData.Where(app => app.Status != "Approve" & app.Status != "Reject").Count();
-            var rejected = getAllData.Where(app => app.Status == "Reject").Count();
-            var completed = getAllData.Where(app => app.Status == "Approve").Count();
-            var totalPRData = getAllData.Count();
+            var waiting = getAllData.Where(app => app.Status.StartsWith("User") && app.UserApproveId == getUserActive.UserActiveId || app.Status.StartsWith("Waiting") && app.UserApproveId == getUserActive.UserActiveId).Count();
+            var rejected = getAllData.Where(app => app.Status == "Reject" && app.UserApproveId == getUserActive.UserActiveId).Count();
+            var completed = getAllData.Where(app => app.Status == "Approve" && app.UserApproveId == getUserActive.UserActiveId).Count();
+            var totalPRData = getAllData.Where(app => app.UserApproveId == getUserActive.UserActiveId).Count();
 
             var result = new
             {
@@ -509,18 +512,23 @@ namespace PurchasingSystemStaging.Controllers
                 Rejected = rejected,
                 Completed = completed,
                 TotalPRData = totalPRData,
+                DataUser = getUserActive,
             };
 
             return Json(result);
+
         }
 
         public IActionResult GetUnitRequestMonitoring()
         {
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+
             var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
-            var waiting = getAllData.Where(status => status.Status == "Waiting Approval").Count();
-            var rejected = getAllData.Where(status => status.Status == "Reject").Count();
-            var completed = getAllData.Where(status => status.Status == "Approve").Count();
-            var totalUnitRequest = getAllData.Count();
+            var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
+            var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
+            var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
+            var totalUnitRequest = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
 
             var result = new
             {
@@ -531,15 +539,19 @@ namespace PurchasingSystemStaging.Controllers
             };
 
             return Json(result);
+
         }
 
         public IActionResult GetQtyDiffMonitoring()
         {
-            var getAllData = _qtyDifferenceRepository.GetAllQtyDifference();
-            var waiting = getAllData.Where(status => status.Status == "Waiting Approval").Count();
-            var rejected = getAllData.Where(status => status.Status == "Reject").Count();
-            var completed = getAllData.Where(status => status.Status == "Approve").Count();
-            var totalQtyDifference = getAllData.Count();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+
+            var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
+            var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
+            var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
+            var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
+            var totalQtyDifference = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
 
             var result = new
             {

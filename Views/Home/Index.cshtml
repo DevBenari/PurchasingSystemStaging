@@ -339,7 +339,7 @@
                 <div class="col-sm-4">
                     <div class="card">
                         <div class="card-header bg-indigo">
-                            <h3 class="card-title fw-bold" style="color:#ffffff">Monitoring Approve Qty Different</h3>
+                            <h3 class="card-title fw-bold" style="color:#ffffff">Monitoring Approve Qty Difference</h3>
                         </div>
                         <div class="card-body p-0">
                             <div class="p-4" id="chartQtyDiffApprove"></div>
@@ -379,30 +379,43 @@
             });
         });
 
-        function get_monitoring() {
+                function get_monitoring() {
             $.get('@Url.Action("GetMonitoringProduct")', function (r) {
-
-                let UnderMinstock = r['warning'];
-                let AboveMinstock = r['save'];
-                let NotInitialized = r['notinitialized'];
-                let GetDataQtyMasuk = r.dataReceived[0];
-                let QtyMasuk = GetDataQtyMasuk.dataReceivedOrderDetail;
+                console.log(r);
+                let UnderMinstock = (r.warning == undefined) ? 0 : r.warning ;
+                let AboveMinstock = (r.save == undefined) ? 0 : r.save;
+                let NotInitialized = (r.notinitialized == undefined) ? 0 : r.notinitialized;
+                let GetDataQtyMasuk = (r.dataReceived[0] == undefined) ? 0 : r.dataReceived[0];
+                let validationQty = (GetDataQtyMasuk == 0) ? 0 : GetDataQtyMasuk.dataReceivedOrderDetail;
+                let QtyMasuk = (validationQty == undefined) ? 0 : GetDataQtyMasuk.dataReceivedOrderDetail;
                 let StockKeluar = (r.StockKeluar == undefined) ? 0 : r.StockKeluar;
-                let TotalStock = r.totalStock;
-                console.log(TotalStock);
+                let TotalStock = (r.totalStock == undefined) ? 0 : r.totalStock;
                 $("#stock-keluar").text(StockKeluar);
                 $("#stock-masuk").text(QtyMasuk);
                 $("#total-stock").text(TotalStock);
 
+                let serie = [];
+                let label = [];
+                let color = [];
+
+                if (UnderMinstock == 0 && AboveMinstock == 0 && NotInitialized == 0) {
+                    serie = [100];
+                    label = ['Data Kosong'];
+                    color = ['#808080'];
+                } else {
+                    serie = [NotInitialized, UnderMinstock, AboveMinstock];
+                    label = ['Belum di Inisialisasi', 'Dibawah Minimal Stok', 'Diatas Minimal Stok'];
+                    color = ['#E53D00', '#FFE900', '#00E396'];
+                }
 
                 var options = {
                     chart: {
                         type: 'donut', // Tipe chart donut
                         height: 455
                     },
-                    series: [NotInitialized, UnderMinstock, AboveMinstock,], // Data nilai
-                    labels: ['Belum di Inisialisasi', 'Dibawah Minimal Stok', 'Diatas Minimal Stok'], // Label kategori
-                    colors: ['#E53D00', '#FFE900', '#00E396'],
+                    series: serie, // Data nilai
+                    labels: label, // Label kategori
+                    colors: color,
                     dataLabels: {
                         enabled: true, // Aktifkan data labels
                         style: {
@@ -413,13 +426,21 @@
                             enabled: true // Tambahkan efek bayangan
                         },
                         formatter: function (val, opts) {
-                            return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            if(UnderMinstock == 0 && AboveMinstock == 0 && NotInitialized == 0) {
+                                return '';
+                            } else {
+                                return opts.w.config.series[opts.seriesIndex];
+                            }
                         }
                     },
                     tooltip: {
                         y: {
                             formatter: function (val) {
-                                return val + " units"; // Menampilkan nilai asli di tooltip
+                                if (UnderMinstock == 0 && AboveMinstock == 0 && NotInitialized == 0) {
+                                    return '';
+                                } else {
+                                    return val + " units";
+                                } // Menampilkan nilai asli di tooltip
                             }
                         }
                     },
@@ -444,27 +465,42 @@
             })
         }
 
-        function get_pr_by_expired() {
+
+
+                function get_pr_by_expired() {
             $.get('@Url.Action("GetMonitoringByExpired")', function (r) {
-                let waiting = r.waiting;
-                let rejected = r.rejected;
-                let completed = r.completed;
-                let totalPRData = r.totalPRData;
-                let onProcessStock = r.onProcessStock;
-                let finishProcessStock = r.finishProcess;
+                let waiting = (r.waiting == undefined) ? 0 : r.waiting;
+                let rejected = (r.rejected == undefined) ? 0 : r.rejected;
+                let completed = (r.completed == undefined) ? 0 : r.completed;
+                let totalPRData = (r.totalPRData == undefined) ? 0 : r.totalPRData;
+                let onProcessStock = (r.onProcessStock == undefined) ? 0 : r.onProcessStock;
+                let finishProcessStock = (r.finishProcess == undefined) ? 0 : r.finishProcess;
                 $("#total-pr").text(totalPRData);
                 $("#onprocess-pr").text(onProcessStock);
                 $("#finish-pr").text(finishProcessStock);
-                console.log(r);
+
+                let serie = [];
+                let label = [];
+                let color = [];
+
+                if (waiting == 0 && rejected == 0 && completed == 0) {
+                    serie = [100];
+                    label = ['Data Kosong'];
+                    color = ['#808080'];
+                } else {
+                    serie = [waiting, rejected, completed];
+                    label = ['Status PR Waiting', 'Status PR Rejected', 'Status PR Completed'];
+                    color = ['#FFE900', '#E53D00', '#00E396'];
+                }
 
                 var options = {
                     chart: {
                         type: 'donut', // Tipe chart donut
                         height: 455
                     },
-                    series: [waiting, rejected, completed], // Data nilai
-                    labels: ['Status PR Waiting', 'Status PR Rejected', 'Status PR Completed'], // Label kategori
-                    colors: ['#FFE900', '#E53D00', '#00E396'],
+                    series: serie, // Data nilai
+                    labels: label, // Label kategori
+                    colors: color,
                     dataLabels: {
                         enabled: true, // Aktifkan data labels
                         style: {
@@ -475,13 +511,21 @@
                             enabled: true // Tambahkan efek bayangan
                         },
                         formatter: function (val, opts) {
-                            return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            if (waiting == 0 && rejected == 0 && completed == 0) {
+                                return '';
+                            } else {
+                                return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            }
                         }
                     },
                     tooltip: {
                         y: {
                             formatter: function (val) {
-                                return val + " units"; // Menampilkan nilai asli di tooltip
+                                if (waiting == 0 && rejected == 0 && completed == 0) {
+                                    return '';
+                                } else {
+                                    return val + " units"; // Menampilkan nilai asli di tooltip
+                                }
                             }
                         }
                     },
@@ -506,21 +550,36 @@
             })
         }
 
-        function get_status() {
+
+                function get_status() {
             $.get('@Url.Action("GetMonitoringStatus")', function (r) {
-                let inorder = r['inorder'];
-                let completed = r['completed'];
-                let cancelled = r['cancelled'];
+                let inorder = (r.inorder == undefined) ? 0 : r.inorder;
+                let completed = (r.completed == undefined) ? 0 : r.completed;
+                let cancelled = (r.cancelled == undefined) ? 0 : r.cancelled;
                 $("#total-po").text(r.totalPO);
+
+                let serie = [];
+                let label = [];
+                let color = [];
+
+                if(inorder == 0 && completed == 0 && cancelled == 0) {
+                    serie = [100];
+                    label = ['Data Kosong'];
+                    color = ['#808080'];
+                } else {
+                    serie = [inorder, completed, cancelled];
+                    label = ['PO Status Inorder', 'PO Status Completed', 'PO Status Cancelled'];
+                    color = ['#FFE900', '#00E396', '#E53D00'];
+                }
 
                 var options = {
                     chart: {
                         type: 'donut', // Tipe chart donut
                         height: 455,
                     },
-                    series: [inorder, completed, cancelled], // Data nilai
-                    labels: ['PO Status Inorder', 'PO Status Completed', 'PO Status Cancelled'], // Label kategori
-                    colors: ['#FFE900', '#00E396', '#E53D00'],
+                    series: serie, // Data nilai
+                    labels: label, // Label kategori
+                    colors: color,
                     dataLabels: {
                         enabled: true, // Aktifkan data labels
                         style: {
@@ -531,13 +590,21 @@
                             enabled: true // Tambahkan efek bayangan
                         },
                         formatter: function (val, opts) {
-                            return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            if (inorder == 0 && completed == 0 && cancelled == 0) {
+                                return '';
+                            } else {
+                                return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            }
                         }
                     },
                     tooltip: {
                         y: {
                             formatter: function (val) {
-                                return val + " units"; // Menampilkan nilai asli di tooltip
+                                if (inorder == 0 && completed == 0 && cancelled == 0) {
+                                    return '';
+                                } else {
+                                    return val + " units"; // Menampilkan nilai asli di tooltip
+                                }
                             }
                         }
                     },
@@ -558,22 +625,37 @@
             })
         }
 
-        function get_pr_by_status() {
+
+                function get_pr_by_status() {
             $.get('@Url.Action("GetPRByApprove")', function (r) {
-                let waiting = r.waiting;
-                let rejected = r.rejected;
-                let completed = r.completed;
-                let totalPRData = r.totalPRData;
+                let waiting = (r.waiting == undefined) ? 0 : r.waiting;
+                let rejected = (r.rejected == undefined) ? 0 : r.rejected;
+                let completed = (r.completed == undefined) ? 0 : r.completed;
+                let totalPRData = (r.totalPRData == undefined) ? 0 : r.totalPRData;
                 $("#total-pr-status").text(totalPRData);
+
+                let serie = [];
+                let label = [];
+                let color = [];
+
+                if (waiting == 0 && rejected == 0 && completed == 0) {
+                    serie = [100];
+                    label = ['Data Kosong'];
+                    color = ['#808080'];
+                } else {
+                    serie = [waiting, rejected, completed];
+                    label = ['Waiting', 'Rejected', 'Completed'];
+                    color = ['#FFE900', '#E53D00', '#00E396'];
+                }
 
                 var options = {
                     chart: {
                         type: 'donut', // Tipe chart donut
                         height: 455
                     },
-                    series: [waiting, rejected, completed], // Data nilai
-                    labels: ['Waiting', 'Rejected', 'Completed'], // Label kategori
-                    colors: ['#FFE900', '#E53D00', '#00E396'],
+                    series: serie, // Data nilai
+                    labels: label, // Label kategori
+                    colors: color,
                     dataLabels: {
                         enabled: true, // Aktifkan data labels
                         style: {
@@ -584,13 +666,21 @@
                             enabled: true // Tambahkan efek bayangan
                         },
                         formatter: function (val, opts) {
-                            return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            if(waiting == 0 && rejected == 0 && completed == 0) {
+                                return '';
+                            } else {
+                                return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            }
                         }
                     },
                     tooltip: {
                         y: {
                             formatter: function (val) {
-                                return val + " units"; // Menampilkan nilai asli di tooltip
+                                if (waiting == 0 && rejected == 0 && completed == 0) {
+                                    return '';
+                                } else {
+                                    return val + " units"; // Menampilkan nilai asli di tooltip
+                                }
                             }
                         }
                     },
@@ -615,24 +705,37 @@
             })
         }
 
-        function get_unit_request_monitoring() {
+
+                function get_unit_request_monitoring() {
             $.get('@Url.Action("GetUnitRequestMonitoring")', function (r) {
-                console.log(r);
-                let waiting = r.waiting;
-                let rejected = r.rejected;
-                let completed = r.completed;
-                let totalUnitRequest = r.totalUnitRequest;
+                let waiting = (r.waiting == undefined) ? 0 : r.waiting;
+                let rejected = (r.rejected == undefined) ? 0 : r.rejected;
+                let completed = (r.completed == undefined) ? 0 : r.completed;
+                let totalUnitRequest = (r.totalUnitRequest == undefined) ? 0 : r.totalUnitRequest;
                 $("#total-unit-request").text(totalUnitRequest);
 
+                let serie = [];
+                let label = [];
+                let color = [];
+
+                if (waiting == 0 && rejected == 0 && completed == 0) {
+                    serie = [100];
+                    label = ['Data Kosong'];
+                    color = ['#808080'];
+                } else {
+                    serie = [waiting, rejected, completed];
+                    label = ['Waiting', 'Rejected', 'Completed'];
+                    color = ['#FFE900', '#E53D00', '#00E396'];
+                }
 
                 var options = {
                     chart: {
                         type: 'donut', // Tipe chart donut
                         height: 455
                     },
-                    series: [waiting, rejected, completed], // Data nilai
-                    labels: ['Waiting', 'Rejected', 'Completed'], // Label kategori
-                    colors: ['#FFE900', '#E53D00', '#00E396'],
+                    series: serie, // Data nilai
+                    labels: label, // Label kategori
+                    colors: color,
                     dataLabels: {
                         enabled: true, // Aktifkan data labels
                         style: {
@@ -643,13 +746,21 @@
                             enabled: true // Tambahkan efek bayangan
                         },
                         formatter: function (val, opts) {
-                            return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            if (waiting == 0 && rejected == 0 && completed == 0) {
+                                return '';
+                            } else {
+                                return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            }
                         }
                     },
                     tooltip: {
                         y: {
                             formatter: function (val) {
-                                return val + " units"; // Menampilkan nilai asli di tooltip
+                                if (waiting == 0 && rejected == 0 && completed == 0) {
+                                    return '';
+                                } else {
+                                    return val + " units"; // Menampilkan nilai asli di tooltip
+                                }
                             }
                         }
                     },
@@ -674,22 +785,37 @@
             })
         }
 
-        function get_qty_diff_monitoring() {
+
+                function get_qty_diff_monitoring() {
             $.get('@Url.Action("GetQtyDiffMonitoring")', function (r) {
-                let waiting = r.waiting;
-                let rejected = r.rejected;
-                let completed = r.completed;
+                let waiting = (r.waiting == undefined) ? 0 : r.waiting;
+                let rejected = (r.rejected == undefined) ? 0 : r.rejected;
+                let completed = (r.completed == undefined) ? 0 : r.completed;
                 let totalQtyDiff = (r.totalQtyDiff == undefined) ? 0 : r.totalQtyDiff;
                 $("#total-qty-diff").text(totalQtyDiff);
+
+                let serie = [];
+                let label = [];
+                let color = [];
+
+                if (waiting == 0 && rejected == 0 && completed == 0) {
+                    serie = [100];
+                    label = ['Data Kosong'];
+                    color = ['#808080'];
+                } else {
+                    serie = [waiting, rejected, completed];
+                    label = ['Waiting', 'Rejected', 'Completed'];
+                    color = ['#FFE900', '#E53D00', '#00E396'];
+                }
 
                 var options = {
                     chart: {
                         type: 'donut', // Tipe chart donut
                         height: 455
                     },
-                    series: [waiting, rejected, completed], // Data nilai
-                    labels: ['Waiting', 'Rejected', 'Completed'], // Label kategori
-                    colors: ['#FFE900', '#E53D00', '#00E396'],
+                    series: serie, // Data nilai
+                    labels: label, // Label kategori
+                    colors: color,
                     dataLabels: {
                         enabled: true, // Aktifkan data labels
                         style: {
@@ -700,13 +826,21 @@
                             enabled: true // Tambahkan efek bayangan
                         },
                         formatter: function (val, opts) {
-                            return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            if (waiting == 0 && rejected == 0 && completed == 0) {
+                                return '';
+                            } else {
+                                return opts.w.config.series[opts.seriesIndex]; // Menampilkan nilai asli
+                            }
                         }
                     },
                     tooltip: {
                         y: {
                             formatter: function (val) {
-                                return val + " units"; // Menampilkan nilai asli di tooltip
+                                if (waiting == 0 && rejected == 0 && completed == 0) {
+                                    return '';
+                                } else {
+                                    return val + " units"; // Menampilkan nilai asli di tooltip
+                                }
                             }
                         }
                     },

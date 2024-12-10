@@ -30,5 +30,12 @@ namespace PurchasingSystemStaging.Areas.MasterData.ViewModels
         public string? StorageLocation { get; set; }
         public string? RackNumber { get; set; }
         public string? Note { get; set; }
+
+        // Jalur Api
+        public string SupplierName { get; set; }
+        public string CategoryName { get; set; }
+        public string MeasurementName { get; set; }
+        public int DiscountValue { get; set; }
+        public string WarehouseLocationName { get; set; }
     }
 }

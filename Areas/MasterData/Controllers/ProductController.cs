@@ -91,7 +91,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
                 // Bangun originalPath dengan format tanggal ISO 8601
                 string originalPath = $"Page:MasterData/Product/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-                string encryptedPath = _protector.Protect(originalPath);
+                string encryptedPath = _protector.Protect(originalPath);                
 
                 // Hash GUID-like code (SHA256 truncated to 36 characters)
                 string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))

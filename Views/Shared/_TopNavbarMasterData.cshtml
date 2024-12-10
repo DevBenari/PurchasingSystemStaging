@@ -92,14 +92,11 @@
                             @if (!string.IsNullOrEmpty(listRole))
                             {
                                 var roles = listRole.Split(',');
-                                if (roles.Contains("Dashboard"))
-                                {
-                                    <li class="nav-item">
-                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("RedirectToIndex", "Dashboard", new { area = "MasterData" })">
-                                            Dashboard
-                                        </div>
-                                    </li>
-                                }
+                                <li class="nav-item">
+                                    <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("RedirectToIndex", "Dashboard", new { area = "MasterData" })">
+                                        Dashboard
+                                    </div>
+                                </li>
                                 @if (roles.Contains("GroupRole"))
                                 {
                                     <li class="nav-item">

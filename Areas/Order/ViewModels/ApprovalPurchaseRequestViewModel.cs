@@ -2,7 +2,7 @@
 
 namespace PurchasingSystemStaging.Areas.Order.ViewModels
 {
-    public class ApprovalViewModel
+    public class ApprovalPurchaseRequestViewModel
     {
         public Guid ApprovalId { get; set; }
         public Guid? PurchaseRequestId { get; set; }

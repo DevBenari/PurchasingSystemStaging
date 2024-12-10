@@ -5,7 +5,11 @@
 
 @using Microsoft.AspNetCore.Identity;
 
-@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
+@{
+    var listRole = Context.Session.GetString("ListRole");
+    @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
+
+}
 @model PurchasingSystemStaging.Areas.Transaction.Models.UnitRequest
 
 <!-- Tempusdominus Bootstrap 4 -->
@@ -239,16 +243,32 @@
                         {
                             @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
                             <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
-                            <a class="btn bg-indigo" id="btnubah">Change</a>
-                            <a class="btn bg-gray" asp-action="PrintUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
-                            <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
-                            <a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="UnitRequest">Cancel</a>
+                            @if (!string.IsNullOrEmpty(listRole))
+                            {
+                                var roles = listRole.Split(',');
+                                if (roles.Contains("UpdateBUnitRequest"))
+                                {
+                                    <a class="btn bg-indigo" id="btnubah">Change</a>
+                                }
+                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
+                                if (roles.Contains("PrintUnitRequest"))
+                                {
+                                    <a class="btn bg-gray" asp-action="PrintUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                }
+                            }
+                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("RedirectToIndex", "UnitRequest", new { area = "Transaction" })">Cancel</div>
                         }
                         else
                         {
-                            <a class="btn bg-gray" asp-action="PrintUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
-                            @*<a class="btn btn-default" id="btnbatal" asp-action="Index" asp-controller="UnitRequest">Cancel</a>*@
-                            <div class="btn btn-default" data-href="@Url.Action("RedirectToIndex", "UnitRequest", new { area = "Transaction" })">Cancel</div>
+                            @if (!string.IsNullOrEmpty(listRole))
+                            {
+                                var roles = listRole.Split(',');                               
+                                if (roles.Contains("PrintUnitRequest"))
+                                {
+                                    <a class="btn bg-gray" asp-action="PrintUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                }
+                            }
+                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("RedirectToIndex", "UnitRequest", new { area = "Transaction" })">Cancel</div>
                         }
                     </div>
                 </div>

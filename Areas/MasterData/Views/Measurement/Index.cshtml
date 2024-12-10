@@ -8,7 +8,11 @@
 @using PurchasingSystemStaging.Models;
 @using PurchasingSystemStaging.Repositories;
 
-@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
+@{
+    var listRole = Context.Session.GetString("ListRole");
+    @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
+
+}
 @model Pagination<Measurement>
 @{
     var searchTerm = ViewBag.SearchTerm as string;
@@ -34,9 +38,16 @@
                         <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="Measurement" asp-area="MasterData" method="post" class="form-horizontal">
                             <div class="row">
                                 <div class="col-md-3 input-group">
-                                    <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "Measurement")">
-                                        <i class="fas fa-plus"></i>
-                                    </div>
+                                    @if (!string.IsNullOrEmpty(listRole))
+                                    {
+                                        var roles = listRole.Split(',');
+                                        if (roles.Contains("CreateMeasurement"))
+                                        {
+                                            <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "Measurement")">
+                                                <i class="fas fa-plus"></i>
+                                            </div>
+                                        }
+                                    }                                    
                                     <input type="date" name="startDate" id="startDate" class="date-input" value="@ViewBag.StartDate" placeholder="Select Start Date">
                                 </div>
                                 <div class="col-md-3 input-group">

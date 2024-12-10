@@ -5,12 +5,12 @@ using PurchasingSystemStaging.Data;
 
 namespace PurchasingSystemStaging.Areas.Order.Repositories
 {
-    public class IApprovalRepository
+    public class IApprovalPurchaseRequestRepository
     {
         private string _errors = "";
         private readonly ApplicationDbContext _context;
 
-        public IApprovalRepository(ApplicationDbContext context)
+        public IApprovalPurchaseRequestRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -20,14 +20,14 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
             return _errors;
         }
 
-        public Approval Tambah(Approval Approval)
+        public ApprovalPurchaseRequest Tambah(ApprovalPurchaseRequest Approval)
         {
             _context.Approvals.Add(Approval);
             _context.SaveChanges();
             return Approval;
         }
 
-        public async Task<Approval> GetApprovalById(Guid Id)
+        public async Task<ApprovalPurchaseRequest> GetApprovalById(Guid Id)
         {
             var Approval = _context.Approvals
                 .Where(i => i.ApprovalId == Id)
@@ -38,7 +38,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
 
             if (Approval != null)
             {
-                var ApprovalDetail = new Approval()
+                var ApprovalDetail = new ApprovalPurchaseRequest()
                 {
                     CreateDateTime = Approval.CreateDateTime,
                     CreateBy = Approval.CreateBy,
@@ -68,14 +68,14 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
             return Approval;
         }
 
-        public async Task<Approval> GetApprovalByIdNoTracking(Guid Id)
+        public async Task<ApprovalPurchaseRequest> GetApprovalByIdNoTracking(Guid Id)
         {
             return await _context.Approvals.AsNoTracking().FirstOrDefaultAsync(a => a.ApprovalId == Id);
         }
 
-        public async Task<List<Approval>> GetApprovals()
+        public async Task<List<ApprovalPurchaseRequest>> GetApprovals()
         {
-            return await _context.Approvals./*OrderBy(p => p.CreateDateTime).*/Select(Approval => new Approval()
+            return await _context.Approvals./*OrderBy(p => p.CreateDateTime).*/Select(Approval => new ApprovalPurchaseRequest()
             {
                 CreateDateTime = Approval.CreateDateTime,
                 CreateBy = Approval.CreateBy,
@@ -102,7 +102,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
             }).ToListAsync();
         }
 
-        public IEnumerable<Approval> GetAllApproval()
+        public IEnumerable<ApprovalPurchaseRequest> GetAllApproval()
         {
             return _context.Approvals.OrderByDescending(c => c.CreateDateTime)
                 .Include(u => u.ApplicationUser)
@@ -111,7 +111,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
                 .ToList();
         }
 
-        public IEnumerable<Approval> GetAllApprovalById(Guid Id)
+        public IEnumerable<ApprovalPurchaseRequest> GetAllApprovalById(Guid Id)
         {
             return _context.Approvals
                 .Where(i => i.UserApproveId == Id)
@@ -122,7 +122,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
                 .ToList();
         }
 
-        public async Task<(IEnumerable<Approval> approvals, int totalCountApprovals)> GetAllApprovalPageSize(string searchTerm, int page, int pageSize, DateTimeOffset? startDate, DateTimeOffset? endDate)
+        public async Task<(IEnumerable<ApprovalPurchaseRequest> approvals, int totalCountApprovals)> GetAllApprovalPageSize(string searchTerm, int page, int pageSize, DateTimeOffset? startDate, DateTimeOffset? endDate)
         {
             var query = _context.Approvals
                 .Include(u => u.ApplicationUser)
@@ -158,7 +158,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
             return (approvals, totalCount);
         }
 
-        public IEnumerable<Approval> GetChartBeforeExpired(Guid Id)
+        public IEnumerable<ApprovalPurchaseRequest> GetChartBeforeExpired(Guid Id)
         {
             return _context.Approvals
                 .Where(i => i.UserApproveId == Id && i.RemainingDay > 0)
@@ -168,7 +168,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
                 .ToList();
         }
 
-        public IEnumerable<Approval> GetChartOnExpired(Guid Id)
+        public IEnumerable<ApprovalPurchaseRequest> GetChartOnExpired(Guid Id)
         {
             return _context.Approvals
                 .Where(i => i.UserApproveId == Id && i.RemainingDay == 0)
@@ -178,7 +178,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
                 .ToList();
         }
 
-        public IEnumerable<Approval> GetChartMoreThanExpired(Guid Id)
+        public IEnumerable<ApprovalPurchaseRequest> GetChartMoreThanExpired(Guid Id)
         {
             return _context.Approvals
                 .Where(i => i.UserApproveId == Id && i.RemainingDay < 0)
@@ -188,7 +188,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
                 .ToList();
         }
 
-        public async Task<Approval> Update(Approval update)
+        public async Task<ApprovalPurchaseRequest> Update(ApprovalPurchaseRequest update)
         {          
             var approval = _context.Approvals.Attach(update);
             approval.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
@@ -196,7 +196,7 @@ namespace PurchasingSystemStaging.Areas.Order.Repositories
             return update;
         }
 
-        public Approval Delete(Guid Id)
+        public ApprovalPurchaseRequest Delete(Guid Id)
         {
             var Approval = _context.Approvals.Find(Id);
             if (Approval != null)
