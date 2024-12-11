@@ -38,7 +38,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     #region Areas Order
     public DbSet<PurchaseRequest> PurchaseRequests { get; set; }
     public DbSet<PurchaseRequestDetail> PurchaseRequestDetails { get; set; }
-    public DbSet<Approval> Approvals { get; set; }
+    public DbSet<ApprovalPurchaseRequest> Approvals { get; set; }
     public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
     public DbSet<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
     public DbSet<ApprovalQtyDifference> ApprovalQtyDifferences { get; set; }
@@ -53,6 +53,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<WarehouseTransferDetail> WarehouseTransferDetails { get; set; }
     public DbSet<QtyDifference> QtyDifferences { get; set; }
     public DbSet<QtyDifferenceDetail> QtyDifferenceDetails { get; set; }
+    public DbSet<ProductReturn> ProductReturns { get; set; }
+    public DbSet<ProductReturnDetail> ProductReturnDetails { get; set; }
+    public DbSet<ApprovalProductReturn> ApprovalProductReturns { get; set; }
     #endregion
 
     #region Areas Unit Request

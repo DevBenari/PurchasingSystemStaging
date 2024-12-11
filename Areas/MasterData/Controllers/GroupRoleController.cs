@@ -18,6 +18,7 @@ using System;
 using System.Text;
 using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 {
@@ -92,8 +93,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ViewBag.Active = "MasterData";
             return View(); // Kirim data role ke view
         }      
-
-        [HttpGet]
+        
         public async Task<IActionResult> CreateRole()
         {
             ViewBag.Active = "MasterData";
@@ -195,40 +195,73 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             {
                 var controllerName = controllerType.Name.Replace("Controller", ""); // Nama controller tanpa "Controller"
                 var controllerActions = controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(method => method.IsPublic && !method.IsSpecialName && method.DeclaringType == controllerType)
+                    //.Where(method => method.IsPublic && !method.IsSpecialName && method.DeclaringType == controllerType)
+                    .Where(method =>
+                    method.IsPublic &&
+                    !method.IsSpecialName &&
+                    !method.Name.StartsWith("Redirect") &&
+                    !method.Name.StartsWith("Load") &&
+                    !method.Name.StartsWith("Impor") &&
+                    !method.Name.StartsWith("Chart") && 
+                    !method.Name.StartsWith("KpiJson") &&
+                    !method.Name.StartsWith("PostData") &&
+                    !method.GetCustomAttributes(typeof(NonActionAttribute), false).Any() &&
+                    method.DeclaringType == controllerType && // Hanya metode dari controller itu sendiri
+                    (method.GetCustomAttributes(typeof(HttpGetAttribute), false).Any() ||
+                     method.GetCustomAttributes(typeof(HttpPostAttribute), false).Any() ||
+                     method.GetCustomAttributes(typeof(HttpPutAttribute), false).Any() ||
+                     method.GetCustomAttributes(typeof(HttpDeleteAttribute), false).Any() ||
+                     !method.GetCustomAttributes(typeof(HttpMethodAttribute), false).Any()))
                     .Select(method => method.Name)
                     .ToList();
 
-                foreach (var action in controllerActions)
+                if (controllerName != "Account")
                 {
-                    string roleName = action;
-
-                    // Jika aksi adalah "Index", tambahkan nama controller ke role
-                    if (action == "Index")
-                    {
-                        roleName = $"Index{controllerName}";  // Misalnya, "AdminIndex"
-                    }
-
-                    // Periksa apakah role sudah ada
-                    var roleExists = await _roleManager.RoleExistsAsync(roleName);
-                    if (!roleExists)
-                    {
-                        IdentityRole role = new IdentityRole
+                    if (controllerName != "Auth")
+                    { 
+                        if (controllerName != "Dashboard")
                         {
-                            Name = roleName,  // Nama asli role (misalnya, "AdminIndex")
-                            ConcurrencyStamp = controllerName
-                        };
-
-                        var result = await _roleManager.CreateAsync(role);
-                        if (!result.Succeeded)
-                        {
-                            foreach (var error in result.Errors)
+                            if (controllerName != "Home")
                             {
-                                Console.WriteLine($"Error creating role {roleName}: {error.Description}");
+                                foreach (var action in controllerActions)
+                                {
+                                    string roleName = action;
+
+                                    // Jika aksi adalah "Index", tambahkan nama controller ke role
+                                    if (action == "Index")
+                                    {
+                                        roleName = $"Read{controllerName}";  // Misalnya, "ReadBank"
+                                    }
+
+                                    if (action.StartsWith("Detail"))
+                                    {
+                                        roleName = $"Update{controllerName}"; // Misalnya : "UpdateBank"
+                                    }
+
+                                    // Periksa apakah role sudah ada
+                                    var roleExists = await _roleManager.RoleExistsAsync(roleName);
+                                    if (!roleExists)
+                                    {
+                                        IdentityRole role = new IdentityRole
+                                        {
+                                            Name = roleName,  // Nama asli role (misalnya, "AdminIndex")
+                                            ConcurrencyStamp = controllerName
+                                        };
+
+                                        var result = await _roleManager.CreateAsync(role);
+                                        if (!result.Succeeded)
+                                        {
+                                            foreach (var error in result.Errors)
+                                            {
+                                                Console.WriteLine($"Error creating role {roleName}: {error.Description}");
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-                    }
-                }
+                    }                        
+                }                
             }
 
             await _hubContext.Clients.All.SendAsync("UpdateDataCount", '0');
@@ -297,8 +330,6 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }
         }
 
-
-        [HttpGet]
         [AllowAnonymous]
         public JsonResult LoadUser()
         {

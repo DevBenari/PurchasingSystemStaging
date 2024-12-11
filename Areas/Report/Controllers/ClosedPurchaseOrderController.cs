@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using PurchasingSystemStaging.Areas.Order.Repositories;
 using PurchasingSystemStaging.Areas.Report.Models;
 using PurchasingSystemStaging.Areas.Report.Repositories;
@@ -9,6 +10,7 @@ using PurchasingSystemStaging.Areas.Warehouse.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
+using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -152,7 +154,8 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
         [HttpGet]
         public async Task<IActionResult> DetailClosedPurchaseOrder(Guid Id)
         {
-            ViewBag.Active = "Report";            
+            ViewBag.Active = "Report";
+            ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
 
             var closedPO = await _closingPurchaseOrderRepository.GetClosingPurchaseOrderById(Id);
 

@@ -62,41 +62,40 @@ namespace PurchasingSystemStaging.Controllers
         }
 
 
-        [HttpPost]
-        [Route("accountController/ExtendSession")]
-        public IActionResult ExtendSession()
-        {
-            // Memperpanjang session dengan memperbarui waktu aktivitas terakhir
-            HttpContext.Session.SetString("LastActivity", DateTime.Now.ToString());
+        //[HttpPost]
+        //[Route("accountController/ExtendSession")]
+        //public IActionResult ExtendSession()
+        //{
+        //    // Memperpanjang session dengan memperbarui waktu aktivitas terakhir
+        //    HttpContext.Session.SetString("LastActivity", DateTime.Now.ToString());
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
-        [HttpPost]
-        [Route("accountController/EndSession")]
-        public async Task<IActionResult> EndSession()
-        {
+        //[HttpPost]
+        //[Route("accountController/EndSession")]
+        //public async Task<IActionResult> EndSession()
+        //{
             //HttpContext.Session.Clear();
 
             //// Hapus authentication cookies jika ada
             //Response.Cookies.Delete(".AspNetCore.Identity.Application");
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
+        //    var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+        //    var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
 
-            if (user != null)
-            {
-                user.IsOnline = false;
-                await _userManager.UpdateAsync(user);
-            }
+        //    if (user != null)
+        //    {
+        //        user.IsOnline = false;
+        //        await _userManager.UpdateAsync(user);
+        //    }
 
-            await _signInManager.SignOutAsync();
+        //    await _signInManager.SignOutAsync();
 
-            return Ok();
-        }        
-
-        [HttpGet]
-        [AllowAnonymous]
+        //    return Ok();
+        //}        
+      
+        [AllowAnonymous]        
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -111,7 +110,7 @@ namespace PurchasingSystemStaging.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [AllowAnonymous]        
         public async Task<IActionResult> Login(LoginViewModel model/*, string returnUrl = null*/)
         {
             //returnUrl ??= Url.Content("~/");
@@ -124,7 +123,8 @@ namespace PurchasingSystemStaging.Controllers
                 {
                     return RedirectToAction("RedirectToIndex", "Home");
                 }
-                else {
+                else
+                {
                     var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
                     if (user == null)
                     {
@@ -152,14 +152,6 @@ namespace PurchasingSystemStaging.Controllers
                                 IsPersistent = false, // Set ke true jika ingin session bertahan setelah browser ditutup
                             };
 
-                            //var roles = await _signInManager.UserManager.GetRolesAsync(user);
-
-                            //if (roles.Any())
-                            //{
-                            //    var roleClaim = string.Join(",", roles);
-                            //    claims.Add(new Claim("Roles", roleClaim));
-                            //}
-
                             await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
 
                             // Role
@@ -176,20 +168,29 @@ namespace PurchasingSystemStaging.Controllers
 
                                 if (userId != null) // Pastikan userId tidak null
                                 {
-                                    roleNames = (from role in _roleRepository.GetRoles()
-                                                 join userRole in _groupRoleRepository.GetAllGroupRole()
-                                                 on role.Id equals userRole.RoleId
-                                                 where userRole.DepartemenId == userId 
-                                                 select role.Name).ToList();
-                                    // ambil juga judul modul
+                                    //roleNames = (from role in _roleRepository.GetRoles()
+                                    //             join userRole in _groupRoleRepository.GetAllGroupRole()
+                                    //             on role.Id equals userRole.RoleId
+                                    //             where userRole.DepartemenId == userId
+                                    //             select role.Name).ToList();
+                                    //// ambil juga judul modul
+                                    //roleNames = (from role in _roleRepository.GetRoles()
+                                    //             join userRole in _groupRoleRepository.GetAllGroupRole()
+                                    //             on role.Id equals userRole.RoleId
+                                    //             where userRole.DepartemenId == userId
+                                    //             select role.ConcurrencyStamp)
+                                    //             .Distinct().ToList();                                  
+
                                     roleNames = (from role in _roleRepository.GetRoles()
                                                  join userRole in _groupRoleRepository.GetAllGroupRole()
                                                  on role.Id equals userRole.RoleId
                                                  where userRole.DepartemenId == userId
-                                                 select role.ConcurrencyStamp)
-                                                 .Distinct().ToList();
-
-
+                                                 select role.Name).Union(
+                                                     from role in _roleRepository.GetRoles()
+                                                     join userRole in _groupRoleRepository.GetAllGroupRole()
+                                                     on role.Id equals userRole.RoleId
+                                                     where userRole.DepartemenId == userId
+                                                     select role.ConcurrencyStamp).Distinct().ToList();
                                 }
                                 else
                                 {
@@ -245,11 +246,16 @@ namespace PurchasingSystemStaging.Controllers
                         TempData["UserActiveMessage"] = "Sorry, your account is not active !";
                         return View(model);
                     }
-                }                            
+                }
+            }
+            else
+            {
+                TempData["UserActiveMessage"] = "Error";
+                return View(model);
             }
             return View();
         }
-                
+       
         public async Task<IActionResult> Logout()
         {
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();

@@ -83,8 +83,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return Redirect(Request.Path);
             }            
         }
-
-        [HttpGet]
+        
         //[Authorize(Roles = "IndexBank")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
@@ -155,8 +154,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return Redirect(Request.Path);
             }            
         }
-
-        [HttpGet]
+        
         //[Authorize(Roles = "CreateBank")]
         public async Task<ViewResult> CreateBank()
         {
@@ -284,8 +282,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return Redirect(Request.Path);
             }            
         }
-        
-        [HttpGet]
+                
         //[Authorize(Roles = "DetailBank")]
         public async Task<IActionResult> DetailBank(Guid Id)
         {
@@ -384,8 +381,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return Redirect(Request.Path);
             }            
         }
-
-        [HttpGet]
+        
         //[Authorize(Roles = "DeleteBank")]
         public async Task<IActionResult> DeleteBank(Guid Id)
         {

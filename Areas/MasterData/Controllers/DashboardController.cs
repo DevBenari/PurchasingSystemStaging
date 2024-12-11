@@ -36,6 +36,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _urlMappingService = urlMappingService;
         }
 
+        
         public IActionResult RedirectToIndex()
         {
             try

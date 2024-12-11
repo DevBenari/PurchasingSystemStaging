@@ -38,7 +38,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IProductRepository _productRepository;
         private readonly ITermOfPaymentRepository _termOfPaymentRepository;
-        private readonly IApprovalRepository _approvalRepository;
+        private readonly IApprovalPurchaseRequestRepository _approvalRepository;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IDepartmentRepository _departmentRepository;
         private readonly IPositionRepository _positionRepository;
@@ -61,7 +61,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             IUserActiveRepository userActiveRepository,
             IProductRepository productRepository,
             ITermOfPaymentRepository termOfPaymentRepository,
-            IApprovalRepository approvalRepository,
+            IApprovalPurchaseRequestRepository approvalRepository,
             IPurchaseOrderRepository purchaseOrderRepository,
             IDepartmentRepository departmentRepository,
             IPositionRepository positionRepository,
@@ -460,7 +460,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                 if (model.UserApprove1Id != null) 
                 {
-                    var approval = new Approval
+                    var approval = new ApprovalPurchaseRequest
                     {
                         CreateDateTime = DateTimeOffset.Now,
                         CreateBy = new Guid(getUser.Id),
@@ -484,7 +484,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                 if (model.UserApprove2Id != null)
                 {
-                    var approval = new Approval
+                    var approval = new ApprovalPurchaseRequest
                     {
                         CreateDateTime = DateTimeOffset.Now,
                         CreateBy = new Guid(getUser.Id),
@@ -508,7 +508,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                 if (model.UserApprove3Id != null)
                 {
-                    var approval = new Approval
+                    var approval = new ApprovalPurchaseRequest
                     {
                         CreateDateTime = DateTimeOffset.Now,
                         CreateBy = new Guid(getUser.Id),

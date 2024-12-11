@@ -217,7 +217,6 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             }            
         }
 
-        [HttpGet]
         public async Task<ViewResult> DetailApprovalUnitRequest(Guid Id)
         {
             ViewBag.Active = "ApprovalUnitRequest";

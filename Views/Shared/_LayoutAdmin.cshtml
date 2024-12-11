@@ -106,16 +106,6 @@
                             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; max-width: 400px; overflow-y: auto;" id="loggerContainer"></div>
                     }                    
                 </li>
-                @* @if (!string.IsNullOrEmpty(listRole) && listRole.Split(',').Contains("Approval Purchase Req"))
-                {
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" data-toggle="dropdown" href="#">
-                            <i class="far fa-bell"></i>
-                            <span class="badge badge-danger navbar-badge" id="notifikasiCount"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; max-width: 400px; overflow-y: auto;" id="loggerContainer"></div>
-                    </li>
-                } *@
 
                 <!-- Navbar Search -->
                 @if (signInManager.IsSignedIn(User))
@@ -178,8 +168,8 @@
                                     <i class="nav-icon fas fa-cart-plus" style="color:#FFFFFF"></i> Purchase Request
                                 </div>
                             </li>
-                            <li class="@(ViewBag.Active == "Approval" ? "nav-item menu-open active":"")">
-                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "Approval", new { area = "Order" })">
+                            <li class="@(ViewBag.Active == "ApprovalPurchaseRequest" ? "nav-item menu-open active":"")">
+                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "ApprovalPurchaseRequest", new { area = "Order" })">
                                     <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Purchase Req
                                 </div>
                             </li>
@@ -225,6 +215,11 @@
                                     <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> Warehouse Transfer
                                 </div>
                             </li>
+                            <li class="@(ViewBag.Active == "ProductReturn" ? "nav-item menu-open active":"")">
+                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "ProductReturn", new { area = "Warehouse" })">
+                                    <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> Product Return
+                                </div>
+                            </li>
                             <li class="nav-header">General</li>
                             <li class="@(ViewBag.Active == "StockMonitoring" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "StockMonitoring", new { area = "General" })">
@@ -248,16 +243,13 @@
                             @if (!string.IsNullOrEmpty(listRole))
                             {
                                 var roles = listRole.Split(',');
-                                if (roles.Contains("Home"))
-                                {
-                                    <li class="@(ViewBag.Active == "Dashboard" ? "nav-item menu-open active":"")">
-                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "Home")">
-                                            <i class="nav-icon fas fa-home" style="color:#FFFFFF"></i> Dashboard
-                                        </div>
-                                    </li>
-                                }
+                                <li class="@(ViewBag.Active == "Dashboard" ? "nav-item menu-open active":"")">
+                                    <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "Home")">
+                                        <i class="nav-icon fas fa-home" style="color:#FFFFFF"></i> Dashboard
+                                    </div>
+                                </li>
 
-                                if (roles.Contains("Dashboard"))
+                                if (roles.Contains("Department") || roles.Contains("Position") || roles.Contains("UserActive") || roles.Contains("Supplier") || roles.Contains("Product"))
                                 {
                                     <li class="nav-header">Administrator</li>
                                     <li class="@(ViewBag.Active == "MasterData" ? "nav-item menu-open active":"")">
@@ -277,10 +269,10 @@
                                     </li>
                                 }
 
-                                if (roles.Contains("Approval"))
+                                if (roles.Contains("ApprovalPurchaseRequest"))
                                 {
-                                    <li class="@(ViewBag.Active == "Approval" ? "nav-item menu-open active":"")">
-                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "Approval", new { area = "Order" })">
+                                    <li class="@(ViewBag.Active == "ApprovalPurchaseRequest" ? "nav-item menu-open active":"")">
+                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "ApprovalPurchaseRequest", new { area = "Order" })">
                                             <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Purchase Req
                                         </div>
                                     </li>
@@ -354,6 +346,16 @@
                                         </div>
                                     </li>
                                 }
+                                
+                                if (roles.Contains("ProductReturn"))
+                                {
+                                    <li class="@(ViewBag.Active == "ProductReturn" ? "nav-item menu-open active":"")">
+                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "ProductReturn", new { area = "Warehouse" })">
+                                            <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> Product Return
+                                        </div>
+                                    </li>
+                                }                                
+
                                 if (roles.Contains("StockMonitoring"))
                                 {
                                     <li class="nav-header">General</li>
@@ -373,7 +375,7 @@
                                     </li>
                                 }
 
-                                if (roles.Contains("Dashboard"))
+                                if (roles.Contains("ReadCalculatedPurchaseOrder") || roles.Contains("ClosedPurchaseOrder"))
                                 {
                                     <li class="nav-header">Reporting</li>
                                     <li class="@(ViewBag.Active == "Report" ? "nav-item menu-open active":"")">
