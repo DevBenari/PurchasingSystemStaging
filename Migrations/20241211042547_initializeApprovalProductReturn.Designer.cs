@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PurchasingSystemStaging.Data;
 
@@ -11,9 +12,10 @@ using PurchasingSystemStaging.Data;
 namespace PurchasingSystemStaging.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241211042547_initializeApprovalProductReturn")]
+    partial class initializeApprovalProductReturn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2111,13 +2113,6 @@ namespace PurchasingSystemStaging.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReasonForReturn")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("ReturnDate")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2187,9 +2182,6 @@ namespace PurchasingSystemStaging.Migrations
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("ExpiredDate")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
 
@@ -2230,11 +2222,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.Property<DateTimeOffset>("UpdateDateTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("WarehouseExpired")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WarehouseOrigin")
+                    b.Property<string>("WarehouseLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -138,6 +138,7 @@ builder.Services.AddScoped<IUnitOrderRepository>();
 builder.Services.AddScoped<IWarehouseTransferRepository>();
 builder.Services.AddScoped<IQtyDifferenceRepository>();
 builder.Services.AddScoped<IProductReturnRepository>();
+builder.Services.AddScoped<IApprovalProductReturnRepository>();
 #endregion
 
 #region Areas Unit Request

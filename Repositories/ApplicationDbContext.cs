@@ -55,6 +55,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<QtyDifferenceDetail> QtyDifferenceDetails { get; set; }
     public DbSet<ProductReturn> ProductReturns { get; set; }
     public DbSet<ProductReturnDetail> ProductReturnDetails { get; set; }
+    public DbSet<ApprovalProductReturn> ApprovalProductReturns { get; set; }
     #endregion
 
     #region Areas Unit Request

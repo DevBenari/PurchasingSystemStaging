@@ -215,7 +215,7 @@
                                     <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> Warehouse Transfer
                                 </div>
                             </li>
-                            <li class="@(ViewBag.Active == "Product Return" ? "nav-item menu-open active":"")">
+                            <li class="@(ViewBag.Active == "ProductReturn" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "ProductReturn", new { area = "Warehouse" })">
                                     <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> Product Return
                                 </div>
@@ -346,6 +346,16 @@
                                         </div>
                                     </li>
                                 }
+                                
+                                if (roles.Contains("ProductReturn"))
+                                {
+                                    <li class="@(ViewBag.Active == "ProductReturn" ? "nav-item menu-open active":"")">
+                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("RedirectToIndex", "ProductReturn", new { area = "Warehouse" })">
+                                            <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> Product Return
+                                        </div>
+                                    </li>
+                                }                                
+
                                 if (roles.Contains("StockMonitoring"))
                                 {
                                     <li class="nav-header">General</li>

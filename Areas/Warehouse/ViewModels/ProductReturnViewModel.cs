@@ -5,6 +5,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
     public class ProductReturnViewModel
     {
         public Guid ProductReturnId { get; set; }
+        public DateTimeOffset ReturnDate { get; set; } = DateTimeOffset.UtcNow;
         public string ProductReturnNumber { get; set; }
         public string UserAccessId { get; set; }
         public string PurchaseOrderNumber { get; set; }
@@ -21,6 +22,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
         public Guid? UserApprove3Id { get; set; }
         public string? ApproveStatusUser3 { get; set; }
         public string Status { get; set; }
+        public string ReasonForReturn { get; set; }
         public string? Note { get; set; }
         public string? MessageApprove1 { get; set; }
         public string? MessageApprove2 { get; set; }

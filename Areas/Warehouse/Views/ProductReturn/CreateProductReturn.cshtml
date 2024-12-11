@@ -1,19 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Add Purchase Request";
-    Layout = "~/Views/Shared/_TopNavbarPurchaseRequest.cshtml";
+    ViewData["Title"] = "Add Product Return";
+    Layout = "~/Views/Shared/_TopNavbarProductReturn.cshtml";
 }
 
 @using Microsoft.AspNetCore.Identity;
-@using PurchasingSystemStaging.Areas.Order.Models;
+@using PurchasingSystemStaging.Areas.Warehouse.Models;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
-@model PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest
+@model PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn
 
 <!-- Main content -->
 <section class="content">
     <div class="row">
         <div class="col-md-12 bg-white">
-            <form enctype="multipart/form-data" asp-controller="PurchaseRequest" asp-action="CreatePurchaseRequest" method="post" class="form-horizontal">
+            <form enctype="multipart/form-data" asp-controller="ProductReturn" asp-action="CreateProductReturn" method="post" class="form-horizontal">
                 <div class="card-header bg-cyan">
                     <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
                 </div>
@@ -25,18 +25,35 @@
                 <input asp-for="Status" id="status" value="Waiting Approval" type="hidden">
                 <input asp-for="UserAccessId" id="UserAccessId" type="hidden">
 
-            
+
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-0"></div>
-                            <div class="col-md-12">                                
+                            <div class="col-md-12">
                                 <div class="form-group row">
                                     <div class="col-sm-12">
-                                        <label class="col-sm-2 col-form-label" asp-for="PurchaseRequestNumber">PR Number</label>
-                                        <input type="text" asp-for="PurchaseRequestNumber" class="form-control form-control-border border-width-2" id="purchaserequestnumber" placeholder="PR Number" readonly>
+                                        <label class="col-sm-2 col-form-label" asp-for="ProductReturnNumber">Return Number</label>
+                                        <input type="text" asp-for="ProductReturnNumber" class="form-control form-control-border border-width-2" id="ProductReturnnumber" placeholder="PR Number" readonly>
                                     </div>
-                                </div>                               
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <label class="col-sm-2 col-form-label" asp-for="PurchaseOrderNumber">Purchase Order Number</label>
+                                        <select asp-for="PurchaseOrderNumber" asp-items="@ViewBag.PurchaseOrderNumber" class="form-control select2bs4" id="PurchaseOrderNumber" style="width: 100%;">
+                                            <option value="" hidden disabled selected>--Choose PO--</option>
+                                        </select>
+                                        <span asp-validation-for="PurchaseOrderNumber" class="error"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <label class="col-sm-2 col-form-label" asp-for="ReturnDate">Return Date</label>
+                                        <input type="date" asp-for="ReturnDate" class="form-control form-control-border border-width-2" id="ReturnDate" placeholder="Return Date">
+                                    </div>
+                                </div>
 
                                 @*Content Approve User 1*@
                                 <div class="col-md-12 bg-white">
@@ -145,27 +162,26 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                
                                 <div class="form-group row">
                                     <div class="col-sm-12">
-                                        <label class="col-sm-2 col-form-label" asp-for="TermOfPaymentId">Term Of Payment</label>
-                                        <select asp-for="TermOfPaymentId" asp-items="@ViewBag.TermOfPayment" class="form-control select2bs4" id="TermOfPayment" style="width: 100%;">
-                                            <option value="" hidden disabled selected>--Choose TOP--</option>
-                                        </select>
-                                        <span asp-validation-for="TermOfPaymentId" class="error"></span>
+                                        <label asp-for="ReasonForReturn">Reason For Return</label>
+                                        <input maxlength="75" autocomplete="off" type="text" asp-for="ReasonForReturn" class="form-control form-control-border border-width-2" id="ReasonForReturn" placeholder="Reason For Return">
+                                        <span asp-validation-for="ReasonForReturn" class="text-danger"></span>
                                     </div>
                                 </div>
+
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <label asp-for="Note">Note</label>
                                         <input maxlength="75" autocomplete="off" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="Note" placeholder="Note">
                                         <span asp-validation-for="Note" class="text-danger"></span>
                                     </div>
-                                </div>                            
+                                </div>
                             </div>
                             <div class="col-md-0"></div>
                         </div>
-                    </div>                                       
+                    </div>
                 </div>
 
                 <div class="card card-default">
@@ -174,7 +190,7 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <div class="form-group row">
+                        <div class="row">
                             <div class="col-md-5">
                                 <span>Search Product</span>
                                 <div class="form-group">
@@ -199,18 +215,18 @@
                                     }
                                 </div>
                             </div>
-                            <div class="col-md-1">
+                            @*<div class="col-sm-1">
                                 <span>Min Stock</span>
-                                <input autocomplete="off" class="form-control" id="minstock" type="text" placeholder="Min Stock" readonly>                                
+                                <input autocomplete="off" class="form-control" id="minstock" type="text" placeholder="Min Stock" readonly>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-sm-1">
                                 <span>Max Stock</span>
                                 <input autocomplete="off" class="form-control" id="maxstock" type="text" placeholder="Max Stock" readonly>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-sm-2">
                                 <span>Buffer Stock</span>
                                 <input autocomplete="off" class="form-control" id="bufferstock" type="text" placeholder="Buffer Stock" readonly>
-                            </div>
+                            </div>*@
                         </div>
                         <div class="form-group row">
                             <div class="col-md-2">
@@ -218,7 +234,7 @@
                                 <input autocomplete="off" class="form-control" id="productnumber" placeholder="Product Number" readonly>
                                 <span class="error">Required !</span>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <span>Product Name</span>
                                 <input autocomplete="off" class="form-control" id="productname" placeholder="Product Name" readonly>
                                 <span class="error">Required !</span>
@@ -228,14 +244,26 @@
                                 <input autocomplete="off" class="form-control" id="stock" placeholder="Stock" readonly>
                                 <span class="error">Required !</span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <span>Supplier</span>
                                 <input autocomplete="off" class="form-control" id="Supplier" placeholder="Supplier" readonly>
                                 <span class="error">Required !</span>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <span>Measure</span>
                                 <input autocomplete="off" class="form-control" id="measure" placeholder="Measure" readonly>
+                                <span class="error">Required !</span>
+                            </div>
+                            <div class="col-md-2">
+                                <span>Ware. Origin</span>
+                                <input autocomplete="off" class="form-control" id="warehouseorigin" placeholder="Warehouse" readonly>
+                                <span class="error">Required !</span>
+                            </div>
+                            <div class="col-md-2">
+                                <span>Ware. Expired</span>
+                                <select asp-items="@ViewBag.WarehouseLocation" class="form-control select2bs4" id="warehouseexpired" style="width: 100%;">
+                                    <option value="" hidden disabled selected>--Choose Warehouse--</option>
+                                </select>                                
                                 <span class="error">Required !</span>
                             </div>
                             <div class="col-md-1" hidden>
@@ -258,7 +286,9 @@
                                         <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Product Number</div></th>
                                         <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Product Name</div></th>
                                         <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Supplier</div></th>
-                                        <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Measure</div></th>   
+                                        <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Measure</div></th>
+                                        <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Warehouse Origin</div></th>
+                                        <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Warehouse Expired</div></th>
                                         <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff">Qty</div></th>
                                         <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Price</div></th>
                                         <th class="text-right" style="background-color:#7FB9EE" hidden><div style="color:#ffffff">Discount</div></th>
@@ -269,7 +299,7 @@
                                 <tbody></tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="5" class="text-right"><b>Total Qty</b></td>
+                                        <td colspan="7" class="text-right"><b>Total Qty</b></td>
                                         <td id="producttotalqty" class="text-center productTotalQty">0</td>
                                         <td colspan="2" class="text-right" hidden><b>Grand Total</b></td>
                                         <td id="productgrandtotal" class="text-right productGrandTotal" hidden>0</td>
@@ -286,8 +316,8 @@
                     <div class="card-body">
                         @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
                         <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
-                        <div class="btn btn-default" data-href="@Url.Action("RedirectToIndex", "PurchaseRequest")">Cancel</div>
-                        @* <a class="btn btn-default" asp-action="Index" asp-controller="PurchaseRequest">Cancel</a> *@
+                        <div class="btn btn-default" data-href="@Url.Action("RedirectToIndex", "ProductReturn")">Cancel</div>
+                        @* <a class="btn btn-default" asp-action="Index" asp-controller="ProductReturn">Cancel</a> *@
                     </div>
                 </div>
                 <!-- /.end button footer -->
@@ -313,7 +343,7 @@
                 theme: 'bootstrap4'
             })
         })
-    </script>    
+    </script>
 
     <script>
         $(document).ready(function () {
@@ -335,6 +365,7 @@
                             $("#stock").val(item.stock);
                             $("#Supplier").val(item.supplier.supplierName);
                             $("#measure").val(item.measurement.measurementName);
+                            $("#warehouseorigin").val(item.warehouseLocation.warehouseLocationName);
                             $("#discount").val(item.discount.discountValue);
                             $("#price").val(item.buyPrice);
                         });
@@ -533,12 +564,8 @@
             $('#btnAdd').click(function () {
                 var qtyInputan = parseInt($('#qty').val());
                 var qtyTersedia = parseInt($('#stock').val());
-                var qtyBufferStock = parseInt($('#bufferstock').val());
-                var qtyMinStock = parseInt($('#minstock').val());
-                var qtyMaxStock = parseInt($('#maxstock').val());
-                var qtyOrder = qtyMaxStock - qtyMinStock;
 
-                if (qtyInputan <= qtyOrder) {
+                if (qtyInputan <= qtyTersedia) {
                     if (detailItem.length >= 0) {
                         var isValidItem = true;
                         if ($('#productnumber').val().trim() == '') {
@@ -562,12 +589,19 @@
                             $('#measure').siblings('span.error').css('visibility', 'hidden');
                         }
 
+                        if ($('#warehouseorigin').val().trim() == '') {
+                            isValidItem = false;
+                            $('#warehouseorigin').siblings('span.error').css('visibility', 'visible');
+                        } else {
+                            $('#warehouseorigin').siblings('span.error').css('visibility', 'hidden');
+                        }                        
+
                         if ($('#Supplier').val().trim() == '') {
                             isValidItem = false;
                             $('#Supplier').siblings('span.error').css('visibility', 'visible');
                         } else {
                             $('#Supplier').siblings('span.error').css('visibility', 'hidden');
-                        }                        
+                        }
 
                         if (!($('#qty').val().trim() != '' && !isNaN($('#qty').val().trim()))) {
                             isValidItem = false;
@@ -598,6 +632,8 @@
                             var productName = $('#productname').val().trim();
                             var supplier = $('#Supplier').val().trim();
                             var measurement = $('#measure').val().trim();
+                            var warehouseorigin = $('#warehouseorigin').val().trim();
+                            var warehouseexpired = $('#warehouseexpired').val().trim();
                             var qty = parseInt($('#qty').val().trim());
                             var price = parseFloat($('#price').val().trim());
                             var discount = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) * (parseInt($('#discount').val().trim()) / 100);
@@ -617,8 +653,7 @@
                                 if (detailName.length == 0) {
                                     checkDuplicate = undefined;
                                 }
-                                else if (detailName.length > 0 && detailName[i] != undefined) 
-                                {
+                                else if (detailName.length > 0 && detailName[i] != undefined) {
                                     if (detailName[i].innerText != productNumber && detailSupplier[i].innerText == supplier) {
                                         checkDuplicate = undefined;
                                     }
@@ -631,7 +666,7 @@
 
                                         $('#produklist').select2('val', 'selectedIndex', 0);
                                         $("#produklist").data('placeholder');
-                                        $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
+                                        $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                                         return;
                                     }
                                     else {
@@ -643,7 +678,7 @@
 
                                         $('#produklist').select2('val', 'selectedIndex', 0);
                                         $("#produklist").data('placeholder');
-                                        $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
+                                        $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                                         return;
                                     }
                                 }
@@ -656,19 +691,21 @@
                             if (checkDuplicate == undefined) {
                                 //var dynamicTr = `<tr id="R${no}"><td class="row-index text-center"><p>${no}</p></td><td class="text-center">${productNumber}</td><td class="text-left row-productName">${productName}</td><td class="text-left">${Supplier}</td><td class="text-center">${measurement}</td><td class="text-center row-qty">${qty}</td><td class="text-right">${price}</td><td class="text-right">${discount}</td><td class="text-right row-total">${total}</td><td class="text-center"> <button class="btn btn-danger btn-sm">-</button> </td></tr>`;
                                 var dynamicTr =
-                                    `@for (int i = 0; i < Model.PurchaseRequestDetails.Count; i++)
+                                    `@for (int i = 0; i < Model.ProductReturnDetails.Count; i++)
         {
-                                            <tr id="R${no}" class="detailProduct">
-                                            <td class="row-index text-center"><p>${no}</p></td>
-                                                        <td class="text-left row-productNumber"><input class="detProductNumber" asp-for="@Model.PurchaseRequestDetails[i].ProductNumber" type="hidden" value="${productNumber}">${productNumber}</td>
-                                                        <td class="text-left row-productName"><input class="detProductName" asp-for="@Model.PurchaseRequestDetails[i].ProductName" type="hidden" value="${productName}">${productName}</td>
-                                                        <td class="text-left row-supplier"><input class="detSupplier" asp-for="@Model.PurchaseRequestDetails[i].Supplier" type="hidden" value="${supplier}">${supplier}</td>
-                                                        <td class="text-left"><input class="detMeasurement" asp-for="@Model.PurchaseRequestDetails[i].Measurement" type="hidden" value="${measurement}">${measurement}</td>
-                                                        <td class="text-center row-qty"><input class="detQty" asp-for="@Model.PurchaseRequestDetails[i].Qty" type="hidden" value="${qty}">${qty}</td>
-                                                        <td class="text-right" hidden><input class="detPrice" asp-for="@Model.PurchaseRequestDetails[i].Price" type="hidden" value="${price}">${price}</td>
-                                                        <td class="text-right" hidden><input class="detDiscount" asp-for="@Model.PurchaseRequestDetails[i].Discount" type="hidden" value="${discount}">${discount}</td>
-                                                        <td class="text-right row-total" hidden><input class="detSubTotal" asp-for="@Model.PurchaseRequestDetails[i].SubTotal" type="hidden" value="${total}">${total}</td>
-                                            <td class="text-center"> <button class="btn btn-danger btn-sm">X</button> </td></tr>
+                                                        <tr id="R${no}" class="detailProduct">
+                                                        <td class="row-index text-center"><p>${no}</p></td>
+                                                        <td class="text-left row-productNumber"><input class="detProductNumber" asp-for="@Model.ProductReturnDetails[i].ProductNumber" type="hidden" value="${productNumber}">${productNumber}</td>
+                                                        <td class="text-left row-productName"><input class="detProductName" asp-for="@Model.ProductReturnDetails[i].ProductName" type="hidden" value="${productName}">${productName}</td>
+                                                        <td class="text-left row-supplier"><input class="detSupplier" asp-for="@Model.ProductReturnDetails[i].Supplier" type="hidden" value="${supplier}">${supplier}</td>
+                                                        <td class="text-left"><input class="detMeasurement" asp-for="@Model.ProductReturnDetails[i].Measurement" type="hidden" value="${measurement}">${measurement}</td>
+                                                        <td class="text-left"><input class="detWarehouseOrigin" asp-for="@Model.ProductReturnDetails[i].WarehouseOrigin" type="hidden" value="${warehouseorigin}">${warehouseorigin}</td>
+                                                        <td class="text-left"><input class="detWarehouseExpired" asp-for="@Model.ProductReturnDetails[i].WarehouseExpired" type="hidden" value="${warehouseexpired}">${warehouseexpired}</td>
+                                                        <td class="text-center row-qty"><input class="detQty" asp-for="@Model.ProductReturnDetails[i].Qty" type="hidden" value="${qty}">${qty}</td>
+                                                        <td class="text-right" hidden><input class="detPrice" asp-for="@Model.ProductReturnDetails[i].Price" type="hidden" value="${price}">${price}</td>
+                                                        <td class="text-right" hidden><input class="detDiscount" asp-for="@Model.ProductReturnDetails[i].Discount" type="hidden" value="${discount}">${discount}</td>
+                                                        <td class="text-right row-total" hidden><input class="detSubTotal" asp-for="@Model.ProductReturnDetails[i].SubTotal" type="hidden" value="${total}">${total}</td>
+                                                        <td class="text-center"> <button class="btn btn-danger btn-sm">X</button> </td></tr>
         }`;
 
                                 $('#tbldetailpr tbody').append(dynamicTr);
@@ -681,7 +718,7 @@
 
                                 $('#produklist').select2('val', 'selectedIndex', 0);
                                 $("#produklist").data('placeholder');
-                                $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
+                                $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
 
                                 $('.btn-sm').click(function () {
                                     var child = $(this).closest('tr').nextAll();
@@ -744,8 +781,8 @@
                                 $('.productGrandTotal').text(sumGrandTotal);
                             }
                         }
-                    }                
-                } 
+                    }
+                }
                 else if ($('#qty').val() == 0) {
                     swal({
                         title: "Warning",
@@ -754,27 +791,27 @@
                     });
                     $('#produklist').select2('val', 'selectedIndex', 0);
                     $("#produklist").data('placeholder');
-                    $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
-                } 
-                else if ($('#minstock').val() == 0) {
+                    $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
+                }
+                else if (qtyInputan > qtyTersedia) {
                     swal({
                         title: "Warning",
-                        text: "Sorry, Min Max Stock has not been determined!",
+                        text: "Failed, stock only available " + qtyTersedia,
                         type: "warning"
                     });
                     $('#produklist').select2('val', 'selectedIndex', 0);
                     $("#produklist").data('placeholder');
-                    $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
-                }                
+                    $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
+                }
                 else {
                     swal({
                         title: "Warning",
-                        text: "Sorry, transactions cannot exceed Qty Order = " + qtyOrder + " !",
+                        text: "Failed, available stock 0 !",
                         type: "warning"
                     });
                     $('#produklist').select2('val', 'selectedIndex', 0);
                     $("#produklist").data('placeholder');
-                    $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
+                    $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                 }
             });
 
@@ -804,7 +841,7 @@
                     title: "Item successfully deleted",
                     type: "success"
                 });
-                
+
                 if ($('#tbldetailpr tbody').children().children().length == 0) {
                     $('#tbldetailpr tbody').append(emptyRow);
                 } else {
@@ -850,8 +887,7 @@
                 var Department3Id = $('#Department3List').find(":selected").val();
                 var Position3Id = $('#Position3List').find(":selected").val();
                 var UserApprove3Id = $('#UserApprove3List').find(":selected").val();
-                var TermOfPayment = $('#TermOfPayment').find(":selected").val();                
-
+                
                 if (detailTable == 1) { // 1 adalah isi dari keterangan pada table dihitung 1
                     swal({
                         title: "Warning",
@@ -859,7 +895,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment == '' && Department1Id == '' && Position1Id == undefined && UserApprove1Id == undefined && Department2Id == '' && Position2Id == undefined && UserApprove2Id == undefined && Department3Id == '' && Position3Id == undefined && UserApprove3Id == undefined) {
+                } else if (detailTable != 1 && PurchaseOrderNumber == '' && Department1Id == '' && Position1Id == undefined && UserApprove1Id == undefined && Department2Id == '' && Position2Id == undefined && UserApprove2Id == undefined && Department3Id == '' && Position3Id == undefined && UserApprove3Id == undefined) {
                     $('#Department1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#Position1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#UserApprove1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
@@ -868,15 +904,15 @@
                     $('#UserApprove2List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#Department3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#Position3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
-                    $('#UserApprove3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');                    
-                    $('#TermOfPayment').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
+                    $('#UserApprove3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
+                    $('#PurchaseOrderNumber').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
                         text: "Sorry, please select...",
                         type: "warning"
                     });
-                    isAllValid = false;                
-                } else if (detailTable != 1  && Department1Id == '') {
+                    isAllValid = false;
+                } else if (detailTable != 1 && Department1Id == '') {
                     $('#Department1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
@@ -948,14 +984,14 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && TermOfPayment == '') {
-                    $('#TermOfPayment').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
+                } else if (detailTable != 1 && PurchaseOrderNumber == '') {
+                    $('#PurchaseOrderNumber').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
                         text: "Sorry, please select...",
                         type: "warning"
                     });
-                    isAllValid = false;                
+                    isAllValid = false;
                 } else {
                     //Sembunyikan pesan error
                     $('#Department1List').siblings('span.error').css('visibility', 'hidden')
@@ -967,7 +1003,7 @@
                     $('#UserApprove1List').siblings('span.error').css('visibility', 'hidden')
                     $('#UserApprove2List').siblings('span.error').css('visibility', 'hidden')
                     $('#UserApprove3List').siblings('span.error').css('visibility', 'hidden')
-                    $('#TermOfPayment').siblings('span.error').css('visibility', 'hidden')
+                    $('#PurchaseOrderNumber').siblings('span.error').css('visibility', 'hidden')
 
                     $("#tbldetailpr").find("tbody").children("tr").each(function (index, element) {
                         //***Penggunaan nama detail harus sesuai dengan nama pada table. Misal kodeproduk,namaproduk,dst harus sama.
@@ -975,6 +1011,8 @@
                         detailDone.productname = $(element).find(".detProductName").val();
                         detailDone.supplier = $(element).find(".detSupplier").val();
                         detailDone.measurement = $(element).find(".detMeasurement").val();
+                        detailDone.warehouseorigin = $(element).find(".detWarehouseOrigin").val();
+                        detailDone.warehouseexpired = $(element).find(".detWarehouseExpired").val();
                         detailDone.qty = $(element).find(".detQty").val();
                         detailDone.price = $(element).find(".detPrice").val();
                         detailDone.discount = $(element).find(".detDiscount").val();
@@ -983,7 +1021,7 @@
                         detailDone = {};
                     });
 
-                    var PurchaseRequestNumber = $('#purchaserequestnumber').val();
+                    var ProductReturnNumber = $('#ProductReturnnumber').val();
                     var UserAccessId = $('#UserAccessId').val();
                     var Department1Id = $('#Department1List').val();
                     var Position1Id = $('#Position1List').val();
@@ -994,17 +1032,17 @@
                     var Department3Id = $('#Department3List').val();
                     var Position3Id = $('#Position3List').val();
                     var UserApprove3Id = $('#UserApprove3List').val();
-                    var TermOfPaymentId = $('#TermOfPayment').val();
+                    var PurchaseOrderNumberId = $('#PurchaseOrderNumber').val();
                     var Status = $('#status').val();
                     var QtyTotal = $('.productTotalQty').text();
                     var GrandTotal = $('.productGrandTotal').text();
                     var Note = $('#note').val();
-                    var PurchaseRequestDetail = detailItemDone;
+                    var ProductReturnDetail = detailItemDone;
                 }
 
                 if (isAllValid) {
                     var dataPost = {};
-                    dataPost.PurchaseRequestNumber = PurchaseRequestNumber;
+                    dataPost.ProductReturnNumber = ProductReturnNumber;
                     dataPost.UserAccessId = UserAccessId;
                     dataPost.Department1Id = Department1Id;
                     dataPost.Position1Id = Position1Id;
@@ -1015,16 +1053,16 @@
                     dataPost.Department3Id = Department3Id;
                     dataPost.Position3Id = Position3Id;
                     dataPost.UserApprove3Id = UserApprove3Id;
-                    dataPost.TermOfPaymentId = TermOfPaymentId;
+                    dataPost.PurchaseOrderNumberId = PurchaseOrderNumberId;
                     dataPost.Status = Status;
                     dataPost.QtyTotal = QtyTotal;
                     dataPost.GrandTotal = GrandTotal;
                     dataPost.Note = Note;
-                    dataPost.PurchaseRequestDetails = PurchaseRequestDetail;
+                    dataPost.ProductReturnDetails = ProductReturnDetail;
 
                     $(this).val('In process...');
 
-                    $.post("@Url.Action("CreatePurchaseRequest", "PurchaseRequest")", { model: dataPost },
+                    $.post("@Url.Action("CreateProductReturn", "ProductReturn")", { model: dataPost },
                         function (data) {
                             window.location.href = data.redirectToUrl;
                         }
@@ -1059,7 +1097,7 @@
         }
 
         .tablecontainer th {
-            border-bottom: 2px solid #BFAEAE;            
+            border-bottom: 2px solid #BFAEAE;
         }
 
         .tablecontainer th, .tablecontainer td {

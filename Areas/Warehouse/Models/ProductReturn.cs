@@ -12,6 +12,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Models
     {
         [Key]
         public Guid ProductReturnId { get; set; }
+        public DateTimeOffset ReturnDate { get; set; }
         public string ProductReturnNumber { get; set; }
         public string UserAccessId { get; set; }
         public string PurchaseOrderNumber { get; set; }
@@ -28,6 +29,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Models
         public Guid? UserApprove3Id { get; set; }
         public string? ApproveStatusUser3 { get; set; }
         public string Status { get; set; }
+        public string ReasonForReturn { get; set; }
         public string? Note { get; set; }
         public string? MessageApprove1 { get; set; }
         public string? MessageApprove2 { get; set; }
@@ -63,10 +65,12 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Models
         [Key]
         public Guid ProductReturnDetailId { get; set; }
         public Guid? ProductReturnId { get; set; }
+        public DateTimeOffset ExpiredDate { get; set; }
         public string ProductNumber { get; set; }
         public string ProductName { get; set; }
         public string Measurement { get; set; }
-        public string WarehouseLocation { get; set; }
+        public string WarehouseOrigin { get; set; }
+        public string WarehouseExpired { get; set; }
         public string Supplier { get; set; }
         public int Qty { get; set; }
         public decimal Price { get; set; }
