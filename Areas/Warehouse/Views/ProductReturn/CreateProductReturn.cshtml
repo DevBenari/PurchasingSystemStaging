@@ -4,10 +4,10 @@
 }
 
 @using Microsoft.AspNetCore.Identity;
-@using PurchasingSystemStaging.Areas.Warehouse.Models;
+@using PurchasingSystemStaging.Areas.Warehouse.ViewModels;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
-@model PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn
+@model ProductReturnViewModel
 
 <!-- Main content -->
 <section class="content">
@@ -49,11 +49,22 @@
                                 </div>
 
                                 <div class="form-group row">
+                                    <div class="col-sm-12 input-group" id="ReturnDate" data-target-input="nearest">
+                                        <label class="input-group" asp-for="ReturnDate">ReturnDate</label>
+                                        <div class="input-group-append" data-target="#ReturnDate" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                        <input asp-for="ReturnDate" type="text" class="form-control datetimepicker-input" data-target="#ReturnDate" placeholder="ReturnDate" />
+                                        <span asp-validation-for="ReturnDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                @*<div class="form-group row">
                                     <div class="col-sm-12">
                                         <label class="col-sm-2 col-form-label" asp-for="ReturnDate">Return Date</label>
                                         <input type="date" asp-for="ReturnDate" class="form-control form-control-border border-width-2" id="ReturnDate" placeholder="Return Date">
                                     </div>
-                                </div>
+                                </div>*@
 
                                 @*Content Approve User 1*@
                                 <div class="col-md-12 bg-white">
@@ -261,9 +272,8 @@
                             </div>
                             <div class="col-md-2">
                                 <span>Ware. Expired</span>
-                                <select asp-items="@ViewBag.WarehouseLocation" class="form-control select2bs4" id="warehouseexpired" style="width: 100%;">
-                                    <option value="" hidden disabled selected>--Choose Warehouse--</option>
-                                </select>                                
+                                <select asp-items="@ViewBag.WarehouseLocation" class="form-control select2bs4" id="warehouseexpired" style="width: 100%;">                                    
+                                </select>
                                 <span class="error">Required !</span>
                             </div>
                             <div class="col-md-1" hidden>
@@ -342,6 +352,15 @@
             $('.select2bs4').select2({
                 theme: 'bootstrap4'
             })
+        })
+    </script>
+
+    <script>
+        $(function () {
+            //Tanggal Lahir
+            $('#ReturnDate').datetimepicker({
+                format: 'DD/MM/yyyy'
+            });            
         })
     </script>
 
@@ -564,6 +583,10 @@
             $('#btnAdd').click(function () {
                 var qtyInputan = parseInt($('#qty').val());
                 var qtyTersedia = parseInt($('#stock').val());
+                // Ambil elemen dropdown
+                const selectedOption = $('#warehouseexpired option:selected');
+                const text = selectedOption.text(); // Alternatif, ambil teks langsung
+
 
                 if (qtyInputan <= qtyTersedia) {
                     if (detailItem.length >= 0) {
@@ -594,7 +617,14 @@
                             $('#warehouseorigin').siblings('span.error').css('visibility', 'visible');
                         } else {
                             $('#warehouseorigin').siblings('span.error').css('visibility', 'hidden');
-                        }                        
+                        }
+
+                        if ($('#warehouseexpired').val().trim() == '') {
+                            isValidItem = false;
+                            $('#warehouseexpired').siblings('span.error').css('visibility', 'visible');
+                        } else {
+                            $('#warehouseexpired').siblings('span.error').css('visibility', 'hidden');
+                        }
 
                         if ($('#Supplier').val().trim() == '') {
                             isValidItem = false;
@@ -633,7 +663,7 @@
                             var supplier = $('#Supplier').val().trim();
                             var measurement = $('#measure').val().trim();
                             var warehouseorigin = $('#warehouseorigin').val().trim();
-                            var warehouseexpired = $('#warehouseexpired').val().trim();
+                            var warehouseexpired = text;
                             var qty = parseInt($('#qty').val().trim());
                             var price = parseFloat($('#price').val().trim());
                             var discount = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) * (parseInt($('#discount').val().trim()) / 100);
