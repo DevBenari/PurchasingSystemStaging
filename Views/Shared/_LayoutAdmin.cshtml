@@ -671,11 +671,12 @@
                         var loggerDataPR = response.loggerDataJsonPR;
                         var loggerDataQtyDiff = response.loggerDataJsonQtyDiff;
                         var loggerDataUnitReq = response.loggerDataJsonUnitReq;
+                        var loggerDataProductReturn = response.loggerDataJsonProductReturn;
 
                         // Bersihkan konten sebelumnya, kecuali footer
                         $("#loggerContainer").empty();
 
-                        const combineData = loggerDataPR.concat(loggerDataQtyDiff, loggerDataUnitReq);
+                        const combineData = loggerDataPR.concat(loggerDataQtyDiff, loggerDataUnitReq, loggerDataProductReturn);
 
                         combineData.forEach(item => {
                             item.dateObj = new Date(item.createdDate);  // tambahkan properti dateObj untuk pengurutan
@@ -751,19 +752,41 @@
                                 // Append ke loggerContainer
                                 $("#loggerContainer").append(content);
                             }
+                            else if (item.productReturnNumber != undefined) {
+                                var urlPRN = '@Url.Action("RedirectToDetail", "ApprovalProductReturn", new { area = "Warehouse", id = "__id__" })'.replace("__id__", item.approvalId);
+                                var content =
+                                    `<a href="${urlPRN}" class="dropdown-item cursor-pointer">
+                                                <div class="media">
+                                                    <div class="media-body">
+                                                        <div class="info-box-content">
+                                                            <p class="text-sm text-muted">Approval Product Return</p>
+                                                            <h3 class="dropdown-item-title" style="color:#A7D477"><b>${item.productReturnNumber} Has Been Created</b></h3>
+                                                            <p class="text-sm text-muted">By ${item.createdBy} || ${item.formattedDate}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <div class="dropdown-divider"></div>`;
+
+                                // Append ke loggerContainer
+                                $("#loggerContainer").append(content);
+                            }
                         });
 
                         // Menambahkan tautan "See All Messages" setelah loop
-                        if (loggerDataPR.length > 0 && loggerDataQtyDiff.length == 0 && loggerDataUnitReq.length == 0) {
+                        if (loggerDataPR.length > 0 && loggerDataQtyDiff.length == 0 && loggerDataUnitReq.length == 0 && loggerDataProductReturn.length == 0) {
                             var footerLink =
                                 `<a href="${'@Url.Action("RedirectToIndex", "Approval", new { area = "Order" })'}" class="dropdown-item dropdown-footer"><strong>See All Messages</strong></a>`;
-                        } else if (loggerDataQtyDiff.length > 0 && loggerDataPR.length == 0 && loggerDataUnitReq.length == 0) {
+                        } else if (loggerDataQtyDiff.length > 0 && loggerDataPR.length == 0 && loggerDataUnitReq.length == 0 && loggerDataProductReturn.length == 0) {
                             var footerLink =
                                 `<a href="${'@Url.Action("RedirectToIndex", "ApprovalQtyDifference", new { area = "Order" })'}" class="dropdown-item dropdown-footer"><strong>See All Messages</strong></a>`;
-                        } else if (loggerDataUnitReq.length > 0 && loggerDataPR.length == 0 && loggerDataQtyDiff.length == 0) {
+                        } else if (loggerDataUnitReq.length > 0 && loggerDataPR.length == 0 && loggerDataQtyDiff.length == 0 && loggerDataProductReturn.length == 0) {
                             var footerLink =
                                 `<a href="${'@Url.Action("RedirectToIndex", "ApprovalUnitRequest", new { area = "Warehouse" })'}" class="dropdown-item dropdown-footer"><strong>See All Message</strong></a>`;
-                        } else if (loggerDataPR.length > 0 || loggerDataQtyDiff.length > 0 || loggerDataUnitReq.length > 0) {
+                        } else if (loggerDataProductReturn.length > 0 && loggerDataPR.length == 0 && loggerDataQtyDiff.length == 0 && loggerDataUnitReq.length == 0) {
+                            var footerLink =
+                                `<a href="${'@Url.Action("RedirectToIndex", "ApprovalProductReturn", new { area = "Warehouse" })'}" class="dropdown-item dropdown-footer"><strong>See All Message</strong></a>`;
+                        } else if (loggerDataPR.length > 0 || loggerDataQtyDiff.length > 0 || loggerDataUnitReq.length > 0 || loggerDataProductReturn.length > 0) {
                             var footerLink =
                                 `<a href="#" class="dropdown-item dropdown-footer"><strong>Select data to your needs</strong></a>`;
                         } else {
