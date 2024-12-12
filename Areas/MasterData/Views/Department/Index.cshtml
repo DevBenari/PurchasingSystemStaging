@@ -38,16 +38,25 @@
                         <form enctype="multipart/form-data" id="filterForm" asp-action="RedirectToIndex" asp-controller="Department" asp-area="MasterData" method="post" class="form-horizontal">
                             <div class="row">
                                 <div class="col-md-3 input-group">
-                                    @if (!string.IsNullOrEmpty(listRole))
+                                    @if (User.Identity.Name == "superadmin@admin.com")
                                     {
-                                        var roles = listRole.Split(',');
-                                        if (roles.Contains("CreateDepartment"))
+                                        <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "UserActive")">
+                                            <i class="fas fa-plus"></i>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @if (!string.IsNullOrEmpty(listRole))
                                         {
-                                            <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "Department")">
-                                                <i class="fas fa-plus"></i>
-                                            </div>
+                                            var roles = listRole.Split(',');
+                                            if (roles.Contains("CreateDepartment"))
+                                            {
+                                                <div class="btn btn-default bg-green" id="btn-search" data-href="@Url.Action("RedirectToCreate", "Department")">
+                                                    <i class="fas fa-plus"></i>
+                                                </div>
+                                            }
                                         }
-                                    }                                    
+                                    }                                                                       
                                     <input type="date" name="startDate" id="startDate" class="date-input" value="@ViewBag.StartDate" placeholder="Select Start Date">
                                 </div>
                                 <div class="col-md-3 input-group">
