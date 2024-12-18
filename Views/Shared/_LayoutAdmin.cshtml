@@ -483,141 +483,22 @@
 
     @*UI Normal*@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>    
+    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>
 
-    @*<script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Baca header "X-Session-Time-Remaining" dari server
-            fetch(window.location.href, { method: "HEAD" })
-                .then(response => {
-                    const timeRemainingHeader = response.headers.get("X-Session-Time-Remaining");
-                    if (timeRemainingHeader) {
-                        let timeRemaining = parseInt(timeRemainingHeader, 10); // Convert to seconds
+    <script>
+        // Misalkan ini di-assign dari server (misalnya di Razor View):
+        var totalSessionMinutes = 3;
+        var notifyBeforeMinutes = 1; // berarti saat 20 menit sudah berlalu, sisa 10 menit, kita beri notifikasi
 
-                        // Jika waktu tersisa kurang dari 15 menit
-                        if (timeRemaining > 0) {
-                            const countdownInterval = setInterval(() => {
-                                timeRemaining--;
+        // Konversi menit ke milidetik
+        var totalSessionMs = totalSessionMinutes * 60 * 1000;
+        var notifyTimeMs = (totalSessionMinutes - notifyBeforeMinutes) * 60 * 1000;
 
-                                // Tampilkan notifikasi jika waktu kurang dari 15 menit
-                                if (timeRemaining <= 900) { // 900 detik = 15 menit
-                                    if (timeRemaining === 900) {
-                                        alert("Session Anda akan habis dalam 60 detik. Silakan lakukan aktivitas untuk memperpanjang session.");
-                                    }
-                                }
-
-                                // Hentikan interval jika waktu habis
-                                if (timeRemaining <= 0) {
-                                    clearInterval(countdownInterval);
-                                    alert("Session Anda akan habis dalam 15 Menit. Silakan lakukan aktivitas untuk memperpanjang session.");
-                                    window.location.href = "/Account/Login"; // Arahkan ke halaman login
-                                }
-                            }, 1000); // Mengurangi setiap 1 detik
-                        }
-                    }
-                });
-        });
-    </script>*@
-
-    @*Script untuk mengirimkan perintah logout otomatis dan update status user online saat browser ditutup*@
-    @*<script>
-        window.onunload = function () {
-            navigator.sendBeacon('/Account/Logout'); // Pastikan rute benar untuk aplikasi Anda
-        };
-    </script>*@
-
-    <!-- script JS membuat session message  -->
-    @* <script>
-        //let warningTime = 10 * 1000; // 10 detik
-        //let sessionExpireTime = 15 * 1000; // 15 detik
-
-        let warningTime = 1500 * 1000; // 25 Menit
-        let sessionExpireTime = 1800 * 1000; // 30 menit
-        let warningTimeout, expireTimeout;
-
-        function extendSession() {
-            fetch("/accountController/ExtendSession", {
-                method: 'POST'
-            }).then(response => {
-                if (response.ok) {
-                    swal({
-                        title: "Extend Session",
-                        text: "Your session time has been extended",
-                        type: "success",
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                    resetTimer();
-                } else {
-                    swal({
-                        title: "Your Session Has Ended",
-                        text: "You failed to extend the session !",
-                        type: "error",
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                }
-            });
-        }
-
-        function showSessionExpireWarning() {
-            console.log("Showing session warning");  // Log ketika peringatan ditampilkan
-            swal({
-                title: "Your Session Will End !",
-                text: "Do you want to extend the session?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes, Extend Session",
-                cancelButtonText: "No, End Session",
-                confirmButtonClass: "btn btn-success",
-                cancelButtonClass: "btn btn-danger",
-                buttonsStyling: false,
-                reverseButtons: true
-            }).then(function () {
-                return extendSession();
-            }, function (dismiss) {
-                if (dismiss === "cancel") {
-                    fetch("/accountController/EndSession", {
-                        method: 'POST'
-                    }).then(response => {
-                        if (response.ok) {
-                            swal({
-                                title: "Session Berakhir",
-                                text: "Session Anda telah berakhir",
-                                type: "error",
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-
-                            // Redirect user ke halaman login
-                            setTimeout(function () {
-                                window.location.href = '/Account/Login?ReturnUrl=%2F';
-                            }, 1500);
-                        }
-                    });  // Akhiri sesi jika pengguna memilih untuk melakukannya
-                }
-            });
-        }
-
-        function resetTimer() {
-            clearTimeout(warningTimeout);
-            clearTimeout(expireTimeout);
-
-            console.log("Timer reset");  // Log ketika timer direset
-
-            warningTimeout = setTimeout(showSessionExpireWarning, sessionExpireTime - warningTime);
-            expireTimeout = setTimeout(sessionExpireTime);
-        }       
-
-        // Tambahkan event listener untuk mereset timer saat ada aktivitas
-        document.addEventListener('click', resetTimer);
-        document.addEventListener('keypress', resetTimer);
-        document.addEventListener('mousemove', resetTimer);
-
-        resetTimer();
-    </script> *@
-
-    <!-- end message Session-->
+        // Set timeout untuk menampilkan notifikasi
+        setTimeout(function () {
+            alert("Your session will expire in " + notifyBeforeMinutes + " minutes.");
+        }, notifyTimeMs);
+    </script>
 
     <style>
         .cursor-pointer {

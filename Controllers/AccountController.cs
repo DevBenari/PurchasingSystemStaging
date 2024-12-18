@@ -138,7 +138,7 @@ namespace PurchasingSystemStaging.Controllers
                         if (result.Succeeded)
                         {
                             //Membuat sesi pengguna
-                            HttpContext.Session.SetString("username", user.Email);
+                            HttpContext.Session.SetString("username", user.Email);                            
 
                             // Set cookie autentikasi
                             var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
@@ -202,6 +202,9 @@ namespace PurchasingSystemStaging.Controllers
                             HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
 
                             user.IsOnline = true;
+                            var utcTime = DateTimeOffset.UtcNow;
+                            var localTime = utcTime.ToLocalTime();
+                            user.LastActivityTime = localTime;
 
                             await _userManager.UpdateAsync(user);
 
@@ -222,7 +225,7 @@ namespace PurchasingSystemStaging.Controllers
 
                             // Hitung waktu yang tersisa
                             var lockTime = await _userManager.GetLockoutEndDateAsync(user);
-                            var timeRemaining = lockTime.Value - DateTimeOffset.UtcNow;
+                            var timeRemaining = lockTime.Value - DateTimeOffset.Now;
 
                             TempData["UserLockOut"] = "Sorry, your account is locked in " + timeRemaining.Minutes + " minutes " + timeRemaining.Seconds + " seconds";
                             return View(model);
@@ -264,6 +267,9 @@ namespace PurchasingSystemStaging.Controllers
             if (user != null)
             {
                 user.IsOnline = false;
+                var utcTime = DateTimeOffset.UtcNow;
+                var localTime = utcTime.ToLocalTime();
+                user.LastActivityTime = localTime;
                 await _userManager.UpdateAsync(user);
             }
 
