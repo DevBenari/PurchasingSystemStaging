@@ -203,8 +203,9 @@ namespace PurchasingSystemStaging.Controllers
 
                             user.IsOnline = true;
                             var utcTime = DateTimeOffset.UtcNow;
-                            var localTime = utcTime.ToLocalTime();
-                            user.LastActivityTime = localTime;
+                            var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                            var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
+                            user.LastActivityTime = localDateTime;
 
                             await _userManager.UpdateAsync(user);
 
@@ -237,7 +238,7 @@ namespace PurchasingSystemStaging.Controllers
                     }
                     else if (user.IsActive == true && user.IsOnline == true)
                     {
-                        TempData["UserOnlineMessage"] = "Sorry, your account is online, has been logged out, please sign back in !";
+                        //TempData["UserOnlineMessage"] = "Sorry, your account is online, has been logged out, please sign back in !";
 
                         user.IsOnline = false;
                         await _userManager.UpdateAsync(user);
@@ -267,9 +268,10 @@ namespace PurchasingSystemStaging.Controllers
             if (user != null)
             {
                 user.IsOnline = false;
-                var utcTime = DateTimeOffset.UtcNow;
-                var localTime = utcTime.ToLocalTime();
-                user.LastActivityTime = localTime;
+               var utcTime = DateTimeOffset.UtcNow;
+                var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
+                user.LastActivityTime = localDateTime;
                 await _userManager.UpdateAsync(user);
             }
 

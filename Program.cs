@@ -83,15 +83,6 @@ builder.Services.AddMvc(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
-//.AddCookie("CookieAuth", options =>
-//{
-//    options.Cookie.Name = "AuthCookie";
-//    options.LoginPath = "/Account/Login";
-//    options.LogoutPath = "/Account/Logout";
-//    options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
-//    options.SlidingExpiration = true;
-//});
-
 // konfigurasi session 
 builder.Services.AddSession(options =>
 {
@@ -161,7 +152,7 @@ builder.Services.AddScoped<IClosingPurchaseOrderRepository>();
 
 //Initialize Fast Report
 FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
-//builder.Services.AddHostedService<SessionCleanupService>();
+
 var app = builder.Build();
 
 builder.Services.AddDataProtection();
@@ -180,14 +171,14 @@ app.UseMiddleware<DecryptUrlMiddleware>();
 app.UseSession();
 app.UseAuthentication();
 app.UseMiddleware<UpdateLastActivityMiddleware>();
+app.UseMiddleware<SessionCleanupService>();
 app.UseAuthorization();
 
 //   konfigurasi end session 
 app.Use(async (context, next) =>
 {
     var returnUrl = context.Request.Path + context.Request.QueryString;
-    var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}";
-    var now = DateTimeOffset.Now;   
+    var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}"; 
 
     if (context.Session.GetString("username") == null && context.Request.Path != loginUrl)
     {

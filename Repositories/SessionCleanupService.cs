@@ -1,45 +1,51 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using PurchasingSystemStaging.Models;
 
 namespace PurchasingSystemStaging.Repositories
 {
-    public class SessionCleanupService : BackgroundService
+    public class SessionCleanupService
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly TimeSpan _idleTimeout = TimeSpan.FromMinutes(1);
-        private readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(5);
+        private readonly RequestDelegate _next;
+        private readonly TimeSpan idleTimeout = TimeSpan.FromMinutes(15);
 
-        public SessionCleanupService(IServiceScopeFactory serviceScopeFactory)
+        public SessionCleanupService(RequestDelegate next)
         {
-            _serviceScopeFactory = serviceScopeFactory;
+            _next = next;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task InvokeAsync(HttpContext context)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            if (context.User?.Identity?.IsAuthenticated == true)
             {
-                using (var scope = _serviceScopeFactory.CreateScope())
+                var userManager = context.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+                var user = await userManager.GetUserAsync(context.User);
+
+                if (user != null)
                 {
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                     var now = DateTime.UtcNow;
-
-                    // Ambil semua user yang IsOnline = true, dan cek apakah LastActivityTime + idleTimeout < now
-                    // Asumsikan Anda punya banyak user, lebih baik batasi query atau gunakan index
-                    var users = userManager.Users.Where(u => u.IsOnline == true && u.LastActivityTime.HasValue);
-
-                    foreach (var user in users)
+                    var lastActivity = user.LastActivityTime ?? now;
+                    if (now - lastActivity > idleTimeout)
                     {
-                        if (now - user.LastActivityTime.Value > _idleTimeout)
-                        {
-                            user.IsOnline = false;
-                            await userManager.UpdateAsync(user);
-                        }
+                        // Waktu idle melebihi batas -> sesi kadaluarsa
+                        user.IsOnline = false;
+                        await userManager.UpdateAsync(user);
+
+                        // Sign out user
+                        await context.SignOutAsync("CookieAuth");
+                        context.Response.Redirect("/Account/Login");
+                        return;
+                    }
+                    else
+                    {
+                        // Perbarui waktu aktivitas
+                        user.LastActivityTime = now;
+                        await userManager.UpdateAsync(user);
                     }
                 }
-
-                // Tunggu interval sebelum cek lagi
-                await Task.Delay(_checkInterval, stoppingToken);
             }
+
+            await _next(context);
         }
     }
 }

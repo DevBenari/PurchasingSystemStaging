@@ -22,8 +22,9 @@ namespace PurchasingSystemStaging.Repositories
                 if (user != null)
                 {
                     var utcTime = DateTimeOffset.UtcNow;
-                    var localTime = utcTime.ToLocalTime();
-                    user.LastActivityTime = localTime;
+                    var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                    var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
+                    user.LastActivityTime = localDateTime;
                     await userManager.UpdateAsync(user);
                 }
             }
