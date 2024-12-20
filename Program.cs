@@ -165,7 +165,7 @@ if (!app.Environment.IsProduction())
     app.UseHsts();
 }
 // Tambahkan middleware untuk dekripsi URL
-app.UseMiddleware<DecryptUrlMiddleware>();
+//app.UseMiddleware<DecryptUrlMiddleware>();
 
 //Tambahan Baru
 app.UseSession();

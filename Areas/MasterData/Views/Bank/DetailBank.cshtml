@@ -77,20 +77,28 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnsimpan"><div style="color:#ffffff">Save</div></button>
-                                    @if (!string.IsNullOrEmpty(listRole))
+                                    @if (User.Identity.Name == "superadmin@admin.com")
                                     {
-                                        var roles = listRole.Split(',');
-                                        if (roles.Contains("UpdateBank"))
-                                        {
-                                            <a class="btn bg-indigo" id="btnubah">Change</a>
-                                        }
-                                        <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
-                                        if (roles.Contains("DeleteBank"))
-                                        {
-                                            <div class="btn btn-danger" data-href="@Url.Action("RedirectToDelete", "Bank", new { id = Model.BankId })">Delete</div>
-                                        }
+                                        <a class="btn bg-indigo" id="btnubah">Change</a>
+                                        <div class="btn btn-danger" data-href="@Url.Action("DeleteBank", "Bank", new { id = Model.BankId })">Delete</div>
                                     }
-                                    <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("RedirectToIndex", "Bank", new { area = "MasterData" })">Cancel</div>
+                                    else
+                                    {
+                                        @if (!string.IsNullOrEmpty(listRole))
+                                        {
+                                            var roles = listRole.Split(',');
+                                            if (roles.Contains("UpdateBank"))
+                                            {
+                                                <a class="btn bg-indigo" id="btnubah">Change</a>
+                                            }
+                                            <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
+                                            if (roles.Contains("DeleteBank"))
+                                            {
+                                                <div class="btn btn-danger" data-href="@Url.Action("DeleteBank", "Bank", new { id = Model.BankId })">Delete</div>
+                                            }
+                                        }
+                                    }                                    
+                                    <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "Bank", new { area = "MasterData" })">Cancel</div>
                                 </div>
                             </div>
                             <div class="col-md-0"></div>

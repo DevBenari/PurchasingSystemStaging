@@ -100,7 +100,7 @@ namespace PurchasingSystemStaging.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("RedirectToIndex", "Home");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -121,7 +121,7 @@ namespace PurchasingSystemStaging.Controllers
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                    return RedirectToAction("RedirectToIndex", "Home");
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -210,7 +210,7 @@ namespace PurchasingSystemStaging.Controllers
                             await _userManager.UpdateAsync(user);
 
                             _logger.LogInformation("User logged in.");
-                            return RedirectToAction("RedirectToIndex", "Home");
+                            return RedirectToAction("Index", "Home");
                         }
 
                         //if (result.RequiresTwoFactor)
@@ -280,7 +280,7 @@ namespace PurchasingSystemStaging.Controllers
             await HttpContext.SignOutAsync("CookieAuth");
 
             await _signInManager.SignOutAsync();
-            return RedirectToAction("RedirectToIndex", "Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
