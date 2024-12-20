@@ -86,7 +86,7 @@ builder.Services.AddMvc(options =>
 // konfigurasi session 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(3);
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -98,7 +98,7 @@ builder.Services.AddAuthentication("CookieAuth")
         options.Cookie.Name = "AuthCookie";
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(3);
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
     });
 
