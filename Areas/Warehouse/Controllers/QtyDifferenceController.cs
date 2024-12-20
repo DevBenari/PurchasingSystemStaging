@@ -95,42 +95,36 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             _configuration = configuration;
         }
 
-        [NonAction]
         public JsonResult LoadProduk(Guid Id)
         {
             var produk = _applicationDbContext.Products.Include(p => p.Supplier).Include(s => s.Measurement).Include(d => d.Discount).Where(p => p.ProductId == Id).FirstOrDefault();
             return new JsonResult(produk);
         }
 
-        [NonAction]
         public JsonResult LoadPosition1(Guid Id)
         {
             var position = _applicationDbContext.Positions.Where(p => p.DepartmentId == Id).ToList();
             return Json(new SelectList(position, "PositionId", "PositionName"));
         }
 
-        [NonAction]
         public JsonResult LoadPosition2(Guid Id)
         {
             var position = _applicationDbContext.Positions.Where(p => p.DepartmentId == Id).ToList();
             return Json(new SelectList(position, "PositionId", "PositionName"));
         }
 
-        [NonAction]
         public JsonResult LoadUser1(Guid Id)
         {
             var user = _applicationDbContext.UserActives.Where(p => p.PositionId == Id).ToList();
             return Json(new SelectList(user, "UserActiveId", "FullName"));
         }
 
-        [NonAction]
         public JsonResult LoadUser2(Guid Id)
         {
             var user = _applicationDbContext.UserActives.Where(p => p.PositionId == Id).ToList();
             return Json(new SelectList(user, "UserActiveId", "FullName"));
         }
 
-        [NonAction]
         public JsonResult LoadPurchaseOrder(Guid Id)
         {
             var podetail = _applicationDbContext.PurchaseOrders
@@ -139,7 +133,6 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return new JsonResult(podetail);
         }
 
-        [NonAction]
         public JsonResult LoadPurchaseOrderDetail(Guid Id)
         {
             var podetail = _applicationDbContext.PurchaseOrderDetails

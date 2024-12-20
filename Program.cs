@@ -88,7 +88,7 @@ builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;    
+    options.Cookie.IsEssential = true;
 });
 
 //Script Auto Show Login Account First Time
@@ -152,6 +152,7 @@ builder.Services.AddScoped<IClosingPurchaseOrderRepository>();
 
 //Initialize Fast Report
 FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
+
 var app = builder.Build();
 
 builder.Services.AddDataProtection();
@@ -164,19 +165,20 @@ if (!app.Environment.IsProduction())
     app.UseHsts();
 }
 // Tambahkan middleware untuk dekripsi URL
-app.UseMiddleware<DecryptUrlMiddleware>();
+//app.UseMiddleware<DecryptUrlMiddleware>();
 
 //Tambahan Baru
 app.UseSession();
 app.UseAuthentication();
+app.UseMiddleware<UpdateLastActivityMiddleware>();
+app.UseMiddleware<SessionCleanupService>();
 app.UseAuthorization();
 
 //   konfigurasi end session 
 app.Use(async (context, next) =>
 {
     var returnUrl = context.Request.Path + context.Request.QueryString;
-    var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}";
-    var now = DateTimeOffset.UtcNow;   
+    var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}"; 
 
     if (context.Session.GetString("username") == null && context.Request.Path != loginUrl)
     {
@@ -195,52 +197,7 @@ app.Use(async (context, next) =>
     {
         // Jika session masih aktif, perbarui waktu "LastActivity"
         context.Session.SetString("LastActivity", DateTimeOffset.Now.ToString());        
-    }
-
-    // Periksa apakah pengguna terautentikasi
-    if (context.User.Identity?.IsAuthenticated == true)
-    {
-        // Coba ambil `LastActivity` dari session
-        var lastActivity = context.Session.GetString("LastActivity");
-
-        if (lastActivity == null)
-        {
-            // Set `LastActivity` pada aktivitas pertama setelah login
-            context.Session.SetString("LastActivity", now.ToString("o"));
-        }
-        else if (DateTime.TryParse(lastActivity, out var lastActivityTime))
-        {
-            var sessionTimeout = TimeSpan.FromMinutes(30);
-
-            // Jika waktu hampir habis (misalnya 15 menit sebelum habis)
-            var timeRemaining = sessionTimeout - (now - lastActivityTime);
-            if (timeRemaining.TotalMinutes <= 15)
-            {
-                // Kirim waktu yang tersisa ke klien melalui header
-                context.Response.Headers["X-Session-Time-Remaining"] = timeRemaining.TotalSeconds.ToString();
-            }
-
-            // Perbarui `LastActivity` jika session belum habis
-            if (timeRemaining.TotalSeconds > 0)
-            {
-                context.Session.SetString("LastActivity", now.ToString("o"));
-            }
-            else
-            {
-                // Jika session habis, lakukan logout
-                var username = context.User.Identity.Name;
-
-                if (!string.IsNullOrEmpty(username))
-                {
-                    // Middleware Session And Cookie
-                    UpdateDataForExpiredSession(username, app, context, returnUrl);
-
-                    context.Response.Redirect(loginUrl);
-                    return;
-                }
-            }
-        }
-    }
+    }    
 
     // Lanjutkan ke middleware berikutnya
     await next();

@@ -144,7 +144,7 @@
                                         <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
                                     }
                                 }
-                                <div class="btn btn-default" data-href="@Url.Action("RedirectToIndex", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
+                                <div class="btn btn-default" data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
                             }
                             else if (Model.ApprovalStatusUser == "User2" && Model.Status == "User1Approve" && Model.UserApprove == User.Identity.Name)
                             {
@@ -157,7 +157,7 @@
                                         <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
                                     }
                                 }
-                                <div class="btn btn-default" data-href="@Url.Action("RedirectToIndex", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
+                                <div class="btn btn-default" data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
                             }
                             else if (Model.ApprovalStatusUser == "User3" && Model.Status == "User2Approve" && Model.UserApprove == User.Identity.Name)
                             {
@@ -170,11 +170,11 @@
                                         <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
                                     }
                                 }
-                                <div class="btn btn-default" data-href="@Url.Action("RedirectToIndex", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
+                                <div class="btn btn-default" data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
                             }
                             else
                             {                                
-                                <div class="btn btn-default" data-href="@Url.Action("RedirectToIndex", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
+                                <div class="btn btn-default" data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
                             }
                         </div>
                     </div>

@@ -100,7 +100,7 @@ namespace PurchasingSystemStaging.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("RedirectToIndex", "Home");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -121,7 +121,7 @@ namespace PurchasingSystemStaging.Controllers
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                    return RedirectToAction("RedirectToIndex", "Home");
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -138,7 +138,7 @@ namespace PurchasingSystemStaging.Controllers
                         if (result.Succeeded)
                         {
                             //Membuat sesi pengguna
-                            HttpContext.Session.SetString("username", user.Email);
+                            HttpContext.Session.SetString("username", user.Email);                            
 
                             // Set cookie autentikasi
                             var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
@@ -202,11 +202,15 @@ namespace PurchasingSystemStaging.Controllers
                             HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
 
                             user.IsOnline = true;
+                            var utcTime = DateTimeOffset.UtcNow;
+                            var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                            var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
+                            user.LastActivityTime = localDateTime;
 
                             await _userManager.UpdateAsync(user);
 
                             _logger.LogInformation("User logged in.");
-                            return RedirectToAction("RedirectToIndex", "Home");
+                            return RedirectToAction("Index", "Home");
                         }
 
                         //if (result.RequiresTwoFactor)
@@ -222,7 +226,7 @@ namespace PurchasingSystemStaging.Controllers
 
                             // Hitung waktu yang tersisa
                             var lockTime = await _userManager.GetLockoutEndDateAsync(user);
-                            var timeRemaining = lockTime.Value - DateTimeOffset.UtcNow;
+                            var timeRemaining = lockTime.Value - DateTimeOffset.Now;
 
                             TempData["UserLockOut"] = "Sorry, your account is locked in " + timeRemaining.Minutes + " minutes " + timeRemaining.Seconds + " seconds";
                             return View(model);
@@ -234,7 +238,7 @@ namespace PurchasingSystemStaging.Controllers
                     }
                     else if (user.IsActive == true && user.IsOnline == true)
                     {
-                        TempData["UserOnlineMessage"] = "Sorry, your account is online, has been logged out, please sign back in !";
+                        //TempData["UserOnlineMessage"] = "Sorry, your account is online, has been logged out, please sign back in !";
 
                         user.IsOnline = false;
                         await _userManager.UpdateAsync(user);
@@ -264,6 +268,10 @@ namespace PurchasingSystemStaging.Controllers
             if (user != null)
             {
                 user.IsOnline = false;
+               var utcTime = DateTimeOffset.UtcNow;
+                var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
+                user.LastActivityTime = localDateTime;
                 await _userManager.UpdateAsync(user);
             }
 
@@ -272,7 +280,7 @@ namespace PurchasingSystemStaging.Controllers
             await HttpContext.SignOutAsync("CookieAuth");
 
             await _signInManager.SignOutAsync();
-            return RedirectToAction("RedirectToIndex", "Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -50,6 +50,8 @@ namespace PurchasingSystemStaging.Controllers
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IReceiveOrderRepository _receiveOrderRepository;
         private readonly IWarehouseTransferRepository _warehouseTransferRepository;
+        private readonly IApprovalProductReturnRepository _approvalProductReturnRepository;
+        private readonly IProductReturnRepository _productReturnRepository;
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
@@ -73,6 +75,8 @@ namespace PurchasingSystemStaging.Controllers
             IPurchaseOrderRepository purchaseOrderRepository,
             IReceiveOrderRepository receiveOrderRepository,
             IWarehouseTransferRepository wehouseTransferRepository,
+            IApprovalProductReturnRepository approvalProductReturnRepository,
+            IProductReturnRepository productReturnRepository,
 
             IDataProtectionProvider provider,
             UrlMappingService urlMappingService,
@@ -97,6 +101,8 @@ namespace PurchasingSystemStaging.Controllers
             _purchaseOrderRepository = purchaseOrderRepository;
             _receiveOrderRepository = receiveOrderRepository;
             _warehouseTransferRepository = wehouseTransferRepository;
+            _approvalProductReturnRepository = approvalProductReturnRepository;
+            _productReturnRepository = productReturnRepository;
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
@@ -654,6 +660,7 @@ namespace PurchasingSystemStaging.Controllers
                 var loggerDataPR = new List<object>();
                 var loggerDataQtyDiff = new List<object>();
                 var loggerDataUnitReq = new List<object>();
+                var loggerDataProductReturn = new List<object>();
 
                 var DataPR = _purchaseRequestRepository.GetAllPurchaseRequest()
                                 .Where(p => (p.UserApprove1Id == getUserActiveId && p.ApproveStatusUser1 == null)
@@ -673,6 +680,13 @@ namespace PurchasingSystemStaging.Controllers
                                 .OrderByDescending(a => a.CreateDateTime)
                                 .ToList();
 
+                var DataProductReturn = _productReturnRepository.GetAllProductReturn()
+                                .Where(p => (p.UserApprove1Id == getUserActiveId && p.ApproveStatusUser1 == null)
+                                || (p.UserApprove2Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == null)
+                                || (p.UserApprove3Id == getUserActiveId && p.ApproveStatusUser1 == "Approve" && p.ApproveStatusUser2 == "Approve" && p.ApproveStatusUser3 == null))
+                                .OrderByDescending(a => a.CreateDateTime)
+                                .ToList();
+
 
                 foreach (var logger in DataPR)
                 {
@@ -685,7 +699,7 @@ namespace PurchasingSystemStaging.Controllers
                             approvalId = getUserApproveId,
                             createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
                             purchaseRequestNumber = logger.PurchaseRequestNumber,
-                            createdDate = logger.CreateDateTime
+                            createdDate = logger.CreateDateTime.ToString("dd/MM/yyyy HH:mm")
                         };
                         loggerDataPR.Add(detail);
                     }
@@ -711,7 +725,7 @@ namespace PurchasingSystemStaging.Controllers
                             approvalId = getUserApproveId,
                             createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
                             purchaseRequestNumber = logger.PurchaseRequestNumber,
-                            createdDate = logger.CreateDateTime
+                            createdDate = logger.CreateDateTime.ToString("dd/MM/yyyy HH:mm")
                         };
                         loggerDataPR.Add(detail);
                     }
@@ -728,7 +742,7 @@ namespace PurchasingSystemStaging.Controllers
                             approvalId = getUserApproveId,
                             createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
                             qtyDifferenceNumber = logger.QtyDifferenceNumber,
-                            createdDate = logger.CreateDateTime
+                            createdDate = logger.CreateDateTime.ToString("dd/MM/yyyy HH:mm")
                         };
                         loggerDataQtyDiff.Add(detail);
                     }
@@ -741,7 +755,7 @@ namespace PurchasingSystemStaging.Controllers
                             approvalId = getUserApproveId,
                             createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
                             qtyDifferenceNumber = logger.QtyDifferenceNumber,
-                            createdDate = logger.CreateDateTime
+                            createdDate = logger.CreateDateTime.ToString("dd/MM/yyyy HH:mm")
                         };
                         loggerDataQtyDiff.Add(detail);
                     }
@@ -758,21 +772,64 @@ namespace PurchasingSystemStaging.Controllers
                             approvalId = getUserApproveId,
                             createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
                             unitRequestNumber = logger.UnitRequestNumber,
-                            createdDate = logger.CreateDateTime
+                            createdDate = logger.CreateDateTime.ToString("dd/MM/yyyy HH:mm")
                         };
                         loggerDataUnitReq.Add(detail);
                     }
                 }
 
-                if (loggerDataPR.Count == 0 && loggerDataQtyDiff.Count == 0 && loggerDataUnitReq.Count == 0)
+                foreach (var logger in DataProductReturn)
+                {
+                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    {
+                        var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
+
+                        var detail = new
+                        {
+                            approvalId = getUserApproveId,
+                            createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
+                            productReturnNumber = logger.ProductReturnNumber,
+                            createdDate = logger.CreateDateTime.ToString("dd/MM/yyyy HH:mm")
+                        };
+                        loggerDataProductReturn.Add(detail);
+                    }
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    {
+                        var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
+
+                        var detail = new
+                        {
+                            approvalId = getUserApproveId,
+                            createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
+                            productReturnNumber = logger.ProductReturnNumber,
+                            createdDate = logger.CreateDateTime.ToString("dd/MM/yyyy HH:mm")
+                        };
+                        loggerDataProductReturn.Add(detail);
+                    }
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    {
+                        var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User3" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
+
+                        var detail = new
+                        {
+                            approvalId = getUserApproveId,
+                            createdBy = _userActiveRepository.GetAllUserLogin().Where(u => u.Id == logger.CreateBy.ToString()).FirstOrDefault()?.NamaUser,
+                            productReturnNumber = logger.ProductReturnNumber,
+                            createdDate = logger.CreateDateTime.ToString("dd/MM/yyyy HH:mm")
+                        };
+                        loggerDataProductReturn.Add(detail);
+                    }
+                }
+
+                if (loggerDataPR.Count == 0 && loggerDataQtyDiff.Count == 0 && loggerDataUnitReq.Count == 0 && loggerDataProductReturn.Count == 0)
                 {
                     var totalNotification = 0;
-                    return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq });
+                    return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq, loggerDataJsonProductReturn = loggerDataProductReturn });
                 }
                 else 
                 {
-                    var totalNotification = DataPR.Count + DataQtyDiff.Count + DataUnitReq.Count;
-                    return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq });
+                    var totalNotification = DataPR.Count + DataQtyDiff.Count + DataUnitReq.Count + DataProductReturn.Count;
+                    return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq, loggerDataJsonProductReturn = loggerDataProductReturn });
                 }                
             }                       
         }

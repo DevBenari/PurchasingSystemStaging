@@ -2,14 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.MasterData.Models;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.Order.Models;
 using PurchasingSystemStaging.Areas.Order.Repositories;
 using PurchasingSystemStaging.Areas.Warehouse.Models;
 using PurchasingSystemStaging.Areas.Warehouse.Repositories;
+using PurchasingSystemStaging.Areas.Warehouse.ViewModels;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
@@ -241,7 +239,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateProductReturn(string searchTerm)
+        public async Task<IActionResult> CreateProductReturn()
         {
             ViewBag.Active = "ProductReturn";
 
@@ -255,7 +253,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.WarehouseLocation = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
 
-            var productReturn = new ProductReturn()
+            var productReturn = new ProductReturnViewModel()
             {
                 UserAccessId = getUser.Id,
             };
@@ -287,7 +285,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProductReturn(ProductReturn model)
+        public async Task<IActionResult> CreateProductReturn(ProductReturnViewModel model)
         {
             ViewBag.Active = "ProductReturn";
 
@@ -323,6 +321,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                     CreateBy = new Guid(getUser.Id), //Convert Guid to String
                     ProductReturnId = model.ProductReturnId,
                     ProductReturnNumber = model.ProductReturnNumber,
+                    ReturnDate = model.ReturnDate,
                     UserAccessId = getUser.Id,
                     PurchaseOrderNumber = model.ProductReturnNumber,
                     Department1Id = model.Department1Id,
@@ -338,6 +337,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                     UserApprove3Id = model.UserApprove3Id,
                     ApproveStatusUser3 = model.ApproveStatusUser3,
                     Status = model.Status,
+                    ReasonForReturn = model.ReasonForReturn,
                     Note = model.Note,
                     MessageApprove1 = model.MessageApprove1,
                     MessageApprove2 = model.MessageApprove2,
@@ -374,7 +374,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 //var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
                 //int totalKaryawan = data2.Count();
                 //await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
-                ////End Signal R                
+                ////End Signal R
 
                 if (model.UserApprove1Id != null)
                 {

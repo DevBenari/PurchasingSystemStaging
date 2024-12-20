@@ -287,37 +287,46 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        @if (Model.ApproveStatusUser1 == null)
+                        @if (User.Identity.Name == "superadmin@admin.com")
                         {
-                            @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
-                            <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
-                            @if (!string.IsNullOrEmpty(listRole))
-                            {
-                                var roles = listRole.Split(',');
-                                if (roles.Contains("UpdatePurchaseRequest"))
-                                {
-                                    <a class="btn bg-indigo" id="btnubah">Change</a>
-                                }
-                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
-                                if (roles.Contains("PrintPurchaseRequest"))
-                                {
-                                    <a class="btn bg-gray" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
-                                }
-                            }
-                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("RedirectToIndex", "PurchaseRequest", new { area = "Order" })">Cancel</div>
+                            <a class="btn bg-indigo" id="btnubah">Change</a>
+                            <a class="btn bg-gray" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
                         }
                         else
                         {
-                            @if (!string.IsNullOrEmpty(listRole))
+                            @if (Model.ApproveStatusUser1 == null)
                             {
-                                var roles = listRole.Split(',');                                
-                                if (roles.Contains("PrintPurchaseRequest"))
+                                @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
+                                <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
+                                @if (!string.IsNullOrEmpty(listRole))
                                 {
-                                    <a class="btn bg-gray" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                    var roles = listRole.Split(',');
+                                    if (roles.Contains("UpdatePurchaseRequest"))
+                                    {
+                                        <a class="btn bg-indigo" id="btnubah">Change</a>
+                                    }
+                                    <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
+                                    if (roles.Contains("PrintPurchaseRequest"))
+                                    {
+                                        <a class="btn bg-gray" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                    }
                                 }
+                                <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
                             }
-                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("RedirectToIndex", "PurchaseRequest", new { area = "Order" })">Cancel</div>
-                        }
+                            else
+                            {
+                                @if (!string.IsNullOrEmpty(listRole))
+                                {
+                                    var roles = listRole.Split(',');
+                                    if (roles.Contains("PrintPurchaseRequest"))
+                                    {
+                                        <a class="btn bg-gray" asp-action="PrintPurchaseRequest" asp-controller="PurchaseRequest" asp-area="Order" asp-route-id="@Model.PurchaseRequestId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                    }
+                                }
+                                <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
+                            }
+                        }                        
                     </div>
                 </div>
                 <!-- /.end button footer -->

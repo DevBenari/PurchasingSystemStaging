@@ -59,7 +59,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Models
         public UserActive? UserApprove3 { get; set; }
     }
 
-    [Table("OrdProductReturnDetail", Schema = "dbo")]
+    [Table("WrhProductReturnDetail", Schema = "dbo")]
     public class ProductReturnDetail : UserActivity
     {
         [Key]
