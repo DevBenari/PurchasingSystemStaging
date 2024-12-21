@@ -65,11 +65,23 @@ namespace PurchasingSystemStaging.Controllers
         }        
       
         [AllowAnonymous]        
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                var userId = HttpContext.Session.GetString("UserId");
+
+                if (!string.IsNullOrEmpty(userId) && _sessionService.IsSessionActive(userId))
+                {
+                    // Jika session aktif, arahkan ke dashboard
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    await HttpContext.SignOutAsync("CookieAuth");
+                    HttpContext.Session.Clear();
+                }
+                return View();
             }
             else
             {
@@ -90,7 +102,18 @@ namespace PurchasingSystemStaging.Controllers
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                    return RedirectToAction("Index", "Home");
+                    var userId = HttpContext.Session.GetString("UserId");
+
+                    if (!string.IsNullOrEmpty(userId) && _sessionService.IsSessionActive(userId))
+                    {
+                        // Jika session aktif, arahkan ke dashboard
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        await HttpContext.SignOutAsync("CookieAuth");
+                        HttpContext.Session.Clear();
+                    }
                 }
                 else
                 {
@@ -105,10 +128,7 @@ namespace PurchasingSystemStaging.Controllers
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
-                        {
-                            //Membuat sesi pengguna
-                            //HttpContext.Session.SetString("username", user.Email);
-
+                        {                            
                             // Buat session baru
                             var sessionId = Guid.NewGuid().ToString();
                             HttpContext.Session.SetString("UserId", user.Id.ToString());
@@ -120,15 +140,16 @@ namespace PurchasingSystemStaging.Controllers
                             // Set cookie autentikasi
                             var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
                             var identity = new ClaimsIdentity(claims, "CookieAuth");
-                            var principal = new ClaimsPrincipal(identity);
+                            var principal = new ClaimsPrincipal(identity);                            
 
-                            await HttpContext.SignInAsync("CookieAuth", principal);
-
+                            //Session akan di pertahankan jika browser di tutup tanpa di signout,
+                            //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
                             var authProperties = new AuthenticationProperties
                             {
-                                IsPersistent = false, // Set ke true jika ingin session bertahan setelah browser ditutup
+                                IsPersistent = false // Cookie tidak akan disimpan setelah browser ditutup
                             };
 
+                            await HttpContext.SignInAsync("CookieAuth", principal, authProperties);
                             await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
 
                             // Role
@@ -144,20 +165,7 @@ namespace PurchasingSystemStaging.Controllers
                                     .FirstOrDefault(u => u.UserName == model.Email)?.Id;
 
                                 if (userId != null) // Pastikan userId tidak null
-                                {
-                                    //roleNames = (from role in _roleRepository.GetRoles()
-                                    //             join userRole in _groupRoleRepository.GetAllGroupRole()
-                                    //             on role.Id equals userRole.RoleId
-                                    //             where userRole.DepartemenId == userId
-                                    //             select role.Name).ToList();
-                                    //// ambil juga judul modul
-                                    //roleNames = (from role in _roleRepository.GetRoles()
-                                    //             join userRole in _groupRoleRepository.GetAllGroupRole()
-                                    //             on role.Id equals userRole.RoleId
-                                    //             where userRole.DepartemenId == userId
-                                    //             select role.ConcurrencyStamp)
-                                    //             .Distinct().ToList();                                  
-
+                                {                                    
                                     roleNames = (from role in _roleRepository.GetRoles()
                                                  join userRole in _groupRoleRepository.GetAllGroupRole()
                                                  on role.Id equals userRole.RoleId
@@ -176,15 +184,7 @@ namespace PurchasingSystemStaging.Controllers
                             }
 
                             // Menyimpan daftar roleNames ke dalam session
-                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
-
-                            user.IsOnline = true;
-                            var utcTime = DateTimeOffset.UtcNow;
-                            var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-                            var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
-                            user.LastActivityTime = localDateTime;
-
-                            await _userManager.UpdateAsync(user);
+                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));                          
 
                             _logger.LogInformation("User logged in.");
                             return RedirectToAction("Index", "Home");
@@ -234,26 +234,35 @@ namespace PurchasingSystemStaging.Controllers
             return View();
         }
 
+        [HttpPost]
         public async Task<IActionResult> Logout()
-        {            
-            await _signInManager.SignOutAsync();
-
-            // Clear semua data session
-            HttpContext.Session.Clear();
-
-            // Hapus session user
+        {           
+            // Hapus session dari server-side storage
             var userId = HttpContext.Session.GetString("UserId");
+
             if (!string.IsNullOrEmpty(userId))
             {
+                Console.WriteLine($"Invalidating session for user: {userId}");
+
+                // Hapus session dari server-side storage
+                _sessionService.DeleteSession(userId);
                 _sessionService.InvalidateAllSessions(userId);
+
+                // Clear session lokal
                 HttpContext.Session.Clear();
             }
 
-            // Hapus session
-            HttpContext.Session.Remove("UserId");
+            // Hapus semua cookies
+            foreach (var cookie in HttpContext.Request.Cookies.Keys)
+            {
+                HttpContext.Response.Cookies.Delete(cookie);
+                Console.WriteLine($"Deleted cookie: {cookie}");
+            }
 
-            // Hapus sign out cookie
-            await HttpContext.SignOutAsync("CookieAuth");            
+            // Sign out autentikasi
+            await HttpContext.SignOutAsync("CookieAuth");
+
+            // Redirect ke halaman login
             return RedirectToAction("Login", "Account");
         }
     }

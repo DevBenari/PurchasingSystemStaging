@@ -1,4 +1,7 @@
-﻿namespace PurchasingSystemStaging.Repositories
+﻿using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+
+namespace PurchasingSystemStaging.Repositories
 {
     public class SessionValidationMiddleware
     {
@@ -13,14 +16,19 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var userId = context.Session.GetString("UserId");
-
-            if (!string.IsNullOrEmpty(userId) && !_sessionService.IsSessionActive(userId))
+            if (context.User.Identity.IsAuthenticated)
             {
-                // Jika session tidak aktif, redirect ke login
-                context.Session.Clear();
-                context.Response.Redirect("/Account/Login");
-                return;
+                // Ambil UserId dari klaim
+                var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (!string.IsNullOrEmpty(userId) && !_sessionService.IsSessionActive(userId))
+                {
+                    // Hapus cookie dan session
+                    await context.SignOutAsync("CookieAuth");
+                    context.Session.Clear();
+                    context.Response.Redirect("/Account/Login");
+                    return;
+                }
             }
 
             await _next(context);

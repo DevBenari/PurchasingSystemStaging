@@ -100,8 +100,8 @@ builder.Services.AddAuthentication("CookieAuth")
         //options.Cookie.Name = "AuthCookie";
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Masa aktif cookie
+        options.SlidingExpiration = true; // Perpanjang cookie jika ada aktivitas
     });
 
 builder.Services.AddMemoryCache();
@@ -172,13 +172,6 @@ if (!app.Environment.IsProduction())
 // Tambahkan middleware untuk dekripsi URL
 //app.UseMiddleware<DecryptUrlMiddleware>();
 
-//Tambahan Baru
-app.UseSession();
-app.UseAuthentication();
-app.UseMiddleware<UpdateLastActivityMiddleware>();
-app.UseMiddleware<SessionValidationMiddleware>();
-app.UseAuthorization();
-
 //   konfigurasi end session 
 //app.Use(async (context, next) =>
 //{
@@ -211,6 +204,13 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+//Tambahan Baru
+app.UseSession();
+app.UseAuthentication();
+app.UseMiddleware<UpdateLastActivityMiddleware>();
+app.UseMiddleware<SessionValidationMiddleware>();
+app.UseAuthorization();
 
 app.UseFastReport();
 
