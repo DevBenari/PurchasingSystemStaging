@@ -622,22 +622,7 @@ namespace PurchasingSystemStaging.Controllers
             TempData["MessageFailed"] = "Failed to change password.";
             return RedirectToAction("MyProfile");
         }
-
-        public async Task<IActionResult> Logout()
-        {
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
-
-            if (user != null)
-            {
-                user.IsOnline = false;
-                await _userManager.UpdateAsync(user);
-            }
-
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
-        }
-
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

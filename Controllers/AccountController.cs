@@ -27,6 +27,7 @@ namespace PurchasingSystemStaging.Controllers
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IGroupRoleRepository _groupRoleRepository;
+        private readonly ISessionService _sessionService;
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
@@ -38,6 +39,7 @@ namespace PurchasingSystemStaging.Controllers
             IUserActiveRepository userActiveRepository,
             IRoleRepository roleRepository,
             IGroupRoleRepository groupRoleRepository,
+            ISessionService sessionService,
             ILogger<AccountController> logger,
 
             IDataProtectionProvider provider,
@@ -50,6 +52,7 @@ namespace PurchasingSystemStaging.Controllers
             _logger = logger;
             _roleRepository = roleRepository;
             _groupRoleRepository = groupRoleRepository;
+            _sessionService = sessionService;
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
@@ -59,48 +62,26 @@ namespace PurchasingSystemStaging.Controllers
         public IActionResult Index()
         {            
             return View();
-        }
-
-
-        //[HttpPost]
-        //[Route("accountController/ExtendSession")]
-        //public IActionResult ExtendSession()
-        //{
-        //    // Memperpanjang session dengan memperbarui waktu aktivitas terakhir
-        //    HttpContext.Session.SetString("LastActivity", DateTime.Now.ToString());
-
-        //    return Ok();
-        //}
-
-        //[HttpPost]
-        //[Route("accountController/EndSession")]
-        //public async Task<IActionResult> EndSession()
-        //{
-            //HttpContext.Session.Clear();
-
-            //// Hapus authentication cookies jika ada
-            //Response.Cookies.Delete(".AspNetCore.Identity.Application");
-
-        //    var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-        //    var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
-
-        //    if (user != null)
-        //    {
-        //        user.IsOnline = false;
-        //        await _userManager.UpdateAsync(user);
-        //    }
-
-        //    await _signInManager.SignOutAsync();
-
-        //    return Ok();
-        //}        
+        }        
       
         [AllowAnonymous]        
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                var userId = HttpContext.Session.GetString("UserId");
+
+                if (!string.IsNullOrEmpty(userId) && _sessionService.IsSessionActive(userId))
+                {
+                    // Jika session aktif, arahkan ke dashboard
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    await HttpContext.SignOutAsync("CookieAuth");
+                    HttpContext.Session.Clear();
+                }
+                return View();
             }
             else
             {
@@ -121,7 +102,18 @@ namespace PurchasingSystemStaging.Controllers
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                    return RedirectToAction("Index", "Home");
+                    var userId = HttpContext.Session.GetString("UserId");
+
+                    if (!string.IsNullOrEmpty(userId) && _sessionService.IsSessionActive(userId))
+                    {
+                        // Jika session aktif, arahkan ke dashboard
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        await HttpContext.SignOutAsync("CookieAuth");
+                        HttpContext.Session.Clear();
+                    }
                 }
                 else
                 {
@@ -132,26 +124,32 @@ namespace PurchasingSystemStaging.Controllers
                         TempData["WarningMessage"] = "Sorry, Username And Password Not Registered !";
                         return View(model);
                     }
-                    else if (user.IsActive == true && user.IsOnline == false)
+                    else if (user.IsActive == true && !_sessionService.IsSessionActive(user.Id))
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
-                        {
-                            //Membuat sesi pengguna
-                            HttpContext.Session.SetString("username", user.Email);                            
+                        {                            
+                            // Buat session baru
+                            var sessionId = Guid.NewGuid().ToString();
+                            HttpContext.Session.SetString("UserId", user.Id.ToString());
+                            HttpContext.Session.SetString("SessionId", sessionId);
+
+                            // Simpan session di server
+                            _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30));
 
                             // Set cookie autentikasi
                             var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
                             var identity = new ClaimsIdentity(claims, "CookieAuth");
-                            var principal = new ClaimsPrincipal(identity);
+                            var principal = new ClaimsPrincipal(identity);                            
 
-                            await HttpContext.SignInAsync("CookieAuth", principal);
-
+                            //Session akan di pertahankan jika browser di tutup tanpa di signout,
+                            //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
                             var authProperties = new AuthenticationProperties
                             {
-                                IsPersistent = false, // Set ke true jika ingin session bertahan setelah browser ditutup
+                                IsPersistent = false // Cookie tidak akan disimpan setelah browser ditutup
                             };
 
+                            await HttpContext.SignInAsync("CookieAuth", principal, authProperties);
                             await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
 
                             // Role
@@ -167,20 +165,7 @@ namespace PurchasingSystemStaging.Controllers
                                     .FirstOrDefault(u => u.UserName == model.Email)?.Id;
 
                                 if (userId != null) // Pastikan userId tidak null
-                                {
-                                    //roleNames = (from role in _roleRepository.GetRoles()
-                                    //             join userRole in _groupRoleRepository.GetAllGroupRole()
-                                    //             on role.Id equals userRole.RoleId
-                                    //             where userRole.DepartemenId == userId
-                                    //             select role.Name).ToList();
-                                    //// ambil juga judul modul
-                                    //roleNames = (from role in _roleRepository.GetRoles()
-                                    //             join userRole in _groupRoleRepository.GetAllGroupRole()
-                                    //             on role.Id equals userRole.RoleId
-                                    //             where userRole.DepartemenId == userId
-                                    //             select role.ConcurrencyStamp)
-                                    //             .Distinct().ToList();                                  
-
+                                {                                    
                                     roleNames = (from role in _roleRepository.GetRoles()
                                                  join userRole in _groupRoleRepository.GetAllGroupRole()
                                                  on role.Id equals userRole.RoleId
@@ -199,15 +184,7 @@ namespace PurchasingSystemStaging.Controllers
                             }
 
                             // Menyimpan daftar roleNames ke dalam session
-                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
-
-                            user.IsOnline = true;
-                            var utcTime = DateTimeOffset.UtcNow;
-                            var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-                            var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
-                            user.LastActivityTime = localDateTime;
-
-                            await _userManager.UpdateAsync(user);
+                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));                          
 
                             _logger.LogInformation("User logged in.");
                             return RedirectToAction("Index", "Home");
@@ -236,12 +213,9 @@ namespace PurchasingSystemStaging.Controllers
                         TempData["WarningMessage"] = "Sorry, Wrong Password !";
                         //return View(model);
                     }
-                    else if (user.IsActive == true && user.IsOnline == true)
+                    else if (user.IsActive == true && _sessionService.IsSessionActive(user.Id))
                     {
-                        //TempData["UserOnlineMessage"] = "Sorry, your account is online, has been logged out, please sign back in !";
-
-                        user.IsOnline = false;
-                        await _userManager.UpdateAsync(user);
+                        TempData["UserOnlineMessage"] = "Sorry, your account is online, please wait until the session expires!";                       
 
                         return View(model);
                     }
@@ -259,28 +233,37 @@ namespace PurchasingSystemStaging.Controllers
             }
             return View();
         }
-       
-        public async Task<IActionResult> Logout()
-        {
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);          
 
-            if (user != null)
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {           
+            // Hapus session dari server-side storage
+            var userId = HttpContext.Session.GetString("UserId");
+
+            if (!string.IsNullOrEmpty(userId))
             {
-                user.IsOnline = false;
-               var utcTime = DateTimeOffset.UtcNow;
-                var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-                var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
-                user.LastActivityTime = localDateTime;
-                await _userManager.UpdateAsync(user);
+                Console.WriteLine($"Invalidating session for user: {userId}");
+
+                // Hapus session dari server-side storage
+                _sessionService.DeleteSession(userId);
+                _sessionService.InvalidateAllSessions(userId);
+
+                // Clear session lokal
+                HttpContext.Session.Clear();
             }
 
-            // Hapus session dan sign out cookie
-            HttpContext.Session.Remove("username");
+            // Hapus semua cookies
+            foreach (var cookie in HttpContext.Request.Cookies.Keys)
+            {
+                HttpContext.Response.Cookies.Delete(cookie);
+                Console.WriteLine($"Deleted cookie: {cookie}");
+            }
+
+            // Sign out autentikasi
             await HttpContext.SignOutAsync("CookieAuth");
 
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            // Redirect ke halaman login
+            return RedirectToAction("Login", "Account");
         }
     }
 }
