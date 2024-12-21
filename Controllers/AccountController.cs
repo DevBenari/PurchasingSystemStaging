@@ -27,6 +27,7 @@ namespace PurchasingSystemStaging.Controllers
         private readonly IUserActiveRepository _userActiveRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IGroupRoleRepository _groupRoleRepository;
+        private readonly ISessionService _sessionService;
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
@@ -38,6 +39,7 @@ namespace PurchasingSystemStaging.Controllers
             IUserActiveRepository userActiveRepository,
             IRoleRepository roleRepository,
             IGroupRoleRepository groupRoleRepository,
+            ISessionService sessionService,
             ILogger<AccountController> logger,
 
             IDataProtectionProvider provider,
@@ -50,6 +52,7 @@ namespace PurchasingSystemStaging.Controllers
             _logger = logger;
             _roleRepository = roleRepository;
             _groupRoleRepository = groupRoleRepository;
+            _sessionService = sessionService;
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
@@ -59,41 +62,7 @@ namespace PurchasingSystemStaging.Controllers
         public IActionResult Index()
         {            
             return View();
-        }
-
-
-        //[HttpPost]
-        //[Route("accountController/ExtendSession")]
-        //public IActionResult ExtendSession()
-        //{
-        //    // Memperpanjang session dengan memperbarui waktu aktivitas terakhir
-        //    HttpContext.Session.SetString("LastActivity", DateTime.Now.ToString());
-
-        //    return Ok();
-        //}
-
-        //[HttpPost]
-        //[Route("accountController/EndSession")]
-        //public async Task<IActionResult> EndSession()
-        //{
-            //HttpContext.Session.Clear();
-
-            //// Hapus authentication cookies jika ada
-            //Response.Cookies.Delete(".AspNetCore.Identity.Application");
-
-        //    var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-        //    var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);
-
-        //    if (user != null)
-        //    {
-        //        user.IsOnline = false;
-        //        await _userManager.UpdateAsync(user);
-        //    }
-
-        //    await _signInManager.SignOutAsync();
-
-        //    return Ok();
-        //}        
+        }        
       
         [AllowAnonymous]        
         public IActionResult Login()
@@ -132,13 +101,21 @@ namespace PurchasingSystemStaging.Controllers
                         TempData["WarningMessage"] = "Sorry, Username And Password Not Registered !";
                         return View(model);
                     }
-                    else if (user.IsActive == true && user.IsOnline == false)
+                    else if (user.IsActive == true && !_sessionService.IsSessionActive(user.Id))
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
                         {
                             //Membuat sesi pengguna
-                            HttpContext.Session.SetString("username", user.Email);                            
+                            //HttpContext.Session.SetString("username", user.Email);
+
+                            // Buat session baru
+                            var sessionId = Guid.NewGuid().ToString();
+                            HttpContext.Session.SetString("UserId", user.Id.ToString());
+                            HttpContext.Session.SetString("SessionId", sessionId);
+
+                            // Simpan session di server
+                            _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30));
 
                             // Set cookie autentikasi
                             var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
@@ -236,12 +213,9 @@ namespace PurchasingSystemStaging.Controllers
                         TempData["WarningMessage"] = "Sorry, Wrong Password !";
                         //return View(model);
                     }
-                    else if (user.IsActive == true && user.IsOnline == true)
+                    else if (user.IsActive == true && _sessionService.IsSessionActive(user.Id))
                     {
-                        //TempData["UserOnlineMessage"] = "Sorry, your account is online, has been logged out, please sign back in !";
-
-                        user.IsOnline = false;
-                        await _userManager.UpdateAsync(user);
+                        TempData["UserOnlineMessage"] = "Sorry, your account is online, please wait until the session expires!";                       
 
                         return View(model);
                     }
@@ -259,28 +233,28 @@ namespace PurchasingSystemStaging.Controllers
             }
             return View();
         }
-       
-        public async Task<IActionResult> Logout()
-        {
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var user = await _signInManager.UserManager.FindByNameAsync(getUser.Email);          
 
-            if (user != null)
+        public async Task<IActionResult> Logout()
+        {            
+            await _signInManager.SignOutAsync();
+
+            // Clear semua data session
+            HttpContext.Session.Clear();
+
+            // Hapus session user
+            var userId = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userId))
             {
-                user.IsOnline = false;
-               var utcTime = DateTimeOffset.UtcNow;
-                var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-                var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime.UtcDateTime, localTimeZone);
-                user.LastActivityTime = localDateTime;
-                await _userManager.UpdateAsync(user);
+                _sessionService.InvalidateAllSessions(userId);
+                HttpContext.Session.Clear();
             }
 
-            // Hapus session dan sign out cookie
-            HttpContext.Session.Remove("username");
-            await HttpContext.SignOutAsync("CookieAuth");
+            // Hapus session
+            HttpContext.Session.Remove("UserId");
 
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            // Hapus sign out cookie
+            await HttpContext.SignOutAsync("CookieAuth");            
+            return RedirectToAction("Login", "Account");
         }
     }
 }

@@ -34,7 +34,7 @@
                 <!-- /.card-header -->
                 <div class="card">
                     <div class="card-body">
-                        <form enctype="multipart/form-data" id="filterForm" asp-action="Index" asp-controller="ReceiveOrder" asp-area="Warehouse" method="post" class="form-horizontal">
+                        <form enctype="multipart/form-data" id="filterForm" asp-action="Index" asp-controller="ReceiveOrder" asp-area="Warehouse" method="get" class="form-horizontal">
                             <div class="row">
                                 <div class="col-md-3 input-group">
                                     @if (User.Identity.Name == "superadmin@admin.com")

@@ -122,7 +122,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             if (getUser == null)
             {
                 TempData["WarningMessage"] = "Sorry, please select a user first !!!";
-                return RedirectToAction("RedirectToIndex"); // atau aksi lain sesuai kebutuhan                
+                return RedirectToAction("Index"); // atau aksi lain sesuai kebutuhan                
             }
             else
             {
@@ -179,7 +179,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 }
 
                 TempData["SuccessMessage"] = "Role successfully assigned to user";
-                return RedirectToAction("RedirectToIndex"); // atau aksi lain sesuai kebutuhan
+                return RedirectToAction("Index"); // atau aksi lain sesuai kebutuhan
             }                        
         }
 
@@ -228,7 +228,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                                     string roleName = action;
 
                                     // Jika aksi adalah "Index", tambahkan nama controller ke role
-                                    if (action == "Index")
+                                    if (action.StartsWith("Index"))
                                     {
                                         roleName = $"Read{controllerName}";  // Misalnya, "ReadBank"
                                     }

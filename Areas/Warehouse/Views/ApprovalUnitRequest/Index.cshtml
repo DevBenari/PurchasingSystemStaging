@@ -30,7 +30,7 @@
                 <!-- /.card-header -->
                 <div class="card">
                     <div class="card-body">
-                        <form enctype="multipart/form-data" id="filterForm" asp-action="Index" asp-controller="ApprovalUnitRequest" asp-area="Warehouse" method="post" class="form-horizontal">
+                        <form enctype="multipart/form-data" id="filterForm" asp-action="Index" asp-controller="ApprovalUnitRequest" asp-area="Warehouse" method="get" class="form-horizontal">
                             <div class="row">
                                 <div class="col-md-3 input-group">
                                     <input type="date" name="startDate" id="startDate" class="date-input" value="@ViewBag.StartDate" placeholder="Select Start Date">

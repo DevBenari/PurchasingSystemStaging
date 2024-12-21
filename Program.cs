@@ -83,6 +83,8 @@ builder.Services.AddMvc(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
+builder.Services.AddDistributedMemoryCache();
+
 // konfigurasi session 
 builder.Services.AddSession(options =>
 {
@@ -95,15 +97,18 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication("CookieAuth")
     .AddCookie("CookieAuth", options =>
     {
-        options.Cookie.Name = "AuthCookie";
+        //options.Cookie.Name = "AuthCookie";
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
     });
 
+builder.Services.AddMemoryCache();
+
 AddScope();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 
 #region Areas Master Data
 builder.Services.AddScoped<IUserActiveRepository>();
@@ -171,37 +176,37 @@ if (!app.Environment.IsProduction())
 app.UseSession();
 app.UseAuthentication();
 app.UseMiddleware<UpdateLastActivityMiddleware>();
-app.UseMiddleware<SessionCleanupService>();
+app.UseMiddleware<SessionValidationMiddleware>();
 app.UseAuthorization();
 
 //   konfigurasi end session 
-app.Use(async (context, next) =>
-{
-    var returnUrl = context.Request.Path + context.Request.QueryString;
-    var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}"; 
+//app.Use(async (context, next) =>
+//{
+//    var returnUrl = context.Request.Path + context.Request.QueryString;
+//    var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}"; 
 
-    if (context.Session.GetString("username") == null && context.Request.Path != loginUrl)
-    {
-        var username = context.User.Identity.Name;
+//    if (context.Session.GetString("username") == null && context.Request.Path != loginUrl)
+//    {
+//        var username = context.User.Identity.Name;
 
-        if (!string.IsNullOrEmpty(username))
-        {
-            // Middleware Session And Cookie
-            UpdateDataForExpiredSession(username, app, context, returnUrl);            
+//        if (!string.IsNullOrEmpty(username))
+//        {
+//            // Middleware Session And Cookie
+//            UpdateDataForExpiredSession(username, app, context, returnUrl);            
 
-            context.Response.Redirect(loginUrl);
-            return;
-        }
-    }
-    else
-    {
-        // Jika session masih aktif, perbarui waktu "LastActivity"
-        context.Session.SetString("LastActivity", DateTimeOffset.Now.ToString());        
-    }    
+//            context.Response.Redirect(loginUrl);
+//            return;
+//        }
+//    }
+//    else
+//    {
+//        // Jika session masih aktif, perbarui waktu "LastActivity"
+//        context.Session.SetString("LastActivity", DateTimeOffset.Now.ToString());        
+//    }    
 
-    // Lanjutkan ke middleware berikutnya
-    await next();
-});
+//    // Lanjutkan ke middleware berikutnya
+//    await next();
+//});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -230,28 +235,28 @@ void AddScope()
     builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 }
 
-async void UpdateDataForExpiredSession(string username, WebApplication app, HttpContext context, string returnUrl)
-{
-    // Logika update data
-    // Tambahkan logika lain sesuai kebutuhan, misalnya memperbarui status user di database
-    using (var scope = app.Services.CreateScope())
-    { 
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var signInManager = scope.ServiceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+//async void UpdateDataForExpiredSession(string username, WebApplication app, HttpContext context, string returnUrl)
+//{
+//    // Logika update data
+//    // Tambahkan logika lain sesuai kebutuhan, misalnya memperbarui status user di database
+//    using (var scope = app.Services.CreateScope())
+//    { 
+//        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//        var signInManager = scope.ServiceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
 
-        //Cari User
-        var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
-        if (user != null)
-        {            
-            user.IsOnline = false;
-            dbContext.SaveChanges();
-        }
+//        //Cari User
+//        var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
+//        if (user != null)
+//        {            
+//            user.IsOnline = false;
+//            dbContext.SaveChanges();
+//        }
 
-        // Hapus session dan sign out cookie
-        context.Session.Remove("username");
-        await context.SignOutAsync("CookieAuth");
+//        // Hapus session dan sign out cookie
+//        context.Session.Remove("username");
+//        await context.SignOutAsync("CookieAuth");
 
-        await signInManager.SignOutAsync();
-        context.Response.Redirect(returnUrl);
-    }
-}
+//        await signInManager.SignOutAsync();
+//        context.Response.Redirect(returnUrl);
+//    }
+//}

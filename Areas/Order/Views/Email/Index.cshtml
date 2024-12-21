@@ -33,7 +33,7 @@
                 <!-- /.card-header -->
                 <div class="card">
                     <div class="card-body">
-                        <form enctype="multipart/form-data" id="filterForm" asp-action="Index" asp-controller="Email" asp-area="Order" method="post" class="form-horizontal">
+                        <form enctype="multipart/form-data" id="filterForm" asp-action="Index" asp-controller="Email" asp-area="Order" method="get" class="form-horizontal">
                             <div class="row">
                                 <div class="col-md-3 input-group">
                                     @if (!string.IsNullOrEmpty(listRole))
