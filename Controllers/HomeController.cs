@@ -298,49 +298,6 @@ namespace PurchasingSystemStaging.Controllers
         [HttpGet]
         public IActionResult MyProfile()
         {
-            ViewBag.Active = "Dashboard";
-            var countUser = _applicationDbContext.UserActives.GroupBy(u => u.UserActiveId).Select(y => new
-            {
-                UserActiveId = y.Key,
-                CountOfUsers = y.Count()
-            }).ToList();
-            ViewBag.CountUser = countUser.Count;
-
-            var countSupplier = _applicationDbContext.Suppliers.GroupBy(u => u.SupplierId).Select(y => new
-            {
-                SupplierId = y.Key,
-                CountOfSuppliers = y.Count()
-            }).ToList();
-            ViewBag.CountSupplier = countSupplier.Count;
-
-            var countProduct = _applicationDbContext.Products.GroupBy(u => u.ProductId).Select(y => new
-            {
-                ProductId = y.Key,
-                CountOfProducts = y.Count()
-            }).ToList();
-            ViewBag.CountProduct = countProduct.Count;
-
-            var countPurchaseRequest = _applicationDbContext.PurchaseRequests.GroupBy(u => u.PurchaseRequestId).Select(y => new
-            {
-                PurchaseRequestId = y.Key,
-                CountOfPurchaseRequests = y.Count()
-            }).ToList();
-            ViewBag.CountPurchaseRequest = countPurchaseRequest.Count;
-
-            var countPurchaseOrder = _applicationDbContext.PurchaseOrders.GroupBy(u => u.PurchaseOrderId).Select(y => new
-            {
-                PurchaseOrderId = y.Key,
-                CountOfPurchaseOrders = y.Count()
-            }).ToList();
-            ViewBag.CountPurchaseOrder = countPurchaseOrder.Count;
-
-            var countReceiveOrder = _applicationDbContext.ReceiveOrders.GroupBy(u => u.ReceiveOrderId).Select(y => new
-            {
-                ReceiveOrderId = y.Key,
-                CountOfReceiveOrders = y.Count()
-            }).ToList();
-            ViewBag.CountReceiveOrder = countReceiveOrder.Count;
-
             var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
 
