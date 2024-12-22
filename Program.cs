@@ -104,6 +104,14 @@ builder.Services.AddAuthentication("CookieAuth")
         options.SlidingExpiration = true; // Perpanjang cookie jika ada aktivitas
     });
 
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.CookieManager = new ChunkingCookieManager
+//    {
+//        ChunkSize = null // Nonaktifkan chunking
+//    };
+//});
+
 builder.Services.AddMemoryCache();
 
 AddScope();

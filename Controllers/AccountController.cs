@@ -128,7 +128,7 @@ namespace PurchasingSystemStaging.Controllers
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
-                        {                            
+                        {
                             // Buat session baru
                             var sessionId = Guid.NewGuid().ToString();
                             HttpContext.Session.SetString("UserId", user.Id.ToString());
@@ -138,9 +138,19 @@ namespace PurchasingSystemStaging.Controllers
                             _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30));
 
                             // Set cookie autentikasi
-                            var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
+                            //var claims = new[] { new Claim(ClaimTypes.Name, user.Email) };
+                            //var identity = new ClaimsIdentity(claims, "CookieAuth");
+                            //var principal = new ClaimsPrincipal(identity);                            
+
+                            var claims = new[]
+                            {
+                                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Hanya UserId
+                                //new Claim(ClaimTypes.Name, user.Email)
+                            };
                             var identity = new ClaimsIdentity(claims, "CookieAuth");
-                            var principal = new ClaimsPrincipal(identity);                            
+                            var principal = new ClaimsPrincipal(identity);
+
+                            await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
 
                             //Session akan di pertahankan jika browser di tutup tanpa di signout,
                             //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
@@ -150,7 +160,6 @@ namespace PurchasingSystemStaging.Controllers
                             };
 
                             await HttpContext.SignInAsync("CookieAuth", principal, authProperties);
-                            await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
 
                             // Role
                             List<string> roleNames; // Deklarasikan di luar
@@ -165,26 +174,40 @@ namespace PurchasingSystemStaging.Controllers
                                     .FirstOrDefault(u => u.UserName == model.Email)?.Id;
 
                                 if (userId != null) // Pastikan userId tidak null
-                                {                                    
+                                {
+                                    //roleNames = (from role in _roleRepository.GetRoles()
+                                    //             join userRole in _groupRoleRepository.GetAllGroupRole()
+                                    //             on role.Id equals userRole.RoleId
+                                    //             where userRole.DepartemenId == userId
+                                    //             select role.Name).Union(
+                                    //                 from role in _roleRepository.GetRoles()
+                                    //                 join userRole in _groupRoleRepository.GetAllGroupRole()
+                                    //                 on role.Id equals userRole.RoleId
+                                    //                 where userRole.DepartemenId == userId
+                                    //                 select role.ConcurrencyStamp).Distinct().ToList();
                                     roleNames = (from role in _roleRepository.GetRoles()
-                                                 join userRole in _groupRoleRepository.GetAllGroupRole()
-                                                 on role.Id equals userRole.RoleId
-                                                 where userRole.DepartemenId == userId
-                                                 select role.Name).Union(
-                                                     from role in _roleRepository.GetRoles()
                                                      join userRole in _groupRoleRepository.GetAllGroupRole()
                                                      on role.Id equals userRole.RoleId
                                                      where userRole.DepartemenId == userId
-                                                     select role.ConcurrencyStamp).Distinct().ToList();
+                                                     select new { role.Name, role.ConcurrencyStamp })
+                                                    .Distinct()
+                                                    .Select(x => x.Name)
+                                                    .Union(
+                                                        (from role in _roleRepository.GetRoles()
+                                                         join userRole in _groupRoleRepository.GetAllGroupRole()
+                                                         on role.Id equals userRole.RoleId
+                                                         where userRole.DepartemenId == userId
+                                                         select role.ConcurrencyStamp)
+                                                    ).ToList();
                                 }
                                 else
                                 {
                                     roleNames = new List<string>(); // Jika userId tidak ditemukan, set roleNames ke list kosong
                                 }
-                            }
-
+                            }                                                                                   
+                            
                             // Menyimpan daftar roleNames ke dalam session
-                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));                          
+                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));                           
 
                             _logger.LogInformation("User logged in.");
                             return RedirectToAction("Index", "Home");
