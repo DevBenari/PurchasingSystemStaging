@@ -39,23 +39,23 @@ builder.Services.AddControllersWithViews(options =>
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-});
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidateLifetime = true,
+//        ValidateIssuerSigningKey = true,
+//        ValidIssuer = jwtSettings["Issuer"],
+//        ValidAudience = jwtSettings["Audience"],
+//        IssuerSigningKey = new SymmetricSecurityKey(key)
+//    };
+//});
 
 //Tambahan Baru
 builder.Services.AddHttpClient();
@@ -95,13 +95,26 @@ builder.Services.AddSession(options =>
 
 //Script Auto Show Login Account First Time
 builder.Services.AddAuthentication("CookieAuth")
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+    })
     .AddCookie("CookieAuth", options =>
     {
-        //options.Cookie.Name = "AuthCookie";
+        options.Cookie.Name = "AuthCookie";
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Masa aktif cookie
-        options.SlidingExpiration = true; // Perpanjang cookie jika ada aktivitas
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
     });
 
 //builder.Services.ConfigureApplicationCookie(options =>
@@ -168,7 +181,7 @@ FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
 
 var app = builder.Build();
 
-builder.Services.AddDataProtection();
+//builder.Services.AddDataProtection();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsProduction())
@@ -216,8 +229,7 @@ app.UseRouting();
 //Tambahan Baru
 app.UseSession();
 app.UseAuthentication();
-app.UseMiddleware<UpdateLastActivityMiddleware>();
-app.UseMiddleware<SessionValidationMiddleware>();
+//app.UseMiddleware<SessionValidationMiddleware>();
 app.UseAuthorization();
 
 app.UseFastReport();

@@ -5,33 +5,41 @@ namespace PurchasingSystemStaging.Repositories
 {
     public class SessionValidationMiddleware
     {
-        private readonly RequestDelegate _next;
-        private readonly ISessionService _sessionService;
+        //private readonly RequestDelegate _next;
+        //private readonly ISessionService _sessionService;
 
-        public SessionValidationMiddleware(RequestDelegate next, ISessionService sessionService)
-        {
-            _next = next;
-            _sessionService = sessionService;
-        }
+        //public SessionValidationMiddleware(RequestDelegate next, ISessionService sessionService)
+        //{
+        //    _next = next;
+        //    _sessionService = sessionService;
+        //}
 
-        public async Task InvokeAsync(HttpContext context)
-        {
-            if (context.User.Identity.IsAuthenticated)
-            {
-                // Ambil UserId dari klaim
-                var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //public async Task InvokeAsync(HttpContext context)
+        //{
+        //    if (context.User.Identity.IsAuthenticated)
+        //    {
+        //        var userId = context.Session.GetString("UserId");
 
-                if (!string.IsNullOrEmpty(userId) && !_sessionService.IsSessionActive(userId))
-                {
-                    // Hapus cookie dan session
-                    await context.SignOutAsync("CookieAuth");
-                    context.Session.Clear();
-                    context.Response.Redirect("/Account/Login");
-                    return;
-                }
-            }
+        //        if (!string.IsNullOrEmpty(userId))
+        //        {
+        //            if (!_sessionService.IsSessionActive(userId))
+        //            {
+        //                context.Session.Clear();
+        //                context.Response.Redirect("/Account/Login");
+        //                return;
+        //            }
 
-            await _next(context);
-        }
+        //            var roles = _sessionService.GetRoles(userId);
+        //            if (roles == null || roles.Count == 0)
+        //            {
+        //                context.Session.Clear();
+        //                context.Response.Redirect("/Account/Login");
+        //                return;
+        //            }
+        //        }
+        //    }
+
+        //    await _next(context);
+        //}
     }
 }
