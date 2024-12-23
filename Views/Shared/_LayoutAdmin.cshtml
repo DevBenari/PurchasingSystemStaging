@@ -259,123 +259,123 @@
                                     </li>
                                 }
 
-                                if (roles.Contains("PurchaseRequest"))
+                                if (roles.Contains("ReadPurchaseRequest"))
                                 {
                                     <li class="nav-header">Purchasing</li>
-                                    <li class="@(ViewBag.Active == "ReadPurchaseRequest" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "PurchaseRequest" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">
                                             <i class="nav-icon fas fa-cart-plus" style="color:#FFFFFF"></i> Purchase Request
                                         </div>
                                     </li>
                                 }
 
-                                if (roles.Contains("ApprovalPurchaseRequest"))
+                                if (roles.Contains("ReadApprovalPurchaseRequest"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadApprovalPurchaseRequest" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "ApprovalPurchaseRequest" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">
                                             <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Purchase Req
                                         </div>
                                     </li>
                                 }
-                                if (roles.Contains("PurchaseOrder"))
+                                if (roles.Contains("ReadPurchaseOrder"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadPurchaseOrder" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "PurchaseOrder" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Order" })">
                                             <i class="nav-icon fas fa-shopping-bag" style="color:#FFFFFF"></i> Purchase Order @*<span class="float-right badge bg-info">@ViewBag.CountPurchaseRequestStatus</span>*@
                                         </div>
                                     </li>
                                 }
-                                if (roles.Contains("UnitRequest"))
+                                if (roles.Contains("ReadUnitRequest"))
                                 {
                                     <li class="nav-header">Pharmacy</li>
-                                    <li class="@(ViewBag.Active == "ReadUnitRequest" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "UnitRequest" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">
                                             <i class="nav-icon fas fa-first-aid" style="color:#FFFFFF"></i> Unit Request
                                         </div>
                                     </li>
                                 }
 
-                                if (roles.Contains("ApprovalUnitRequest"))
+                                if (roles.Contains("ReadApprovalUnitRequest"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadApprovalUnitRequest" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "ApprovalUnitRequest" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalUnitRequest", new { area = "Warehouse" })">
                                             <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Unit Request
                                         </div>
                                     </li>
                                 }
-                                if (roles.Contains("ReceiveOrder"))
+                                if (roles.Contains("ReadReceiveOrder"))
                                 {
                                     <li class="nav-header">Warehouse Management</li>
-                                    <li class="@(ViewBag.Active == "ReadReceiveOrder" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "ReceiveOrder" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">
                                             <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i> Receive Order
                                         </div>
                                     </li>
                                 }
-                                if (roles.Contains("QtyDifference"))
+                                if (roles.Contains("ReadQtyDifference"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadQtyDifference" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "QtyDifference" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "QtyDifference", new { area = "Warehouse" })">
                                             <i class="nav-icon fas fa-truck-loading" style="color:#FFFFFF"></i> Qty Difference
                                         </div>
                                     </li>
                                 }
-                                if (roles.Contains("ApprovalQtyDifference"))
+                                if (roles.Contains("ReadApprovalQtyDifference"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadApprovalQtyDifference" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "ApprovalQtyDifference" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalQtyDifference", new { area = "Order" })">
                                             <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Qty Difference
                                         </div>
                                     </li>
                                 }
 
-                                if (roles.Contains("UnitOrder"))
+                                if (roles.Contains("ReadUnitOrder"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadUnitOrder" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "UnitOrder" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "UnitOrder", new { area = "Warehouse" })">
                                             <i class="nav-icon fas fa-calculator" style="color:#FFFFFF"></i> Unit Order
                                         </div>
                                     </li>
                                 }
 
-                                if (roles.Contains("WarehouseTransfer"))
+                                if (roles.Contains("ReadWarehouseTransfer"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadWarehouseTransfer" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "WarehouseTransfer" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "WarehouseTransfer", new { area = "Warehouse" })">
                                             <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> Warehouse Transfer
                                         </div>
                                     </li>
                                 }
-                                
-                                if (roles.Contains("ProductReturn"))
+
+                                if (roles.Contains("ReadProductReturn"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadProductReturn" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "ProductReturn" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ProductReturn", new { area = "Warehouse" })">
                                             <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> Product Return
                                         </div>
                                     </li>
-                                }                                
+                                }
 
-                                if (roles.Contains("StockMonitoring"))
+                                if (roles.Contains("ReadStockMonitoring"))
                                 {
                                     <li class="nav-header">General</li>
-                                    <li class="@(ViewBag.Active == "ReadStockMonitoring" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "StockMonitoring" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "StockMonitoring", new { area = "General" })">
                                             <i class="nav-icon fas fa-clipboard-list" style="color:#FFFFFF"></i> Stock Monitoring
                                         </div>
                                     </li>
                                 }
 
-                                if (roles.Contains("KeyPerformanceIndicator"))
+                                if (roles.Contains("ReadKeyPerformanceIndicator"))
                                 {
-                                    <li class="@(ViewBag.Active == "ReadKeyPerformanceIndikator" ? "nav-item menu-open active":"")">
+                                    <li class="@(ViewBag.Active == "KeyPerformanceIndikator" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "Order" })">
                                             <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> Key Performance Indicator
                                         </div>
                                     </li>
                                 }
 
-                                if (roles.Contains("ReadCalculatedPurchaseOrder") || roles.Contains("ClosedPurchaseOrder"))
+                                if (roles.Contains("ReadCalculatedPurchaseOrder") || roles.Contains("ReadClosedPurchaseOrder"))
                                 {
                                     <li class="nav-header">Reporting</li>
                                     <li class="@(ViewBag.Active == "Report" ? "nav-item menu-open active":"")">

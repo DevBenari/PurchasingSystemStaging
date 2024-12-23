@@ -97,7 +97,7 @@
                                         Dashboard
                                     </div>
                                 </li>
-                                @if (roles.Contains("GroupRole"))
+                                @if (roles.Contains("ReadGroupRole"))
                                 {
                                     <li class="nav-item">
                                         <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "GroupRole", new { area = "MasterData" })">
@@ -105,20 +105,20 @@
                                         </div>
                                     </li>
                                 }
-                                @if (roles.Any(role => role == "UserActive" || role == "Position" || role == "Department"))
+                                @if (roles.Any(role => role == "ReadUserActive" || role == "ReadPosition" || role == "ReadDepartment"))
                                 {
                                     <li class="nav-item dropdown">
                                         <button class="btn btn-orange dropdown-toggle" style="color:#ffffff" data-bs-toggle="dropdown" aria-expanded="false">Users</button>
                                         <ul class="dropdown-menu dropdown-menu-dark">
-                                            @if (roles.Contains("UserActive"))
+                                            @if (roles.Contains("ReadUserActive"))
                                             {
                                                 <li><div class="dropdown-item cursor-pointer" data-href="@Url.Action("Index", "UserActive", new { area = "MasterData" })">User</div></li>
                                             }
-                                            @if (roles.Contains("Position"))
+                                            @if (roles.Contains("ReadPosition"))
                                             {
                                                 <li><div class="dropdown-item cursor-pointer" data-href="@Url.Action("Index", "Position", new { area = "MasterData" })">Position</div></li>
                                             }
-                                            @if (roles.Contains("Department"))
+                                            @if (roles.Contains("ReadDepartment"))
                                             {
                                                 <li><div class="dropdown-item cursor-pointer" data-href="@Url.Action("Index", "Department", new { area = "MasterData" })">Department</div></li>
                                             }
@@ -126,7 +126,7 @@
                                     </li>
                                 }
 
-                                if (roles.Contains("Supplier"))
+                                if (roles.Contains("ReadSupplier"))
                                 {
                                     <li class="nav-item dropdown">
                                         <button class="btn btn-orange dropdown-toggle" style="color:#ffffff" data-bs-toggle="dropdown" aria-expanded="false">Supplier</button>
@@ -137,31 +137,31 @@
                                         </ul>
                                     </li>
                                 }
-                                @if (roles.Any(role => role == "Product" || role == "Category" || role == "Measurement" || role == "Discount"))
+                                @if (roles.Any(role => role == "ReadProduct" || role == "ReadCategory" || role == "ReadMeasurement" || role == "ReadDiscount"))
                                 {
                                     <li class="nav-item dropdown">
                                         <button class="btn btn-orange dropdown-toggle" style="color:#ffffff" data-bs-toggle="dropdown" aria-expanded="false">Product</button>
                                         <ul class="dropdown-menu dropdown-menu-dark">
-                                            @if (roles.Contains("Product"))
+                                            @if (roles.Contains("ReadProduct"))
                                             {
                                             <li><div class="dropdown-item cursor-pointer" data-href="@Url.Action("Index", "Product", new { area = "MasterData" })">Product</div></li>
                                             }
-                                            @if (roles.Contains("Category"))
+                                            @if (roles.Contains("ReadCategory"))
                                             {
                                             <li><div class="dropdown-item cursor-pointer" data-href="@Url.Action("Index", "Category", new { area = "MasterData" })">Category</div></li>
                                             }
-                                            @if (roles.Contains("Measurement"))
+                                            @if (roles.Contains("ReadMeasurement"))
                                             {
                                             <li><div class="dropdown-item cursor-pointer" data-href="@Url.Action("Index", "Measurement", new { area = "MasterData" })">Measurement</div></li>
                                             }
-                                            @if (roles.Contains("Discount"))
+                                            @if (roles.Contains("ReadDiscount"))
                                             {
                                                 <li><div class="dropdown-item cursor-pointer" data-href="@Url.Action("Index", "Discount", new { area = "MasterData" })">Discount</div></li>
                                             }
                                         </ul>
                                     </li>
                                 }
-                                if (roles.Contains("TermOfPayment"))
+                                if (roles.Contains("ReadTermOfPayment"))
                                 {
                                     <li class="nav-item">
                                         <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "TermOfPayment", new { area = "MasterData" })">
@@ -169,7 +169,7 @@
                                         </div>
                                     </li>
                                 }
-                                if (roles.Contains("Bank"))
+                                if (roles.Contains("ReadBank"))
                                 {
                                     <li class="nav-item">
                                         <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Bank", new { area = "MasterData" })">
@@ -177,7 +177,7 @@
                                         </div>
                                     </li>
                                 }
-                                @if (roles.Any(role => role == "WarehouseLocation" || role == "UnitLocation"))
+                                @if (roles.Any(role => role == "ReadWarehouseLocation" || role == "ReadUnitLocation"))
                                 {
                                     <li class="nav-item dropdown">
                                         <button class="btn btn-orange dropdown-toggle" style="color:#ffffff" data-bs-toggle="dropdown" aria-expanded="false">Warehouse</button>
@@ -187,7 +187,7 @@
                                         </ul>
                                     </li>
                                 }
-                                if (roles.Contains("LeadTime"))
+                                if (roles.Contains("ReadLeadTime"))
                                 {
                                     <li class="nav-item">
                                         <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "LeadTime", new { area = "MasterData" })">
@@ -195,7 +195,7 @@
                                         </div>
                                     </li>
                                 }
-                                if (roles.Contains("InitialStock"))
+                                if (roles.Contains("ReadInitialStock"))
                                 {
                                     <li class="nav-item">
                                         <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "InitialStock", new { area = "MasterData" })">
@@ -203,7 +203,7 @@
                                         </div>
                                     </li>
                                 }
-                                if (roles.Contains("Api"))
+                                if (roles.Contains("ReadApi"))
                                 {
                                     <li class="nav-item">
                                         <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Api", new { area = "MasterData" })">
