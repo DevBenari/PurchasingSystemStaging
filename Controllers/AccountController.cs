@@ -135,21 +135,13 @@ namespace PurchasingSystemStaging.Controllers
                             HttpContext.Session.SetString("SessionId", sessionId);
                             var userId = _userActiveRepository.GetAllUserLogin()
                                     .FirstOrDefault(u => u.UserName == model.Email)?.Id;
-                            // Ambil role dari database
+                            
+                            // Ambil role dari database                            
                             List<string> roleNames = (from role in _roleRepository.GetRoles()
                                                       join userRole in _groupRoleRepository.GetAllGroupRole()
                                                       on role.Id equals userRole.RoleId
-                                                      where userRole.DepartemenId == userId
-                                                      select new { role.Name, role.ConcurrencyStamp })
-                                                    .Distinct()
-                                                    .Select(x => x.Name)
-                                                    .Union(
-                                                        (from role in _roleRepository.GetRoles()
-                                                         join userRole in _groupRoleRepository.GetAllGroupRole()
-                                                         on role.Id equals userRole.RoleId
-                                                         where userRole.DepartemenId == userId
-                                                         select role.ConcurrencyStamp)
-                                                    ).ToList();
+                                                      where userRole.DepartemenId == user.Id
+                                                      select role.Name).Distinct().ToList();
 
                             // Simpan session dan role di server-side cache
                             _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30), roleNames);
@@ -159,7 +151,7 @@ namespace PurchasingSystemStaging.Controllers
                             // Create claims
                             var claims = new List<Claim>
                             {
-                                //new Claim(ClaimTypes.NameIdentifier, user.Id)
+                                new Claim(ClaimTypes.NameIdentifier, user.Id),
                                 new Claim(ClaimTypes.Name, user.Email)
                             };
 
