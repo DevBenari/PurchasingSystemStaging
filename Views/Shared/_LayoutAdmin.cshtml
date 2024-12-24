@@ -577,7 +577,12 @@
                         const combineData = loggerDataPR.concat(loggerDataQtyDiff, loggerDataUnitReq, loggerDataProductReturn);
 
                         combineData.forEach(item => {
-                            item.dateObj = new Date(item.createdDate);  // tambahkan properti dateObj untuk pengurutan
+                            if (item.createdDate) {
+                                const formattedDate = item.createdDate.replace('.', ':');
+                                item.dateObj = new Date(formattedDate); // Tambahkan properti dateObj untuk pengurutan
+                            } else {
+                                console.warn('createdDate tidak valid:', item);
+                            }
                         });
 
                         // combineData.sort();

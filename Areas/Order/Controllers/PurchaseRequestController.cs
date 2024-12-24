@@ -138,10 +138,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             return Json(new SelectList(user, "UserActiveId", "FullName"));
         }
 
-        public async Task<IActionResult> GetProductsPaged(
-    string term,
-    int page = 1,
-    int pageSize = 10)
+        public async Task<IActionResult> GetProductsPaged(string term, int page = 1, int pageSize = 10)
         {
             // Mulai query, include relasi Supplier
             var query = _applicationDbContext.Products
@@ -186,35 +183,35 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             return Ok(response);
         }
 
-        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
-        {
-            try
-            {
-                // Format tanggal tanpa waktu
-                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+        //public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        //{
+        //    try
+        //    {
+        //        // Format tanggal tanpa waktu
+        //        string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+        //        string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
 
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Order/PurchaseRequest/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-                string encryptedPath = _protector.Protect(originalPath);
+        //        // Bangun originalPath dengan format tanggal ISO 8601
+        //        string originalPath = $"Page:Order/PurchaseRequest/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+        //        string encryptedPath = _protector.Protect(originalPath);
 
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
+        //        // Hash GUID-like code (SHA256 truncated to 36 characters)
+        //        string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+        //            .Replace('+', '-')
+        //            .Replace('/', '_')
+        //            .Substring(0, 36);
 
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+        //        // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+        //        _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
+        //        return Redirect("/" + guidLikeCode);
+        //    }
+        //    catch
+        //    {
+        //        // Jika enkripsi gagal, kembalikan view
+        //        return Redirect(Request.Path);
+        //    }            
+        //}
 
         [HttpGet]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
@@ -268,6 +265,11 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             {
                 var data = await _purchaseRequestRepository.GetAllPurchaseRequestPageSize(searchTerm, page, pageSize, startDate, endDate);
 
+                // Ambil data PurchaseRequest khusus user login
+                var userPurchaseRequests = data.purchaseRequests
+                    .Where(u => u.CreateBy.ToString() == getUserLogin.Id)
+                    .ToList();
+
                 foreach (var item in data.purchaseRequests)
                 {
                     if (item.Status != "Waiting Approval")
@@ -296,8 +298,8 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                 var model = new Pagination<PurchaseRequest>
                 {
-                    Items = data.purchaseRequests.Where(u => u.CreateBy.ToString() == getUserLogin.Id).ToList(),
-                    TotalCount = data.totalCountPurchaseRequests,
+                    Items = userPurchaseRequests,
+                    TotalCount = userPurchaseRequests.Count,
                     PageSize = pageSize,
                     CurrentPage = page,
                 };
@@ -306,31 +308,31 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             }
         }
 
-        public IActionResult RedirectToCreate()
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Create:Order/PurchaseRequest/CreatePurchaseRequest";
-                string encryptedPath = _protector.Protect(originalPath);
+        //public IActionResult RedirectToCreate()
+        //{
+        //    try
+        //    {
+        //        // Enkripsi path URL untuk "Index"
+        //        string originalPath = $"Create:Order/PurchaseRequest/CreatePurchaseRequest";
+        //        string encryptedPath = _protector.Protect(originalPath);
 
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
+        //        // Hash GUID-like code (SHA256 truncated to 36 characters)
+        //        string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+        //            .Replace('+', '-')
+        //            .Replace('/', '_')
+        //            .Substring(0, 36);
 
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+        //        // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+        //        _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-                return Redirect("/" + guidLikeCode);
-            } 
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }        
+        //        return Redirect("/" + guidLikeCode);
+        //    } 
+        //    catch
+        //    {
+        //        // Jika enkripsi gagal, kembalikan view
+        //        return Redirect(Request.Path);
+        //    }            
+        //}        
 
         [HttpGet]
         public async Task<IActionResult> CreatePurchaseRequest(string searchTerm)
@@ -339,9 +341,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
             _signInManager.IsSignedIn(User);
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-           
-            ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-            //ViewBag.Product = from p in _applicationDbContext.Products.Include(s => s.Supplier).ToList() select new { ProductId = p.ProductId, ProductName = p.ProductName, Supplier = p.Supplier.SupplierName };            
+                      
             ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);            
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
             ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
@@ -474,11 +474,11 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                 purchaseRequest.PurchaseRequestDetails = ItemsList;
                 _purchaseRequestRepository.Tambah(purchaseRequest);
 
-                //Signal R
-                var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
-                int totalKaryawan = data2.Count();
-                await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
-                //End Signal R                
+                ////Signal R
+                //var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
+                //int totalKaryawan = data2.Count();
+                //await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
+                ////End Signal R                
 
                 if (model.UserApprove1Id != null) 
                 {
@@ -556,8 +556,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                 return Json(new { redirectToUrl = Url.Action("Index", "PurchaseRequest") });
             }
             else
-            {
-                ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+            {                
                 ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
                 ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);                
                 ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -567,38 +566,37 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             }
         }
 
-        public IActionResult RedirectToDetail(Guid Id)
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Detail:Order/PurchaseRequest/DetailPurchaseRequest/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
+        //public IActionResult RedirectToDetail(Guid Id)
+        //{
+        //    try
+        //    {
+        //        // Enkripsi path URL untuk "Index"
+        //        string originalPath = $"Detail:Order/PurchaseRequest/DetailPurchaseRequest/{Id}";
+        //        string encryptedPath = _protector.Protect(originalPath);
 
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
+        //        // Hash GUID-like code (SHA256 truncated to 36 characters)
+        //        string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+        //            .Replace('+', '-')
+        //            .Replace('/', '_')
+        //            .Substring(0, 36);
 
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+        //        // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+        //        _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
+        //        return Redirect("/" + guidLikeCode);
+        //    }
+        //    catch
+        //    {
+        //        // Jika enkripsi gagal, kembalikan view
+        //        return Redirect(Request.Path);
+        //    }            
+        //}
 
         [HttpGet]
         public async Task<IActionResult> DetailPurchaseRequest(Guid Id)
         {
             ViewBag.Active = "PurchaseRequest";
-
-            ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+            
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);            
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -690,8 +688,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                                 _applicationDbContext.SaveChanges();
                             }
                             else
-                            {
-                                ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+                            {                                
                                 ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
                                 ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);                                
                                 ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -722,8 +719,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                         return Json(new { redirectToUrl = Url.Action("Index", "PurchaseRequest") });
                     }
                     else
-                    {
-                        ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+                    {                        
                         ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
                         ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);                        
                         ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -733,8 +729,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                     }
                 }
                 else
-                {
-                    ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+                {                    
                     ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
                     ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);                    
                     ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -742,8 +737,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                     TempData["WarningMessage"] = "Number " + model.PurchaseRequestNumber + " Already exists !!!";
                     return View(model);
                 }
-            }
-            ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
+            }            
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.TermOfPayment = new SelectList(await _termOfPaymentRepository.GetTermOfPayments(), "TermOfPaymentId", "TermOfPaymentName", SortOrder.Ascending);            
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -752,31 +746,31 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             return Json(new { redirectToUrl = Url.Action("Index", "PurchaseRequest") });
         }
 
-        public IActionResult RedirectToPrint(Guid Id)
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Detail:Order/PurchaseRequest/PrintPurchaseRequest/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
+        //public IActionResult RedirectToPrint(Guid Id)
+        //{
+        //    try
+        //    {
+        //        // Enkripsi path URL untuk "Index"
+        //        string originalPath = $"Detail:Order/PurchaseRequest/PrintPurchaseRequest/{Id}";
+        //        string encryptedPath = _protector.Protect(originalPath);
 
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
+        //        // Hash GUID-like code (SHA256 truncated to 36 characters)
+        //        string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+        //            .Replace('+', '-')
+        //            .Replace('/', '_')
+        //            .Substring(0, 36);
 
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+        //        // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+        //        _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
 
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }
-        }
+        //        return Redirect("/" + guidLikeCode);
+        //    }
+        //    catch
+        //    {
+        //        // Jika enkripsi gagal, kembalikan view
+        //        return Redirect(Request.Path);
+        //    }
+        //}
 
         public async Task<IActionResult> PrintPurchaseRequest(Guid Id)
         {

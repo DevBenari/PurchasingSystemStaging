@@ -236,7 +236,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     {
                         _bankRepository.Tambah(Bank);
                         TempData["SuccessMessage"] = "Name " + vm.BankName + " Saved";
-                        return RedirectToAction("RedirectToIndex", "Bank");
+                        return RedirectToAction("Index", "Bank");
                     }
                     else
                     {
