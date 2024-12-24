@@ -126,6 +126,7 @@ builder.Services.AddAuthentication("CookieAuth")
 //});
 
 builder.Services.AddMemoryCache();
+builder.Services.AddHostedService<CleanInactiveUsersService>();
 
 AddScope();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
