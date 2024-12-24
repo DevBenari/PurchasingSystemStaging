@@ -6,7 +6,12 @@ using System.Diagnostics.Metrics;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Repositories
 {
-    public class IProductRepository
+    //public interface IProductRepository
+    //{
+    //    Task<(List<Product> Items, int TotalCount)> GetPagedProducts(string searchTerm, int page, int pageSize);
+    //    // Method lain...
+    //}
+    public class IProductRepository 
     {
         private readonly ApplicationDbContext _context;
 
@@ -92,7 +97,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
                 RackNumber = Product.RackNumber,
                 Note = Product.Note
             }).ToListAsync();
-        }
+        }        
 
         public IEnumerable<Product> GetAllProduct()
         {
