@@ -121,15 +121,17 @@ builder.Services.AddAuthentication("CookieAuth")
         options.LogoutPath = "/Account/Logout";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
+        // Tambahkan ini jika ingin menggunakan chunking
+        options.CookieManager = new ChunkingCookieManager{};
     });
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.CookieManager = new ChunkingCookieManager
-    {
-        ChunkSize = null // Nonaktifkan chunking
-    };
-});
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.CookieManager = new ChunkingCookieManager
+//    {
+//        ChunkSize = null // Nonaktifkan chunking
+//    };
+//});
 
 builder.Services.AddMemoryCache();
 builder.Services.AddHostedService<CleanInactiveUsersService>();

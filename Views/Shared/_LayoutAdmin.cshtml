@@ -576,14 +576,54 @@
 
                         const combineData = loggerDataPR.concat(loggerDataQtyDiff, loggerDataUnitReq, loggerDataProductReturn);
 
+                        //combineData.forEach(item => {
+                        //    if (item.createdDate) {
+                        //        const formattedDate = item.createdDate.replace('.', ':');
+                        //        item.dateObj = new Date(formattedDate); // Tambahkan properti dateObj untuk pengurutan
+                        //    } else {
+                        //        console.warn('createdDate tidak valid:', item);
+                        //    }
+                        //});
+
                         combineData.forEach(item => {
-                            if (item.createdDate) {
-                                const formattedDate = item.createdDate.replace('.', ':');
-                                item.dateObj = new Date(formattedDate); // Tambahkan properti dateObj untuk pengurutan
+                            // Misal item.createdDate: "24/12/2024 15.14"
+                            const original = item.createdDate.trim();
+                            const [datePart, timePart] = original.split(' ');
+                            // datePart -> "24/12/2024"
+                            // timePart -> "15.14"
+
+                            // Ubah titik di jam-menit menjadi titik dua
+                            const fixedTimePart = timePart.replace('.', ':');
+                            // fixedTimePart -> "15:14"
+
+                            // Gabungkan kembali
+                            const newDateString = `${datePart} ${fixedTimePart}`;
+                            // newDateString -> "24/12/2024 15:14"
+
+                            // --------------------------------------------------
+                            // PARSING MENJADI Date OBJECT (Opsional, jika perlu):
+                            // --------------------------------------------------
+                            // Karena format datePart adalah "DD/MM/YYYY", kita pisahkan:
+                            const [day, month, year] = datePart.split('/');
+                            const [hour, minute] = fixedTimePart.split(':');
+
+                            // Bentuk string ISO 8601: "YYYY-MM-DDTHH:mm:ss"
+                            const isoString = `${year}-${month}-${day}T${hour}:${minute}:00`;
+                            // Contoh hasil -> "2024-12-24T15:14:00"
+
+                            // Buat object Date dari string ISO
+                            const dateObj = new Date(isoString);
+
+                            if (isNaN(dateObj.getTime())) {
+                                console.warn('Invalid date:', item.createdDate);
                             } else {
-                                console.warn('createdDate tidak valid:', item);
+                                // Simpan ke property apa pun yang diinginkan
+                                item.dateObj = dateObj;
                             }
                         });
+
+
+
 
                         // combineData.sort();
                         combineData.sort((a, b) => b.dateObj - a.dateObj);
@@ -594,7 +634,7 @@
                             const year = item.dateObj.getFullYear();
                             const hours = String(item.dateObj.getHours()).padStart(2, '0');
                             const minutes = String(item.dateObj.getMinutes()).padStart(2, '0');
-                            item.formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`; // Simpan dalam format dd-mm-yyyy
+                            item.dateObj = `${day}/${month}/${year} ${hours}:${minutes}`; // Simpan dalam format dd-mm-yyyy
                         });
 
                         combineData.forEach(item => {
@@ -607,7 +647,7 @@
                                                 <div class="info-box-content">
                                                     <p class="text-sm text-muted">Approval Purchase Request</p>
                                                     <h3 class="dropdown-item-title" style="color:#347FC4"><b>${item.purchaseRequestNumber} Has Been Created</b></h3>
-                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.formattedDate}</p>
+                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -626,7 +666,7 @@
                                                 <div class="info-box-content">
                                                     <p class="text-sm text-muted">Approval Qty Difference</p>
                                                     <h3 class="dropdown-item-title" style="color:#758E4F"><b>${item.qtyDifferenceNumber} Has Been Created</b></h3>
-                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.formattedDate}</p>
+                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -645,7 +685,7 @@
                                                 <div class="info-box-content">
                                                     <p class="text-sm text-muted">Approval Unit Request</p>
                                                     <h3 class="dropdown-item-title" style="color:#F26419"><b>${item.unitRequestNumber} Has Been Created</b></h3>
-                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.formattedDate}</p>
+                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -664,7 +704,7 @@
                                                         <div class="info-box-content">
                                                             <p class="text-sm text-muted">Approval Product Return</p>
                                                             <h3 class="dropdown-item-title" style="color:#A7D477"><b>${item.productReturnNumber} Has Been Created</b></h3>
-                                                            <p class="text-sm text-muted">By ${item.createdBy} || ${item.formattedDate}</p>
+                                                            <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
                                                         </div>
                                                     </div>
                                                 </div>

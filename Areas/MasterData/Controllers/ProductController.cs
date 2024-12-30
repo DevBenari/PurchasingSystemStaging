@@ -80,7 +80,217 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _urlMappingService = urlMappingService;
             _hostingEnvironment = hostingEnvironment;
         }
-        
+
+        public async Task<IActionResult> GetSuppliersPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Suppliers
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.SupplierName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.SupplierName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            var results = items.Select(p => new {
+                id = p.SupplierId.ToString(),
+                text = p.SupplierName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
+
+        public async Task<IActionResult> GetCategoriesPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Categories
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.CategoryName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.CategoryName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            var results = items.Select(p => new {
+                id = p.CategoryId,
+                text = p.CategoryName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
+
+        public async Task<IActionResult> GetMeasurementsPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Measurements
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.MeasurementName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.MeasurementName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            var results = items.Select(p => new {
+                id = p.MeasurementId,
+                text = p.MeasurementName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
+
+        public async Task<IActionResult> GetDiscountsPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Discounts
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.DiscountValue.ToString().Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.DiscountValue)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            var results = items.Select(p => new {
+                id = p.DiscountId,
+                text = p.DiscountValue
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
+
+        public async Task<IActionResult> GetWarehouseLocationsPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.WarehouseLocations
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.WarehouseLocationName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.WarehouseLocationName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            var results = items.Select(p => new {
+                id = p.WarehouseLocationId,
+                text = p.WarehouseLocationName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
+
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             try
@@ -184,13 +394,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         [HttpGet]
         public async Task<ViewResult> CreateProduct()
         {
-            ViewBag.Active = "MasterData";
-
-            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-            ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-            ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-            ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-            ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
+            ViewBag.Active = "MasterData";            
 
             var product = new ProductViewModel();
             var dateNow = DateTimeOffset.Now;
@@ -284,36 +488,18 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     }
                     else
                     {
-                        ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-                        ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-                        ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-                        ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-                        ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
-
                         TempData["WarningMessage"] = "Name " + vm.ProductName + " Already Exist !!!";
                         return View(vm);
                     }
                 } 
                 else 
                 {
-                    ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-                    ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-                    ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-                    ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-                    ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
-
                     TempData["WarningMessage"] = "Name " + vm.ProductName + " There is duplicate data !!!";
                     return View(vm);
                 }
             } 
             else 
             {
-                ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-                ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-                ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-                ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-                ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
-                
                 return View(vm);
             }                       
         }
@@ -347,13 +533,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         [HttpGet]
         public async Task<IActionResult> DetailProduct(Guid Id)
         {
-            ViewBag.Active = "MasterData";
-
-            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-            ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-            ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-            ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-            ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
+            ViewBag.Active = "MasterData";            
 
             var Product = await _productRepository.GetProductById(Id);
 
