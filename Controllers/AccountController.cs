@@ -126,30 +126,11 @@ namespace PurchasingSystemStaging.Controllers
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
-                        {
-                            // Buat session baru
-                            var sessionId = Guid.NewGuid().ToString();
-                            HttpContext.Session.SetString("UserId", user.Id.ToString());
-                            HttpContext.Session.SetString("SessionId", sessionId);
-                            var userId = _userActiveRepository.GetAllUserLogin()
-                                    .FirstOrDefault(u => u.UserName == model.Email)?.Id;
-                            
-                            // Ambil role dari database                            
-                            List<string> roleNames = (from role in _roleRepository.GetRoles()
-                                                      join userRole in _groupRoleRepository.GetAllGroupRole()
-                                                      on role.Id equals userRole.RoleId
-                                                      where userRole.DepartemenId == user.Id
-                                                      select role.Name).Distinct().ToList();
-
-                            // Simpan session dan role di server-side cache
-                            _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30), roleNames);
-
-                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
-
+                        {                                                      
                             // Create claims
                             var claims = new List<Claim>
                             {
-                                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                                //new Claim(ClaimTypes.NameIdentifier, user.Id),
                                 new Claim(ClaimTypes.Name, user.Email)
                             };                          
 
@@ -169,7 +150,25 @@ namespace PurchasingSystemStaging.Controllers
                             user.LastActivityTime = DateTime.UtcNow;
                             await _userManager.UpdateAsync(user);
 
-                            //_logger.LogInformation("User logged in.");                           
+                            //_logger.LogInformation("User logged in.");
+                            // Buat session baru
+                            var sessionId = Guid.NewGuid().ToString();
+                            HttpContext.Session.SetString("UserId", user.Id.ToString());
+                            HttpContext.Session.SetString("SessionId", sessionId);
+                            var userId = _userActiveRepository.GetAllUserLogin()
+                                    .FirstOrDefault(u => u.UserName == model.Email)?.Id;
+
+                            // Ambil role dari database                            
+                            List<string> roleNames = (from role in _roleRepository.GetRoles()
+                                                      join userRole in _groupRoleRepository.GetAllGroupRole()
+                                                      on role.Id equals userRole.RoleId
+                                                      where userRole.DepartemenId == user.Id
+                                                      select role.Name).Distinct().ToList();
+
+                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
+
+                            // Simpan session dan role di server-side cache
+                            _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30), roleNames);
 
                             return RedirectToAction("Index", "Home");
                         }

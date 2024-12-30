@@ -123,13 +123,13 @@ builder.Services.AddAuthentication("CookieAuth")
         options.SlidingExpiration = true;
     });
 
-//builder.Services.ConfigureApplicationCookie(options =>
-//{
-//    options.CookieManager = new ChunkingCookieManager
-//    {
-//        ChunkSize = null // Nonaktifkan chunking
-//    };
-//});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.CookieManager = new ChunkingCookieManager
+    {
+        ChunkSize = null // Nonaktifkan chunking
+    };
+});
 
 builder.Services.AddMemoryCache();
 builder.Services.AddHostedService<CleanInactiveUsersService>();
