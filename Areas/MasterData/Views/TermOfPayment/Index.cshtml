@@ -103,7 +103,7 @@
                                     @foreach (var TermOfPayment in Model.Items)
                                     {
 
-                                        <tr data-href="@Url.Action("Detail", "TermOfPayment", new { id = TermOfPayment.TermOfPaymentId })">
+                                        <tr data-href="@Url.Action("DetailTermOfPayment", "TermOfPayment", new { id = TermOfPayment.TermOfPaymentId })">
                                             <th class="text-center">@itemNumber</th>
                                             <td class="text-left">@TermOfPayment.CreateDateTime.ReadStringDate()</td>
                                             <td class="text-left">@TermOfPayment.TermOfPaymentCode</td>

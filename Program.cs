@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -93,6 +94,10 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// Tambahkan layanan Data Protection
+var dataProtectionProvider = DataProtectionProvider.Create("PurchasingSystemStaging");
+var dataProtector = dataProtectionProvider.CreateProtector("Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationMiddleware", "Cookies", "v2");
+
 //Script Auto Show Login Account First Time
 builder.Services.AddAuthentication("CookieAuth")
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -110,6 +115,7 @@ builder.Services.AddAuthentication("CookieAuth")
     })
     .AddCookie("CookieAuth", options =>
     {
+        options.TicketDataFormat = new CustomCompressedTicketDataFormat(dataProtector);
         options.Cookie.Name = "AuthCookie";
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
