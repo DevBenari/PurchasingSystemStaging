@@ -335,7 +335,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                         _applicationDbContext.SaveChanges();
 
                         TempData["SuccessMessage"] = "Name " + viewModel.BankName + " Success Changes";
-                        return RedirectToAction("RedirectToIndex", "Bank");
+                        return RedirectToAction("Index", "Bank");
                     }
                     else
                     {
@@ -413,7 +413,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _applicationDbContext.SaveChanges();
 
             TempData["SuccessMessage"] = "Name " + vm.BankName + " Success Deleted";
-            return RedirectToAction("RedirectToIndex", "Bank");
+            return RedirectToAction("Index", "Bank");
         }
     }
 }

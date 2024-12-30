@@ -19,7 +19,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12 bg-white">
-            <form enctype="multipart/form-data" asp-controller="Bank" asp-action="DetailBank" method="post" class="form-horizontal">
+            <form enctype="multipart/form-data" asp-controller="Bank" asp-action="DetailBank" asp-area="MasterData" method="post" class="form-horizontal">
                 <div class="card-header bg-cyan">
                     <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
                 </div>
@@ -94,7 +94,7 @@
                                             <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                             if (roles.Contains("DeleteBank"))
                                             {
-                                                <div class="btn btn-danger" data-href="@Url.Action("DeleteBank", "Bank", new { id = Model.BankId })">Delete</div>
+                                                <div class="btn btn-danger" data-href="@Url.Action("DeleteBank", "Bank", new { id = Model.BankId, area = "MasterData" })">Delete</div>
                                             }
                                         }
                                     }                                    
