@@ -23,6 +23,13 @@
             <form enctype="multipart/form-data" asp-controller="Product" asp-action="DetailProduct" method="post" class="form-horizontal">
                 <div class="card-header bg-cyan">
                     <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
+
+                    <div class="card-tools">                       
+                        <div class="icheck-success d-inline">
+                            <input asp-for="IsActive" type="checkbox" id="IsActive" disabled>
+                            <label asp-for="IsActive">Is Active?</label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -43,12 +50,13 @@
                                         <input maxlength="50" autocomplete="off" autofocus type="text" asp-for="ProductName" class="form-control form-control-border border-width-2" id="ProductName" placeholder="Product Name" disabled>
                                         <span asp-validation-for="ProductName" class="text-danger"></span>
                                     </div>
-                                </div>
+                                </div>                                
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <label asp-for="SupplierId">Supplier Name</label>
-                                        <select id="supplierDropdown" asp-for="SupplierId" class="form-control select2bs4" style="width: 100%;">
-                                            @* Jika ada SupplierId, sisipkan option default *@
+                                        <select id="supplierDropdown" asp-for="SupplierId" class="form-control select2bs4" style="width: 100%;" disabled>
+                                            <option value="" disabled selected>--Choose Supplier--</option>
+
                                             @if (Model.SupplierId != Guid.Empty && !string.IsNullOrEmpty(Model.SupplierName))
                                             {
                                                 <option value="@Model.SupplierId.ToString()" selected="selected">
@@ -63,16 +71,30 @@
                                     <div class="col-sm-12">
                                         <label asp-for="CategoryId">Category Name</label>
                                         <select id="categoryDropdown" asp-for="CategoryId" class="form-control select2bs4" style="width: 100%;" disabled>
-                                            <option value="" hidden disabled selected>--Choose Category--</option>
+                                            <option value="" disabled selected>--Choose Category--</option>
+
+                                            @if (Model.CategoryId != Guid.Empty && !string.IsNullOrEmpty(Model.CategoryName))
+                                            {
+                                                <option value="@Model.CategoryId.ToString()" selected="selected">
+                                                    @Model.CategoryName
+                                                </option>
+                                            }
                                         </select>
-                                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                        <span asp-validation-for="SupplierId" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-12">
-                                        <label asp-for="MeasurementId">Measure Name</label>
+                                        <label asp-for="MeasurementId">Measurement Name</label>
                                         <select id="measurementDropdown" asp-for="MeasurementId" class="form-control select2bs4" style="width: 100%;" disabled>
-                                            <option value="" hidden disabled selected>--Choose Measurement--</option>
+                                            <option value="" disabled selected>--Choose Measurement--</option>
+
+                                            @if (Model.MeasurementId != Guid.Empty && !string.IsNullOrEmpty(Model.MeasurementName))
+                                            {
+                                                <option value="@Model.MeasurementId.ToString()" selected="selected">
+                                                    @Model.MeasurementName
+                                                </option>
+                                            }
                                         </select>
                                         <span asp-validation-for="MeasurementId" class="text-danger"></span>
                                     </div>
@@ -81,9 +103,23 @@
                                     <div class="col-sm-12">
                                         <label asp-for="DiscountId">Discount Name</label>
                                         <select id="discountDropdown" asp-for="DiscountId" class="form-control select2bs4" style="width: 100%;" disabled>
-                                            <option value="" hidden disabled selected>--Choose Discount--</option>
+                                            <option value="" disabled selected>--Choose Discount--</option>
+
+                                            @if (Model.DiscountId != Guid.Empty)
+                                            {
+                                                <option value="@Model.DiscountId.ToString()" selected="selected">
+                                                    @Model.DiscountValue
+                                                </option>
+                                            }
                                         </select>
                                         <span asp-validation-for="DiscountId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <label asp-for="ExpiredDate">Expired Date</label>
+                                        <input type="date" asp-for="ExpiredDate" maxlength="50" autocomplete="off" class="form-control form-control-border border-width-2" id="ExpiredDate" placeholder="Expired Date" readonly disabled>
+                                        <span asp-validation-for="ExpiredDate" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -137,11 +173,18 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-12">
-                                        <label asp-for="WarehouseLocationId">Warehouse Location</label>
+                                        <label asp-for="WarehouseLocationId">Warehouse Location Name</label>
                                         <select id="warehouseDropdown" asp-for="WarehouseLocationId" class="form-control select2bs4" style="width: 100%;" disabled>
-                                            <option value="" hidden disabled selected>--Choose WarehouseLocation--</option>
+                                            <option value="" disabled selected>--Choose Warehouse Location--</option>
+
+                                            @if (Model.WarehouseLocationId != Guid.Empty && !string.IsNullOrEmpty(Model.WarehouseLocationName))
+                                            {
+                                                <option value="@Model.WarehouseLocationId.ToString()" selected="selected">
+                                                    @Model.WarehouseLocationName
+                                                </option>
+                                            }
                                         </select>
-                                        <span asp-validation-for="WarehouseLocationId" class="text-danger"></span>
+                                        <span asp-validation-for="WarehouseLocationId" class="text-danger"></span>                                        
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -221,6 +264,39 @@
 
                     <script>
                         $(function () {
+                            // Inisialisasi Select2 pada #supplierDropdown
+                            $('#supplierDropdown').select2({
+                                theme: 'bootstrap4',
+                                placeholder: "--Choose Supplier--",
+                                allowClear: true,
+
+                                ajax: {
+                                    url: '@Url.Action("GetSuppliersPaged", "Product")', // Sesuaikan nama Controller
+                                    dataType: 'json',
+                                    delay: 250,
+                                    data: function (params) {
+                                        return {
+                                            term: params.term || "",
+                                            page: params.page || 1,
+                                            pageSize: 10
+                                        };
+                                    },
+                                    processResults: function (data, params) {
+                                        params.page = params.page || 1;
+                                        return {
+                                            results: data.results,
+                                            pagination: {
+                                                more: data.pagination.more
+                                            }
+                                        };
+                                    }
+                                }
+                            });
+                        });
+                    </script>
+
+                    @*<script>
+                        $(function () {
                             // Inisialisasi Supplier
                             $('#supplierDropdown').select2({
                                 theme: 'bootstrap4',
@@ -252,7 +328,7 @@
                                 }
                             });
                         });
-                    </script>
+                    </script>*@
 
                     <script>
                         $(function () {

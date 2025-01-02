@@ -463,6 +463,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     MeasurementId = vm.MeasurementId,
                     DiscountId = vm.DiscountId,
                     WarehouseLocationId = vm.WarehouseLocationId,
+                    ExpiredDate = vm.ExpiredDate,
                     MinStock = vm.MinStock,
                     MaxStock = vm.MaxStock,
                     BufferStock = vm.BufferStock,
@@ -472,6 +473,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     RetailPrice = vm.RetailPrice,
                     StorageLocation = vm.StorageLocation,
                     RackNumber = vm.RackNumber,
+                    IsActive = true,
                     Note = vm.Note
                 };
 
@@ -535,7 +537,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         {
             ViewBag.Active = "MasterData";            
 
-            var Product = await _productRepository.GetProductById(Id);
+            var Product = await _productRepository.GetProductById(Id);            
 
             if (Product == null)
             {
@@ -549,10 +551,16 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 ProductCode = Product.ProductCode,
                 ProductName = Product.ProductName,
                 SupplierId = Product.SupplierId,
+                SupplierName = Product.Supplier.SupplierName,
                 CategoryId = Product.CategoryId,
+                CategoryName = Product.Category.CategoryName,
                 MeasurementId = Product.MeasurementId,
+                MeasurementName = Product.Measurement.MeasurementName,
                 DiscountId = Product.DiscountId,
+                DiscountValue = Product.Discount.DiscountValue,
                 WarehouseLocationId = Product.WarehouseLocationId,
+                WarehouseLocationName = Product.WarehouseLocation.WarehouseLocationName,
+                ExpiredDate = Product.ExpiredDate,
                 MinStock = Product.MinStock,
                 MaxStock = Product.MaxStock,
                 BufferStock = Product.BufferStock,
@@ -562,7 +570,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 RetailPrice = Math.Truncate(Product.RetailPrice),
                 StorageLocation = Product.StorageLocation,
                 RackNumber = Product.RackNumber,
-                Note = Product.Note
+                IsActive = Product.IsActive,
+                Note = Product.Note                
             };
             return View(viewModel);
         }
@@ -591,6 +600,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                         Product.MeasurementId = viewModel.MeasurementId;
                         Product.DiscountId = viewModel.DiscountId;
                         Product.WarehouseLocationId = viewModel.WarehouseLocationId;
+                        Product.ExpiredDate = viewModel.ExpiredDate;
                         Product.MinStock = viewModel.MinStock;
                         Product.MaxStock = viewModel.MaxStock;
                         Product.BufferStock = viewModel.BufferStock;
@@ -600,6 +610,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                         Product.RetailPrice = viewModel.RetailPrice;
                         Product.StorageLocation = viewModel.StorageLocation;
                         Product.RackNumber = viewModel.RackNumber;
+                        Product.IsActive = viewModel.IsActive;
                         Product.Note = viewModel.Note;
 
                         _productRepository.Update(Product);
@@ -610,31 +621,19 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     }
                     else
                     {
-                        ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-                        ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-                        ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-                        ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-                        ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
+                        await FillDataVM(viewModel);
                         TempData["WarningMessage"] = "Name " + viewModel.ProductName + " Already Exist !!!";
                         return View(viewModel);
                     }
                 } 
                 else
                 {
-                    ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-                    ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-                    ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-                    ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-                    ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
+                    await FillDataVM(viewModel);
                     TempData["WarningMessage"] = "Name " + viewModel.ProductName + " There is duplicate data !!!";
                     return View(viewModel);
                 }
             }
-            ViewBag.Supplier = new SelectList(await _SupplierRepository.GetSuppliers(), "SupplierId", "SupplierName", SortOrder.Ascending);
-            ViewBag.Category = new SelectList(await _categoryRepository.GetCategories(), "CategoryId", "CategoryName", SortOrder.Ascending);
-            ViewBag.Measurement = new SelectList(await _measurementRepository.GetMeasurements(), "MeasurementId", "MeasurementName", SortOrder.Ascending);
-            ViewBag.Discount = new SelectList(await _discountRepository.GetDiscounts(), "DiscountId", "DiscountValue", SortOrder.Ascending);
-            ViewBag.Warehouse = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
+            await FillDataVM(viewModel);
             return View(viewModel);
         }
 
@@ -695,6 +694,59 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
             TempData["SuccessMessage"] = "Name " + vm.ProductName + " Success Deleted";
             return RedirectToAction("Index", "Product");
+        }
+
+        private async Task FillDataVM(ProductViewModel viewModel)
+        {
+            // Supplier
+            if (viewModel.SupplierId != Guid.Empty)
+            {
+                var supplier = await _applicationDbContext.Suppliers.FindAsync(viewModel.SupplierId);
+                if (supplier != null)
+                {
+                    viewModel.SupplierName = supplier.SupplierName;
+                }
+            }
+
+            // Category
+            if (viewModel.CategoryId != Guid.Empty)
+            {
+                var category = await _applicationDbContext.Categories.FindAsync(viewModel.CategoryId);
+                if (category != null)
+                {
+                    viewModel.CategoryName = category.CategoryName;
+                }
+            }
+
+            // Measurement
+            if (viewModel.MeasurementId != Guid.Empty)
+            {
+                var measure = await _applicationDbContext.Measurements.FindAsync(viewModel.MeasurementId);
+                if (measure != null)
+                {
+                    viewModel.MeasurementName = measure.MeasurementName;
+                }
+            }
+
+            // Discount
+            if (viewModel.DiscountId != Guid.Empty)
+            {
+                var discount = await _applicationDbContext.Discounts.FindAsync(viewModel.DiscountId);
+                if (discount != null)
+                {
+                    viewModel.DiscountValue = discount.DiscountValue;
+                }
+            }
+
+            // Warehouse Location
+            if (viewModel.WarehouseLocationId != Guid.Empty)
+            {
+                var warehouse = await _applicationDbContext.WarehouseLocations.FindAsync(viewModel.WarehouseLocationId);
+                if (warehouse != null)
+                {
+                    viewModel.WarehouseLocationName = warehouse.WarehouseLocationName;
+                }
+            }
         }
     }
 }

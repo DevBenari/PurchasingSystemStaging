@@ -40,24 +40,6 @@ builder.Services.AddControllersWithViews(options =>
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//}).AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = true,
-//        ValidateAudience = true,
-//        ValidateLifetime = true,
-//        ValidateIssuerSigningKey = true,
-//        ValidIssuer = jwtSettings["Issuer"],
-//        ValidAudience = jwtSettings["Audience"],
-//        IssuerSigningKey = new SymmetricSecurityKey(key)
-//    };
-//});
-
 //Tambahan Baru
 builder.Services.AddHttpClient();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -124,14 +106,6 @@ builder.Services.AddAuthentication("CookieAuth")
         // Tambahkan ini jika ingin menggunakan chunking
         options.CookieManager = new ChunkingCookieManager{};
     });
-
-//builder.Services.ConfigureApplicationCookie(options =>
-//{
-//    options.CookieManager = new ChunkingCookieManager
-//    {
-//        ChunkSize = null // Nonaktifkan chunking
-//    };
-//});
 
 builder.Services.AddMemoryCache();
 builder.Services.AddHostedService<CleanInactiveUsersService>();
@@ -202,35 +176,6 @@ if (!app.Environment.IsProduction())
 // Tambahkan middleware untuk dekripsi URL
 //app.UseMiddleware<DecryptUrlMiddleware>();
 
-//   konfigurasi end session 
-//app.Use(async (context, next) =>
-//{
-//    var returnUrl = context.Request.Path + context.Request.QueryString;
-//    var loginUrl = $"/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}"; 
-
-//    if (context.Session.GetString("username") == null && context.Request.Path != loginUrl)
-//    {
-//        var username = context.User.Identity.Name;
-
-//        if (!string.IsNullOrEmpty(username))
-//        {
-//            // Middleware Session And Cookie
-//            UpdateDataForExpiredSession(username, app, context, returnUrl);            
-
-//            context.Response.Redirect(loginUrl);
-//            return;
-//        }
-//    }
-//    else
-//    {
-//        // Jika session masih aktif, perbarui waktu "LastActivity"
-//        context.Session.SetString("LastActivity", DateTimeOffset.Now.ToString());        
-//    }    
-
-//    // Lanjutkan ke middleware berikutnya
-//    await next();
-//});
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -263,29 +208,3 @@ void AddScope()
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 }
-
-//async void UpdateDataForExpiredSession(string username, WebApplication app, HttpContext context, string returnUrl)
-//{
-//    // Logika update data
-//    // Tambahkan logika lain sesuai kebutuhan, misalnya memperbarui status user di database
-//    using (var scope = app.Services.CreateScope())
-//    { 
-//        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-//        var signInManager = scope.ServiceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
-
-//        //Cari User
-//        var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
-//        if (user != null)
-//        {            
-//            user.IsOnline = false;
-//            dbContext.SaveChanges();
-//        }
-
-//        // Hapus session dan sign out cookie
-//        context.Session.Remove("username");
-//        await context.SignOutAsync("CookieAuth");
-
-//        await signInManager.SignOutAsync();
-//        context.Response.Redirect(returnUrl);
-//    }
-//}
