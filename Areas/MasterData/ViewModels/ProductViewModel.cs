@@ -23,7 +23,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.ViewModels
         public Guid? DiscountId { get; set; }
         [Required(ErrorMessage = "Warehouse Location is required !")]
         public Guid? WarehouseLocationId { get; set; }
-        public DateTimeOffset ExpiredDate { get; set; }
+        public DateTimeOffset ExpiredDate { get; set; } = DateTimeOffset.Now;
         public int? MinStock { get; set; } = 0;
         public int? MaxStock { get; set; } = 0;
         public int? BufferStock { get; set; } = 0;

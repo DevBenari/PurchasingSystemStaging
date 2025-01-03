@@ -108,7 +108,6 @@ builder.Services.AddAuthentication("CookieAuth")
     });
 
 builder.Services.AddMemoryCache();
-builder.Services.AddHostedService<CleanInactiveUsersService>();
 
 AddScope();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
@@ -161,6 +160,8 @@ builder.Services.AddScoped<IClosingPurchaseOrderRepository>();
 
 //Initialize Fast Report
 FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
+
+//builder.Services.AddHostedService<CleanInactiveUsersService>();
 
 var app = builder.Build();
 

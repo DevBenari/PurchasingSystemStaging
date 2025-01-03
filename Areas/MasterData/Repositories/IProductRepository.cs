@@ -30,6 +30,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
         public async Task<Product> GetProductById(Guid Id)
         {
             var Product = await _context.Products
+                .Where(a => a.IsActive == true)
                 .Include(p => p.Supplier)
                 .Include(c => c.Category)
                 .Include(m => m.Measurement)
@@ -82,6 +83,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
             return await _context.Products
                 .Include(s => s.Supplier)
                 .OrderBy(p => p.CreateDateTime)
+                .Where(a => a.IsActive == true)
                 //.Take(20)
                 .Select(Product => new Product() {
                     ProductId = Product.ProductId,
@@ -114,7 +116,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
 
         public IEnumerable<Product> GetAllProduct()
         {
-            return _context.Products.OrderByDescending(d => d.CreateDateTime)
+            return _context.Products.OrderByDescending(d => d.CreateDateTime).Where(a => a.IsActive == true)
                 .Include(p => p.Supplier)
                 .Include(c => c.Category)
                 .Include(m => m.Measurement)
@@ -127,6 +129,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
         {
             var query = _context.Products
                 .OrderByDescending(d => d.CreateDateTime)
+                .Where(a => a.IsActive == true)
                 .Include(p => p.Supplier)
                 .Include(c => c.Category)
                 .Include(m => m.Measurement)
