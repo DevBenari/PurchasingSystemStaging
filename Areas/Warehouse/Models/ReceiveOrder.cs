@@ -19,6 +19,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Models
         public string DeliveryDate { get; set; }
         public string WaybillNumber { get; set; }
         public string InvoiceNumber { get; set; }
+        public string SenderName { get; set; }
         public string Status { get; set; }
         public string? Note { get; set; }        
         public List<ReceiveOrderDetail> ReceiveOrderDetails { get; set; } = new List<ReceiveOrderDetail>();

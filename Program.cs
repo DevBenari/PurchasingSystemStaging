@@ -158,17 +158,19 @@ builder.Services.AddScoped<IApprovalUnitRequestRepository>();
 builder.Services.AddScoped<IClosingPurchaseOrderRepository>();
 #endregion
 
+//Jika ingin Add-Migration ini harus di non aktifin
+//builder.Services.AddHostedService<CleanInactiveUsersService>();
+//builder.Services.AddFastReport();
+
 //Initialize Fast Report
 FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
-
-//builder.Services.AddHostedService<CleanInactiveUsersService>();
 
 var app = builder.Build();
 
 //builder.Services.AddDataProtection();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsProduction())
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

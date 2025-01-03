@@ -105,7 +105,7 @@
                                 {
                                     @foreach (var Supplier in Model.Items)
                                     {
-                                        <tr data-href="@Url.Action("Detail", "Supplier", new {id=Supplier.SupplierId})">
+                                        <tr data-href="@Url.Action("DetailSupplier", "Supplier", new {id=Supplier.SupplierId})">
                                             <th class="text-center">@itemNumber</th>
                                             <td class="text-left">@Supplier.CreateDateTime.ReadStringDate()</td>
                                             <td class="text-left">@Supplier.SupplierCode</td>

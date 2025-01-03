@@ -56,6 +56,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
                     DeliveryDate = receiveOrder.DeliveryDate,
                     WaybillNumber = receiveOrder.WaybillNumber,
                     InvoiceNumber = receiveOrder.InvoiceNumber,
+                    SenderName = receiveOrder.SenderName,
                     Status = receiveOrder.Status,
                     Note = receiveOrder.Note,
                     ReceiveOrderDetails = receiveOrder.ReceiveOrderDetails
@@ -89,6 +90,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
                 DeliveryDate = receiveOrder.DeliveryDate,
                 WaybillNumber = receiveOrder.WaybillNumber,
                 InvoiceNumber = receiveOrder.InvoiceNumber,
+                SenderName = receiveOrder.SenderName,
                 Status = receiveOrder.Status,
                 Note = receiveOrder.Note,
                 ReceiveOrderDetails = receiveOrder.ReceiveOrderDetails

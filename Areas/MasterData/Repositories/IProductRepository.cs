@@ -5,12 +5,7 @@ using PurchasingSystemStaging.Repositories;
 using System.Diagnostics.Metrics;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Repositories
-{
-    //public interface IProductRepository
-    //{
-    //    Task<(List<Product> Items, int TotalCount)> GetPagedProducts(string searchTerm, int page, int pageSize);
-    //    // Method lain...
-    //}
+{   
     public class IProductRepository 
     {
         private readonly ApplicationDbContext _context;

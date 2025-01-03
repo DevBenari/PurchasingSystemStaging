@@ -20,6 +20,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
         public string WaybillNumber { get; set; }
         [Required(ErrorMessage = "Invoice Number is required !")]
         public string InvoiceNumber { get; set; }
+        public string SenderName { get; set; }
         public string Status { get; set; }
         public string? Note { get; set; }
         public List<ReceiveOrderDetail> ReceiveOrderDetails { get; set; } = new List<ReceiveOrderDetail>();

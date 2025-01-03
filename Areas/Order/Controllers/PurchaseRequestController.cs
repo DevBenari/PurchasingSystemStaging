@@ -791,10 +791,13 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             WebReport web = new WebReport();
             var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\PurchaseRequest.frx";
             web.Report.Load(path);
+            // Contoh memuat file .frx dari wwwroot/Reporting
+            //string reportPath = Path.Combine(_webHostEnvironment.WebRootPath, "Reporting", "PurchaseRequest.frx");
+            //web.Report.Load(reportPath);
 
             var msSqlDataConnection = new MsSqlDataConnection();
             msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
-            var Conn = msSqlDataConnection.ConnectionString;
+            var Conn = msSqlDataConnection.ConnectionString;            
 
             web.Report.SetParameterValue("Conn", Conn);
             web.Report.SetParameterValue("PurchaseRequestId", Id.ToString());
@@ -808,13 +811,19 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             web.Report.SetParameterValue("Note", Note);
             web.Report.SetParameterValue("GrandTotal", GrandTotal);
             web.Report.SetParameterValue("Tax", Tax);
-            web.Report.SetParameterValue("GrandTotalAfterTax", GrandTotalAfterTax);
+            web.Report.SetParameterValue("GrandTotalAfterTax", GrandTotalAfterTax);            
 
             web.Report.Prepare();
 
             Stream stream = new MemoryStream();
             web.Report.Export(new PDFSimpleExport(), stream);
             stream.Position = 0;
+
+            // Export ke format PDF (misalnya)
+            //using var ms = new MemoryStream();
+            //web.Report.Export(new PDFSimpleExport(), ms);
+            //ms.Position = 0;
+
             return File(stream, "application/zip", (PrNumber + ".pdf"));
         }
     }
