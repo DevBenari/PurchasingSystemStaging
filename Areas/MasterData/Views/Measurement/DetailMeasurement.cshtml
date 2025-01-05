@@ -68,6 +68,7 @@
                                     @if (User.Identity.Name == "superadmin@admin.com")
                                     {
                                         <a class="btn bg-indigo" id="btnubah">Change</a>
+                                        <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                         <div class="btn btn-danger" data-href="@Url.Action("DeleteMeasurement", "Measurement", new { id = Model.MeasurementId })">Delete</div>
                                     }
                                     else
@@ -78,8 +79,8 @@
                                             if (roles.Contains("UpdateMeasurement"))
                                             {
                                                 <a class="btn bg-indigo" id="btnubah">Change</a>
+                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                             }
-                                            <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                             if (roles.Contains("DeleteMeasurement"))
                                             {
                                                 <div class="btn btn-danger" data-href="@Url.Action("DeleteMeasurement", "Measurement", new { id = Model.MeasurementId })">Delete</div>

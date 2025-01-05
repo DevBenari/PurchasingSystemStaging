@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/03/2025 14:06:33" ReportInfo.Modified="01/03/2025 16:30:09" ReportInfo.CreatorVersion="2025.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/03/2025 14:06:33" ReportInfo.Modified="01/06/2025 00:47:38" ReportInfo.CreatorVersion="2025.1.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGCgiDglzYkeDnnIBok3ESB9mNK+9rs5wIh5oJerocnviMKiQoAm+sRo5RiFAf7b2MWXhP2dCUZQZteG8PJHep+hHNyHfQtuh+IIq0htocafPrzY3nLYzL0A5BrzMKDbb7CtDRHMXXyzA91mWab1p7J/IuJ+YxghJwyRilIwL0lAo0A5zXMOp/BgLYyrx5goaEpsnakp0GWaQ2161ZjFTZT1Is3R4+dI5+Tymz731h57+iIE953v1VwPlrG1OKpAz">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGnEbNWKbPkHqkW8XQ/di2s21682leV46DqSeK5TvQHkC/RjR/36GTx1foCSibW9X6dUog0V2bqIplaipTN4hMvODyz+UHeqHAkp7xAbwphsqP0Npr/+pZFfxlSWrsJ+T4IbJVDRcZvhg7us1D+wr+cYTXInHWF3cgAQg1BjwYY9xve+V5O3ofs37W5SN7gUM6mR63uhAmSUMSRIZWjPYgKY=">
       <TableDataSource Name="WrhReceiveOrderDetail" DataType="System.Int32" Enabled="true" TableName="WrhReceiveOrderDetail" SelectCommand="exec GetReceiveOrderDetailById @ReceiveOrderId">
         <Column Name="ReceivedOrderDetailId" DataType="System.Guid"/>
         <Column Name="ReceiveOrderId" DataType="System.Guid"/>
@@ -19,34 +19,49 @@
         <Column Name="IsCancel" DataType="System.Boolean" BindableControl="CheckBox"/>
         <Column Name="IsDelete" DataType="System.Boolean" BindableControl="CheckBox"/>
         <Column Name="Condition" DataType="System.String"/>
-        <CommandParameter Name="ReceiveOrderId" DataType="22"/>
+        <CommandParameter Name="ReceiveOrderId" DataType="22" Expression="[ReceiveOrderId]"/>
       </TableDataSource>
     </MsSqlDataConnection>
+    <Parameter Name="Conn" DataType="System.String" AsString=""/>
+    <Parameter Name="CreateDate" DataType="System.String" AsString=""/>
+    <Parameter Name="ReceiveOrderId" DataType="System.String" AsString=""/>
+    <Parameter Name="RoNumber" DataType="System.String" AsString=""/>
+    <Parameter Name="PoNumber" DataType="System.String" AsString=""/>
+    <Parameter Name="ShippNumber" DataType="System.String" AsString=""/>
+    <Parameter Name="WaybillNumber" DataType="System.String" AsString=""/>
+    <Parameter Name="InvoiceNumber" DataType="System.String" AsString=""/>
+    <Parameter Name="DeliveryDate" DataType="System.String" AsString=""/>
+    <Parameter Name="DeliveryService" DataType="System.String" AsString=""/>
+    <Parameter Name="CreateBy" DataType="System.String" AsString=""/>
+    <Parameter Name="SenderName" DataType="System.String" AsString=""/>
+    <Parameter Name="Note" DataType="System.String" AsString=""/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="207.9">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="217.35">
       <TextObject Name="Text1" Width="718.2" Height="37.8" Border.Color="White" Border.Width="2" Text="RS METROPOLITAN MEDICAL CENTRE" HorzAlign="Center" VertAlign="Center" Font="Arial, 20pt, style=Bold"/>
       <TextObject Name="Text2" Top="37.8" Width="718.2" Height="37.8" Border.Color="White" Border.Width="2" Text="Metropolitan Medical Centre, Jl. H. R. Rasuna Said No.C-21, RT.1/RW.7, Karet Kuningan, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12940" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
       <LineObject Name="Line1" Top="85.05" Width="718.2" Border.Color="SaddleBrown" Border.Width="5"/>
-      <TextObject Name="Text3" Left="444.15" Top="94.5" Width="274.05" Height="37.8" Border.Color="White" Border.Width="2" Text="RECEIVE ORDER" VertAlign="Center" Font="Arial, 15pt, style=Bold"/>
-      <TextObject Name="Text31" Left="113.4" Top="122.85" Width="160.65" Height="18.9" Border.Color="White" Border.Width="2" Text="[PoNumber]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text7" Top="103.95" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="RO Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text29" Left="113.4" Top="103.95" Width="160.65" Height="18.9" Text="[QdNumber]" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text47" Top="122.85" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="PO Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text3" Top="85.05" Width="718.2" Height="37.8" Border.Color="White" Border.Width="2" Text="RECEIVE ORDER NUMBER : [RoNumber]" HorzAlign="Center" VertAlign="Center" Font="Arial, 15pt, style=Bold"/>
+      <TextObject Name="Text31" Left="113.4" Top="132.3" Width="160.65" Height="18.9" Border.Color="White" Border.Width="2" Text=": [PoNumber]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text47" Top="132.3" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="PO Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text5" Left="444.15" Top="132.3" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Create Date" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text6" Left="444.15" Top="151.2" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Delivery Date" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text9" Left="576.45" Top="132.3" Width="141.75" Height="18.9" Border.Color="Red" Border.Width="5" Text=": [CreateDate]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text28" Left="576.45" Top="151.2" Width="141.75" Height="18.9" Text=": [UserApprove1]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text28" Left="576.45" Top="151.2" Width="141.75" Height="18.9" Text=": [DeliveryDate]" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text45" Left="444.15" Top="170.1" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Delivery Service Name" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text46" Left="576.45" Top="170.1" Width="141.75" Height="18.9" Text=": [UserApprove2]" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text48" Left="113.4" Top="141.75" Width="160.65" Height="18.9" Border.Color="White" Border.Width="2" Text="[PoNumber]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text49" Top="141.75" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="Shipp Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text50" Top="160.65" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="Waybill Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text51" Top="179.55" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="Invoice Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text52" Left="113.4" Top="160.65" Width="160.65" Height="18.9" Border.Color="White" Border.Width="2" Text="[PoNumber]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text53" Left="113.4" Top="179.55" Width="160.65" Height="18.9" Border.Color="White" Border.Width="2" Text="[PoNumber]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text46" Left="576.45" Top="170.1" Width="141.75" Height="18.9" Text=": [DeliveryService]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text48" Left="113.4" Top="151.2" Width="160.65" Height="18.9" Border.Color="White" Border.Width="2" Text=": [ShippNumber]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text49" Top="151.2" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="Shipp Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text50" Top="170.1" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="Waybill Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text51" Top="189" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="Invoice Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text52" Left="113.4" Top="170.1" Width="160.65" Height="18.9" Border.Color="White" Border.Width="2" Text=": [WaybillNumber]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text53" Left="113.4" Top="189" Width="160.65" Height="18.9" Border.Color="White" Border.Width="2" Text=": [InvoiceNumber]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text56" Left="-9450" Top="-9450" Width="94.5" Height="18.9" Text="Conn" Font="Arial, 10pt"/>
+      <TextObject Name="Text57" Left="-9450" Top="-9450" Width="94.5" Height="18.9" Text="CreateDate" Font="Arial, 10pt"/>
+      <TextObject Name="Text59" Left="878.85" Top="94.5" Width="94.5" Height="18.9" Text="ShippNumber" Font="Arial, 10pt"/>
+      <LineObject Name="Line5" Top="122.85" Width="718.2" Border.Color="SaddleBrown" Border.Width="5"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="211.9" Width="718.2" Height="40.36">
+    <PageHeaderBand Name="PageHeader1" Top="221.35" Width="718.2" Height="40.36">
       <TextObject Name="Text13" Top="9.45" Width="37.8" Height="18.9" Border.Color="Red" Border.Width="5" Text="No" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text14" Left="37.8" Top="9.45" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Number" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text15" Left="170.1" Top="9.45" Width="255.15" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Name" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
@@ -57,16 +72,16 @@
       <LineObject Name="Line3" Top="30.91" Width="718.2" Border.Width="2"/>
       <TextObject Name="Text54" Left="614.25" Top="9.45" Width="103.95" Height="18.9" Border.Color="Red" Border.Width="5" Text="Condition" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="256.26" Width="718.2" Height="18.9" DataSource="WrhReceiveOrderDetail">
+    <DataBand Name="Data1" Top="265.71" Width="718.2" Height="18.9" DataSource="WrhReceiveOrderDetail">
       <TextObject Name="Text38" Width="37.8" Height="18.9" Text="[Row#]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text39" Left="37.8" Width="132.3" Height="18.9" Text="[WrhQtyDifferenceDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text40" Left="170.1" Width="255.15" Height="18.9" Text="[WrhQtyDifferenceDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text41" Left="425.25" Width="75.6" Height="18.9" Text="[WrhQtyDifferenceDetail.Measurement]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text42" Left="500.85" Width="56.7" Height="18.9" Text="[WrhQtyDifferenceDetail.QtyOrder]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text43" Left="557.55" Width="56.7" Height="18.9" Text="[WrhQtyDifferenceDetail.QtyReceive]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text55" Left="614.25" Width="103.95" Height="18.9" Text="[WrhQtyDifferenceDetail.QtyReceive]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text39" Left="37.8" Width="132.3" Height="18.9" Text="[WrhReceiveOrderDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text40" Left="170.1" Width="255.15" Height="18.9" Text="[WrhReceiveOrderDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text41" Left="425.25" Width="75.6" Height="18.9" Text="[WrhReceiveOrderDetail.Measure]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text42" Left="500.85" Width="56.7" Height="18.9" Text="[WrhReceiveOrderDetail.QtyOrder]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text43" Left="557.55" Width="56.7" Height="18.9" Text="[WrhReceiveOrderDetail.QtyReceive]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text55" Left="614.25" Width="103.95" Height="18.9" Text="[WrhReceiveOrderDetail.Condition]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
     </DataBand>
-    <PageFooterBand Name="PageFooter1" Top="279.16" Width="718.2" Height="151.2">
+    <PageFooterBand Name="PageFooter1" Top="288.61" Width="718.2" Height="151.2">
       <TableObject Name="Table1" Top="9.45" Width="715.1" Height="113.4">
         <TableColumn Name="Column5" Width="428.4"/>
         <TableColumn Name="Column1" Width="144.95"/>
@@ -83,11 +98,12 @@
         </TableRow>
         <TableRow Name="Row6">
           <TableCell Name="Cell24" Font="Arial, 10pt"/>
-          <TableCell Name="Cell20" Border.Lines="All" Border.Width="2" Text="[UserApprove1]" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-          <TableCell Name="Cell27" Border.Lines="All" Border.Width="2" Text="[UserApprove2]" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+          <TableCell Name="Cell20" Border.Lines="All" Border.Width="2" Text="[CreateBy]" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+          <TableCell Name="Cell27" Border.Lines="All" Border.Width="2" Text="[SenderName]" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
         </TableRow>
       </TableObject>
       <TextObject Name="Text44" Left="652.05" Top="132.3" Width="66.15" Height="18.9" Text="[PageN]" HorzAlign="Right" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text58" Left="878.85" Top="47.25" Width="94.5" Height="18.9" Text="PoNumber" Font="Arial, 10pt"/>
     </PageFooterBand>
   </ReportPage>
 </Report>

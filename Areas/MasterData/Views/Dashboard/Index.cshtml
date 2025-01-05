@@ -1,8 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Dashboard Master Data";
     Layout = "~/Views/Shared/_TopNavbarMasterData.cshtml";
-    var listRole = Context.Session.GetString("ListRole");
-    var roles = listRole.Split(',');
+    var listRole = Context.Session.GetString("ListRole");    
 }
 
 <!-- Main content -->
@@ -85,6 +84,7 @@
         {
             @if (!string.IsNullOrEmpty(listRole))
             {
+                var roles = listRole.Split(',');
                 @if (roles.Contains("ReadUserActive"))
                 {
                     <div class="col-lg-3 col-6">
@@ -228,6 +228,7 @@
         {
             @if (!string.IsNullOrEmpty(listRole))
             {
+                var roles = listRole.Split(',');
                 @if (roles.Contains("ReadProduct"))
                 {
                     <div class="col-lg-3 col-6">
