@@ -225,8 +225,9 @@
                                     @if (User.Identity.Name == "superadmin@admin.com")
                                     {
                                         <a class="btn bg-indigo" id="btnubah">Change</a>
+                                        <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                         <div class="btn btn-danger" data-href="@Url.Action("DeleteProduct", "Product", new { id = Model.ProductId })">Delete</div>
-                                    }
+                                    }                                    
                                     else
                                     {
                                         @if (!string.IsNullOrEmpty(listRole))
@@ -235,8 +236,8 @@
                                             if (roles.Contains("UpdateProduct"))
                                             {
                                                 <a class="btn bg-indigo" id="btnubah">Change</a>
-                                            }
-                                            <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
+                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
+                                            }                                            
                                             if (roles.Contains("DeleteProduct"))
                                             {
                                                 <div class="btn btn-danger" data-href="@Url.Action("DeleteProduct", "Product", new { id = Model.ProductId })">Delete</div>
