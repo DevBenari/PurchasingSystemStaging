@@ -1,4 +1,5 @@
 ﻿@{
+    var listRole = Context.Session.GetString("ListRole");
     ViewData["Title"] = "Detail Receive Order";
     Layout = "~/Views/Shared/_TopNavbarWarehouseReceiveOrder.cshtml";
 }
@@ -120,6 +121,7 @@
                                         <th class="text-left" style="background-color:#7FB9EE"><div style="color:#ffffff">Measure</div></th>
                                         <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff">Qty Order</div></th>
                                         <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff">Qty Receive</div></th>
+                                        <th class="text-center" style="background-color:#7FB9EE"><div style="color:#ffffff">Condition</div></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -132,8 +134,9 @@
                                             <td class="text-left row-productNumber"><input class="detkodeproduk" asp-for="@Model.ReceiveOrderDetails[i].ProductNumber" type="hidden" value="@Model.ReceiveOrderDetails[i].ProductNumber">@Model.ReceiveOrderDetails[i].ProductNumber</td>
                                             <td class="text-left row-productName"><input class="detnamaproduk" asp-for="@Model.ReceiveOrderDetails[i].ProductName" type="hidden" value="@Model.ReceiveOrderDetails[i].ProductName">@Model.ReceiveOrderDetails[i].ProductName</td>
                                             <td class="text-left"><input class="detsatuan" asp-for="@Model.ReceiveOrderDetails[i].Measure" type="hidden" value="@Model.ReceiveOrderDetails[i].Measure">@Model.ReceiveOrderDetails[i].Measure</td>
-                                            <td class="text-center"><input class="detqty" asp-for="@Model.ReceiveOrderDetails[i].QtyOrder" type="hidden" value="@Model.ReceiveOrderDetails[i].QtyOrder">@Model.ReceiveOrderDetails[i].QtyOrder</td>
+                                            <td class="text-center"><input class="detqty" asp-for="@Model.ReceiveOrderDetails[i].QtyOrder" type="hidden" value="@Model.ReceiveOrderDetails[i].QtyOrder">@Model.ReceiveOrderDetails[i].QtyOrder</td>                                            
                                             <td class="text-center"><input class="detprice" asp-for="@Model.ReceiveOrderDetails[i].QtyReceive" type="hidden" value="@Model.ReceiveOrderDetails[i].QtyReceive">@Model.ReceiveOrderDetails[i].QtyReceive</td>
+                                            <td class="text-center"><input class="detcondition" asp-for="@Model.ReceiveOrderDetails[i].Condition" type="hidden" value="@Model.ReceiveOrderDetails[i].Condition">@Model.ReceiveOrderDetails[i].Condition</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -144,8 +147,24 @@
 
                 <!-- start button footer -->
                 <div class="card card-orange">
-                    <div class="card-body">                        
-                        <div class="btn btn-default" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
+                    <div class="card-body">
+                        @if (User.Identity.Name == "superadmin@admin.com")
+                        {
+                            <a class="btn bg-gray" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                            <div class="btn btn-default" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
+                        }
+                        else
+                        {
+                            @if (!string.IsNullOrEmpty(listRole))
+                            {
+                                var roles = listRole.Split(',');
+                                if (roles.Contains("PrintReceiveOrder"))
+                                {
+                                    <a class="btn bg-gray" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                }
+                            }
+                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
+                        }
                     </div>
                 </div>
                 <!-- /.end button footer -->

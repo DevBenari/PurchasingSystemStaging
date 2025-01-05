@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FastReport.Data;
+using FastReport.Export.PdfSimple;
+using FastReport.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -35,6 +39,8 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
 
         public ReceiveOrderController(
             UserManager<ApplicationUser> userManager,
@@ -48,7 +54,10 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             IPurchaseRequestRepository purchaseRequestRepository,
 
             IDataProtectionProvider provider,
-            UrlMappingService urlMappingService
+            UrlMappingService urlMappingService,
+            IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration
+
         )
         {
             _userManager = userManager;
@@ -63,6 +72,8 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
+            _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
         }
 
         public JsonResult LoadProduk(Guid Id)
@@ -392,6 +403,53 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 ReceiveOrderDetails = receiveOrder.ReceiveOrderDetails,
             };
             return View(model);
+        }
+
+        public async Task<IActionResult> PrintReceiveOrder(Guid Id)
+        {
+            var rcvOrder = await _receiveOrderRepository.GetReceiveOrderById(Id);
+
+            var CreateDate = rcvOrder.CreateDateTime.ToString("dd MMMM yyyy");
+            var RoNumber = rcvOrder.ReceiveOrderNumber;
+            var PoNumber = rcvOrder.PurchaseOrder.PurchaseOrderNumber;
+            var ShippNumber = rcvOrder.ShippingNumber;
+            var WaybillNumber = rcvOrder.WaybillNumber;
+            var InvoiceNumber = rcvOrder.InvoiceNumber;
+            var DeliveryDate = rcvOrder.DeliveryDate;
+            var DeliveryService = rcvOrder.DeliveryServiceName;
+            var CreateBy = rcvOrder.ApplicationUser.NamaUser;
+            var SenderName = rcvOrder.SenderName;
+            var Note = rcvOrder.Note;
+
+            WebReport web = new WebReport();
+            var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\ReceiveOrder.frx";
+            web.Report.Load(path);
+
+            var msSqlDataConnection = new MsSqlDataConnection();
+            msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
+            var Conn = msSqlDataConnection.ConnectionString;
+
+            web.Report.SetParameterValue("Conn", Conn);
+            web.Report.SetParameterValue("CreateDate", CreateDate);
+            web.Report.SetParameterValue("ReceiveOrderId", Id.ToString());
+            web.Report.SetParameterValue("RoNumber", RoNumber);
+            web.Report.SetParameterValue("PoNumber", PoNumber);
+            web.Report.SetParameterValue("ShippNumber", ShippNumber);
+            web.Report.SetParameterValue("WaybillNumber", WaybillNumber);
+            web.Report.SetParameterValue("InvoiceNumber", InvoiceNumber);
+            web.Report.SetParameterValue("DeliveryDate", DeliveryDate);
+            web.Report.SetParameterValue("DeliveryService", DeliveryService);
+            web.Report.SetParameterValue("CreateBy", CreateBy);
+            web.Report.SetParameterValue("SenderName", SenderName);
+            web.Report.SetParameterValue("Note", Note);
+
+            web.Report.Prepare();
+
+            Stream stream = new MemoryStream();
+            web.Report.Export(new PDFSimpleExport(), stream);
+            stream.Position = 0;
+
+            return File(stream, "application/zip", (RoNumber + ".pdf"));
         }
     }
 }

@@ -791,9 +791,6 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             WebReport web = new WebReport();
             var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\PurchaseRequest.frx";
             web.Report.Load(path);
-            // Contoh memuat file .frx dari wwwroot/Reporting
-            //string reportPath = Path.Combine(_webHostEnvironment.WebRootPath, "Reporting", "PurchaseRequest.frx");
-            //web.Report.Load(reportPath);
 
             var msSqlDataConnection = new MsSqlDataConnection();
             msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -818,11 +815,6 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             Stream stream = new MemoryStream();
             web.Report.Export(new PDFSimpleExport(), stream);
             stream.Position = 0;
-
-            // Export ke format PDF (misalnya)
-            //using var ms = new MemoryStream();
-            //web.Report.Export(new PDFSimpleExport(), ms);
-            //ms.Position = 0;
 
             return File(stream, "application/zip", (PrNumber + ".pdf"));
         }

@@ -201,6 +201,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     !method.IsSpecialName &&
                     !method.Name.StartsWith("Redirect") &&
                     !method.Name.StartsWith("Load") &&
+                    !method.Name.StartsWith("Get") &&
                     !method.Name.StartsWith("Impor") &&
                     !method.Name.StartsWith("Chart") && 
                     !method.Name.StartsWith("KpiJson") &&
