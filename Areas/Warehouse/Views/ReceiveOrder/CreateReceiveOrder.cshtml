@@ -84,6 +84,13 @@
                         <span asp-validation-for="InvoiceNumber" class="error"></span>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="SenderName">Sender Name</label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" maxlength="50" type="text" asp-for="SenderName" class="form-control form-control-border border-width-2" id="sendername" placeholder="Sender Name">
+                        </div>
+                        <span asp-validation-for="SenderName" class="error"></span>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="Note">Note</label>
                         <div class="col-sm-10">
                             <input autocomplete="off" maxlength="75" type="text" asp-for="Note" class="form-control form-control-border border-width-2" id="note" placeholder="Note">
@@ -101,7 +108,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <select class="form-control select2bs4" style="width: 100%;" id="produklist" data-placeholder="--Choose Product Receive--">
-                                        <option value="" hidden disabled selected>--Choose Product Receive--</option>
+                                        <option value="" hidden disabled selected>--Choose Product--</option>
                                     </select>
                                 </div>
                             </div>
@@ -524,6 +531,7 @@
                 var deliveryDate = $('#deliverydate').val();
                 var waybillNumber = $('#waybillnumber').val();
                 var invoiceNumber = $('#invoicenumber').val();
+                var senderName = $('#sendername').val();
 
                 var detailTable = $('#tbldetailrcv tbody').children().children().length / 8;
                 var detailProdukList = document.getElementById("produklist").options.length - 1;
@@ -586,6 +594,14 @@
                             type: "warning"
                         });
                         isAllValid = false;
+                    } else if (detailItem.length != 0 && senderName == '') {
+                        $('#sendername').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please fill in !</span>');
+                        swal({
+                            title: "Warning",
+                            text: "Sorry, fill in...",
+                            type: "warning"
+                        });
+                        isAllValid = false;
                     } else if (detailItem.length == 0 && purchaseOrderNumber != '') {
                         swal({
                             title: "Warning",
@@ -614,6 +630,7 @@
                         var DeliveryDate = $('#deliverydate').val();
                         var WaybillNumber = $('#waybillnumber').val();
                         var InvoiceNumber = $('#invoicenumber').val();
+                        var SenderName = $('#sendername').val();
                         var Status = $('#status').val();
                         var Note = $('#note').val();
                         var ReceiveOrderDetail = detailItemDone;
@@ -629,6 +646,7 @@
                         dataPost.DeliveryDate = DeliveryDate;
                         dataPost.WaybillNumber = WaybillNumber;
                         dataPost.InvoiceNumber = InvoiceNumber;
+                        dataPost.SenderName = SenderName;
                         dataPost.Status = Status;
                         dataPost.Note = Note;
                         dataPost.ReceiveOrderDetails = ReceiveOrderDetail;

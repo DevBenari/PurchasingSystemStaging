@@ -178,7 +178,7 @@
                             <div class="col-md-5">
                                 <span>Search Product</span>
                                 <div class="form-group">
-                                    <select asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="produklist" data-placeholder="--Choose Product--">
+                                    <select id="productDropdown" class="form-control select2bs4" style="width: 100%;">
                                         <option value="" hidden disabled selected>--Choose Product--</option>
                                     </select>
                                 </div>
@@ -313,16 +313,56 @@
                 theme: 'bootstrap4'
             })
         })
-    </script>    
+    </script>
+
+    <script>
+        $(function () {
+            // Inisialisasi Select2
+            $('#productDropdown').select2({
+                theme: 'bootstrap4',
+                placeholder: "--Choose Product--",
+                allowClear: true,
+
+                // Aktifkan AJAX di Select2
+                ajax: {
+                    url: '@Url.Action("GetProductsPaged", "PurchaseRequest")', // ganti ke Controller/Action sesuai
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        // params.term => teks yang diketik user
+                        // params.page => halaman ke berapa (dimulai dari 1)
+                        var query = {
+                            term: params.term || "",
+                            page: params.page || 1,
+                            pageSize: 10
+                        };
+                        return query;
+                    },
+                    processResults: function (data, params) {
+                        // data => response JSON dari server
+                        // params.page => halaman ke berapa
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        };
+                    }
+                }
+            });
+        });
+    </script>
 
     <script>
         $(document).ready(function () {
-            $("#produklist").change(function () {
+            $("#productDropdown").change(function () {
                 $.ajax({
                     type: 'GET',
                     url: '@Url.Action("LoadProduk")',
                     dataType: 'json',
-                    data: { id: $("#produklist").val() },
+                    data: { id: $("#productDropdown").val() },
                     success: function (item) {
                         $.each(item, function () {
                             //Hidden
@@ -491,7 +531,7 @@
 
     <script>
         $(document).ready(function () {
-            $("#produklist").change(function () {
+            $("#productDropdown").change(function () {
                 $("#qty").val('1').focus();
             });
         });
@@ -629,8 +669,8 @@
                                             type: "warning"
                                         });
 
-                                        $('#produklist').select2('val', 'selectedIndex', 0);
-                                        $("#produklist").data('placeholder');
+                                        $('#productDropdown').select2('val', 'selectedIndex', 0);
+                                        $("#productDropdown").data('placeholder');
                                         $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                                         return;
                                     }
@@ -641,8 +681,8 @@
                                             type: "warning"
                                         });
 
-                                        $('#produklist').select2('val', 'selectedIndex', 0);
-                                        $("#produklist").data('placeholder');
+                                        $('#productDropdown').select2('val', 'selectedIndex', 0);
+                                        $("#productDropdown").data('placeholder');
                                         $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                                         return;
                                     }
@@ -679,8 +719,8 @@
                                 sumQty();
                                 sumGranTotal();
 
-                                $('#produklist').select2('val', 'selectedIndex', 0);
-                                $("#produklist").data('placeholder');
+                                $('#productDropdown').select2('val', 'selectedIndex', 0);
+                                $("#productDropdown").data('placeholder');
                                 $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
 
                                 $('.btn-sm').click(function () {
@@ -752,8 +792,8 @@
                         text: "Qty cannot be 0 !!!",
                         type: "warning"
                     });
-                    $('#produklist').select2('val', 'selectedIndex', 0);
-                    $("#produklist").data('placeholder');
+                    $('#productDropdown').select2('val', 'selectedIndex', 0);
+                    $("#productDropdown").data('placeholder');
                     $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                 } 
                 else if ($('#minstock').val() == 0) {
@@ -762,8 +802,8 @@
                         text: "Sorry, Min Max Stock has not been determined!",
                         type: "warning"
                     });
-                    $('#produklist').select2('val', 'selectedIndex', 0);
-                    $("#produklist").data('placeholder');
+                    $('#productDropdown').select2('val', 'selectedIndex', 0);
+                    $("#productDropdown").data('placeholder');
                     $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                 }                
                 else {
@@ -772,8 +812,8 @@
                         text: "Sorry, transactions cannot exceed Qty Order = " + qtyOrder + " !",
                         type: "warning"
                     });
-                    $('#produklist').select2('val', 'selectedIndex', 0);
-                    $("#produklist").data('placeholder');
+                    $('#productDropdown').select2('val', 'selectedIndex', 0);
+                    $("#productDropdown").data('placeholder');
                     $("#productnumber,#productname,#stock,#Supplier,#measure,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                 }
             });
