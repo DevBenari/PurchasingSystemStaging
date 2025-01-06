@@ -292,7 +292,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
                                             Status = item.Status,
                                             SupplierName = pod.Supplier,
                                             Qty = item.QtyTotal,
-                                            TotalPrice = Math.Truncate(pod.SubTotal)
+                                            TotalPrice = item.GrandTotal
                                         });
                                     }
                                 }

@@ -86,7 +86,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
             {
                 DepartmentId = Department.DepartmentId,
                 DepartmentCode = Department.DepartmentCode,
-                DepartmentName = Department.DepartmentName
+                DepartmentName = Department.DepartmentName,
+                Note = Department.Note
             }).ToListAsync();
         }
 
@@ -101,7 +102,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Repositories
                 {
                     DepartmentId = Department.DepartmentId,
                     DepartmentCode = Department.DepartmentCode,
-                    DepartmentName = Department.DepartmentName,                    
+                    DepartmentName = Department.DepartmentName,
+                    Note = Department.Note
                 };
                 return DepartmentDetail;
             }
