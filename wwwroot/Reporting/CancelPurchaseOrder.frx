@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="08/07/2024 11:01:01" ReportInfo.Modified="01/06/2025 00:19:14" ReportInfo.CreatorVersion="2025.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/07/2024 11:01:01" ReportInfo.Modified="01/06/2025 01:16:15" ReportInfo.CreatorVersion="2025.1.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGnEbNWKbPkHqkW8XQ/di2s21682leV46DqSeK5TvQHkC/RjR/36GTx1foCSibW9X6dUog0V2bqIplaipTN4hMvODyz+UHeqHAkp7xAbwphsqP0Npr/+pZFfxlSWrsJ+T4IbJVDRcZvhg7us1D+wr+cYTXInHWF3cgAQg1BjwYY9xve+V5O3ofs37W5SN7gUM6of6PnuH3NA5+5EdjHg0fUs=">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqxo5ia/cYUqo97e0judmpyiT7Aj0I0+VDb9QsQCXno/E/4ctxwACwyLTYB+Azq/2TFSnX35Dsa36stce+hQSB1l4Krnwjiffy9aR+dPv1PGIwnY/FApI6/KpuGnaWw+3/okJKxmWYlHVoJRVKv6nOVZ5duVd1niKokSG9O0MOeZ4RpY3ndAH8CUGRnXMPV+cZBKhuQezp2lqdfdrvY4L41c4dtAgqIIC1g1g3KLHIUwoT9T203WMr285R4t6wfo3x">
       <TableDataSource Name="WrhQtyDifferenceDetail" DataType="System.Int32" Enabled="true" TableName="WrhQtyDifferenceDetail" SelectCommand="exec GetQtyDifferenceDetailById @QtyDifferenceId">
         <Column Name="QtyDifferenceDetailId" DataType="System.Guid"/>
         <Column Name="QtyDifferenceId" DataType="System.Guid"/>
@@ -51,7 +51,7 @@
       <TextObject Name="Text46" Left="576.45" Top="198.45" Width="141.75" Height="18.9" Text=": [UserApprove2]" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text47" Left="444.15" Top="141.75" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="PO Number :" VertAlign="Center" Font="Arial, 12pt, style=Bold" TextFill.Color="White"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="230.8" Width="718.2" Height="37.8">
+    <PageHeaderBand Name="PageHeader1" Top="230" Width="718.2" Height="37.8">
       <TextObject Name="Text13" Top="9.45" Width="37.8" Height="18.9" Border.Color="Red" Border.Width="5" Text="No" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text14" Left="37.8" Top="9.45" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Number" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text15" Left="170.1" Top="9.45" Width="321.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Name" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
@@ -61,7 +61,7 @@
       <LineObject Name="Line4" Top="9.45" Width="718.2" Border.Width="2"/>
       <LineObject Name="Line3" Top="30.91" Width="718.2" Border.Width="2"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="272.6" Width="718.2" Height="18.9" DataSource="WrhQtyDifferenceDetail">
+    <DataBand Name="Data1" Top="271" Width="718.2" Height="18.9" DataSource="WrhQtyDifferenceDetail">
       <TextObject Name="Text38" Width="37.8" Height="18.9" Text="[Row#]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text39" Left="37.8" Width="132.3" Height="18.9" Text="[WrhQtyDifferenceDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text40" Left="170.1" Width="321.3" Height="18.9" Text="[WrhQtyDifferenceDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
@@ -69,7 +69,7 @@
       <TextObject Name="Text42" Left="567" Width="75.6" Height="18.9" Text="[WrhQtyDifferenceDetail.QtyOrder]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text43" Left="642.6" Width="75.6" Height="18.9" Text="[WrhQtyDifferenceDetail.QtyReceive]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
     </DataBand>
-    <PageFooterBand Name="PageFooter1" Top="295.5" Width="718.2" Height="151.2">
+    <PageFooterBand Name="PageFooter1" Top="293.1" Width="718.2" Height="151.2">
       <TextObject Name="Text44" Left="652.05" Top="132.3" Width="66.15" Height="18.9" Text="[PageN]" HorzAlign="Right" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TableObject Name="Table1" Top="9.45" Width="715.1" Height="113.4">
         <TableColumn Name="Column5" Width="428.4"/>
