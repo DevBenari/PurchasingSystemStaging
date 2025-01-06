@@ -7,6 +7,7 @@ using PurchasingSystemStaging.Areas.Report.Models;
 using PurchasingSystemStaging.Areas.Report.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Repositories;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -243,13 +244,13 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
                     if (checkMonthPreviousInPO != null && checkMonthPrevious == null)
                     {
                         TempData["WarningMessage"] = "Sorry, the previous month has not been closed yet!";
-                        return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                        return RedirectToAction("Index", "CalculatedPurchaseOrder");
                     }
 
                     if (checkMonthNextInPO != null && checkMonthNext != null)
                     {
                         TempData["WarningMessage"] = "Sorry, the next month has already been closed!";
-                        return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                        return RedirectToAction("Index", "CalculatedPurchaseOrder");
                     }
 
                     //var checkMonthNow = _closingPurchaseOrderRepository.GetAllClosingPurchaseOrder().Where(m => m.Month == month && m.Year == year).FirstOrDefault();
@@ -323,25 +324,29 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
 
                             _closingPurchaseOrderRepository.Tambah(cpo);
 
-                            TempData["SuccessMessage"] = "Closed Month " + cpo.Month + " Success...";
-                            return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                            // Misal cpo.Month = 11
+                            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(cpo.Month);
+
+                            //TempData["SuccessMessage"] = "Closed Month " + cpo.Month + " Success...";
+                            return Json(new { success = true, message = $"Closed Month {monthName} Success..." });
                         }
                         else
                         {
-                            TempData["WarningMessage"] = "Sorry, there is still a PO status that has not been completed !";
-                            return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                            //TempData["WarningMessage"] = "Sorry, there is still a PO status that has not been completed !";
+                            return Json(new { success = false, message = "Sorry, there is still a PO status that has not been completed !" });
                         }
                     }
                     else
                     {
-                        TempData["WarningMessage"] = "Sorry, that month has been closed !";
-                        return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                        //TempData["WarningMessage"] = "Sorry, that month has been closed !";                        
+                        return Json(new { success = false, message = "Sorry, that month has been closed !" });
+
                     }
                 }                
                 else 
                 {
-                    TempData["WarningMessage"] = "Sorry, data this month empty !";
-                    return RedirectToAction("RedirectToIndex", "CalculatedPurchaseOrder");
+                    //TempData["WarningMessage"] = "Sorry, data this month empty !";
+                    return Json(new { success = false, message = "Sorry, data this month empty !" });                    
                 }
             }
 
