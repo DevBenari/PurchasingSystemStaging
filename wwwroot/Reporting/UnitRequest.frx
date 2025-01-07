@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="08/02/2024 11:36:44" ReportInfo.Modified="01/06/2025 10:02:00" ReportInfo.CreatorVersion="2025.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/02/2024 11:36:44" ReportInfo.Modified="01/06/2025 01:23:36" ReportInfo.CreatorVersion="2025.1.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGnEbNWKbPkHqkW8XQ/di2s21682leV46DqSeK5TvQHkC/RjR/36GTx1foCSibW9X6dUog0V2bqIplaipTN4hMvODyz+UHeqHAkp7xAbwphsqP0Npr/+pZFfxlSWrsJ+T4IbJVDRcZvhg7us1D+wr+caiqvyrUqjEj5L2ryztYc1uUmhrktG5Uwtg2ZxQ7AOUFvB/VXa+56lv/HLz2O11Fxs=">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqxo5ia/cYUqo97e0judmpyiT7Aj0I0+VDb9QsQCXno/E/4ctxwACwyLTYB+Azq/2TFSnX35Dsa36stce+hQSB1l4Krnwjiffy9aR+dPv1PGIwnY/FApI6/KpuGnaWw+3/okJKxmWYlHVoJRVKv6nOVZ5duVd1niKokSG9O0MOeZ4RpY3ndAH8CUGRnXMPV+cZBKhuQezp2lqdfdrvY4L41c4dtAgqIIC1g1g3KLHIUwqFdsADQ9E2DpsWQAl4MSKY">
       <TableDataSource Name="TscUnitRequestDetail" DataType="System.Int32" Enabled="true" TableName="TscUnitRequestDetail" SelectCommand="exec GetUnitRequestDetailById @UnitRequestId">
         <Column Name="UnitRequestDetailId" DataType="System.Guid"/>
         <Column Name="UnitRequestId" DataType="System.Guid"/>
@@ -52,20 +52,20 @@
     <PageHeaderBand Name="PageHeader1" Top="182.75" Width="718.2" Height="37.8">
       <TextObject Name="Text13" Top="9.45" Width="37.8" Height="18.9" Border.Color="Red" Border.Width="5" Text="No" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <LineObject Name="Line2" Top="9.45" Width="718.2" Border.Width="2"/>
-      <TextObject Name="Text14" Left="37.8" Top="9.45" Width="94.5" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Number" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text15" Left="132.3" Top="9.45" Width="311.85" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Name" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text16" Left="652.05" Top="9.45" Width="66.15" Height="18.9" Border.Color="Red" Border.Width="5" Text="Qty" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text17" Left="595.35" Top="9.45" Width="56.7" Height="18.9" Border.Color="Red" Border.Width="5" Text="Measure" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text14" Left="37.8" Top="9.45" Width="103.95" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Number" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text15" Left="141.75" Top="9.45" Width="283.5" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Name" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text16" Left="633.15" Top="9.45" Width="85.05" Height="18.9" Border.Color="Red" Border.Width="5" Text="Qty" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text17" Left="576.45" Top="9.45" Width="56.7" Height="18.9" Border.Color="Red" Border.Width="5" Text="Measure" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <LineObject Name="Line3" Top="30.91" Width="718.2" Border.Width="2"/>
-      <TextObject Name="Text42" Left="444.15" Top="9.45" Width="151.2" Height="18.9" Border.Color="Red" Border.Width="5" Text="Supplier" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text42" Left="425.25" Top="9.45" Width="151.2" Height="18.9" Border.Color="Red" Border.Width="5" Text="Supplier" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
     </PageHeaderBand>
     <DataBand Name="Data1" Top="223.75" Width="718.2" Height="18.9" DataSource="TscUnitRequestDetail">
       <TextObject Name="Text38" Width="37.8" Height="18.9" Text="[Row#]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text39" Left="37.8" Width="94.5" Height="18.9" Text="[TscUnitRequestDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text40" Left="132.3" Width="311.85" Height="18.9" Text="[TscUnitRequestDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text34" Left="652.05" Width="66.15" Height="18.9" Text="[TscUnitRequestDetail.Qty]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text35" Left="595.35" Width="56.7" Height="18.9" Text="[TscUnitRequestDetail.Measurement]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text43" Left="444.15" Width="151.2" Height="18.9" Text="[TscUnitRequestDetail.Supplier]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text39" Left="37.8" Width="103.95" Height="18.9" Text="[TscUnitRequestDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text40" Left="141.75" Width="283.5" Height="18.9" Text="[TscUnitRequestDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text34" Left="633.15" Width="85.05" Height="18.9" Text="[TscUnitRequestDetail.Qty]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text35" Left="576.45" Width="56.7" Height="18.9" Text="[TscUnitRequestDetail.Measurement]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text43" Left="425.25" Width="151.2" Height="18.9" Text="[TscUnitRequestDetail.Supplier]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
     </DataBand>
     <PageFooterBand Name="PageFooter1" Top="245.85" Width="718.2" Height="160.65">
       <TableObject Name="Table1" Top="18.9" Width="718.3" Height="113.4" Border.Lines="All" Border.Width="2">
