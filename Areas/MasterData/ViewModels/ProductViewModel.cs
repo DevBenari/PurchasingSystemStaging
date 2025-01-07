@@ -39,10 +39,10 @@ namespace PurchasingSystemStaging.Areas.MasterData.ViewModels
         public string? Note { get; set; }
 
         // Jalur Api
-        public string SupplierName { get; set; }
-        public string CategoryName { get; set; }
-        public string MeasurementName { get; set; }
-        public int DiscountValue { get; set; }
-        public string WarehouseLocationName { get; set; }
+        public string? SupplierName { get; set; }
+        public string? CategoryName { get; set; }
+        public string? MeasurementName { get; set; }
+        public int? DiscountValue { get; set; }
+        public string? WarehouseLocationName { get; set; }
     }
 }
