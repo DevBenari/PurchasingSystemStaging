@@ -187,7 +187,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
                 _emailRepository.Tambah(email);
                 TempData["SuccessMessage"] = "Email to " + vm.To + " Saved";
-                return RedirectToAction("RedirectToIndex", "Email");
+                return RedirectToAction("Index", "Email");
             }
 
             return View(vm);

@@ -7,7 +7,7 @@
 @using PurchasingSystemStaging.Areas.Warehouse.ViewModels;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
-@model ProductReturnViewModel
+@model PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn
 
 <!-- Main content -->
 <section class="content">
@@ -40,11 +40,9 @@
 
                                 <div class="form-group row">
                                     <div class="col-sm-12">
-                                        <label class="col-sm-2 col-form-label" asp-for="PurchaseOrderNumber">Purchase Order Number</label>
-                                        <select asp-for="PurchaseOrderNumber" asp-items="@ViewBag.PurchaseOrderNumber" class="form-control select2bs4" id="PurchaseOrderNumber" style="width: 100%;">
-                                            <option value="" hidden disabled selected>--Choose PO--</option>
-                                        </select>
-                                        <span asp-validation-for="PurchaseOrderNumber" class="error"></span>
+                                        <label class="col-sm-2 col-form-label" asp-for="BatchNumber">Batch Number</label>
+                                        <input type="text" asp-for="BatchNumber" class="form-control form-control-border border-width-2" id="BatchNumber" placeholder="Batch Number">
+                                        <span asp-validation-for="BatchNumber" class="error"></span>
                                     </div>
                                 </div>
 
@@ -205,7 +203,7 @@
                             <div class="col-md-5">
                                 <span>Search Product</span>
                                 <div class="form-group">
-                                    <select asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="produklist" data-placeholder="--Choose Product--">
+                                    <select id="productDropdown" class="form-control select2bs4" style="width: 100%;">
                                         <option value="" hidden disabled selected>--Choose Product--</option>
                                     </select>
                                 </div>
@@ -357,6 +355,46 @@
 
     <script>
         $(function () {
+            // Inisialisasi Select2
+            $('#productDropdown').select2({
+                theme: 'bootstrap4',
+                placeholder: "--Choose Product--",
+                allowClear: true,
+
+                // Aktifkan AJAX di Select2
+                ajax: {
+                    url: '@Url.Action("GetProductsPaged", "ProductReturn")', // ganti ke Controller/Action sesuai
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        // params.term => teks yang diketik user
+                        // params.page => halaman ke berapa (dimulai dari 1)
+                        var query = {
+                            term: params.term || "",
+                            page: params.page || 1,
+                            pageSize: 10
+                        };
+                        return query;
+                    },
+                    processResults: function (data, params) {
+                        // data => response JSON dari server
+                        // params.page => halaman ke berapa
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        };
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(function () {
             //Tanggal Lahir
             $('#ReturnDate').datetimepicker({
                 format: 'DD/MM/yyyy'
@@ -366,12 +404,12 @@
 
     <script>
         $(document).ready(function () {
-            $("#produklist").change(function () {
+            $("#productDropdown").change(function () {
                 $.ajax({
                     type: 'GET',
                     url: '@Url.Action("LoadProduk")',
                     dataType: 'json',
-                    data: { id: $("#produklist").val() },
+                    data: { id: $("#productDropdown").val() },
                     success: function (item) {
                         $.each(item, function () {
                             //Hidden
@@ -541,7 +579,7 @@
 
     <script>
         $(document).ready(function () {
-            $("#produklist").change(function () {
+            $("#productDropdown").change(function () {
                 $("#qty").val('1').focus();
             });
         });
@@ -585,7 +623,7 @@
                 var qtyTersedia = parseInt($('#stock').val());
                 // Ambil elemen dropdown
                 const selectedOption = $('#warehouseexpired option:selected');
-                const text = selectedOption.text(); // Alternatif, ambil teks langsung
+                const wareexp = selectedOption.text(); // Alternatif, ambil teks langsung
 
 
                 if (qtyInputan <= qtyTersedia) {
@@ -663,7 +701,7 @@
                             var supplier = $('#Supplier').val().trim();
                             var measurement = $('#measure').val().trim();
                             var warehouseorigin = $('#warehouseorigin').val().trim();
-                            var warehouseexpired = text;
+                            var warehouseexpired = wareexp;
                             var qty = parseInt($('#qty').val().trim());
                             var price = parseFloat($('#price').val().trim());
                             var discount = (parseInt($('#qty').val().trim()) * parseFloat($('#price').val().trim())) * (parseInt($('#discount').val().trim()) / 100);
@@ -694,8 +732,8 @@
                                             type: "warning"
                                         });
 
-                                        $('#produklist').select2('val', 'selectedIndex', 0);
-                                        $("#produklist").data('placeholder');
+                                        $('#productDropdown').select2('val', 'selectedIndex', 0);
+                                        $("#productDropdown").data('placeholder');
                                         $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                                         return;
                                     }
@@ -706,8 +744,8 @@
                                             type: "warning"
                                         });
 
-                                        $('#produklist').select2('val', 'selectedIndex', 0);
-                                        $("#produklist").data('placeholder');
+                                        $('#productDropdown').select2('val', 'selectedIndex', 0);
+                                        $("#productDropdown").data('placeholder');
                                         $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                                         return;
                                     }
@@ -746,8 +784,8 @@
                                 sumQty();
                                 sumGranTotal();
 
-                                $('#produklist').select2('val', 'selectedIndex', 0);
-                                $("#produklist").data('placeholder');
+                                $('#productDropdown').select2('val', 'selectedIndex', 0);
+                                $("#productDropdown").data('placeholder');
                                 $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
 
                                 $('.btn-sm').click(function () {
@@ -819,8 +857,8 @@
                         text: "Qty cannot be 0 !!!",
                         type: "warning"
                     });
-                    $('#produklist').select2('val', 'selectedIndex', 0);
-                    $("#produklist").data('placeholder');
+                    $('#productDropdown').select2('val', 'selectedIndex', 0);
+                    $("#productDropdown").data('placeholder');
                     $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                 }
                 else if (qtyInputan > qtyTersedia) {
@@ -829,8 +867,8 @@
                         text: "Failed, stock only available " + qtyTersedia,
                         type: "warning"
                     });
-                    $('#produklist').select2('val', 'selectedIndex', 0);
-                    $("#produklist").data('placeholder');
+                    $('#productDropdown').select2('val', 'selectedIndex', 0);
+                    $("#productDropdown").data('placeholder');
                     $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                 }
                 else {
@@ -839,8 +877,8 @@
                         text: "Failed, available stock 0 !",
                         type: "warning"
                     });
-                    $('#produklist').select2('val', 'selectedIndex', 0);
-                    $("#produklist").data('placeholder');
+                    $('#productDropdown').select2('val', 'selectedIndex', 0);
+                    $("#productDropdown").data('placeholder');
                     $("#productnumber,#productname,#stock,#Supplier,#measure,#warehouseorigin,#qty,#price,#discount,#minstock,#maxstock,#bufferstock").val('');
                 }
             });
@@ -925,7 +963,7 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && PurchaseOrderNumber == '' && Department1Id == '' && Position1Id == undefined && UserApprove1Id == undefined && Department2Id == '' && Position2Id == undefined && UserApprove2Id == undefined && Department3Id == '' && Position3Id == undefined && UserApprove3Id == undefined) {
+                } else if (detailTable != 1 && BatchNumber == '' && Department1Id == '' && Position1Id == undefined && UserApprove1Id == undefined && Department2Id == '' && Position2Id == undefined && UserApprove2Id == undefined && Department3Id == '' && Position3Id == undefined && UserApprove3Id == undefined) {
                     $('#Department1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#Position1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#UserApprove1List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
@@ -935,7 +973,7 @@
                     $('#Department3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#Position3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     $('#UserApprove3List').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
-                    $('#PurchaseOrderNumber').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
+                    $('#BatchNumber').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
                         text: "Sorry, please select...",
@@ -1014,8 +1052,8 @@
                         type: "warning"
                     });
                     isAllValid = false;
-                } else if (detailTable != 1 && PurchaseOrderNumber == '') {
-                    $('#PurchaseOrderNumber').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
+                } else if (detailTable != 1 && BatchNumber == '') {
+                    $('#BatchNumber').siblings('span.error').css('visibility', 'visible').html('<span style="color:red">Please select !</span>');
                     swal({
                         title: "Warning",
                         text: "Sorry, please select...",
@@ -1033,7 +1071,7 @@
                     $('#UserApprove1List').siblings('span.error').css('visibility', 'hidden')
                     $('#UserApprove2List').siblings('span.error').css('visibility', 'hidden')
                     $('#UserApprove3List').siblings('span.error').css('visibility', 'hidden')
-                    $('#PurchaseOrderNumber').siblings('span.error').css('visibility', 'hidden')
+                    $('#BatchNumber').siblings('span.error').css('visibility', 'hidden')
 
                     $("#tbldetailpr").find("tbody").children("tr").each(function (index, element) {
                         //***Penggunaan nama detail harus sesuai dengan nama pada table. Misal kodeproduk,namaproduk,dst harus sama.
@@ -1062,7 +1100,8 @@
                     var Department3Id = $('#Department3List').val();
                     var Position3Id = $('#Position3List').val();
                     var UserApprove3Id = $('#UserApprove3List').val();
-                    var PurchaseOrderNumberId = $('#PurchaseOrderNumber').val();
+                    var BatchNumber = $('#BatchNumber').val();
+                    var ReasonForReturn = $('#ReasonForReturn').val();
                     var Status = $('#status').val();
                     var QtyTotal = $('.productTotalQty').text();
                     var GrandTotal = $('.productGrandTotal').text();
@@ -1083,7 +1122,8 @@
                     dataPost.Department3Id = Department3Id;
                     dataPost.Position3Id = Position3Id;
                     dataPost.UserApprove3Id = UserApprove3Id;
-                    dataPost.PurchaseOrderNumberId = PurchaseOrderNumberId;
+                    dataPost.BatchNumber = BatchNumber;
+                    dataPost.ReasonForReturn = ReasonForReturn;
                     dataPost.Status = Status;
                     dataPost.QtyTotal = QtyTotal;
                     dataPost.GrandTotal = GrandTotal;

@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using FastReport.Data;
+using FastReport.Export.PdfSimple;
+using FastReport.Web;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,6 +18,7 @@ using PurchasingSystemStaging.Repositories;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 {
@@ -35,6 +40,9 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
 
         public ProductReturnController(
             UserManager<ApplicationUser> userManager,
@@ -50,7 +58,10 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             IWarehouseLocationRepository warehouseLocationRepository,
 
             IDataProtectionProvider provider,
-            UrlMappingService urlMappingService
+            UrlMappingService urlMappingService,
+            IHostingEnvironment hostingEnvironment,
+            IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration
         )
         {
             _userManager = userManager;
@@ -67,6 +78,9 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
+            _hostingEnvironment = hostingEnvironment;
+            _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
         }
         public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
@@ -136,6 +150,51 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         {
             var user = _applicationDbContext.UserActives.Where(p => p.PositionId == Id).ToList();
             return Json(new SelectList(user, "UserActiveId", "FullName"));
+        }
+
+        public async Task<IActionResult> GetProductsPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Products
+                .Include(p => p.Supplier)
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.ProductName.Contains(term) || p.Supplier.SupplierName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.ProductName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            // Hasil: di Select2 butuh { id, text }
+            // "text" kita isi gabungan ProductName + '|' + SupplierName
+            var results = items.Select(p => new {
+                id = p.ProductId,
+                text = p.ProductName + " | " + p.Supplier.SupplierName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
         }
 
         [HttpGet]
@@ -253,7 +312,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.WarehouseLocation = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
 
-            var productReturn = new ProductReturnViewModel()
+            var productReturn = new ProductReturn()
             {
                 UserAccessId = getUser.Id,
             };
@@ -285,7 +344,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProductReturn(ProductReturnViewModel model)
+        public async Task<IActionResult> CreateProductReturn(ProductReturn model)
         {
             ViewBag.Active = "ProductReturn";
 
@@ -323,7 +382,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                     ProductReturnNumber = model.ProductReturnNumber,
                     ReturnDate = model.ReturnDate,
                     UserAccessId = getUser.Id,
-                    PurchaseOrderNumber = model.ProductReturnNumber,
+                    BatchNumber = model.BatchNumber,
                     Department1Id = model.Department1Id,
                     Position1Id = model.Position1Id,
                     UserApprove1Id = model.UserApprove1Id,
@@ -371,7 +430,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 _productReturnRepository.Tambah(prn);
 
                 ////Signal R
-                //var data2 = _purchaseRequestRepository.GetAllPurchaseRequest();
+                //var data2 = _ProductReturnRepository.GetAllProductReturn();
                 //int totalKaryawan = data2.Count();
                 //await _hubContext.Clients.All.SendAsync("UpdateDataCount", totalKaryawan);
                 ////End Signal R
@@ -486,8 +545,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         {
             ViewBag.Active = "ProductReturn";
 
-            ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-            ViewBag.PurchaseOrderNumber = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
+            ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);            
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
             ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -505,6 +563,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             {
                 ProductReturnId = prn.ProductReturnId,
                 ProductReturnNumber = prn.ProductReturnNumber,
+                BatchNumber = prn.BatchNumber,
                 UserAccessId = prn.UserAccessId,
                 Department1Id = prn.Department1Id,
                 Position1Id = prn.Position1Id,
@@ -518,7 +577,8 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 Position3Id = prn.Position3Id,
                 UserApprove3Id = prn.UserApprove3Id,
                 ApproveStatusUser3 = prn.ApproveStatusUser3,
-                Status = prn.Status,               
+                Status = prn.Status,
+                ReasonForReturn = prn.ReasonForReturn,
                 Note = prn.Note,
                 MessageApprove1 = prn.MessageApprove1,
                 MessageApprove2 = prn.MessageApprove2,
@@ -634,7 +694,49 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
             ViewBag.WarehouseLocation = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);
             TempData["WarningMessage"] = "Number " + model.ProductReturnNumber + " Failed saved";
-            return Json(new { redirectToUrl = Url.Action("Index", "PurchaseRequest") });
+            return Json(new { redirectToUrl = Url.Action("Index", "ProductReturn") });
+        }
+
+        public async Task<IActionResult> PrintProductReturn(Guid Id)
+        {
+            var ProductReturn = await _productReturnRepository.GetProductReturnById(Id);
+
+            var CreateDate = ProductReturn.CreateDateTime.ToString("dd MMMM yyyy");
+            var ProductReturnNumber = ProductReturn.ProductReturnNumber;
+            var BatchNumber = ProductReturn.BatchNumber;
+            var CreateBy = ProductReturn.ApplicationUser.NamaUser;
+            var UserApprove1 = ProductReturn.UserApprove1.FullName;
+            var UserApprove2 = ProductReturn.UserApprove2.FullName;
+            var UserApprove3 = ProductReturn.UserApprove3.FullName;
+            var ReasonForReturn = ProductReturn.ReasonForReturn;
+            var Note = ProductReturn.Note;            
+
+            WebReport web = new WebReport();
+            var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\ProductReturn.frx";
+            web.Report.Load(path);
+
+            var msSqlDataConnection = new MsSqlDataConnection();
+            msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
+            var Conn = msSqlDataConnection.ConnectionString;
+
+            web.Report.SetParameterValue("Conn", Conn);
+            web.Report.SetParameterValue("ProductReturnId", Id.ToString());
+            web.Report.SetParameterValue("ProductReturnNumber", ProductReturnNumber);
+            web.Report.SetParameterValue("CreateDate", CreateDate);
+            web.Report.SetParameterValue("CreateBy", CreateBy);
+            web.Report.SetParameterValue("UserApprove1", UserApprove1);
+            web.Report.SetParameterValue("UserApprove2", UserApprove2);
+            web.Report.SetParameterValue("UserApprove3", UserApprove3);
+            web.Report.SetParameterValue("ReasonForReturn", ReasonForReturn);
+            web.Report.SetParameterValue("Note", Note);           
+
+            web.Report.Prepare();
+
+            Stream stream = new MemoryStream();
+            web.Report.Export(new PDFSimpleExport(), stream);
+            stream.Position = 0;
+
+            return File(stream, "application/zip", (ProductReturnNumber + ".pdf"));
         }
     }
 }

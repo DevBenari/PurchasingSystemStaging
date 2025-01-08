@@ -148,23 +148,33 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        @if (User.Identity.Name == "superadmin@admin.com")
-                        {
-                            <a class="btn bg-gray" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
-                            <div class="btn btn-default" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
-                        }
-                        else
-                        {
-                            @if (!string.IsNullOrEmpty(listRole))
-                            {
-                                var roles = listRole.Split(',');
-                                if (roles.Contains("PrintReceiveOrder"))
-                                {
-                                    <a class="btn bg-gray" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
-                                }
-                            }
-                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
-                        }
+                        <div class="row">
+                            <div class="col-md-0"></div>
+                            <div class="col-md-8">
+                                <div class="row">                                    
+                                    @if (User.Identity.Name == "superadmin@admin.com")
+                                    {
+                                        <a class="btn bg-gray" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                        <div class="btn btn-default" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
+                                    }
+                                    else
+                                    {
+                                        @if (!string.IsNullOrEmpty(listRole))
+                                        {
+                                            var roles = listRole.Split(',');
+                                            if (roles.Contains("PrintReceiveOrder"))
+                                            {
+                                                <a class="btn bg-gray" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                            }
+                                        }
+                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
+                                    }                                    
+                                </div>
+                            </div>
+                            <div class="col-md-4" style="text-align: right;">
+                                <a class="btn bg-green" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Print Batch Number</a>
+                            </div>
+                        </div>                       
                     </div>
                 </div>
                 <!-- /.end button footer -->

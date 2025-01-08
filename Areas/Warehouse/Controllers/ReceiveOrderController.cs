@@ -298,16 +298,6 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                         ReceiveOrderDetails = model.ReceiveOrderDetails,
                     };
 
-                    var updateStatusPO = _purchaseOrderRepository.GetAllPurchaseOrder().Where(c => c.PurchaseOrderId == model.PurchaseOrderId).FirstOrDefault();
-                    if (updateStatusPO != null)
-                    {
-                        updateStatusPO.UpdateDateTime = DateTime.Now;
-                        updateStatusPO.UpdateBy = new Guid(getUser.Id);
-                        updateStatusPO.Status = model.ReceiveOrderNumber;
-
-                        _applicationDbContext.Entry(updateStatusPO).State = EntityState.Modified;
-                    }
-
                     foreach (var item in receiveOrder.ReceiveOrderDetails)
                     {
                         var updateProduk = _productRepository.GetAllProduct().Where(c => c.ProductCode == item.ProductNumber).FirstOrDefault();
@@ -320,6 +310,16 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                             _applicationDbContext.Entry(updateProduk).State = EntityState.Modified;
                         }
                     }
+
+                    var updateStatusPO = _purchaseOrderRepository.GetAllPurchaseOrder().Where(c => c.PurchaseOrderId == model.PurchaseOrderId).FirstOrDefault();
+                    if (updateStatusPO != null)
+                    {
+                        updateStatusPO.UpdateDateTime = DateTime.Now;
+                        updateStatusPO.UpdateBy = new Guid(getUser.Id);
+                        updateStatusPO.Status = model.ReceiveOrderNumber;
+
+                        _applicationDbContext.Entry(updateStatusPO).State = EntityState.Modified;
+                    }                    
 
                     _receiveOrderRepository.Tambah(receiveOrder);
                     TempData["SuccessMessage"] = "Number " + model.ReceiveOrderNumber + " Saved";
