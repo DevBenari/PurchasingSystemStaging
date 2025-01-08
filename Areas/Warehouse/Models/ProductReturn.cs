@@ -12,10 +12,10 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Models
     {
         [Key]
         public Guid ProductReturnId { get; set; }
-        public DateTimeOffset ReturnDate { get; set; }
+        public DateTimeOffset ReturnDate { get; set; } = DateTimeOffset.UtcNow;
         public string ProductReturnNumber { get; set; }
         public string UserAccessId { get; set; }
-        public string PurchaseOrderNumber { get; set; }
+        public string BatchNumber { get; set; }
         public Guid? Department1Id { get; set; }
         public Guid? Position1Id { get; set; }
         public Guid? UserApprove1Id { get; set; }

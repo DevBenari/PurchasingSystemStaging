@@ -220,6 +220,11 @@
                                     <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> Product Return
                                 </div>
                             </li>
+                            <li class="@(ViewBag.Active == "ApprovalProductReturn" ? "nav-item menu-open active":"")">
+                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalProductReturn", new { area = "Warehouse" })">
+                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Product Return
+                                </div>
+                            </li>
                             <li class="nav-header">General</li>
                             <li class="@(ViewBag.Active == "StockMonitoring" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "StockMonitoring", new { area = "General" })">
@@ -352,6 +357,15 @@
                                     <li class="@(ViewBag.Active == "ProductReturn" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ProductReturn", new { area = "Warehouse" })">
                                             <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> Product Return
+                                        </div>
+                                    </li>
+                                }
+
+                                if (roles.Contains("ReadApprovalProductReturn"))
+                                {
+                                    <li class="@(ViewBag.Active == "ApprovalProductReturn" ? "nav-item menu-open active":"")">
+                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalProductReturn", new { area = "Warehouse" })">
+                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Product Return
                                         </div>
                                     </li>
                                 }

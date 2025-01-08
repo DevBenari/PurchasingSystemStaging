@@ -1,4 +1,7 @@
-﻿namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
+﻿using PurchasingSystemStaging.Areas.Order.Models;
+using PurchasingSystemStaging.Areas.Warehouse.Models;
+
+namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
 {
     public class ApprovalProductReturnViewModel
     {
@@ -7,6 +10,7 @@
         public string ProductReturnNumber { get; set; }
         public string UserAccessId { get; set; } //Dibuat Oleh
         public Guid? UserApproveId { get; set; }
+        public string? UserApprove { get; set; }
         public string ApproveBy { get; set; }
         public string? ApprovalTime { get; set; }
         public DateTimeOffset ApprovalDate { get; set; }
@@ -14,5 +18,6 @@
         public string Status { get; set; }
         public string? Note { get; set; }
         public string? Message { get; set; }
+        public List<ProductReturnDetail> ProductReturnDetails { get; set; }
     }
 }
