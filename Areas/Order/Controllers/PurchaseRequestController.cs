@@ -772,7 +772,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         //    }
         //}
 
-        public async Task<IActionResult> PrintPurchaseRequest(Guid Id)
+        public async Task<IActionResult> PreviewPurchaseRequest(Guid Id)
         {
             var purchaseRequest = await _purchaseRequestRepository.GetPurchaseRequestById(Id);
 
@@ -808,7 +808,54 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             web.Report.SetParameterValue("Note", Note);
             web.Report.SetParameterValue("GrandTotal", GrandTotal);
             web.Report.SetParameterValue("Tax", Tax);
-            web.Report.SetParameterValue("GrandTotalAfterTax", GrandTotalAfterTax);            
+            web.Report.SetParameterValue("GrandTotalAfterTax", GrandTotalAfterTax);
+
+            Stream stream = new MemoryStream();
+
+            web.Report.Prepare();
+            web.Report.Export(new PDFSimpleExport(), stream);
+            stream.Position = 0;
+
+            return File(stream, "application/pdf");
+        }
+
+        public async Task<IActionResult> DownloadPurchaseRequest(Guid Id)
+        {
+            var purchaseRequest = await _purchaseRequestRepository.GetPurchaseRequestById(Id);
+
+            var CreateDate = purchaseRequest.CreateDateTime.ToString("dd MMMM yyyy");
+            var PrNumber = purchaseRequest.PurchaseRequestNumber;
+            var CreateBy = purchaseRequest.ApplicationUser.NamaUser;
+            var UserApprove1 = purchaseRequest.UserApprove1.FullName;
+            var UserApprove2 = purchaseRequest.UserApprove2.FullName;
+            var UserApprove3 = purchaseRequest.UserApprove3.FullName;
+            var TermOfPayment = purchaseRequest.TermOfPayment.TermOfPaymentName;
+            var Note = purchaseRequest.Note;
+            var GrandTotal = purchaseRequest.GrandTotal;
+            var Tax = (GrandTotal / 100) * 11;
+            var GrandTotalAfterTax = (GrandTotal + Tax);
+
+            WebReport web = new WebReport();
+            var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\PurchaseRequest.frx";
+            web.Report.Load(path);
+
+            var msSqlDataConnection = new MsSqlDataConnection();
+            msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
+            var Conn = msSqlDataConnection.ConnectionString;
+
+            web.Report.SetParameterValue("Conn", Conn);
+            web.Report.SetParameterValue("PurchaseRequestId", Id.ToString());
+            web.Report.SetParameterValue("PrNumber", PrNumber);
+            web.Report.SetParameterValue("CreateDate", CreateDate);
+            web.Report.SetParameterValue("CreateBy", CreateBy);
+            web.Report.SetParameterValue("UserApprove1", UserApprove1);
+            web.Report.SetParameterValue("UserApprove2", UserApprove2);
+            web.Report.SetParameterValue("UserApprove3", UserApprove3);
+            web.Report.SetParameterValue("TermOfPayment", TermOfPayment);
+            web.Report.SetParameterValue("Note", Note);
+            web.Report.SetParameterValue("GrandTotal", GrandTotal);
+            web.Report.SetParameterValue("Tax", Tax);
+            web.Report.SetParameterValue("GrandTotalAfterTax", GrandTotalAfterTax);
 
             web.Report.Prepare();
 

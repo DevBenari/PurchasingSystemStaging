@@ -152,6 +152,11 @@
                                 <div class="row">
                                     @if (User.Identity.Name == "superadmin@admin.com")
                                     {
+                                        <a class="btn bg-indigo" id="btnubah">Change</a>
+                                        <a class="btn bg-gray" asp-action="PreviewQtyDifference" asp-controller="QtyDifference" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                        <a class="btn bg-blue" asp-action="DownloadQtyDifferenceId" asp-controller="QtyDifference" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "QtyDifference", new { Warehouse = "Warehouse" })">Cancel</div>
+
                                         <a class="btn bg-gray" asp-action="PrintQtyDifference" asp-controller="QtyDifference" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
                                     }
                                     else
@@ -159,9 +164,14 @@
                                         @if (!string.IsNullOrEmpty(listRole))
                                         {
                                             var roles = listRole.Split(',');
-                                            if (roles.Contains("PrintQtyDifference"))
+                                            if (roles.Contains("PreviewQtyDifference"))
                                             {
-                                                <a class="btn bg-gray" asp-action="PrintQtyDifference" asp-controller="QtyDifference" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                                <a class="btn bg-gray" asp-action="PreviewPurchaseRequest" asp-controller="QtyDifferenceId" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                            }
+
+                                            if (roles.Contains("DownloadQtyDifference"))
+                                            {
+                                                <a class="btn bg-blue" asp-action="DownloadPurchaseRequest" asp-controller="QtyDifferenceId" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="fas fa-download" style="color:white"></i> Download</a>
                                             }
                                         }
                                     }                                    

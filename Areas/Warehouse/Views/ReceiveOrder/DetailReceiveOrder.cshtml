@@ -154,7 +154,8 @@
                                 <div class="row">                                    
                                     @if (User.Identity.Name == "superadmin@admin.com")
                                     {
-                                        <a class="btn bg-gray" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                        <a class="btn bg-gray" asp-action="PreviewReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                        <a class="btn bg-blue" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
                                         <div class="btn btn-default" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
                                     }
                                     else
@@ -162,9 +163,14 @@
                                         @if (!string.IsNullOrEmpty(listRole))
                                         {
                                             var roles = listRole.Split(',');
-                                            if (roles.Contains("PrintReceiveOrder"))
+                                            if (roles.Contains("PreviewReceiveOrder"))
                                             {
-                                                <a class="btn bg-gray" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
+                                                <a class="btn bg-gray" asp-action="PreviewReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                            }
+
+                                            if (roles.Contains("DownloadReceiveOrder"))
+                                            {
+                                                <a class="btn bg-blue" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
                                             }
                                         }
                                         <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
@@ -172,7 +178,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4" style="text-align: right;">
-                                <a class="btn bg-green" asp-action="PrintReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="far fa-file-alt" style="color:white"></i> Print Batch Number</a>
+                                <a class="btn bg-green" asp-action="PreviewBatchNumber" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview Batch Number</a>
                             </div>
                         </div>                       
                     </div>

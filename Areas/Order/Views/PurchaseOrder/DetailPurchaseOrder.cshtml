@@ -13,9 +13,6 @@
 }
 @model PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder
 
-<!-- Tempusdominus Bootstrap 4 -->
-<link rel="stylesheet" href="~/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-
 <!-- Main content -->
 <section class="content">
     <div class="row">
@@ -102,17 +99,6 @@
                             <span asp-validation-for="TermOfPaymentId" class="error"></span>
                         </div>
                     </div>
-                    @* <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="DueDateId">
-                            Due Date
-                        </label>
-                        <div class="col-sm-10">
-                            <select asp-for="DueDateId" asp-items="@ViewBag.DueDate" class="form-control select2bs4" id="DueDateId" style="width: 100%;" disabled>
-                                <option value="" hidden disabled selected>--Choose DueDate--</option>
-                            </select>
-                            <span asp-validation-for="DueDateId" class="error"></span>
-                        </div>
-                    </div> *@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" asp-for="Status">Status</label>
                         <div class="col-sm-10">
@@ -182,16 +168,37 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        @if (!string.IsNullOrEmpty(listRole))
-                        {
-                            var roles = listRole.Split(',');                            
-                            if (roles.Contains("PrintPurchaseRequest"))
-                            {
-                                <a class="btn bg-gray" asp-action="PrintPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
-                            }
-                        }                        
-                        
-                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Order" })">Cancel</div>
+                        <div class="row">
+                            <div class="col-md-0"></div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    @if (User.Identity.Name == "superadmin@admin.com")
+                                    {
+                                        <a class="btn bg-gray" asp-action="PreviewPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                        <a class="btn bg-blue" asp-action="DownloadPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                        <div class="btn btn-default" data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Warehouse" })">Cancel</div>
+                                    }
+                                    else
+                                    {
+                                        @if (!string.IsNullOrEmpty(listRole))
+                                        {
+                                            var roles = listRole.Split(',');
+                                            if (roles.Contains("PreviewPurchaseOrder"))
+                                            {
+                                                <a class="btn bg-gray" asp-action="PreviewPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                            }
+
+                                            if (roles.Contains("DownloadPurchaseOrder"))
+                                            {
+                                                <a class="btn bg-blue" asp-action="DownloadPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                            }
+                                        }
+                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Order" })">Cancel</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-0" style="text-align: right;"></div>
+                        </div>                        
                     </div>
                 </div>
                 <!-- /.end button footer -->

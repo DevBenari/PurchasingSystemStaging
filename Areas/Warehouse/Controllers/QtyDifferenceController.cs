@@ -490,7 +490,44 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> PrintQtyDifference(Guid Id)
+        public async Task<IActionResult> PreviewQtyDifference(Guid Id)
+        {
+            var qtyDifference = await _qtyDifferenceRepository.GetQtyDifferenceById(Id);
+
+            var CreateDate = qtyDifference.CreateDateTime.ToString("dd MMMM yyyy");
+            var QdNumber = qtyDifference.QtyDifferenceNumber;
+            var PoNumber = qtyDifference.PurchaseOrder.PurchaseOrderNumber;
+            var UserApprove1 = qtyDifference.UserApprove1.FullName;
+            var UserApprove2 = qtyDifference.UserApprove2.FullName;
+            var Note = qtyDifference.Note;
+
+            WebReport web = new WebReport();
+            var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\CancelPurchaseOrder.frx";
+            web.Report.Load(path);
+
+            var msSqlDataConnection = new MsSqlDataConnection();
+            msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
+            var Conn = msSqlDataConnection.ConnectionString;
+
+            web.Report.SetParameterValue("Conn", Conn);
+            web.Report.SetParameterValue("QtyDifferenceId", Id.ToString());
+            web.Report.SetParameterValue("QdNumber", QdNumber);
+            web.Report.SetParameterValue("PoNumber", PoNumber);
+            web.Report.SetParameterValue("CreateDate", CreateDate);
+            web.Report.SetParameterValue("UserApprove1", UserApprove1);
+            web.Report.SetParameterValue("UserApprove2", UserApprove2);
+            web.Report.SetParameterValue("Note", Note);
+
+            Stream stream = new MemoryStream();
+
+            web.Report.Prepare();
+            web.Report.Export(new PDFSimpleExport(), stream);
+            stream.Position = 0;
+
+            return File(stream, "application/pdf");
+        }
+
+        public async Task<IActionResult> DownloadQtyDifference(Guid Id)
         {
             var qtyDifference = await _qtyDifferenceRepository.GetQtyDifferenceById(Id);
 
@@ -519,9 +556,11 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             web.Report.SetParameterValue("Note", Note);
 
             web.Report.Prepare();
+
             Stream stream = new MemoryStream();
             web.Report.Export(new PDFSimpleExport(), stream);
             stream.Position = 0;
+
             return File(stream, "application/zip", (QdNumber + ".pdf"));
         }
     }
