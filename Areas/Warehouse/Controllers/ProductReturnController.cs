@@ -304,9 +304,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             _signInManager.IsSignedIn(User);
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-
-            ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-            ViewBag.PurchaseOrderNumber = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);            
+            
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
             ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -502,9 +500,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 return Json(new { redirectToUrl = Url.Action("Index", "ProductReturn") });
             }
             else
-            {
-                ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-                ViewBag.PurchaseOrderNumber = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
+            {                
                 ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
                 ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
                 ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -635,9 +631,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                                 _applicationDbContext.SaveChanges();
                             }
                             else
-                            {
-                                ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-                                ViewBag.PurchaseOrderNumber = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
+                            {                                
                                 ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
                                 ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
                                 ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -664,9 +658,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                         return Json(new { redirectToUrl = Url.Action("Index", "ProductReturn") });
                     }
                     else
-                    {
-                        ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-                        ViewBag.PurchaseOrderNumber = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
+                    {                        
                         ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
                         ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
                         ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -676,9 +668,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                     }
                 }
                 else
-                {
-                    ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-                    ViewBag.PurchaseOrderNumber = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
+                {                    
                     ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
                     ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
                     ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -687,8 +677,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                     return View(model);
                 }
             }
-            ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
-            ViewBag.PurchaseOrderNumber = new SelectList(await _purchaseOrderRepository.GetPurchaseOrders(), "PurchaseOrderId", "PurchaseOrderNumber", SortOrder.Ascending);
+            
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
             ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -697,7 +686,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return Json(new { redirectToUrl = Url.Action("Index", "ProductReturn") });
         }
 
-        public async Task<IActionResult> PrintProductReturn(Guid Id)
+        public async Task<IActionResult> PreviewProductReturn(Guid Id)
         {
             var ProductReturn = await _productReturnRepository.GetProductReturnById(Id);
 
@@ -722,13 +711,57 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             web.Report.SetParameterValue("Conn", Conn);
             web.Report.SetParameterValue("ProductReturnId", Id.ToString());
             web.Report.SetParameterValue("ProductReturnNumber", ProductReturnNumber);
+            web.Report.SetParameterValue("BatchNumber", BatchNumber);
             web.Report.SetParameterValue("CreateDate", CreateDate);
             web.Report.SetParameterValue("CreateBy", CreateBy);
             web.Report.SetParameterValue("UserApprove1", UserApprove1);
             web.Report.SetParameterValue("UserApprove2", UserApprove2);
             web.Report.SetParameterValue("UserApprove3", UserApprove3);
             web.Report.SetParameterValue("ReasonForReturn", ReasonForReturn);
-            web.Report.SetParameterValue("Note", Note);           
+            web.Report.SetParameterValue("Note", Note);
+
+            Stream stream = new MemoryStream();
+
+            web.Report.Prepare();
+            web.Report.Export(new PDFSimpleExport(), stream);
+            stream.Position = 0;
+
+            return File(stream, "application/pdf");
+        }
+
+        public async Task<IActionResult> DownloadProductReturn(Guid Id)
+        {
+            var ProductReturn = await _productReturnRepository.GetProductReturnById(Id);
+
+            var CreateDate = ProductReturn.CreateDateTime.ToString("dd MMMM yyyy");
+            var ProductReturnNumber = ProductReturn.ProductReturnNumber;
+            var BatchNumber = ProductReturn.BatchNumber;
+            var CreateBy = ProductReturn.ApplicationUser.NamaUser;
+            var UserApprove1 = ProductReturn.UserApprove1.FullName;
+            var UserApprove2 = ProductReturn.UserApprove2.FullName;
+            var UserApprove3 = ProductReturn.UserApprove3.FullName;
+            var ReasonForReturn = ProductReturn.ReasonForReturn;
+            var Note = ProductReturn.Note;
+
+            WebReport web = new WebReport();
+            var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\ProductReturn.frx";
+            web.Report.Load(path);
+
+            var msSqlDataConnection = new MsSqlDataConnection();
+            msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
+            var Conn = msSqlDataConnection.ConnectionString;
+
+            web.Report.SetParameterValue("Conn", Conn);
+            web.Report.SetParameterValue("ProductReturnId", Id.ToString());
+            web.Report.SetParameterValue("ProductReturnNumber", ProductReturnNumber);
+            web.Report.SetParameterValue("BatchNumber", BatchNumber);
+            web.Report.SetParameterValue("CreateDate", CreateDate);
+            web.Report.SetParameterValue("CreateBy", CreateBy);
+            web.Report.SetParameterValue("UserApprove1", UserApprove1);
+            web.Report.SetParameterValue("UserApprove2", UserApprove2);
+            web.Report.SetParameterValue("UserApprove3", UserApprove3);
+            web.Report.SetParameterValue("ReasonForReturn", ReasonForReturn);
+            web.Report.SetParameterValue("Note", Note);
 
             web.Report.Prepare();
 

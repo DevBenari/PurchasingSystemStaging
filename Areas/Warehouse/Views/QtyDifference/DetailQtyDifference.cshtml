@@ -146,40 +146,37 @@
                 <!-- start button footer -->
                 <div class="card">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-0"></div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    @if (User.Identity.Name == "superadmin@admin.com")
-                                    {
-                                        <a class="btn bg-indigo" id="btnubah">Change</a>
-                                        <a class="btn bg-gray" asp-action="PreviewQtyDifference" asp-controller="QtyDifference" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                        <a class="btn bg-blue" asp-action="DownloadQtyDifferenceId" asp-controller="QtyDifference" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="fas fa-download" style="color:white"></i> Download</a>
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "QtyDifference", new { Warehouse = "Warehouse" })">Cancel</div>
-
-                                        <a class="btn bg-gray" asp-action="PrintQtyDifference" asp-controller="QtyDifference" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="far fa-file-alt" style="color:white"></i> Save As PDF</a>
-                                    }
-                                    else
-                                    {
-                                        @if (!string.IsNullOrEmpty(listRole))
-                                        {
-                                            var roles = listRole.Split(',');
-                                            if (roles.Contains("PreviewQtyDifference"))
-                                            {
-                                                <a class="btn bg-gray" asp-action="PreviewPurchaseRequest" asp-controller="QtyDifferenceId" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                            }
-
-                                            if (roles.Contains("DownloadQtyDifference"))
-                                            {
-                                                <a class="btn bg-blue" asp-action="DownloadPurchaseRequest" asp-controller="QtyDifferenceId" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="fas fa-download" style="color:white"></i> Download</a>
-                                            }
-                                        }
-                                    }                                    
-                                    <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "QtyDifference", new { area = "Warehouse" })">Cancel</div>                                    
-                                </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Bagian Kiri -->
+                            <div>
+                                <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "QtyDifference", new { Warehouse = "Warehouse" })">Cancel</div>
                             </div>
-                            <div class="col-md-0"></div>
-                        </div>
+
+                            <!-- Bagian Kanan -->
+                            <div>
+                                @if (User.Identity.Name == "superadmin@admin.com")
+                                {
+                                    <a class="btn bg-gray" asp-action="PreviewQtyDifference" asp-controller="QtyDifferenceId" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                    <a class="btn bg-indigo" asp-action="DownloadQtyDifference" asp-controller="QtyDifferenceId" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                }
+                                else
+                                {
+                                    @if (!string.IsNullOrEmpty(listRole))
+                                    {
+                                        var roles = listRole.Split(',');
+                                        if (roles.Contains("PreviewQtyDifference"))
+                                        {
+                                            <a class="btn bg-gray" asp-action="PreviewQtyDifference" asp-controller="QtyDifferenceId" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                        }
+
+                                        if (roles.Contains("DownloadQtyDifference"))
+                                        {
+                                            <a class="btn bg-indigo" asp-action="DownloadQtyDifference" asp-controller="QtyDifferenceId" asp-area="Warehouse" asp-route-id="@Model.QtyDifferenceId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                        }
+                                    }
+                                }                                
+                            </div>
+                        </div>                        
                     </div>
                 </div>
                 <!-- /.end button footer -->

@@ -148,39 +148,42 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-0"></div>
-                            <div class="col-md-8">
-                                <div class="row">                                    
-                                    @if (User.Identity.Name == "superadmin@admin.com")
-                                    {
-                                        <a class="btn bg-gray" asp-action="PreviewReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                        <a class="btn bg-blue" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
-                                        <div class="btn btn-default" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
-                                    }
-                                    else
-                                    {
-                                        @if (!string.IsNullOrEmpty(listRole))
-                                        {
-                                            var roles = listRole.Split(',');
-                                            if (roles.Contains("PreviewReceiveOrder"))
-                                            {
-                                                <a class="btn bg-gray" asp-action="PreviewReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                            }
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Bagian Kiri -->
+                            <div>
+                                <div class="btn btn-default" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
+                            </div>
 
-                                            if (roles.Contains("DownloadReceiveOrder"))
-                                            {
-                                                <a class="btn bg-blue" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
-                                            }
+                            <!-- Bagian Kanan -->
+                            <div>
+                                @if (User.Identity.Name == "superadmin@admin.com")
+                                {
+                                    <a class="btn bg-gray" asp-action="PreviewReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                    <a class="btn bg-blue" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                    <a class="btn bg-green" asp-action="PreviewBatchNumber" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Batch Number</a>
+                                }
+                                else
+                                {
+                                    @if (!string.IsNullOrEmpty(listRole))
+                                    {
+                                        var roles = listRole.Split(',');
+                                        if (roles.Contains("PreviewReceiveOrder"))
+                                        {
+                                            <a class="btn bg-gray" asp-action="PreviewReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
                                         }
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">Cancel</div>
-                                    }                                    
-                                </div>
+
+                                        if (roles.Contains("DownloadReceiveOrder"))
+                                        {
+                                            <a class="btn bg-blue" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                        }
+                                        if (roles.Contains("PreviewBatchNumber"))
+                                        {
+                                            <a class="btn bg-green" asp-action="PreviewBatchNumber" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Batch Number</a>
+                                        }
+                                    }
+                                }                                
                             </div>
-                            <div class="col-md-4" style="text-align: right;">
-                                <a class="btn bg-green" asp-action="PreviewBatchNumber" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview Batch Number</a>
-                            </div>
-                        </div>                       
+                        </div>                                              
                     </div>
                 </div>
                 <!-- /.end button footer -->

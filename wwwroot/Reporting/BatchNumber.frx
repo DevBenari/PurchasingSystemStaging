@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/09/2025 14:31:51" ReportInfo.Modified="01/09/2025 15:13:29" ReportInfo.CreatorVersion="2025.1.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGCgiDglzYkeDnnIBok3ESB9mNK+9rs5wIh5oJerocnviMKiQoAm+sRo5RiFAf7b2MWXhP2dCUZQZteG8PJHep+hHNyHfQtuh+IIq0htocafPrzY3nLYzL0A5BrzMKDbb7CtDRHMXXyzA91mWab1p7J/IuJ+YxghJwyRilIwL0lAo0A5zXMOp/BgLYyrx5goaEpsnakp0GWaQ2161ZjFTZT1Is3R4+dI5+Tymz731h57xQcJ9JYVA4zRInCmZuk50">
+      <TableDataSource Name="WrhReceiveOrder" DataType="System.Int32" Enabled="true" TableName="WrhReceiveOrder">
+        <Column Name="ReceiveOrderId" DataType="System.Guid"/>
+        <Column Name="ReceiveOrderNumber" DataType="System.String"/>
+        <Column Name="PurchaseOrderId" DataType="System.Guid"/>
+        <Column Name="ReceiveById" DataType="System.String"/>
+        <Column Name="Status" DataType="System.String"/>
+        <Column Name="Note" DataType="System.String"/>
+        <Column Name="CreateDateTime" DataType="System.DateTimeOffset"/>
+        <Column Name="CreateBy" DataType="System.Guid"/>
+        <Column Name="UpdateDateTime" DataType="System.DateTimeOffset"/>
+        <Column Name="UpdateBy" DataType="System.Guid"/>
+        <Column Name="DeleteDateTime" DataType="System.DateTimeOffset"/>
+        <Column Name="DeleteBy" DataType="System.Guid"/>
+        <Column Name="IsCancel" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="IsDelete" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="DeliveryDate" DataType="System.String"/>
+        <Column Name="DeliveryServiceName" DataType="System.String"/>
+        <Column Name="InvoiceNumber" DataType="System.String"/>
+        <Column Name="ShippingNumber" DataType="System.String"/>
+        <Column Name="WaybillNumber" DataType="System.String"/>
+        <Column Name="SenderName" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="Conn" DataType="System.String" AsString=""/>
+    <Parameter Name="ReceiveOrderId" DataType="System.String" AsString=""/>
+    <Parameter Name="RoNumber" DataType="System.String" AsString=""/>
+  </Dictionary>
+  <ReportPage Name="Page1" PaperWidth="150" PaperHeight="80" Watermark.Font="Arial, 60pt" LastPageSource="261" FirstPageSource="261">
+    <DataBand Name="Data1" Width="491.4" Height="226.8">
+      <PictureObject Name="Picture1" Left="122.85" Top="9.45" Width="252" Height="217.35" Image=""/>
+      <TextObject Name="Text4" Width="491.4" Height="28.35" Text="BATCH NUMBER" HorzAlign="Center" VertAlign="Center" Font="Arial, 20pt, style=Bold"/>
+      <TextObject Name="Text3" Top="207.9" Width="491.4" Height="18.9" Text="[RoNumber]" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt, style=Bold"/>
+    </DataBand>
+  </ReportPage>
+</Report>
