@@ -168,17 +168,22 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-0"></div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    @if (User.Identity.Name == "superadmin@admin.com")
-                                    {
-                                        <a class="btn bg-gray" asp-action="PreviewPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                        <a class="btn bg-blue" asp-action="DownloadPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
-                                        <div class="btn btn-default" data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Warehouse" })">Cancel</div>
-                                    }
-                                    else
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Bagian Kiri -->
+                            <div>
+                                <div class="btn btn-default" data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Order" })">Cancel</div>
+                            </div>
+
+                            <!-- Bagian Kanan -->
+                            <div>
+                                @if (User.Identity.Name == "superadmin@admin.com")
+                                {
+                                    <a class="btn bg-gray" asp-action="PreviewPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                    <a class="btn bg-indigo" asp-action="DownloadPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                }
+                                else
+                                {
+                                    @if (Model.Status.StartsWith("RO") || Model.Status == "In Order")
                                     {
                                         @if (!string.IsNullOrEmpty(listRole))
                                         {
@@ -190,15 +195,13 @@
 
                                             if (roles.Contains("DownloadPurchaseOrder"))
                                             {
-                                                <a class="btn bg-blue" asp-action="DownloadPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                                <a class="btn bg-indigo" asp-action="DownloadPurchaseOrder" asp-controller="PurchaseOrder" asp-area="Order" asp-route-id="@Model.PurchaseOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
                                             }
                                         }
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Order" })">Cancel</div>
                                     }
-                                </div>
+                                }                                                                
                             </div>
-                            <div class="col-md-0" style="text-align: right;"></div>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
                 <!-- /.end button footer -->

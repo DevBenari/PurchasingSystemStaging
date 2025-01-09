@@ -18,7 +18,9 @@ using PurchasingSystemStaging.Areas.Warehouse.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
+using QRCoder;
 using System.Data;
+using System.Drawing;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -501,5 +503,92 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             return File(stream, "application/zip", (RoNumber + ".pdf"));
         }
+
+        public async Task<IActionResult> PreviewBatchNumber(Guid Id)
+        {
+            var rcvOrder = await _receiveOrderRepository.GetReceiveOrderById(Id);           
+            var RoNumber = rcvOrder.ReceiveOrderNumber;
+
+            // Path logo untuk QR code
+            var logoPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logo.png");
+
+            // Generate QR Code dengan logo
+            var qrCodeImage = GenerateQRCodeWithLogo(RoNumber, logoPath);
+
+            // Simpan QR Code ke dalam MemoryStream sebagai PNG
+            using var qrCodeStream = new MemoryStream();
+            qrCodeImage.Save(qrCodeStream, System.Drawing.Imaging.ImageFormat.Png);
+            qrCodeStream.Position = 0;
+
+            // Load laporan ke FastReport
+            WebReport web = new WebReport();
+            var reportPath = $"{_webHostEnvironment.WebRootPath}/Reporting/BatchNumber.frx";
+            web.Report.Load(reportPath);
+
+            // Tambahkan data QR Code sebagai PictureObject
+            var pictureObject = web.Report.FindObject("Picture1") as FastReport.PictureObject;
+            if (pictureObject != null)
+            {
+                pictureObject.Image = Image.FromStream(qrCodeStream);
+            }
+
+            var msSqlDataConnection = new MsSqlDataConnection();
+            msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
+            var Conn = msSqlDataConnection.ConnectionString;
+
+            // Set parameter untuk laporan
+            web.Report.SetParameterValue("Conn", Conn);
+            web.Report.SetParameterValue("ReceiveOrderId", Id.ToString());
+            web.Report.SetParameterValue("RoNumber", RoNumber);            
+
+            Stream stream = new MemoryStream();
+
+            web.Report.Prepare();
+            web.Report.Export(new PDFSimpleExport(), stream);
+            stream.Position = 0;
+
+            return File(stream, "application/pdf");
+        }
+
+        private Bitmap GenerateQRCodeWithLogo(string text, string logoPath)
+        {
+            if (!System.IO.File.Exists(logoPath))
+            {
+                throw new FileNotFoundException("Logo file not found", logoPath);
+            }
+
+            // Step 1: Generate QR code as byte array using PngByteQRCode
+            using var qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
+            using var qrCode = new PngByteQRCode(qrCodeData);
+            byte[] qrCodeBytes = qrCode.GetGraphic(20);
+
+            // Step 2: Load QR code byte array into Bitmap
+            Bitmap qrBitmap;
+            using (var ms = new MemoryStream(qrCodeBytes))
+            {
+                qrBitmap = new Bitmap(ms);
+            }
+
+            // Step 3: Ensure QR code is in a writable pixel format
+            Bitmap writableQrBitmap = new Bitmap(qrBitmap.Width, qrBitmap.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var graphics = Graphics.FromImage(writableQrBitmap))
+            {
+                graphics.DrawImage(qrBitmap, 0, 0);
+            }
+
+            // Step 4: Load logo and add it to the QR code
+            using var logoBitmap = new Bitmap(logoPath);
+            using (var graphics = Graphics.FromImage(writableQrBitmap))
+            {
+                int logoSize = (writableQrBitmap.Width + 100) / 5; // Logo size (20% of QR code size)
+                int x = (writableQrBitmap.Width - logoSize) / 2;
+                int y = (writableQrBitmap.Height - logoSize) / 2;
+                graphics.DrawImage(logoBitmap, new Rectangle(x, y, logoSize, logoSize));
+            }
+
+            return writableQrBitmap;
+        }
+
     }
 }

@@ -239,65 +239,70 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-0"></div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    @if (User.Identity.Name == "superadmin@admin.com")
-                                    {
-                                        <a class="btn bg-indigo" id="btnubah">Change</a>
-                                        <a class="btn bg-gray" asp-action="PreviewUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                        <a class="btn bg-blue" asp-action="DownloadUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId"><i class="fas fa-download" style="color:white"></i> Download</a>
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>                                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Bagian Kiri -->
+                            <div>
+                                @if (User.Identity.Name == "superadmin@admin.com")
+                                {
+                                    <a class="btn bg-indigo" id="btnubah">Change</a>                                    
+                                    <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
+                                }
+                                else
+                                {
+                                    @if (Model.ApproveStatusUser1 == null)
+                                    {                                        
+                                        <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
+                                        @if (!string.IsNullOrEmpty(listRole))
+                                        {
+                                            var roles = listRole.Split(',');
+                                            if (roles.Contains("UpdateUnitRequest"))
+                                            {
+                                                <a class="btn bg-indigo" id="btnubah">Change</a>
+                                            }
+                                            <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>                                            
+                                        }
+                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
                                     }
                                     else
+                                    {                                        
+                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
+                                    }
+                                }
+                            </div>
+
+                            <!-- Bagian Kanan -->
+                            <div>
+                                @if (User.Identity.Name == "superadmin@admin.com")
+                                {
+                                    <a class="btn bg-gray" asp-action="PreviewUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId" target="_blank">
+                                        <i class="fas fa-file-pdf" style="color:white"></i> Preview
+                                    </a>
+                                    <a class="btn bg-indigo" asp-action="DownloadUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId">
+                                        <i class="fas fa-download" style="color:white"></i> Download
+                                    </a>
+                                }
+                                else
+                                {
+                                    @if (Model.ApproveStatusUser1 == null || !string.IsNullOrEmpty(listRole))
                                     {
-                                        @if (Model.ApproveStatusUser1 == null)
+                                        var roles = listRole?.Split(',') ?? Array.Empty<string>();
+                                        if (roles.Contains("PreviewUnitRequest"))
                                         {
-                                            @****Perhatikan type nya jika submit akan berbeda hasil pada json, jadi pakai type button*@
-                                            <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
-                                            @if (!string.IsNullOrEmpty(listRole))
-                                            {
-                                                var roles = listRole.Split(',');
-                                                if (roles.Contains("UpdateUnitRequest"))
-                                                {
-                                                    <a class="btn bg-indigo" id="btnubah">Change</a>
-                                                }
-                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
-                                                if (roles.Contains("PreviewUnitRequest"))
-                                                {
-                                                    <a class="btn bg-gray" asp-action="PreviewUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                                }
-
-                                                if (roles.Contains("DownloadUnitRequest"))
-                                                {
-                                                    <a class="btn bg-blue" asp-action="DownloadUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId"><i class="fas fa-download" style="color:white"></i> Download</a>
-                                                }
-                                            }
-                                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
+                                            <a class="btn bg-gray" asp-action="PreviewUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId" target="_blank">
+                                                <i class="fas fa-file-pdf" style="color:white"></i> Preview
+                                            </a>
                                         }
-                                        else
-                                        {
-                                            @if (!string.IsNullOrEmpty(listRole))
-                                            {
-                                                var roles = listRole.Split(',');
-                                                if (roles.Contains("PreviewUnitRequest"))
-                                                {
-                                                    <a class="btn bg-gray" asp-action="PreviewUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                                }
 
-                                                if (roles.Contains("DownloadUnitRequest"))
-                                                {
-                                                    <a class="btn bg-blue" asp-action="DownloadUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId"><i class="fas fa-download" style="color:white"></i> Download</a>
-                                                }
-                                            }
-                                            <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
+                                        if (roles.Contains("DownloadUnitRequest"))
+                                        {
+                                            <a class="btn bg-indigo" asp-action="DownloadUnitRequest" asp-controller="UnitRequest" asp-area="Transaction" asp-route-id="@Model.UnitRequestId">
+                                                <i class="fas fa-download" style="color:white"></i> Download
+                                            </a>
                                         }
                                     }
-                                </div>
+                                }
                             </div>
-                            <div class="col-md-0" style="text-align: right;"></div>
-                        </div>                                          
+                        </div>                                                                
                     </div>
                 </div>
                 <!-- /.end button footer -->
