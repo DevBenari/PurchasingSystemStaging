@@ -159,7 +159,7 @@ builder.Services.AddScoped<IClosingPurchaseOrderRepository>();
 #endregion
 
 //Jika ingin Add-Migration ini harus di non aktifin
-//builder.Services.AddHostedService<CleanInactiveUsersService>();
+builder.Services.AddHostedService<CleanInactiveUsersService>();
 
 //Initialize Fast Report
 FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));

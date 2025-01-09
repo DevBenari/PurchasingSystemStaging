@@ -8,15 +8,19 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Order\Data\**" />
+    <Compile Remove="Areas\Report\Data\**" />
     <Compile Remove="Areas\Transaction\Data\**" />
     <Compile Remove="Areas\Warehouse\Data\**" />
     <Content Remove="Areas\Order\Data\**" />
+    <Content Remove="Areas\Report\Data\**" />
     <Content Remove="Areas\Transaction\Data\**" />
     <Content Remove="Areas\Warehouse\Data\**" />
     <EmbeddedResource Remove="Areas\Order\Data\**" />
+    <EmbeddedResource Remove="Areas\Report\Data\**" />
     <EmbeddedResource Remove="Areas\Transaction\Data\**" />
     <EmbeddedResource Remove="Areas\Warehouse\Data\**" />
     <None Remove="Areas\Order\Data\**" />
+    <None Remove="Areas\Report\Data\**" />
     <None Remove="Areas\Transaction\Data\**" />
     <None Remove="Areas\Warehouse\Data\**" />
   </ItemGroup>
@@ -25,7 +29,6 @@
     <Folder Include="Areas\General\Data\" />
     <Folder Include="Areas\General\Models\" />
     <Folder Include="Areas\MasterData\Data\" />
-    <Folder Include="Areas\Report\Data\" />
     <Folder Include="Areas\Report\Models\" />
   </ItemGroup>
 

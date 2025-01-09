@@ -20,7 +20,9 @@ using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Hubs;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
+using QRCoder;
 using System.Data;
+using System.Drawing;
 using System.Security.Cryptography;
 using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -788,9 +790,27 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             var Tax = (GrandTotal / 100) * 11;
             var GrandTotalAfterTax = (GrandTotal + Tax);
 
+            // Path logo untuk QR code
+            var logoPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logo.png");
+
+            // Generate QR Code dengan logo
+            var qrCodeImage = GenerateQRCodeWithLogo(PrNumber, logoPath);
+
+            // Simpan QR Code ke dalam MemoryStream sebagai PNG
+            using var qrCodeStream = new MemoryStream();
+            qrCodeImage.Save(qrCodeStream, System.Drawing.Imaging.ImageFormat.Png);
+            qrCodeStream.Position = 0;
+
             WebReport web = new WebReport();
             var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\PurchaseRequest.frx";
             web.Report.Load(path);
+
+            // Tambahkan data QR Code sebagai PictureObject
+            var pictureObject = web.Report.FindObject("Picture1") as FastReport.PictureObject;
+            if (pictureObject != null)
+            {
+                pictureObject.Image = Image.FromStream(qrCodeStream);
+            }
 
             var msSqlDataConnection = new MsSqlDataConnection();
             msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -835,9 +855,27 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             var Tax = (GrandTotal / 100) * 11;
             var GrandTotalAfterTax = (GrandTotal + Tax);
 
+            // Path logo untuk QR code
+            var logoPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logo.png");
+
+            // Generate QR Code dengan logo
+            var qrCodeImage = GenerateQRCodeWithLogo(PrNumber, logoPath);
+
+            // Simpan QR Code ke dalam MemoryStream sebagai PNG
+            using var qrCodeStream = new MemoryStream();
+            qrCodeImage.Save(qrCodeStream, System.Drawing.Imaging.ImageFormat.Png);
+            qrCodeStream.Position = 0;
+
             WebReport web = new WebReport();
             var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\PurchaseRequest.frx";
             web.Report.Load(path);
+
+            // Tambahkan data QR Code sebagai PictureObject
+            var pictureObject = web.Report.FindObject("Picture1") as FastReport.PictureObject;
+            if (pictureObject != null)
+            {
+                pictureObject.Image = Image.FromStream(qrCodeStream);
+            }
 
             var msSqlDataConnection = new MsSqlDataConnection();
             msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -864,6 +902,46 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             stream.Position = 0;
 
             return File(stream, "application/zip", (PrNumber + ".pdf"));
+        }
+
+        private Bitmap GenerateQRCodeWithLogo(string text, string logoPath)
+        {
+            if (!System.IO.File.Exists(logoPath))
+            {
+                throw new FileNotFoundException("Logo file not found", logoPath);
+            }
+
+            // Step 1: Generate QR code as byte array using PngByteQRCode
+            using var qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.H);
+            using var qrCode = new PngByteQRCode(qrCodeData);
+            byte[] qrCodeBytes = qrCode.GetGraphic(4);
+
+            // Step 2: Load QR code byte array into Bitmap
+            Bitmap qrBitmap;
+            using (var ms = new MemoryStream(qrCodeBytes))
+            {
+                qrBitmap = new Bitmap(ms);
+            }
+
+            // Step 3: Ensure QR code is in a writable pixel format
+            Bitmap writableQrBitmap = new Bitmap(qrBitmap.Width, qrBitmap.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var graphics = Graphics.FromImage(writableQrBitmap))
+            {
+                graphics.DrawImage(qrBitmap, 0, 0);
+            }
+
+            // Step 4: Load logo and add it to the QR code
+            using var logoBitmap = new Bitmap(logoPath);
+            using (var graphics = Graphics.FromImage(writableQrBitmap))
+            {
+                int logoSize = (writableQrBitmap.Width + 125) / 5; // Logo size (20% of QR code size)
+                int x = (writableQrBitmap.Width - logoSize) / 2;
+                int y = (writableQrBitmap.Height - logoSize) / 2;
+                graphics.DrawImage(logoBitmap, new Rectangle(x, y, logoSize, logoSize));
+            }
+
+            return writableQrBitmap;
         }
     }
 }
