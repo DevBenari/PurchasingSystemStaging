@@ -1,4 +1,5 @@
 ﻿using FastReport.Data;
+using FastReport.Export.Html;
 using FastReport.Export.PdfSimple;
 using FastReport.Web;
 using Microsoft.AspNetCore.Authorization;
@@ -405,7 +406,56 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> PrintReceiveOrder(Guid Id)
+        public async Task<IActionResult> PreviewReceiveOrder(Guid Id)
+        {
+            var rcvOrder = await _receiveOrderRepository.GetReceiveOrderById(Id);
+
+            var CreateDate = rcvOrder.CreateDateTime.ToString("dd MMMM yyyy");
+            var RoNumber = rcvOrder.ReceiveOrderNumber;
+            var PoNumber = rcvOrder.PurchaseOrder.PurchaseOrderNumber;
+            var ShippNumber = rcvOrder.ShippingNumber;
+            var WaybillNumber = rcvOrder.WaybillNumber;
+            var InvoiceNumber = rcvOrder.InvoiceNumber;
+            var DeliveryDate = rcvOrder.DeliveryDate;
+            var DeliveryService = rcvOrder.DeliveryServiceName;
+            var CreateBy = rcvOrder.ApplicationUser.NamaUser;
+            var SenderName = rcvOrder.SenderName;
+            var Note = rcvOrder.Note;
+
+            // Load laporan ke FastReport
+            WebReport web = new WebReport();
+            var reportPath = $"{_webHostEnvironment.WebRootPath}/Reporting/ReceiveOrder.frx";
+            web.Report.Load(reportPath);
+
+            var msSqlDataConnection = new MsSqlDataConnection();
+            msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
+            var Conn = msSqlDataConnection.ConnectionString;
+
+            // Set parameter untuk laporan
+            web.Report.SetParameterValue("Conn", Conn);
+            web.Report.SetParameterValue("CreateDate", CreateDate);
+            web.Report.SetParameterValue("ReceiveOrderId", Id.ToString());
+            web.Report.SetParameterValue("RoNumber", RoNumber);
+            web.Report.SetParameterValue("PoNumber", PoNumber);
+            web.Report.SetParameterValue("ShippNumber", ShippNumber);
+            web.Report.SetParameterValue("WaybillNumber", WaybillNumber);
+            web.Report.SetParameterValue("InvoiceNumber", InvoiceNumber);
+            web.Report.SetParameterValue("DeliveryDate", DeliveryDate);
+            web.Report.SetParameterValue("DeliveryService", DeliveryService);
+            web.Report.SetParameterValue("CreateBy", CreateBy);
+            web.Report.SetParameterValue("SenderName", SenderName);
+            web.Report.SetParameterValue("Note", Note);            
+         
+            Stream stream = new MemoryStream();
+
+            web.Report.Prepare();
+            web.Report.Export(new PDFSimpleExport(), stream);
+            stream.Position = 0;
+
+            return File(stream, "application/pdf");
+        }
+
+        public async Task<IActionResult> DownloadReceiveOrder(Guid Id)
         {
             var rcvOrder = await _receiveOrderRepository.GetReceiveOrderById(Id);
 

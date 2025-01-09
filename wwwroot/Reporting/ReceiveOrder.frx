@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/03/2025 14:06:33" ReportInfo.Modified="01/07/2025 23:21:44" ReportInfo.CreatorVersion="2025.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/03/2025 14:06:33" ReportInfo.Modified="01/08/2025 20:25:18" ReportInfo.CreatorVersion="2025.1.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGnEbNWKbPkHqkW8XQ/di2s21682leV46DqSeK5TvQHkC/RjR/36GTx1foCSibW9X6dUog0V2bqIplaipTN4hMvODyz+UHeqHAkp7xAbwphsqP0Npr/+pZFfxlSWrsJ+T4IbJVDRcZvhg7us1D+wr+cYTXInHWF3cgAQg1BjwYY9xve+V5O3ofs37W5SN7gUM6hIdkXkAMVhRFSf8Po97FkQ=">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGnEbNWKbPkHqkW8XQ/di2s21682leV46DqSeK5TvQHkC/RjR/36GTx1foCSibW9X6dUog0V2bqIplaipTN4hMvODyz+UHeqHAkp7xAbwphsqP0Npr/+pZFfxlSWrsJ+T4IbJVDRcZvhg7us1D+wr+cYTXInHWF3cgAQg1BjwYY9xve+V5O3ofs37W5SN7gUM6otSqc8+ePJKoYUtOjk72ww=">
       <TableDataSource Name="WrhReceiveOrderDetail" DataType="System.Int32" Enabled="true" TableName="WrhReceiveOrderDetail" SelectCommand="exec GetReceiveOrderDetailById @ReceiveOrderId">
         <Column Name="ReceivedOrderDetailId" DataType="System.Guid"/>
         <Column Name="ReceiveOrderId" DataType="System.Guid"/>

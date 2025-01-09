@@ -258,9 +258,9 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             model.PurchaseOrderDetails = ItemsList;
 
             return View(model);
-        }       
+        }
 
-        public async Task<IActionResult> PrintPurchaseOrder(Guid Id)
+        public async Task<IActionResult> PreviewPurchaseOrder(Guid Id)
         {
             var purchaseOrder = await _purchaseOrderRepository.GetPurchaseOrderById(Id);
 
@@ -271,7 +271,53 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             var UserApprove2 = purchaseOrder.UserApprove2.FullName;
             var UserApprove3 = purchaseOrder.UserApprove3.FullName;
             var TermOfPayment = purchaseOrder.TermOfPayment.TermOfPaymentName;
-            //var DueDate = purchaseOrder.DueDate;
+            var Note = purchaseOrder.Note;
+            var GrandTotal = purchaseOrder.GrandTotal;
+            var Tax = (GrandTotal / 100) * 11;
+            var GrandTotalAfterTax = (GrandTotal + Tax);
+
+            WebReport web = new WebReport();
+            var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\PurchaseOrder.frx";
+            web.Report.Load(path);
+
+            var msSqlDataConnection = new MsSqlDataConnection();
+            msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
+            var Conn = msSqlDataConnection.ConnectionString;
+
+            web.Report.SetParameterValue("Conn", Conn);
+            web.Report.SetParameterValue("PurchaseOrderId", Id.ToString());
+            web.Report.SetParameterValue("PoNumber", PoNumber);
+            web.Report.SetParameterValue("CreateDate", CreateDate);
+            web.Report.SetParameterValue("CreateBy", CreateBy);
+            web.Report.SetParameterValue("UserApprove1", UserApprove1);
+            web.Report.SetParameterValue("UserApprove2", UserApprove2);
+            web.Report.SetParameterValue("UserApprove3", UserApprove3);
+            web.Report.SetParameterValue("TermOfPayment", TermOfPayment);
+            web.Report.SetParameterValue("Note", Note);
+            web.Report.SetParameterValue("GrandTotal", GrandTotal);
+            web.Report.SetParameterValue("Tax", Tax);
+            web.Report.SetParameterValue("GrandTotalAfterTax", GrandTotalAfterTax);
+
+            Stream stream = new MemoryStream();
+
+            web.Report.Prepare();
+            web.Report.Export(new PDFSimpleExport(), stream);
+            stream.Position = 0;
+
+            return File(stream, "application/pdf");
+        }
+
+        public async Task<IActionResult> DownloadPurchaseOrder(Guid Id)
+        {
+            var purchaseOrder = await _purchaseOrderRepository.GetPurchaseOrderById(Id);
+
+            var CreateDate = purchaseOrder.CreateDateTime.ToString("dd MMMM yyyy");
+            var PoNumber = purchaseOrder.PurchaseOrderNumber;
+            var CreateBy = purchaseOrder.ApplicationUser.NamaUser;
+            var UserApprove1 = purchaseOrder.UserApprove1.FullName;
+            var UserApprove2 = purchaseOrder.UserApprove2.FullName;
+            var UserApprove3 = purchaseOrder.UserApprove3.FullName;
+            var TermOfPayment = purchaseOrder.TermOfPayment.TermOfPaymentName;
             var Note = purchaseOrder.Note;
             var GrandTotal = purchaseOrder.GrandTotal;
             var Tax = (GrandTotal / 100) * 11;
@@ -300,9 +346,11 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             web.Report.SetParameterValue("GrandTotalAfterTax", GrandTotalAfterTax);
 
             web.Report.Prepare();
+
             Stream stream = new MemoryStream();
             web.Report.Export(new PDFSimpleExport(), stream);
             stream.Position = 0;
+
             return File(stream, "application/zip", (PoNumber + ".pdf"));
         }
     }
