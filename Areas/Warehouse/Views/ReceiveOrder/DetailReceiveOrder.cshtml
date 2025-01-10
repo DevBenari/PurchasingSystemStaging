@@ -159,7 +159,7 @@
                                 @if (User.Identity.Name == "superadmin@admin.com")
                                 {
                                     <a class="btn bg-gray" asp-action="PreviewReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
-                                    <a class="btn bg-blue" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                    <a class="btn bg-indigo" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
                                     <a class="btn bg-green" asp-action="PreviewBatchNumber" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Batch Number</a>
                                 }
                                 else
@@ -174,7 +174,7 @@
 
                                         if (roles.Contains("DownloadReceiveOrder"))
                                         {
-                                            <a class="btn bg-blue" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                            <a class="btn bg-indigo" asp-action="DownloadReceiveOrder" asp-controller="ReceiveOrder" asp-area="Warehouse" asp-route-id="@Model.ReceiveOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
                                         }
                                         if (roles.Contains("PreviewBatchNumber"))
                                         {

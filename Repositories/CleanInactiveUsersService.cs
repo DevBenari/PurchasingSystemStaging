@@ -5,11 +5,11 @@ namespace PurchasingSystemStaging.Repositories
 {
     public class CleanInactiveUsersService : BackgroundService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IServiceProvider _serviceProvider;
 
-        public CleanInactiveUsersService(UserManager<ApplicationUser> userManager)
+        public CleanInactiveUsersService(IServiceProvider serviceProvider)
         {
-            _userManager = userManager;
+            _serviceProvider = serviceProvider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -18,11 +18,10 @@ namespace PurchasingSystemStaging.Repositories
             {
                 try
                 {
-                    CleanInactiveUsers();
+                    await CleanInactiveUsersAsync();
                 }
                 catch (Exception ex)
                 {
-                    // Log error jika ada masalah
                     Console.WriteLine($"Error cleaning inactive users: {ex.Message}");
                 }
 
@@ -31,23 +30,28 @@ namespace PurchasingSystemStaging.Repositories
             }
         }
 
-        private void CleanInactiveUsers()
+        private async Task CleanInactiveUsersAsync()
         {
-            var inactiveThreshold = DateTime.UtcNow.AddMinutes(-10);
-            var inactiveUsers = _userManager.Users
-                .Where(u => u.IsOnline && u.LastActivityTime < inactiveThreshold)
-                .ToList();
-
-            foreach (var user in inactiveUsers)
+            using (var scope = _serviceProvider.CreateScope())
             {
-                user.IsOnline = false;
-                user.LastActivityTime = null;
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-                // Simpan perubahan secara sinkron
-                _userManager.UpdateAsync(user).Wait();
+                var inactiveThreshold = DateTime.UtcNow.AddMinutes(-10);
+                var inactiveUsers = userManager.Users
+                    .Where(u => u.IsOnline && u.LastActivityTime < inactiveThreshold)
+                    .ToList();
+
+                foreach (var user in inactiveUsers)
+                {
+                    user.IsOnline = false;
+                    user.LastActivityTime = DateTime.Now;
+
+                    await userManager.UpdateAsync(user);
+                }
+
+                Console.WriteLine("Inactive users cleaned successfully.");
             }
-
-            Console.WriteLine("Inactive users cleaned successfully.");
         }
     }
+
 }

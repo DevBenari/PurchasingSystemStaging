@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/08/2025 15:27:08" ReportInfo.Modified="01/08/2025 16:20:23" ReportInfo.CreatorVersion="2025.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/08/2025 15:27:08" ReportInfo.Modified="01/10/2025 00:24:00" ReportInfo.CreatorVersion="2025.1.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGCgiDglzYkeDnnIBok3ESB9mNK+9rs5wIh5oJerocnviMKiQoAm+sRo5RiFAf7b2MWXhP2dCUZQZteG8PJHep+hHNyHfQtuh+IIq0htocafPrzY3nLYzL0A5BrzMKDbb7CtDRHMXXyzA91mWab1p7J/IuJ+YxghJwyRilIwL0lAo0A5zXMOp/BgLYyrx5goag2WPr4n2avvHkkWpIdVxfMEXijZAVRT+Em/tUKYjsIh1cxGu6ZRuRAQLu/OZXl75">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGnEbNWKbPkHqkW8XQ/di2s21682leV46DqSeK5TvQHkC/RjR/36GTx1foCSibW9X6dUog0V2bqIplaipTN4hMvODyz+UHeqHAkp7xAbwphsqP0Npr/+pZFfxlSWrsJ+T4IbJVDRcZvhg7us1D+wr+caiqvyrUqjEj5L2ryztYc1uUmhrktG5Uwtg2ZxQ7AOUFr2lUx/VQUXvhUikhsDobFY=">
       <TableDataSource Name="WrhProductReturnDetail" DataType="System.Int32" Enabled="true" TableName="WrhProductReturnDetail" SelectCommand="exec GetProductReturnDetailById @ProductReturnId">
         <Column Name="ProductReturnDetailId" DataType="System.Guid"/>
         <Column Name="ProductReturnId" DataType="System.Guid"/>
@@ -40,23 +40,24 @@
     <Parameter Name="Note" DataType="System.String" AsString=""/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="179.55">
-      <TextObject Name="Text1" Width="718.2" Height="37.8" Border.Color="White" Border.Width="2" Text="RS METROPOLITAN MEDICAL CENTRE" HorzAlign="Center" VertAlign="Center" Font="Arial, 20pt, style=Bold"/>
-      <TextObject Name="Text2" Top="37.8" Width="718.2" Height="37.8" Border.Color="White" Border.Width="2" Text="Metropolitan Medical Centre, Jl. H. R. Rasuna Said No.C-21, RT.1/RW.7, Karet Kuningan, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12940" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <LineObject Name="Line1" Top="85.05" Width="718.2" Border.Color="Firebrick" Border.Width="5"/>
-      <TextObject Name="Text5" Top="141.75" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Create Date" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text9" Left="132.3" Top="141.75" Width="141.75" Height="18.9" Border.Color="Red" Border.Width="5" Text=": [CreateDate]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <ShapeObject Name="Shape1" Top="94.5" Width="434.7" Height="47.25" Border.Color="White" Fill.Color="Firebrick"/>
-      <TextObject Name="Text3" Top="103.95" Width="264.6" Height="28.35" Border.Color="White" Border.Width="2" Text="PRODUCT RETURN NUMBER :" VertAlign="Center" Font="Arial, 12pt, style=Bold" TextFill.Color="White"/>
-      <TextObject Name="Text31" Left="264.6" Top="103.95" Width="160.65" Height="28.35" Border.Color="White" Border.Width="2" Text="[ProductReturnNumber]" VertAlign="Center" Font="Arial, 12pt, style=Bold" TextFill.Color="White"/>
-      <TextObject Name="Text7" Top="160.65" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Create By" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text29" Left="132.3" Top="160.65" Width="141.75" Height="18.9" Text=": [CreateBy]" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text32" Left="444.15" Top="94.5" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Batch Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text33" Left="576.45" Top="94.5" Width="141.75" Height="18.9" Text=": [BatchNumber]" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text34" Left="444.15" Top="113.4" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Reason For Return" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text35" Left="576.45" Top="113.4" Width="141.75" Height="18.9" Text=": [ReasonForReturn]" Font="Arial, 10pt, style=Bold"/>
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="189">
+      <LineObject Name="Line1" Top="94.5" Width="718.2" Border.Color="Firebrick" Border.Width="5"/>
+      <TextObject Name="Text5" Top="151.2" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Create Date" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text9" Left="132.3" Top="151.2" Width="141.75" Height="18.9" Border.Color="Red" Border.Width="5" Text=": [CreateDate]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <ShapeObject Name="Shape1" Top="103.95" Width="434.7" Height="47.25" Border.Color="White" Fill.Color="Firebrick"/>
+      <TextObject Name="Text3" Top="113.4" Width="264.6" Height="28.35" Border.Color="White" Border.Width="2" Text="PRODUCT RETURN NUMBER :" VertAlign="Center" Font="Arial, 12pt, style=Bold" TextFill.Color="White"/>
+      <TextObject Name="Text31" Left="264.6" Top="113.4" Width="160.65" Height="28.35" Border.Color="White" Border.Width="2" Text="[ProductReturnNumber]" VertAlign="Center" Font="Arial, 12pt, style=Bold" TextFill.Color="White"/>
+      <TextObject Name="Text7" Top="170.1" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Create By" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text29" Left="132.3" Top="170.1" Width="141.75" Height="18.9" Text=": [CreateBy]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text32" Left="444.15" Top="103.95" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Batch Number" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text33" Left="576.45" Top="103.95" Width="141.75" Height="18.9" Text=": [BatchNumber]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text34" Left="444.15" Top="122.85" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Reason For Return" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text35" Left="576.45" Top="122.85" Width="141.75" Height="18.9" Text=": [ReasonForReturn]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text1" Left="94.5" Top="9.45" Width="623.7" Height="37.8" Border.Color="White" Border.Width="2" Text="RS METROPOLITAN MEDICAL CENTRE" HorzAlign="Center" VertAlign="Center" Font="Arial, 20pt, style=Bold"/>
+      <TextObject Name="Text2" Left="94.5" Top="37.8" Width="623.7" Height="37.8" Border.Color="White" Border.Width="2" Text="Metropolitan Medical Centre, Jl. H. R. Rasuna Said No.C-21, RT.1/RW.7, Karet Kuningan, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12940" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <PictureObject Name="Picture1" Width="94.5" Height="85.05"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="181.84" Width="718.2" Height="18.9">
+    <PageHeaderBand Name="PageHeader1" Top="191.67" Width="718.2" Height="18.9">
       <TextObject Name="Text13" Width="28.35" Height="18.9" Border.Color="Red" Border.Width="5" Text="No" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <LineObject Name="Line2" Width="718.2" Border.Width="2"/>
       <TextObject Name="Text14" Left="28.35" Width="94.5" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Number" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
@@ -68,18 +69,17 @@
       <LineObject Name="Line3" Top="18.9" Width="718.2" Border.Width="2"/>
       <TextObject Name="Text44" Left="680.4" Width="37.8" Height="18.9" Border.Color="Red" Border.Width="5" Text="Qty" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="203.02" Width="718.2" Height="18.9" DataSource="WrhProductReturnDetail">
-      <TextObject Name="Text38" Width="28.35" Height="18.9" Text="[Row#]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text39" Left="28.35" Width="94.5" Height="18.9" Text="[WrhProductReturnDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text40" Left="122.85" Width="245.7" Height="18.9" Text="[WrhProductReturnDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text41" Left="368.55" Width="122.85" Height="18.9" Text="[WrhProductReturnDetail.Supplier]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text42" Left="491.4" Width="56.7" Height="18.9" Text="[WrhProductReturnDetail.Measurement]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text36" Left="548.1" Width="66.15" Height="18.9" Text="[WrhProductReturnDetail.WarehouseOrigin]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text37" Left="614.25" Width="66.15" Height="18.9" Text="[WrhProductReturnDetail.WarehouseExpired]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
-      <LineObject Name="Line4" Top="18.9" Width="718.2" Border.Width="2"/>
-      <TextObject Name="Text45" Left="680.4" Width="37.8" Height="18.9" Text="[WrhProductReturnDetail.Qty]" HorzAlign="Center" VertAlign="Center" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
+    <DataBand Name="Data1" Top="213.23" Width="718.2" Height="28.35" DataSource="WrhProductReturnDetail">
+      <TextObject Name="Text38" Width="28.35" Height="28.35" Text="[Row#]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text39" Left="28.35" Width="94.5" Height="28.35" Text="[WrhProductReturnDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text40" Left="122.85" Width="245.7" Height="28.35" Text="[WrhProductReturnDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text41" Left="368.55" Width="122.85" Height="28.35" Text="[WrhProductReturnDetail.Supplier]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text42" Left="491.4" Width="56.7" Height="28.35" Text="[WrhProductReturnDetail.Measurement]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text36" Left="548.1" Width="66.15" Height="28.35" Text="[WrhProductReturnDetail.WarehouseOrigin]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text37" Left="614.25" Width="66.15" Height="28.35" Text="[WrhProductReturnDetail.WarehouseExpired]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text45" Left="680.4" Width="37.8" Height="28.35" Text="[WrhProductReturnDetail.Qty]" HorzAlign="Center" VertAlign="Center" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
     </DataBand>
-    <PageFooterBand Name="PageFooter1" Top="224.21" Width="718.2" Height="141.75">
+    <PageFooterBand Name="PageFooter1" Top="244.25" Width="718.2" Height="141.75">
       <TableObject Name="Table1" Width="718.3" Height="113.4">
         <TableColumn Name="Column5" Width="296.1"/>
         <TableColumn Name="Column1" Width="144.95"/>
@@ -105,6 +105,7 @@
         </TableRow>
       </TableObject>
       <TextObject Name="Text43" Left="652.05" Top="122.85" Width="66.15" Height="18.9" Text="[PageN]" HorzAlign="Right" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line4" Width="718.2" Border.Width="2"/>
     </PageFooterBand>
   </ReportPage>
 </Report>

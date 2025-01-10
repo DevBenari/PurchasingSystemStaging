@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/10/2025 00:41:41" ReportInfo.Modified="01/10/2025 00:52:03" ReportInfo.CreatorVersion="2025.1.0.0">
+  <Dictionary/>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="198.45">
+      <ShapeObject Name="Shape1" Top="75.6" Width="718.2" Height="37.8" Fill.Color="255, 0, 0"/>
+      <TextObject Name="Text1" Left="94.5" Top="9.45" Width="623.7" Height="37.8" Border.Color="White" Border.Width="2" Text="RS METROPOLITAN MEDICAL CENTRE" HorzAlign="Center" VertAlign="Center" Font="Arial, 20pt, style=Bold"/>
+      <TextObject Name="Text2" Left="94.5" Top="37.8" Width="623.7" Height="37.8" Border.Color="White" Border.Width="2" Text="Metropolitan Medical Centre, Jl. H. R. Rasuna Said No.C-21, RT.1/RW.7, Karet Kuningan, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12940" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <PictureObject Name="Picture1" Width="94.5" Height="85.05"/>
+      <TextObject Name="Text3" Top="85.05" Width="378" Height="18.9" Border.Color="White" Border.Width="2" Text="CLOSING PURCASE ORDER" VertAlign="Center" Font="Arial, 15pt, style=Bold" TextFill.Color="White"/>
+      <TextObject Name="Text4" Left="378" Top="85.05" Width="340.2" Height="18.9" Border.Color="White" Border.Width="2" Text="CPO435435345343" HorzAlign="Right" VertAlign="Center" Font="Arial, 15pt, style=Bold" TextFill.Color="White"/>
+      <TextObject Name="Text5" Top="122.85" Width="718.2" Height="18.9" Border.Color="White" Border.Width="2" Text="NOVEMBER 2024" HorzAlign="Center" VertAlign="Center" Font="Arial, 15pt, style=Bold"/>
+      <TextObject Name="Text48" Top="141.75" Width="151.2" Height="18.9" Border.Color="Red" Border.Width="5" Text="Create Date" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text9" Left="151.2" Top="141.75" Width="170.1" Height="18.9" Border.Color="Red" Border.Width="5" Text=": [CreateDate]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text44" Top="179.55" Width="151.2" Height="18.9" Border.Color="Red" Border.Width="5" Text="Warehouse Location" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text45" Left="151.2" Top="179.55" Width="170.1" Height="18.9" Text=": [WarehouseLocation]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text46" Top="160.65" Width="151.2" Height="18.9" Border.Color="Red" Border.Width="5" Text="Unit Location" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text47" Left="151.2" Top="160.65" Width="170.1" Height="18.9" Text=": [UnitLocation]" Font="Arial, 10pt, style=Bold"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="201.12" Width="718.2" Height="28.35"/>
+    <DataBand Name="Data1" Top="232.13" Width="718.2" Height="75.6"/>
+    <PageFooterBand Name="PageFooter1" Top="310.4" Width="718.2" Height="18.9"/>
+  </ReportPage>
+</Report>

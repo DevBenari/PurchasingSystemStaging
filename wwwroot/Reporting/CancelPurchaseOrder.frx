@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="08/07/2024 11:01:01" ReportInfo.Modified="01/07/2025 23:20:46" ReportInfo.CreatorVersion="2025.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/07/2024 11:01:01" ReportInfo.Modified="01/10/2025 00:23:35" ReportInfo.CreatorVersion="2025.1.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGnEbNWKbPkHqkW8XQ/di2s21682leV46DqSeK5TvQHkC/RjR/36GTx1foCSibW9X6dUog0V2bqIplaipTN4hMvODyz+UHeqHAkp7xAbwphsqP0Npr/+pZFfxlSWrsJ+T4IbJVDRcZvhg7us1D+wr+cYTXInHWF3cgAQg1BjwYY9xve+V5O3ofs37W5SN7gUM6sMaT3SzXurBALjhyHGSGmw=">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGnEbNWKbPkHqkW8XQ/di2s21682leV46DqSeK5TvQHkC/RjR/36GTx1foCSibW9X6dUog0V2bqIplaipTN4hMvODyz+UHeqHAkp7xAbwphsqP0Npr/+pZFfxlSWrsJ+T4IbJVDRcZvhg7us1D+wr+cYTXInHWF3cgAQg1BjwYY9xve+V5O3ofs37W5SN7gUM6g+IkOw5umjIIAgRXZW5X2g=">
       <TableDataSource Name="WrhQtyDifferenceDetail" DataType="System.Int32" Enabled="true" TableName="WrhQtyDifferenceDetail" SelectCommand="exec GetQtyDifferenceDetailById @QtyDifferenceId">
         <Column Name="QtyDifferenceDetailId" DataType="System.Guid"/>
         <Column Name="QtyDifferenceId" DataType="System.Guid"/>
@@ -34,10 +34,8 @@
     <Parameter Name="CreateDate" DataType="System.String" AsString=""/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="226.8">
-      <TextObject Name="Text1" Width="718.2" Height="37.8" Border.Color="White" Border.Width="2" Text="RS METROPOLITAN MEDICAL CENTRE" HorzAlign="Center" VertAlign="Center" Font="Arial, 20pt, style=Bold"/>
-      <TextObject Name="Text2" Top="37.8" Width="718.2" Height="37.8" Border.Color="White" Border.Width="2" Text="Metropolitan Medical Centre, Jl. H. R. Rasuna Said No.C-21, RT.1/RW.7, Karet Kuningan, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12940" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-      <LineObject Name="Line1" Top="85.05" Width="718.2" Border.Color="Red" Border.Width="5"/>
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="217.35">
+      <LineObject Name="Line1" Top="94.5" Width="718.2" Border.Color="Red" Border.Width="5"/>
       <TextObject Name="Text5" Top="179.55" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="Create Date" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text6" Left="444.15" Top="179.55" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="User Approve 1" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text9" Left="132.3" Top="179.55" Width="141.75" Height="18.9" Border.Color="Red" Border.Width="5" Text=": [CreateDate]" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
@@ -50,8 +48,11 @@
       <TextObject Name="Text45" Left="444.15" Top="198.45" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="User Approve 2" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text46" Left="576.45" Top="198.45" Width="141.75" Height="18.9" Text=": [UserApprove2]" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text47" Left="444.15" Top="141.75" Width="132.3" Height="18.9" Border.Color="Red" Border.Width="5" Text="PO Number :" VertAlign="Center" Font="Arial, 12pt, style=Bold" TextFill.Color="White"/>
+      <TextObject Name="Text1" Left="94.5" Top="9.45" Width="623.7" Height="37.8" Border.Color="White" Border.Width="2" Text="RS METROPOLITAN MEDICAL CENTRE" HorzAlign="Center" VertAlign="Center" Font="Arial, 20pt, style=Bold"/>
+      <TextObject Name="Text2" Left="94.5" Top="37.8" Width="623.7" Height="37.8" Border.Color="White" Border.Width="2" Text="Metropolitan Medical Centre, Jl. H. R. Rasuna Said No.C-21, RT.1/RW.7, Karet Kuningan, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12940" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <PictureObject Name="Picture1" Width="94.5" Height="85.05"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="229.47" Width="718.2" Height="37.8">
+    <PageHeaderBand Name="PageHeader1" Top="220.02" Width="718.2" Height="37.8">
       <TextObject Name="Text13" Top="9.45" Width="28.35" Height="18.9" Border.Color="Red" Border.Width="5" Text="No" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text14" Left="28.35" Top="9.45" Width="113.4" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Number" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text15" Left="141.75" Top="9.45" Width="349.65" Height="18.9" Border.Color="Red" Border.Width="5" Text="Product Name" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
@@ -61,13 +62,13 @@
       <LineObject Name="Line4" Top="9.45" Width="718.2" Border.Width="2"/>
       <LineObject Name="Line3" Top="30.91" Width="718.2" Border.Width="2"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="269.93" Width="718.2" Height="18.9" DataSource="WrhQtyDifferenceDetail">
-      <TextObject Name="Text38" Width="28.35" Height="18.9" Text="[Row#]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text39" Left="28.35" Width="113.4" Height="18.9" Text="[WrhQtyDifferenceDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text40" Left="141.75" Width="349.65" Height="18.9" Text="[WrhQtyDifferenceDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text41" Left="491.4" Width="75.6" Height="18.9" Text="[WrhQtyDifferenceDetail.Measurement]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text42" Left="567" Width="75.6" Height="18.9" Text="[WrhQtyDifferenceDetail.QtyOrder]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text43" Left="642.6" Width="75.6" Height="18.9" Text="[WrhQtyDifferenceDetail.QtyReceive]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+    <DataBand Name="Data1" Top="260.48" Width="718.2" Height="28.35" DataSource="WrhQtyDifferenceDetail">
+      <TextObject Name="Text38" Width="28.35" Height="28.35" Text="[Row#]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text39" Left="28.35" Width="113.4" Height="28.35" Text="[WrhQtyDifferenceDetail.ProductNumber]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text40" Left="141.75" Width="349.65" Height="28.35" Text="[WrhQtyDifferenceDetail.ProductName]" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text41" Left="491.4" Width="75.6" Height="28.35" Text="[WrhQtyDifferenceDetail.Measurement]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text42" Left="567" Width="75.6" Height="28.35" Text="[WrhQtyDifferenceDetail.QtyOrder]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text43" Left="642.6" Width="75.6" Height="28.35" Text="[WrhQtyDifferenceDetail.QtyReceive]" HorzAlign="Center" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>
     </DataBand>
     <PageFooterBand Name="PageFooter1" Top="291.5" Width="718.2" Height="151.2">
       <TextObject Name="Text44" Left="652.05" Top="132.3" Width="66.15" Height="18.9" Text="[PageN]" HorzAlign="Right" VertAlign="Center" Font="Arial, 8pt, style=Bold"/>

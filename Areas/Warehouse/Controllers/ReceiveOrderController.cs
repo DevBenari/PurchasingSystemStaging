@@ -424,10 +424,28 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             var SenderName = rcvOrder.SenderName;
             var Note = rcvOrder.Note;
 
+            // Path logo untuk QR code
+            var logoPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logo.png");
+
+            // Generate QR Code dengan logo
+            var qrCodeImage = GenerateQRCodeWithLogo(RoNumber, logoPath);
+
+            // Simpan QR Code ke dalam MemoryStream sebagai PNG
+            using var qrCodeStream = new MemoryStream();
+            qrCodeImage.Save(qrCodeStream, System.Drawing.Imaging.ImageFormat.Png);
+            qrCodeStream.Position = 0;
+
             // Load laporan ke FastReport
             WebReport web = new WebReport();
             var reportPath = $"{_webHostEnvironment.WebRootPath}/Reporting/ReceiveOrder.frx";
             web.Report.Load(reportPath);
+
+            // Tambahkan data QR Code sebagai PictureObject
+            var pictureObject = web.Report.FindObject("Picture1") as FastReport.PictureObject;
+            if (pictureObject != null)
+            {
+                pictureObject.Image = Image.FromStream(qrCodeStream);
+            }
 
             var msSqlDataConnection = new MsSqlDataConnection();
             msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -473,9 +491,27 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             var SenderName = rcvOrder.SenderName;
             var Note = rcvOrder.Note;
 
+            // Path logo untuk QR code
+            var logoPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logo.png");
+
+            // Generate QR Code dengan logo
+            var qrCodeImage = GenerateQRCodeWithLogo(RoNumber, logoPath);
+
+            // Simpan QR Code ke dalam MemoryStream sebagai PNG
+            using var qrCodeStream = new MemoryStream();
+            qrCodeImage.Save(qrCodeStream, System.Drawing.Imaging.ImageFormat.Png);
+            qrCodeStream.Position = 0;
+
             WebReport web = new WebReport();
             var path = $"{_webHostEnvironment.WebRootPath}\\Reporting\\ReceiveOrder.frx";
             web.Report.Load(path);
+
+            // Tambahkan data QR Code sebagai PictureObject
+            var pictureObject = web.Report.FindObject("Picture1") as FastReport.PictureObject;
+            if (pictureObject != null)
+            {
+                pictureObject.Image = Image.FromStream(qrCodeStream);
+            }
 
             var msSqlDataConnection = new MsSqlDataConnection();
             msSqlDataConnection.ConnectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -559,9 +595,9 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             // Step 1: Generate QR code as byte array using PngByteQRCode
             using var qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.H);
             using var qrCode = new PngByteQRCode(qrCodeData);
-            byte[] qrCodeBytes = qrCode.GetGraphic(20);
+            byte[] qrCodeBytes = qrCode.GetGraphic(4);
 
             // Step 2: Load QR code byte array into Bitmap
             Bitmap qrBitmap;
@@ -581,7 +617,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             using var logoBitmap = new Bitmap(logoPath);
             using (var graphics = Graphics.FromImage(writableQrBitmap))
             {
-                int logoSize = (writableQrBitmap.Width + 100) / 5; // Logo size (20% of QR code size)
+                int logoSize = (writableQrBitmap.Width + 125) / 5; // Logo size (20% of QR code size)
                 int x = (writableQrBitmap.Width - logoSize) / 2;
                 int y = (writableQrBitmap.Height - logoSize) / 2;
                 graphics.DrawImage(logoBitmap, new Rectangle(x, y, logoSize, logoSize));
@@ -589,6 +625,5 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             return writableQrBitmap;
         }
-
     }
 }

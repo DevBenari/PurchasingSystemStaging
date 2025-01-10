@@ -1,4 +1,5 @@
 ﻿@{
+    var listRole = Context.Session.GetString("ListRole");
     ViewData["Title"] = "Detail Closed Purchase Order";
     Layout = "~/Views/Shared/_TopNavbarReportPurchaseOrder.cshtml";
 }
@@ -27,7 +28,7 @@
                     }
 
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" asp-for="ClosingPurchaseOrderNumber">No. Closing Purchase Order</label>
+                        <label class="col-sm-2 col-form-label" asp-for="ClosingPurchaseOrderNumber">Closing Number</label>
                         <div class="col-sm-10">
                             <input type="text" asp-for="ClosingPurchaseOrderNumber" class="form-control form-control-border border-width-2" id="ClosingPurchaseOrderNumber" placeholder="Nomor Receive" readonly disabled>
                         </div>
@@ -118,7 +119,37 @@
                 <!-- start button footer -->
                 <div class="card card-orange">
                     <div class="card-body">
-                        <div class="btn btn-default" data-href="@Url.Action("Index", "ClosedPurchaseOrder", new { area = "Report" })">Cancel</div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Bagian Kiri -->
+                            <div>
+                                <div class="btn btn-default" data-href="@Url.Action("Index", "ClosedPurchaseOrder", new { area = "Report" })">Cancel</div>
+                            </div>
+
+                            <!-- Bagian Kanan -->
+                            <div>
+                                @if (User.Identity.Name == "superadmin@admin.com")
+                                {
+                                    <a class="btn bg-gray" asp-action="PreviewClosingPurchaseOrder" asp-controller="ClosedPurchaseOrder" asp-area="Warehouse" asp-route-id="@Model.ClosingPurchaseOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                    <a class="btn bg-indigo" asp-action="DownloadClosingPurchaseOrder" asp-controller="ClosedPurchaseOrder" asp-area="Warehouse" asp-route-id="@Model.ClosingPurchaseOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                }
+                                else
+                                {
+                                    @if (!string.IsNullOrEmpty(listRole))
+                                    {
+                                        var roles = listRole.Split(',');
+                                        if (roles.Contains("PreviewClosedPurchaseOrder"))
+                                        {
+                                            <a class="btn bg-gray" asp-action="PreviewClosedPurchaseOrder" asp-controller="ClosedPurchaseOrder" asp-area="Warehouse" asp-route-id="@Model.ClosingPurchaseOrderId" target="_blank"><i class="fas fa-file-pdf" style="color:white"></i> Preview</a>
+                                        }
+
+                                        if (roles.Contains("DownloadClosedPurchaseOrder"))
+                                        {
+                                            <a class="btn bg-indigo" asp-action="DownloadClosedPurchaseOrder" asp-controller="ClosedPurchaseOrder" asp-area="Warehouse" asp-route-id="@Model.ClosingPurchaseOrderId"><i class="fas fa-download" style="color:white"></i> Download</a>
+                                        }                                       
+                                    }
+                                }                                
+                            </div>
+                        </div>                        
                     </div>
                 </div>
                 <!-- /.end button footer -->
