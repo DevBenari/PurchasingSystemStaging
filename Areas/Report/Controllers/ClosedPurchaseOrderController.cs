@@ -17,6 +17,7 @@ using PurchasingSystemStaging.Repositories;
 using QRCoder;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -197,9 +198,10 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             var ClosingPurchaseOrder = await _closingPurchaseOrderRepository.GetClosingPurchaseOrderById(Id);
 
             var CreateDate = ClosingPurchaseOrder.CreateDateTime.ToString("dd MMMM yyyy");
-            var PrNumber = ClosingPurchaseOrder.ClosingPurchaseOrderNumber;
+            var ClosingPurchaseOrderNumber = ClosingPurchaseOrder.ClosingPurchaseOrderNumber;
             var CreateBy = ClosingPurchaseOrder.ApplicationUser.NamaUser;
-            var Month = ClosingPurchaseOrder.Month;
+            var MonthNumber = ClosingPurchaseOrder.Month;
+            var Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(MonthNumber);
             var Year = ClosingPurchaseOrder.Year;
             var TotalPO = ClosingPurchaseOrder.TotalPo;
             var TotalQty = ClosingPurchaseOrder.TotalQty;
@@ -209,7 +211,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             var logoPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logo.png");
 
             // Generate QR Code dengan logo
-            var qrCodeImage = GenerateQRCodeWithLogo(PrNumber, logoPath);
+            var qrCodeImage = GenerateQRCodeWithLogo(ClosingPurchaseOrderNumber, logoPath);
 
             // Simpan QR Code ke dalam MemoryStream sebagai PNG
             using var qrCodeStream = new MemoryStream();
@@ -233,7 +235,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
 
             web.Report.SetParameterValue("Conn", Conn);
             web.Report.SetParameterValue("ClosingPurchaseOrderId", Id.ToString());
-            web.Report.SetParameterValue("PrNumber", PrNumber);
+            web.Report.SetParameterValue("ClosingPurchaseOrderNumber", ClosingPurchaseOrderNumber);
             web.Report.SetParameterValue("CreateDate", CreateDate);
             web.Report.SetParameterValue("CreateBy", CreateBy);
             web.Report.SetParameterValue("Month", Month);
@@ -258,7 +260,8 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             var CreateDate = ClosingPurchaseOrder.CreateDateTime.ToString("dd MMMM yyyy");
             var PrNumber = ClosingPurchaseOrder.ClosingPurchaseOrderNumber;
             var CreateBy = ClosingPurchaseOrder.ApplicationUser.NamaUser;
-            var Month = ClosingPurchaseOrder.Month;
+            var MonthNumber = ClosingPurchaseOrder.Month;
+            var Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(MonthNumber);
             var Year = ClosingPurchaseOrder.Year;
             var TotalPO = ClosingPurchaseOrder.TotalPo;
             var TotalQty = ClosingPurchaseOrder.TotalQty;
