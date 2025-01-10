@@ -7,18 +7,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\General\Data\**" />
+    <Compile Remove="Areas\General\Models\**" />
+    <Compile Remove="Areas\MasterData\Data\**" />
     <Compile Remove="Areas\Order\Data\**" />
     <Compile Remove="Areas\Report\Data\**" />
     <Compile Remove="Areas\Transaction\Data\**" />
     <Compile Remove="Areas\Warehouse\Data\**" />
+    <Content Remove="Areas\General\Data\**" />
+    <Content Remove="Areas\General\Models\**" />
+    <Content Remove="Areas\MasterData\Data\**" />
     <Content Remove="Areas\Order\Data\**" />
     <Content Remove="Areas\Report\Data\**" />
     <Content Remove="Areas\Transaction\Data\**" />
     <Content Remove="Areas\Warehouse\Data\**" />
+    <EmbeddedResource Remove="Areas\General\Data\**" />
+    <EmbeddedResource Remove="Areas\General\Models\**" />
+    <EmbeddedResource Remove="Areas\MasterData\Data\**" />
     <EmbeddedResource Remove="Areas\Order\Data\**" />
     <EmbeddedResource Remove="Areas\Report\Data\**" />
     <EmbeddedResource Remove="Areas\Transaction\Data\**" />
     <EmbeddedResource Remove="Areas\Warehouse\Data\**" />
+    <None Remove="Areas\General\Data\**" />
+    <None Remove="Areas\General\Models\**" />
+    <None Remove="Areas\MasterData\Data\**" />
     <None Remove="Areas\Order\Data\**" />
     <None Remove="Areas\Report\Data\**" />
     <None Remove="Areas\Transaction\Data\**" />
@@ -26,9 +38,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\General\Data\" />
-    <Folder Include="Areas\General\Models\" />
-    <Folder Include="Areas\MasterData\Data\" />
+    <Folder Include="Areas\Administrator\Data\" />
+    <Folder Include="Areas\Administrator\Models\" />
     <Folder Include="Areas\Report\Models\" />
   </ItemGroup>
 
@@ -43,30 +54,30 @@
     <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.29" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.30" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.30" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="6.0.29" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.29" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.29" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="6.0.30" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.30" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.30" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.30" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="4.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.10.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.29" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.29">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.30" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.30">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="6.0.29" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="6.0.30" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.17" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc" Version="6.0.17" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc" Version="6.0.18" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.3-beta1" />
     <PackageReference Include="QRCoder" Version="1.4.3" />

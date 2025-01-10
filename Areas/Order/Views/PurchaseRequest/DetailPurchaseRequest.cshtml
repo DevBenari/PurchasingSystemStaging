@@ -289,24 +289,26 @@
                             <div>
                                 @if (User.Identity.Name == "superadmin@admin.com")
                                 {
+                                    <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo fw-bold">
                                     <a class="btn bg-indigo" id="btnubah">Change</a>
+                                    <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                     <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
                                 }
                                 else
                                 {
                                     @if (Model.ApproveStatusUser1 == null)
                                     {
-                                        <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo fw-bold">
                                         @if (!string.IsNullOrEmpty(listRole))
                                         {
                                             var roles = listRole.Split(',');
                                             if (roles.Contains("UpdatePurchaseRequest"))
                                             {
+                                                <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo fw-bold">
                                                 <a class="btn bg-indigo" id="btnubah">Change</a>
+                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
+                                                <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
                                             }
-                                            <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                         }
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
                                     }
                                     else
                                     {

@@ -156,7 +156,12 @@
                                     <i class="nav-icon fas fa-home" style="color:#FFFFFF"></i> Dashboard
                                 </div>
                             </li>
-                            <li class="nav-header">Administrator</li>
+                            <li class="nav-header">Setup</li>
+                            <li class="@(ViewBag.Active == "Administrator" ? "nav-item menu-open active":"")">
+                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "Administrator" })">
+                                    <i class="nav-icon fas fa-monument" style="color:#FFFFFF"></i> Administrator
+                                </div>
+                            </li>
                             <li class="@(ViewBag.Active == "MasterData" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "MasterData" })">
                                     <i class="nav-icon fas fa-table" style="color:#FFFFFF"></i> Master Data
@@ -256,7 +261,20 @@
 
                                 if (roles.Contains("ReadDepartment") || roles.Contains("ReadPosition") || roles.Contains("ReadUserActive") || roles.Contains("ReadSupplier") || roles.Contains("ReadProduct") || roles.Contains("ReadTermOfPayment") || roles.Contains("ReadBank") || roles.Contains("ReadUnitLocation") || roles.Contains("ReadWarehouseLocation") || roles.Contains("ReadLeadTime") || roles.Contains("ReadInitialStock"))
                                 {
-                                    <li class="nav-header">Administrator</li>
+                                    <li class="nav-header">Setup</li>                                   
+                                }
+
+                                if (roles.Contains("ReadGroupRole") || roles.Contains("ReadApi"))
+                                {
+                                    <li class="@(ViewBag.Active == "Administrator" ? "nav-item menu-open active":"")">
+                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "Administrator" })">
+                                            <i class="nav-icon fas fa-monument" style="color:#FFFFFF"></i> Administrator
+                                        </div>
+                                    </li>
+                                }
+
+                                if (roles.Contains("ReadDepartment") || roles.Contains("ReadPosition") || roles.Contains("ReadUserActive") || roles.Contains("ReadSupplier") || roles.Contains("ReadProduct") || roles.Contains("ReadTermOfPayment") || roles.Contains("ReadBank") || roles.Contains("ReadUnitLocation") || roles.Contains("ReadWarehouseLocation") || roles.Contains("ReadLeadTime") || roles.Contains("ReadInitialStock"))
+                                {                                
                                     <li class="@(ViewBag.Active == "MasterData" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "MasterData" })">
                                             <i class="nav-icon fas fa-table" style="color:#FFFFFF"></i> Master Data
