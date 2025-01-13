@@ -115,7 +115,7 @@ namespace PurchasingSystemStaging.Controllers
                 }
                 else
                 {
-                    var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
+                    var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
@@ -126,51 +126,115 @@ namespace PurchasingSystemStaging.Controllers
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
-                        {                                                      
-                            // Create claims
+                        {
+                            // Ambil role dari database
+                            var roleNames = (from role in _roleRepository.GetRoles()
+                                             join userRole in _groupRoleRepository.GetAllGroupRole()
+                                             on role.Id equals userRole.RoleId
+                                             where userRole.DepartemenId == user.Id
+                                             select role.Name).Distinct().ToList();
+
+                            // Buat klaim
                             var claims = new List<Claim>
                             {
-                                //new Claim(ClaimTypes.NameIdentifier, user.Id),
-                                new Claim(ClaimTypes.Name, user.Email)
-                            };                          
-
-                            //Session akan di pertahankan jika browser di tutup tanpa di signout,
-                            //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
-                            var authProperties = new AuthenticationProperties
-                            {
-                                IsPersistent = true, // Cookie akan bertahan setelah browser ditutup
-                                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Masa berlaku cookie
+                                new Claim(ClaimTypes.Name, user.UserName),
+                                new Claim(ClaimTypes.Email, user.Email)
                             };
 
-                            //await HttpContext.SignInAsync("CookieAuth", principal, authProperties);
-                            await _signInManager.SignInWithClaimsAsync(user, authProperties, claims);
+                            foreach (var role in roleNames)
+                            {
+                                claims.Add(new Claim(ClaimTypes.Role, role));
+                            }
+
+                            // Jika pengguna adalah superadmin
+                            if (user.Email == "superadmin@admin.com")
+                            {
+                                claims.Add(new Claim(ClaimTypes.Role, "SuperAdmin"));
+                            }
+
+                            // Buat identitas dan principal
+                            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                            var principal = new ClaimsPrincipal(identity);
+
+                            // Properti autentikasi
+                            var authProperties = new AuthenticationProperties
+                            {
+                                IsPersistent = true,
+                                ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                            };
+
+                            // Simpan autentikasi
+                            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
 
                             // Tandai pengguna sebagai online
                             user.IsOnline = true;
                             user.LastActivityTime = DateTime.UtcNow;
                             await _userManager.UpdateAsync(user);
 
-                            //_logger.LogInformation("User logged in.");
-                            // Buat session baru
+                            // Simpan session
                             var sessionId = Guid.NewGuid().ToString();
                             HttpContext.Session.SetString("UserId", user.Id.ToString());
                             HttpContext.Session.SetString("SessionId", sessionId);
-                            var userId = _userActiveRepository.GetAllUserLogin()
-                                    .FirstOrDefault(u => u.UserName == model.Email)?.Id;
 
-                            // Ambil role dari database                            
-                            List<string> roleNames = (from role in _roleRepository.GetRoles()
-                                                      join userRole in _groupRoleRepository.GetAllGroupRole()
-                                                      on role.Id equals userRole.RoleId
-                                                      where userRole.DepartemenId == user.Id
-                                                      select role.Name).Distinct().ToList();
-
-                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
-
-                            // Simpan session dan role di server-side cache
+                            // Buat session di server-side cache
                             _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30), roleNames);
 
+                            // Redirect ke dashboard
                             return RedirectToAction("Index", "Home");
+
+                            //// Create claims
+                            //var claims = new List<Claim>
+                            //{
+                            //    //new Claim(ClaimTypes.NameIdentifier, user.Id),
+                            //    new Claim(ClaimTypes.Name, user.Email)
+                            //};
+
+                            //var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                            //var principal = new ClaimsPrincipal(identity);
+                            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
+
+                            ////Session akan di pertahankan jika browser di tutup tanpa di signout,
+                            ////maka ketika masuk ke browser akan langsung di arahkan ke dashboard
+                            //var authProperties = new AuthenticationProperties
+                            //{
+                            //    IsPersistent = true, // Cookie akan bertahan setelah browser ditutup
+                            //    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Masa berlaku cookie
+                            //};
+
+                            ////await HttpContext.SignInAsync("CookieAuth", principal, authProperties);
+                            //await _signInManager.SignInWithClaimsAsync(user, authProperties, claims);
+
+                            //// Tandai pengguna sebagai online
+                            //user.IsOnline = true;
+                            //user.LastActivityTime = DateTime.UtcNow;
+                            //await _userManager.UpdateAsync(user);
+
+                            ////_logger.LogInformation("User logged in.");
+                            //// Buat session baru
+                            //var sessionId = Guid.NewGuid().ToString();
+                            //HttpContext.Session.SetString("UserId", user.Id.ToString());
+                            //HttpContext.Session.SetString("SessionId", sessionId);
+                            //var userId = _userActiveRepository.GetAllUserLogin()
+                            //        .FirstOrDefault(u => u.UserName == model.Email)?.Id;
+
+                            //// Ambil role dari database                            
+                            //List<string> roleNames = (from role in _roleRepository.GetRoles()
+                            //                          join userRole in _groupRoleRepository.GetAllGroupRole()
+                            //                          on role.Id equals userRole.RoleId
+                            //                          where userRole.DepartemenId == user.Id
+                            //                          select role.Name).Distinct().ToList();
+
+                            //foreach (var role in roleNames)
+                            //{
+                            //    claims.Add(new Claim(ClaimTypes.Role, role));
+                            //}
+
+                            ////HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
+
+                            //// Simpan session dan role di server-side cache
+                            //_sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30), roleNames);
+
+                            //return RedirectToAction("Index", "Home");
                         }
 
                         //if (result.RequiresTwoFactor)
@@ -217,6 +281,12 @@ namespace PurchasingSystemStaging.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {           
@@ -250,7 +320,8 @@ namespace PurchasingSystemStaging.Controllers
             }
 
             // Sign out autentikasi
-            await HttpContext.SignOutAsync("CookieAuth");
+            //await HttpContext.SignOutAsync("CookieAuth");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // Redirect ke halaman login
             return RedirectToAction("Login", "Account");

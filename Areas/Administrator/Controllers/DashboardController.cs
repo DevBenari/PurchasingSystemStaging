@@ -8,6 +8,7 @@ namespace PurchasingSystemStaging.Areas.Administrator.Controllers
     {
         public IActionResult Index()
         {
+            ViewBag.Active = "Administrator";
             return View();
         }
     }

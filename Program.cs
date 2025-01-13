@@ -20,6 +20,7 @@ using PurchasingSystemStaging.Hubs;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
 using System.Globalization;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,10 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new IgnoreAntiforgeryTokenAttribute());
 });
+
+// Tambahkan layanan Data Protection
+var dataProtectionProvider = DataProtectionProvider.Create("PurchasingSystemStaging");
+var dataProtector = dataProtectionProvider.CreateProtector("Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationMiddleware", "Cookies", "v2");
 
 // Konfigurasi JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -66,22 +71,8 @@ builder.Services.AddMvc(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
-builder.Services.AddDistributedMemoryCache();
-
-// konfigurasi session 
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
-
-// Tambahkan layanan Data Protection
-var dataProtectionProvider = DataProtectionProvider.Create("PurchasingSystemStaging");
-var dataProtector = dataProtectionProvider.CreateProtector("Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationMiddleware", "Cookies", "v2");
-
 //Script Auto Show Login Account First Time
-builder.Services.AddAuthentication("CookieAuth")
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -95,18 +86,36 @@ builder.Services.AddAuthentication("CookieAuth")
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
     })
-    .AddCookie("CookieAuth", options =>
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
         options.TicketDataFormat = new CustomCompressedTicketDataFormat(dataProtector);
         options.Cookie.Name = "AuthCookie";
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied"; // Path untuk akses ditolak
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
         // Tambahkan ini jika ingin menggunakan chunking
-        options.CookieManager = new ChunkingCookieManager{};
+        options.CookieManager = new ChunkingCookieManager { };
     });
 
+// Tambahkan otorisasi
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SuperAdminPolicy", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c => c.Type == ClaimTypes.Role && c.Value == "SuperAdmin")));
+});
+
+// konfigurasi session 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddMemoryCache();
 
 AddScope();
@@ -183,10 +192,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 //Tambahan Baru
-app.UseSession();
+app.UseMiddleware<SuperAdminMiddleware>();
 app.UseAuthentication();
-//app.UseMiddleware<SessionValidationMiddleware>();
 app.UseAuthorization();
+app.UseSession();
 
 app.UseFastReport();
 
@@ -200,6 +209,17 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
         name: "MyArea",
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+});
+
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
+    {
+        var email = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        Console.WriteLine($"User Email: {email}");
+    }
+
+    await next();
 });
 
 app.Run();
