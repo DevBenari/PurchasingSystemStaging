@@ -1,32 +1,29 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using PurchasingSystemStaging.Areas.Administrator.Models;
+using PurchasingSystemStaging.Areas.Administrator.Repositories;
+using PurchasingSystemStaging.Areas.Administrator.ViewModels;
 using PurchasingSystemStaging.Areas.MasterData.Models;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.MasterData.ViewModels;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Hubs;
 using PurchasingSystemStaging.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Data;
 using PurchasingSystemStaging.Repositories;
-using Microsoft.AspNetCore.Hosting;
 using System.Reflection;
-using PurchasingSystemStaging.Controllers;
-using System;
-using System.Text;
-using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.Mvc.Routing;
+using System.Text;
 
-namespace PurchasingSystemStaging.Areas.MasterData.Controllers
+namespace PurchasingSystemStaging.Areas.Administrator.Controllers
 {
-    [Area("MasterData")]
-    [Route("MasterData/[controller]/[action]")]
-    public class GroupRoleController : Controller
+    [Area("Administrator")]
+    [Route("Administrator/[controller]/[action]")]
+    public class RoleUserController : Controller
     {
-
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly IUserActiveRepository _userActiveRepository;
@@ -38,7 +35,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
 
-        public GroupRoleController(ApplicationDbContext applicationDbContext,
+        public RoleUserController(ApplicationDbContext applicationDbContext,
             IUserActiveRepository userActiveRepository,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
@@ -62,41 +59,17 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _urlMappingService = urlMappingService;
         }
 
-        public IActionResult RedirectToIndex()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/GroupRole/Index";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
-
+        [Authorize(Roles = "ReadRoleUser")]
         public IActionResult Index()
         {
-            ViewBag.Active = "MasterData";
+            ViewBag.Active = "Administrator";
             return View(); // Kirim data role ke view
-        }      
-        
-        public async Task<IActionResult> CreateRole()
+        }
+
+        [Authorize(Roles = "CreateRoleUser")]
+        public async Task<IActionResult> CreateRoleUser()
         {
-            ViewBag.Active = "MasterData";
+            ViewBag.Active = "Administrator";
             var roles = await _roleManager.Roles
                       .Select(r => new
                       {
@@ -107,12 +80,13 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                       .ToListAsync();
             // Kirim data role langsung ke view
             return View(roles);
-        }        
+        }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRole(GroupRoleViewModel vm)
+        [Authorize(Roles = "CreateRoleUser")]
+        public async Task<IActionResult> CreateRoleUser(GroupRoleViewModel vm)
         {
-            ViewBag.Active = "MasterData";
+            ViewBag.Active = "Administrator";
             var dateNow = DateTimeOffset.Now;
             var setDateNow = DateTimeOffset.Now.ToString("yyMMdd");
 
@@ -131,8 +105,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 // Hapus semua user roles terkait
                 _groupRoleRepository.DeleteByDepartmentId(departemenId);
                 var userRoles = _applicationDbContext.UserRoles
-                                                      .Where(ur => ur.UserId == departemenId)
-                                                      .ToList();
+                    .Where(ur => ur.UserId == departemenId)
+                    .ToList();
                 if (userRoles.Any())
                 {
                     _applicationDbContext.UserRoles.RemoveRange(userRoles);
@@ -180,13 +154,14 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
                 TempData["SuccessMessage"] = "Role successfully assigned to user";
                 return RedirectToAction("Index"); // atau aksi lain sesuai kebutuhan
-            }                        
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRoleNavbar()
+        [Authorize(Roles = "CreateRoleUserNavbar")]
+        public async Task<IActionResult> CreateRoleUserNavbar()
         {
-            ViewBag.Active = "MasterData";
+            ViewBag.Active = "Administrator";
             var controllers = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(type => typeof(Controller).IsAssignableFrom(type) && !type.IsAbstract)
                 .ToList();
@@ -203,7 +178,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                     !method.Name.StartsWith("Load") &&
                     !method.Name.StartsWith("Get") &&
                     !method.Name.StartsWith("Impor") &&
-                    !method.Name.StartsWith("Chart") && 
+                    !method.Name.StartsWith("Chart") &&
                     !method.Name.StartsWith("KpiJson") &&
                     !method.Name.StartsWith("PostData") &&
                     !method.GetCustomAttributes(typeof(NonActionAttribute), false).Any() &&
@@ -219,7 +194,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 if (controllerName != "Account")
                 {
                     if (controllerName != "Auth")
-                    { 
+                    {
                         if (controllerName != "Dashboard")
                         {
                             if (controllerName != "Home")
@@ -261,34 +236,34 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                                 }
                             }
                         }
-                    }                        
-                }                
+                    }
+                }
             }
 
             await _hubContext.Clients.All.SendAsync("UpdateDataCount", '0');
             return Json(new { success = true, message = "Role untuk semua controller berhasil dibuat." });
         }
 
-        public void DeleteUserRoleByDepartmentId(string departemenId)
-        {
-            // Cari semua user roles yang terkait dengan departemenId (UserId)
-            var userRoles = _applicationDbContext.UserRoles
-                                                  .Where(ur => ur.UserId == departemenId)
-                                                  .ToList();
+        //public void DeleteUserRoleByDepartmentId(string departemenId)
+        //{
+        //    // Cari semua user roles yang terkait dengan departemenId (UserId)
+        //    var userRoles = _applicationDbContext.UserRoles
+        //                                          .Where(ur => ur.UserId == departemenId)
+        //                                          .ToList();
 
-            if (userRoles.Any())
-            {
-                // Hapus semua user roles terkait
-                _applicationDbContext.UserRoles.RemoveRange(userRoles);
-                _applicationDbContext.SaveChanges();  // Simpan perubahan ke database
-            }
-        }
+        //    if (userRoles.Any())
+        //    {
+        //        // Hapus semua user roles terkait
+        //        _applicationDbContext.UserRoles.RemoveRange(userRoles);
+        //        _applicationDbContext.SaveChanges();  // Simpan perubahan ke database
+        //    }
+        //}
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult LoadRoles(string Email)
         {
-            ViewBag.Active = "MasterData";
+            ViewBag.Active = "Administrator";
             if (!string.IsNullOrEmpty(Email))
             {
                 var userId = _userActiveRepository.GetAllUserLogin()
@@ -337,6 +312,5 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             var user = _userActiveRepository.GetAllUser().ToList();
             return Json(user);
         }
-
     }
 }

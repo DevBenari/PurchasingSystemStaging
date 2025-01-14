@@ -1,6 +1,7 @@
 ﻿using FastReport.Data;
 using FastReport.Export.PdfSimple;
 using FastReport.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -106,39 +107,10 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             var qtyDiffDetail = _applicationDbContext.QtyDifferenceDetails
                 .Where(d => d.QtyDifferenceId == qtyDiff.QtyDifferenceId && d.ProductNumber == podetail.ProductNumber).FirstOrDefault();
             return new JsonResult(qtyDiffDetail);
-        }
-
-        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
-        {
-            try
-            {
-                // Format tanggal tanpa waktu
-                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
-
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Order/PurchaseOrder/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
+        }        
 
         [HttpGet]
+        [Authorize(Roles = "ReadPurchaseOrder")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "PurchaseOrder";
@@ -175,34 +147,9 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
             return View(model);
         }
-
-        public IActionResult RedirectToDetail(Guid Id)
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Detail:Order/PurchaseOrder/DetailPurchaseOrder/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
-
+        
         [HttpGet]
+        [Authorize(Roles = "UpdatePurchaseOrder")]
         public async Task<IActionResult> DetailPurchaseOrder(Guid Id)
         {
             ViewBag.Active = "PurchaseOrder";
@@ -262,6 +209,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "PreviewPurchaseOrder")]
         public async Task<IActionResult> PreviewPurchaseOrder(Guid Id)
         {
             var purchaseOrder = await _purchaseOrderRepository.GetPurchaseOrderById(Id);
@@ -327,6 +275,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             return File(stream, "application/pdf");
         }
 
+        [Authorize(Roles = "DownloadPurchaseOrder")]
         public async Task<IActionResult> DownloadPurchaseOrder(Guid Id)
         {
             var purchaseOrder = await _purchaseOrderRepository.GetPurchaseOrderById(Id);

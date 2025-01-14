@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PurchasingSystemStaging.Areas.Administrator.Repositories;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
@@ -60,11 +61,11 @@ namespace PurchasingSystemStaging.Controllers
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public IActionResult Index()
-        {            
+        {
             return View();
-        }        
-      
-        [AllowAnonymous]        
+        }
+
+        [AllowAnonymous]
         public async Task<IActionResult> Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -87,13 +88,13 @@ namespace PurchasingSystemStaging.Controllers
             {
                 var response = new LoginViewModel();
                 return View(response);
-            }            
+            }
         }
 
         [HttpPost]
-        [AllowAnonymous]        
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
-        {            
+        {
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -126,13 +127,13 @@ namespace PurchasingSystemStaging.Controllers
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
-                        {                                                      
+                        {
                             // Create claims
                             var claims = new List<Claim>
                             {
                                 //new Claim(ClaimTypes.NameIdentifier, user.Id),
                                 new Claim(ClaimTypes.Name, user.Email)
-                            };                          
+                            };
 
                             //Session akan di pertahankan jika browser di tutup tanpa di signout,
                             //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
@@ -198,7 +199,7 @@ namespace PurchasingSystemStaging.Controllers
                     }
                     else if (user.IsActive == true && _sessionService.IsSessionActive(user.Id))
                     {
-                        TempData["UserOnlineMessage"] = "Sorry, your account is online, please wait until the session expires!";                       
+                        TempData["UserOnlineMessage"] = "Sorry, your account is online, please wait until the session expires!";
 
                         return View(model);
                     }
@@ -217,9 +218,15 @@ namespace PurchasingSystemStaging.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
-        {           
+        {
             // Hapus session dari server-side storage
             var userId = HttpContext.Session.GetString("UserId");
 

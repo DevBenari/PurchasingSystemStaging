@@ -97,38 +97,9 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 .Where(p => p.PurchaseOrderDetailId == Id).FirstOrDefault();
             return new JsonResult(podetail);
         }
-
-        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
-        {
-            try
-            {
-                // Format tanggal tanpa waktu
-                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
-
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Warehouse/ReceiveOrder/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
-
+       
         [HttpGet]
+        [Authorize(Roles = "ReadReceiveOrder")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "ReceiveOrder";
@@ -171,35 +142,9 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             return View(model);
         }
-
-        public IActionResult RedirectToCreate()
-        {
-            try
-            {
-                ViewBag.Active = "ReceiveOrder";
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Create:Warehouse/ReceiveOrder/CreateReceiveOrder";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
-
+        
         [HttpGet]
+        [Authorize(Roles = "CreateReceiveOrder")]
         public async Task<IActionResult> CreateReceiveOrder(string poList)
         {
             ViewBag.Active = "ReceiveOrder";
@@ -245,6 +190,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "CreateReceiveOrder")]
         public async Task<IActionResult> CreateReceiveOrder(ReceiveOrder model)
         {
             ViewBag.Active = "ReceiveOrder";
@@ -347,34 +293,8 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             }
         }
 
-        public IActionResult RedirectToDetail(Guid Id)
-        {
-            try
-            {
-                ViewBag.Active = "ReceiveOrder";
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Detail:Warehouse/ReceiveOrder/DetailReceiveOrder/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
-
         [HttpGet]
+        [Authorize(Roles = "UpdateReceiveOrder")]
         public async Task<IActionResult> DetailReceiveOrder(Guid Id)
         {
             ViewBag.Active = "ReceiveOrder";
@@ -408,6 +328,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "PreviewReceiveOrder")]
         public async Task<IActionResult> PreviewReceiveOrder(Guid Id)
         {
             var rcvOrder = await _receiveOrderRepository.GetReceiveOrderById(Id);
@@ -475,6 +396,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return File(stream, "application/pdf");
         }
 
+        [Authorize(Roles = "DownloadReceiveOrder")]
         public async Task<IActionResult> DownloadReceiveOrder(Guid Id)
         {
             var rcvOrder = await _receiveOrderRepository.GetReceiveOrderById(Id);
@@ -540,6 +462,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return File(stream, "application/zip", (RoNumber + ".pdf"));
         }
 
+        [Authorize(Roles = "PreviewBatchNumber")]
         public async Task<IActionResult> PreviewBatchNumber(Guid Id)
         {
             var rcvOrder = await _receiveOrderRepository.GetReceiveOrderById(Id);           

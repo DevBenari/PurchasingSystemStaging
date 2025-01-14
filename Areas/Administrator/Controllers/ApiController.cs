@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Elfie.Model.Map;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,10 @@ using System.Security.Policy;
 using System.Text;
 using static System.Net.WebRequestMethods;
 
-namespace PurchasingSystemStaging.Areas.MasterData.Controllers
+namespace PurchasingSystemStaging.Areas.Administrator.Controllers
 {
-    [Area("MasterData")]
-    [Route("MasterData/[Controller]/[Action]")]
+    [Area("Administrator")]
+    [Route("Administrator/[Controller]/[Action]")]
     public class ApiController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -66,69 +67,19 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
         }
-        
-        public IActionResult RedirectToIndex()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/Api/Index";
-                string encryptedPath = _protector.Protect(originalPath);
 
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
-
+        [Authorize(Roles = "ReadApi")]
         public IActionResult Index()
         {
             return View();
-        }
-
-        public IActionResult RedirectToGetDataSupplier()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/Api/GetDataSupplier";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
+        }        
 
         public IActionResult GetDataSupplier() 
         { 
             return View(); 
         }
 
+        [Authorize(Roles = "CreateSupplier")]
         public async Task<IActionResult> CreateSupplier(string apiCode)
         {
             var apiUrl = apiCode; // URL API untuk mengambil data supplier
@@ -235,38 +186,13 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View("Error", $"Terjadi kesalahan: {ex.Message}");
             }
         }
-
-        public IActionResult RedirectToGetDataSatuan()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/Api/GetDataSatuan";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
-
+        
         public IActionResult GetDataSatuan() 
         { 
             return View(); 
         }
 
+        [Authorize(Roles = "CreateSatuan")]
         public async Task<IActionResult> CreateSatuan(string apiCode)
         {
             var apiUrl = apiCode; // URL API untuk mengambil data supplier
@@ -353,39 +279,14 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 // Tangani kesalahan jika ada masalah dengan koneksi atau pemrosesan data
                 return View("Error", $"Terjadi kesalahan: {ex.Message}");
             }
-        }
-
-        public IActionResult RedirectToGetDataKategoriObat()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/Api/GetDataKategoriObat";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
+        }        
 
         public IActionResult GetDataKategoriObat() 
         { 
             return View(); 
         }
 
+        [Authorize(Roles = "CreateKategoriObat")]
         public async Task<IActionResult> CreateKategoriObat(string apiCode)
         {
             var apiUrl = apiCode; // URL API untuk mengambil data supplier
@@ -471,39 +372,14 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 // Tangani kesalahan jika ada masalah dengan koneksi atau pemrosesan data
                 return View("Error", $"Terjadi kesalahan: {ex.Message}");
             }
-        }
-
-        public IActionResult RedirectToGetDataObat()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/Api/GetDataObat";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
+        }        
 
         public IActionResult GetDataObat() 
         { 
             return View(); 
         }
 
+        [Authorize(Roles = "CreateObat")]
         public async Task<IActionResult> CreateObat(string apiCode, int limit = 20)
         {
             var apiUrlObat = "https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_data_obat&return_type=json"; // URL API untuk mengambil data supplier
@@ -772,38 +648,13 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View("Error", "Gagal mengambil data dari API");
             }
         }
-
-        public IActionResult RedirectToGetDataDiskon()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/Api/GetDataDiskon";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
-
+        
         public IActionResult GetDataDiskon() 
         { 
             return View(); 
         }
 
+        [Authorize(Roles = "CreateDiskon")]
         public async Task<IActionResult> CreateDiskon(string apiCode)
         {
             var apiUrl = apiCode; // URL API untuk mengambil data supplier

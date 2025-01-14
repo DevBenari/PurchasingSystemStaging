@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -48,6 +49,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             _productReturnRepository = productReturnRepository;            
         }
         [HttpGet]
+        [Authorize(Roles = "ReadApprovalProductReturn")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "ApprovalProductReturn";
@@ -184,6 +186,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "UpdateApprovalProductReturn")]
         public async Task<ViewResult> DetailApprovalProductReturn(Guid Id)
         {
             ViewBag.Active = "ApprovalProductReturn";
@@ -244,6 +247,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "UpdateApprovalProductReturn")]
         public async Task<IActionResult> DetailApprovalProductReturn(ApprovalProductReturnViewModel viewModel)
         {
             ViewBag.Active = "ApprovalProductReturn";

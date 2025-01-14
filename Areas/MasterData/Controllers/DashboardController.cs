@@ -35,34 +35,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
         }
-
         
-        public IActionResult RedirectToIndex()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/Dashboard/Index";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
-
         public IActionResult Index()
         {
             ViewBag.Active = "MasterData";

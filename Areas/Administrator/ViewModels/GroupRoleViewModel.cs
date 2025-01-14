@@ -1,4 +1,4 @@
-﻿namespace PurchasingSystemStaging.Areas.MasterData.ViewModels
+﻿namespace PurchasingSystemStaging.Areas.Administrator.ViewModels
 {
     public class GroupRoleViewModel
     {

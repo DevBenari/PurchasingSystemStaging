@@ -1,11 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Add Role Menu";
-    Layout = "~/Views/Shared/_TopNavbarMasterData.cshtml";
+    ViewData["Title"] = "Add Role User";
+    Layout = "~/Views/Shared/_TopNavbarAdministrator.cshtml";
 }
 
 @using Microsoft.AspNetCore.Identity;
 @using PurchasingSystemStaging.Models;
-@using PurchasingSystemStaging.Areas.MasterData.ViewModels;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
 @model IEnumerable<dynamic>
@@ -25,7 +24,7 @@
                 }
                 @if (user?.Email == "superadmin@admin.com")
                 {
-                    <form id="createRoleForm" asp-controller="GroupRole" asp-action="CreateRoleNavbar" method="post">
+                    <form id="createRoleForm" asp-controller="RoleUser" asp-action="CreateRoleUserNavbar" method="post">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -61,13 +60,13 @@
                 }
 
                 @*<div class="row">
-                    <div class="col-12">
-                        <div class="card card-widget widget-user">
-                            <div class="widget-user-header bg-indigo">
-                                <h1 class="widget-user-username"><b>Seed Role User</b></h1>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-12">
+                <div class="card card-widget widget-user">
+                <div class="widget-user-header bg-indigo">
+                <h1 class="widget-user-username"><b>Seed Role User</b></h1>
+                </div>
+                </div>
+                </div>
                 </div>*@
                 <!-- Card Body for Role Menus -->
                 <div class="row">
@@ -144,7 +143,7 @@
                         <div class="col-md-12" id="div2">
                             <a href="#" class="btn btn-primary btn-block mb-3">Create Role User</a>
                             <div class="card">
-                                <form enctype="multipart/form-data" asp-controller="GroupRole" asp-action="CreateRole" method="post">
+                                <form enctype="multipart/form-data" asp-controller="RoleUser" asp-action="CreateRoleUser" method="post">
                                     <div class="card-header">
                                         <h3 class="card-title" id="menuTitle">Menu</h3>
                                         <input type="hidden" name="DepartemenId" id="DepartemenId">
@@ -213,13 +212,13 @@
         newListItem.id = 'inboxItem';
         newListItem.setAttribute('name', folderCurrentConcurrencyStamp);
         newListItem.innerHTML = `
-            <a href="#" class="nav-link" onclick="toggleSubFolder('${folderCurrentConcurrencyStamp}')">
-                ${folderCurrentConcurrencyStamp}
-                <span class="float-right" id="inboxIcon"><i class="fas fa-plus" onclick="myCustomFunction('${folderCurrentConcurrencyStamp}')"></i></span>
-            </a>
-            <ul class="nav nav-pills flex-column ml-3 collapse show" id="${folderCurrentConcurrencyStamp}">
-            </ul>
-        `;
+                <a href="#" class="nav-link" onclick="toggleSubFolder('${folderCurrentConcurrencyStamp}')">
+                    ${folderCurrentConcurrencyStamp}
+                    <span class="float-right" id="inboxIcon"><i class="fas fa-plus" onclick="myCustomFunction('${folderCurrentConcurrencyStamp}')"></i></span>
+                </a>
+                <ul class="nav nav-pills flex-column ml-3 collapse show" id="${folderCurrentConcurrencyStamp}">
+                </ul>
+            `;
 
         const menuTitle = document.getElementById('menuTitle');
         if (menuTitle && menuTitle.textContent.trim() !== "") {
@@ -256,7 +255,7 @@
 
     function roleData(Email, NameUser) {
         $.ajax({
-            url: '@Url.Action("LoadRoles", "GroupRole")',
+            url: '@Url.Action("LoadRoles", "RoleUser")',
             method: 'GET',
             data: { Email: Email },
             success: function (data) {
@@ -284,6 +283,34 @@
                     } else if (role.concurrencyStamp !== folderCurrentConcurrencyStamp) {
                         // Jika concurrencyStamp berubah, buat folder baru untuk grup sebelumnya
                         folderContent += `
+                                        <li class="nav-item active" id="inboxItem" name="${folderCurrentConcurrencyStamp}">
+                                            <a href="#" class="nav-link" onclick="toggleSubFolder('${folderCurrentConcurrencyStamp}')">
+                                                ${folderCurrentConcurrencyStamp}
+                                                <span class="float-right" id="inboxIcon"><i class="fas fa-plus" onclick="myCustomFunction('${folderCurrentConcurrencyStamp}')"></i></span>
+                                            </a>
+                                            <ul class="nav nav-pills flex-column ml-3 collapse" id="${folderCurrentConcurrencyStamp}">
+                                                ${folderArrayBody}
+                                            </ul>
+                                        </li>
+                                    `;
+                        // Reset arrayBody untuk grup berikutnya
+                        folderArrayBody = '';
+                        folderCurrentConcurrencyStamp = role.concurrencyStamp;  // Update concurrencyStamp untuk grup berikutnya
+                    }
+
+                    folderArrayBody += `
+                                    <li class="nav-item" id="${role.name}">
+                                        <input type="hidden" name="RoleId" value="${role.id}">
+                                        <a href="#" class="nav-link" onclick="moveToDiv2('${role.name}','${role.concurrencyStamp}')">
+                                            <i class="fas fa-inbox"></i> ${role.name}
+                                            <span class="float-right" id="inboxIcon"></span>
+                                        </a>
+                                    </li>
+                                `;
+                });
+
+                if (folderArrayBody !== '') {
+                    folderContent += `
                                     <li class="nav-item active" id="inboxItem" name="${folderCurrentConcurrencyStamp}">
                                         <a href="#" class="nav-link" onclick="toggleSubFolder('${folderCurrentConcurrencyStamp}')">
                                             ${folderCurrentConcurrencyStamp}
@@ -294,34 +321,6 @@
                                         </ul>
                                     </li>
                                 `;
-                        // Reset arrayBody untuk grup berikutnya
-                        folderArrayBody = '';
-                        folderCurrentConcurrencyStamp = role.concurrencyStamp;  // Update concurrencyStamp untuk grup berikutnya
-                    }
-
-                    folderArrayBody += `
-                                <li class="nav-item" id="${role.name}">
-                                    <input type="hidden" name="RoleId" value="${role.id}">
-                                    <a href="#" class="nav-link" onclick="moveToDiv2('${role.name}','${role.concurrencyStamp}')">
-                                        <i class="fas fa-inbox"></i> ${role.name}
-                                        <span class="float-right" id="inboxIcon"></span>
-                                    </a>
-                                </li>
-                            `;
-                });
-
-                if (folderArrayBody !== '') {
-                    folderContent += `
-                                <li class="nav-item active" id="inboxItem" name="${folderCurrentConcurrencyStamp}">
-                                    <a href="#" class="nav-link" onclick="toggleSubFolder('${folderCurrentConcurrencyStamp}')">
-                                        ${folderCurrentConcurrencyStamp}
-                                        <span class="float-right" id="inboxIcon"><i class="fas fa-plus" onclick="myCustomFunction('${folderCurrentConcurrencyStamp}')"></i></span>
-                                    </a>
-                                    <ul class="nav nav-pills flex-column ml-3 collapse" id="${folderCurrentConcurrencyStamp}">
-                                        ${folderArrayBody}
-                                    </ul>
-                                </li>
-                            `;
                 }
                 $('#folderList').append(folderContent);
 
@@ -333,6 +332,34 @@
                     } else if (role.concurrencyStamp !== newFolderCurrentConcurrencyStamp) {
                         // Jika concurrencyStamp berubah, buat folder baru untuk grup sebelumnya
                         newFolderContent += `
+                                        <li class="nav-item active" id="inboxItem" name="${newFolderCurrentConcurrencyStamp}">
+                                            <a href="#" class="nav-link" onclick="toggleSubFolder('${newFolderCurrentConcurrencyStamp}')">
+                                                ${newFolderCurrentConcurrencyStamp}
+                                                <span class="float-right" id="inboxIcon"><i class="fas fa-plus" onclick="myCustomFunction('${newFolderCurrentConcurrencyStamp}')"></i></span>
+                                            </a>
+                                            <ul class="nav nav-pills flex-column ml-3 collapse" id="${newFolderCurrentConcurrencyStamp}">
+                                                ${newFolderArrayBody}
+                                            </ul>
+                                        </li>
+                                    `;
+                        // Reset arrayBody untuk grup berikutnya
+                        newFolderArrayBody = '';
+                        newFolderCurrentConcurrencyStamp = role.concurrencyStamp;  // Update concurrencyStamp untuk grup berikutnya
+                    }
+
+                    newFolderArrayBody += `
+                                    <li class="nav-item" id="${role.name}">
+                                        <input type="hidden" name="RoleId" value="${role.id}">
+                                        <a href="#" class="nav-link" onclick="moveToDiv2('${role.name}','${role.concurrencyStamp}')">
+                                            <i class="fas fa-inbox"></i> ${role.name}
+                                            <span class="float-right" id="inboxIcon"></span>
+                                        </a>
+                                    </li>
+                                `;
+                });
+
+                if (newFolderArrayBody !== '') {
+                    newFolderContent += `
                                     <li class="nav-item active" id="inboxItem" name="${newFolderCurrentConcurrencyStamp}">
                                         <a href="#" class="nav-link" onclick="toggleSubFolder('${newFolderCurrentConcurrencyStamp}')">
                                             ${newFolderCurrentConcurrencyStamp}
@@ -343,34 +370,6 @@
                                         </ul>
                                     </li>
                                 `;
-                        // Reset arrayBody untuk grup berikutnya
-                        newFolderArrayBody = '';
-                        newFolderCurrentConcurrencyStamp = role.concurrencyStamp;  // Update concurrencyStamp untuk grup berikutnya
-                    }
-
-                    newFolderArrayBody += `
-                                <li class="nav-item" id="${role.name}">
-                                    <input type="hidden" name="RoleId" value="${role.id}">
-                                    <a href="#" class="nav-link" onclick="moveToDiv2('${role.name}','${role.concurrencyStamp}')">
-                                        <i class="fas fa-inbox"></i> ${role.name}
-                                        <span class="float-right" id="inboxIcon"></span>
-                                    </a>
-                                </li>
-                            `;
-                });
-
-                if (newFolderArrayBody !== '') {
-                    newFolderContent += `
-                                <li class="nav-item active" id="inboxItem" name="${newFolderCurrentConcurrencyStamp}">
-                                    <a href="#" class="nav-link" onclick="toggleSubFolder('${newFolderCurrentConcurrencyStamp}')">
-                                        ${newFolderCurrentConcurrencyStamp}
-                                        <span class="float-right" id="inboxIcon"><i class="fas fa-plus" onclick="myCustomFunction('${newFolderCurrentConcurrencyStamp}')"></i></span>
-                                    </a>
-                                    <ul class="nav nav-pills flex-column ml-3 collapse" id="${newFolderCurrentConcurrencyStamp}">
-                                        ${newFolderArrayBody}
-                                    </ul>
-                                </li>
-                            `;
                 }
 
                 $('#newFolderList').append(newFolderContent);
@@ -384,26 +383,26 @@
 
     function userData() {
         $.ajax({
-            url: '@Url.Action("LoadUser", "GroupRole")',
+            url: '@Url.Action("LoadUser", "RoleUser")',
             method: 'GET',
             success: function (data) {
                 $('#userList').empty();
                 $.each(data, function (index, user) {
                     var foto = user.foto ? user.foto : 'user.jpg';
                     $('#userList').append(`
-                            <li style="background-color: #347FC4; cursor: pointer;">
-                                <a href="#">
-                                    <img class="contacts-list-img" src="/UserPhoto/${foto}" alt="User Avatar">
-                                    <input type="hidden" name="nmUser" value="${user.fullName}" />
-                                    <input type="hidden" name="kdUser" value="${user.email}" />
-                                    <div class="contacts-list-info">
-                                        <span class="contacts-list-name">
-                                            ${user.fullName}
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                        `);
+                                <li style="background-color: #347FC4; cursor: pointer;">
+                                    <a href="#">
+                                        <img class="contacts-list-img" src="/UserPhoto/${foto}" alt="User Avatar">
+                                        <input type="hidden" name="nmUser" value="${user.fullName}" />
+                                        <input type="hidden" name="kdUser" value="${user.email}" />
+                                        <div class="contacts-list-info">
+                                            <span class="contacts-list-name">
+                                                ${user.fullName}
+                                            </span>
+                                        </div>
+                                    </a>
+                                </li>
+                            `);
                 });
 
                 $('#userList').on('click', 'li', function () {

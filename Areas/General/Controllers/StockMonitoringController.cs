@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -36,37 +37,7 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
             _urlMappingService = urlMappingService;
         }
 
-        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
-        {
-            try
-            {
-                ViewBag.Active = "StockMonitoring";
-                // Format tanggal tanpa waktu
-                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
-
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:General/StockMonitoring/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
-
+        [Authorize(Roles = "ReadStockMonitoring")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "StockMonitoring";
