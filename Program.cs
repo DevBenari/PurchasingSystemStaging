@@ -16,6 +16,7 @@ using PurchasingSystemStaging.Areas.Report.Repositories;
 using PurchasingSystemStaging.Areas.Transaction.Repositories;
 using PurchasingSystemStaging.Areas.Warehouse.Repositories;
 using PurchasingSystemStaging.Data;
+using PurchasingSystemStaging.Helpers;
 using PurchasingSystemStaging.Hubs;
 using PurchasingSystemStaging.Models;
 using PurchasingSystemStaging.Repositories;
@@ -187,13 +188,19 @@ if (!app.Environment.IsDevelopment())
 // Tambahkan middleware untuk dekripsi URL
 //app.UseMiddleware<DecryptUrlMiddleware>();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await RoleHelper.CreateRoles(services);
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
 //Tambahan Baru
-app.UseMiddleware<SuperAdminMiddleware>();
 app.UseAuthentication();
+app.UseMiddleware<SuperAdminMiddleware>();
 app.UseAuthorization();
 app.UseSession();
 
@@ -209,17 +216,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
         name: "MyArea",
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-});
-
-app.Use(async (context, next) =>
-{
-    if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
-    {
-        var email = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-        Console.WriteLine($"User Email: {email}");
-    }
-
-    await next();
 });
 
 app.Run();

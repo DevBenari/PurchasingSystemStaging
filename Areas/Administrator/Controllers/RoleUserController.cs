@@ -57,14 +57,14 @@ namespace PurchasingSystemStaging.Areas.Administrator.Controllers
             _urlMappingService = urlMappingService;
         }
 
-        //[Authorize(Roles = "ReadRoleUser")]
+        [Authorize(Roles = "ReadRoleUser")]
         public IActionResult Index()
         {
             ViewBag.Active = "Administrator";
             return View(); // Kirim data role ke view
         }
 
-        //[Authorize(Roles = "CreateRoleUser")]
+        [Authorize(Roles = "CreateRoleUser")]
         public async Task<IActionResult> CreateRoleUser()
         {
             ViewBag.Active = "Administrator";
@@ -81,7 +81,7 @@ namespace PurchasingSystemStaging.Areas.Administrator.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "CreateRoleUser")]
+        [Authorize(Roles = "CreateRoleUser")]
         public async Task<IActionResult> CreateRoleUser(GroupRoleViewModel vm)
         {
             ViewBag.Active = "Administrator";
@@ -156,7 +156,7 @@ namespace PurchasingSystemStaging.Areas.Administrator.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "CreateRoleUserNavbar")]
+        [Authorize(Roles = "CreateRoleUserNavbar")]
         public async Task<IActionResult> CreateRoleUserNavbar()
         {
             ViewBag.Active = "Administrator";
