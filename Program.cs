@@ -86,32 +86,66 @@ var dataProtectionProvider = DataProtectionProvider.Create("PurchasingSystemStag
 var dataProtector = dataProtectionProvider.CreateProtector("Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationMiddleware", "Cookies", "v2");
 
 //Script Auto Show Login Account First Time
-builder.Services.AddAuthentication("CookieAuth")
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = context =>
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(key)
-        };
-    })
-    .AddCookie("CookieAuth", options =>
-    {
-        options.TicketDataFormat = new CustomCompressedTicketDataFormat(dataProtector);
-        options.Cookie.Name = "AuthCookie";
-        options.LoginPath = "/Account/Login";
-        options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/Account/AccessDenied"; // Path untuk akses ditolak
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        options.SlidingExpiration = true;
-        // Tambahkan ini jika ingin menggunakan chunking
-        options.CookieManager = new ChunkingCookieManager { };
-    });
+            context.HandleResponse(); // Prevent default behavior
+            context.Response.Redirect("/Account/Login");
+            return Task.CompletedTask;
+        },
+        OnForbidden = context =>
+        {
+            context.Response.Redirect("/Account/AccessDenied");
+            return Task.CompletedTask;
+        }
+    };
+});
+
+//builder.Services.AddAuthentication("CookieAuth")
+//    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+//    {
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = true,
+//            ValidateAudience = true,
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = true,
+//            ValidIssuer = jwtSettings["Issuer"],
+//            ValidAudience = jwtSettings["Audience"],
+//            IssuerSigningKey = new SymmetricSecurityKey(key)
+//        };
+//    })
+//    .AddCookie("CookieAuth", options =>
+//    {
+//        options.TicketDataFormat = new CustomCompressedTicketDataFormat(dataProtector);
+//        options.Cookie.Name = "AuthCookie";
+//        options.LoginPath = "/Account/Login";
+//        options.LogoutPath = "/Account/Logout";
+//        options.AccessDeniedPath = "/Account/AccessDenied"; // Path untuk akses ditolak
+//        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+//        options.SlidingExpiration = true;
+//        // Tambahkan ini jika ingin menggunakan chunking
+//        options.CookieManager = new ChunkingCookieManager { };
+//    });
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddMemoryCache();
