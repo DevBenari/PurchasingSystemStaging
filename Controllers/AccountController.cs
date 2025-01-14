@@ -60,11 +60,11 @@ namespace PurchasingSystemStaging.Controllers
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public IActionResult Index()
-        {            
+        {
             return View();
-        }        
-      
-        [AllowAnonymous]        
+        }
+
+        [AllowAnonymous]
         public async Task<IActionResult> Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -87,13 +87,13 @@ namespace PurchasingSystemStaging.Controllers
             {
                 var response = new LoginViewModel();
                 return View(response);
-            }            
+            }
         }
 
         [HttpPost]
-        [AllowAnonymous]        
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
-        {            
+        {
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -132,11 +132,7 @@ namespace PurchasingSystemStaging.Controllers
                             {
                                 //new Claim(ClaimTypes.NameIdentifier, user.Id),
                                 new Claim(ClaimTypes.Email, user.Email)
-                            };                            
-
-                            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                            var principal = new ClaimsPrincipal(identity);
-                            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
+                            };
 
                             //Session akan di pertahankan jika browser di tutup tanpa di signout,
                             //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
@@ -188,7 +184,7 @@ namespace PurchasingSystemStaging.Controllers
                             foreach (var role in roleNames)
                             {
                                 claims.Add(new Claim(ClaimTypes.Role, role));
-                            }                            
+                            }
 
                             HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
 
@@ -223,7 +219,7 @@ namespace PurchasingSystemStaging.Controllers
                     }
                     else if (user.IsActive == true && _sessionService.IsSessionActive(user.Id))
                     {
-                        TempData["UserOnlineMessage"] = "Sorry, your account is online, please wait until the session expires!";                       
+                        TempData["UserOnlineMessage"] = "Sorry, your account is online, please wait until the session expires!";
 
                         return View(model);
                     }
@@ -250,7 +246,7 @@ namespace PurchasingSystemStaging.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Logout()
-        {           
+        {
             // Hapus session dari server-side storage
             var userId = HttpContext.Session.GetString("UserId");
 
@@ -281,8 +277,7 @@ namespace PurchasingSystemStaging.Controllers
             }
 
             // Sign out autentikasi
-            //await HttpContext.SignOutAsync("CookieAuth");
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync("CookieAuth");
 
             // Redirect ke halaman login
             return RedirectToAction("Login", "Account");

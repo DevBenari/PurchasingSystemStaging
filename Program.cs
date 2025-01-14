@@ -73,7 +73,7 @@ builder.Services.AddMvc(options =>
 });
 
 //Script Auto Show Login Account First Time
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication("CookieAuth")
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -87,7 +87,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
     })
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    .AddCookie("CookieAuth", options =>
     {
         options.TicketDataFormat = new CustomCompressedTicketDataFormat(dataProtector);
         options.Cookie.Name = "AuthCookie";
