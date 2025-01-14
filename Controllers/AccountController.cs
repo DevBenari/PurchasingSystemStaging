@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PurchasingSystemStaging.Areas.Administrator.Repositories;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
 using PurchasingSystemStaging.Data;
 using PurchasingSystemStaging.Models;
@@ -115,7 +116,7 @@ namespace PurchasingSystemStaging.Controllers
                 }
                 else
                 {
-                    var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+                    var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
@@ -131,7 +132,7 @@ namespace PurchasingSystemStaging.Controllers
                             var claims = new List<Claim>
                             {
                                 //new Claim(ClaimTypes.NameIdentifier, user.Id),
-                                new Claim(ClaimTypes.Email, user.Email)
+                                new Claim(ClaimTypes.Name, user.Email)
                             };
 
                             //Session akan di pertahankan jika browser di tutup tanpa di signout,
@@ -164,27 +165,6 @@ namespace PurchasingSystemStaging.Controllers
                                                       on role.Id equals userRole.RoleId
                                                       where userRole.DepartemenId == user.Id
                                                       select role.Name).Distinct().ToList();
-
-                            // Jika user adalah superadmin
-                            if (user.Email == "superadmin@admin.com")
-                            {
-                                // Ambil semua role dari database
-                                roleNames = _roleRepository.GetRoles().Select(r => r.Name).ToList();
-
-                                // Tambahkan superadmin ke semua role di database
-                                foreach (var role in roleNames)
-                                {
-                                    if (!await _userManager.IsInRoleAsync(user, role))
-                                    {
-                                        await _userManager.AddToRoleAsync(user, role);
-                                    }
-                                }
-                            }
-
-                            foreach (var role in roleNames)
-                            {
-                                claims.Add(new Claim(ClaimTypes.Role, role));
-                            }
 
                             HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
 

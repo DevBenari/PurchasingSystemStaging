@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace PurchasingSystemStaging.Areas.MasterData.Models
+namespace PurchasingSystemStaging.Areas.Administrator.Models
 {
     [Table("AspNetGroupRole", Schema = "dbo")]
     public class GroupRole : UserActivity
