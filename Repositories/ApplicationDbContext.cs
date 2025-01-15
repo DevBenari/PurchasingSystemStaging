@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PurchasingSystemStaging.Areas.Administrator.Models;
 using PurchasingSystemStaging.Areas.MasterData.Models;
 using PurchasingSystemStaging.Areas.Order.Models;
 using PurchasingSystemStaging.Areas.Report.Models;
