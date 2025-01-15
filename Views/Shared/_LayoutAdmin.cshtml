@@ -73,7 +73,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link" role="button">
-                                <p>Halo, @(User.Identity.Name)</p>
+                            <p>Halo, @User.FindFirst("NamaUser")?.Value</p>
                             </a>
                         </li>
 
