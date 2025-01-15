@@ -157,11 +157,11 @@
                                 </div>
                             </li>
                             <li class="nav-header">Setup</li>
-                            <li class="@(ViewBag.Active == "Administrator" ? "nav-item menu-open active":"")">
+                            @* <li class="@(ViewBag.Active == "Administrator" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "Administrator" })">
                                     <i class="nav-icon fas fa-monument" style="color:#FFFFFF"></i> Administrator
                                 </div>
-                            </li>
+                            </li> *@
                             <li class="@(ViewBag.Active == "MasterData" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "MasterData" })">
                                     <i class="nav-icon fas fa-table" style="color:#FFFFFF"></i> Master Data
@@ -264,14 +264,14 @@
                                     <li class="nav-header">Setup</li>                                   
                                 }
 
-                                if (roles.Contains("ReadGroupRole") || roles.Contains("ReadApi"))
+                                @* if (roles.Contains("ReadGroupRole") || roles.Contains("ReadApi"))
                                 {
                                     <li class="@(ViewBag.Active == "Administrator" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "Administrator" })">
                                             <i class="nav-icon fas fa-monument" style="color:#FFFFFF"></i> Administrator
                                         </div>
                                     </li>
-                                }
+                                } *@
 
                                 if (roles.Contains("ReadDepartment") || roles.Contains("ReadPosition") || roles.Contains("ReadUserActive") || roles.Contains("ReadSupplier") || roles.Contains("ReadProduct") || roles.Contains("ReadTermOfPayment") || roles.Contains("ReadBank") || roles.Contains("ReadUnitLocation") || roles.Contains("ReadWarehouseLocation") || roles.Contains("ReadLeadTime") || roles.Contains("ReadInitialStock"))
                                 {                                
@@ -431,7 +431,7 @@
         </div>
         @if (IsSectionDefined("Scripts"))
         {
-            @RenderSection("Scripts", required: true)
+            @RenderSection("Scripts", required: true)            
         }
 
         @*<!-- Control Sidebar -->
@@ -448,6 +448,23 @@
             </div>
         </footer>
     </div>
+
+    <script>
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                if (window.jwtToken) {
+                    xhr.setRequestHeader('Authorization', `Bearer ${window.jwtToken}`);
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 401) {
+                    alert('Session expired or unauthorized. Redirecting to login...');
+                    localStorage.removeItem('jwtToken');
+                    window.location.href = '/Account/Login';
+                }
+            },
+        });
+    </script>
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->
