@@ -431,7 +431,7 @@
         </div>
         @if (IsSectionDefined("Scripts"))
         {
-            @RenderSection("Scripts", required: true)
+            @RenderSection("Scripts", required: true)            
         }
 
         @*<!-- Control Sidebar -->
@@ -448,6 +448,23 @@
             </div>
         </footer>
     </div>
+
+    <script>
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                if (window.jwtToken) {
+                    xhr.setRequestHeader('Authorization', `Bearer ${window.jwtToken}`);
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 401) {
+                    alert('Session expired or unauthorized. Redirecting to login...');
+                    localStorage.removeItem('jwtToken');
+                    window.location.href = '/Account/Login';
+                }
+            },
+        });
+    </script>
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->

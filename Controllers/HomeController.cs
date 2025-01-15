@@ -27,6 +27,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 using System.Web.WebPages;
+using System.Web.Mvc;
+using Controller = Microsoft.AspNetCore.Mvc.Controller;
+using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
+using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
 
 namespace PurchasingSystemStaging.Controllers
 {
