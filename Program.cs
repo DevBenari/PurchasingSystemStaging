@@ -110,7 +110,7 @@ builder.Services.AddAuthentication("CookieAuth")
 builder.Services.AddMemoryCache();
 
 AddScope();
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
+//builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 
 #region Areas Master Data

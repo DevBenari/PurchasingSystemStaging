@@ -73,7 +73,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link" role="button">
-                                <p>Halo, @(User.FindFirst("UserNamaDepan").Value)</p>
+                                <p>Halo, @(User.Identity.Name)</p>
                             </a>
                         </li>
 
@@ -448,23 +448,6 @@
             </div>
         </footer>
     </div>
-
-    <script>
-        $.ajaxSetup({
-            beforeSend: function (xhr) {
-                if (window.jwtToken) {
-                    xhr.setRequestHeader('Authorization', `Bearer ${window.jwtToken}`);
-                }
-            },
-            error: function (xhr) {
-                if (xhr.status === 401) {
-                    alert('Session expired or unauthorized. Redirecting to login...');
-                    localStorage.removeItem('jwtToken');
-                    window.location.href = '/Account/Login';
-                }
-            },
-        });
-    </script>
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->

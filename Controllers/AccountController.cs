@@ -126,13 +126,16 @@ namespace PurchasingSystemStaging.Controllers
                     {
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
-                        {                                                      
+                        {
                             // Create claims
                             var claims = new List<Claim>
                             {
-                                //new Claim(ClaimTypes.NameIdentifier, user.Id),
-                                new Claim(ClaimTypes.Name, user.Email)
-                            };                          
+                                new Claim(ClaimTypes.Email, user.Email),
+                                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                                new Claim(ClaimTypes.Name, user.UserName),
+                                new Claim("KodeUser", user.KodeUser ?? string.Empty),
+                                new Claim("NamaUser", user.NamaUser ?? string.Empty)
+                            };
 
                             //Session akan di pertahankan jika browser di tutup tanpa di signout,
                             //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
@@ -142,8 +145,13 @@ namespace PurchasingSystemStaging.Controllers
                                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Masa berlaku cookie
                             };
 
+                            // Gunakan `SignInAsync` langsung untuk klaim minimal
+                            var identity = new ClaimsIdentity(claims, "Identity.Application");
+                            var principal = new ClaimsPrincipal(identity);
+                            await HttpContext.SignInAsync("Identity.Application", principal, authProperties);
+
                             //await HttpContext.SignInAsync("CookieAuth", principal, authProperties);
-                            await _signInManager.SignInWithClaimsAsync(user, authProperties, claims);
+                            //await _signInManager.SignInWithClaimsAsync(user, authProperties, claims);
 
                             // Tandai pengguna sebagai online
                             user.IsOnline = true;
