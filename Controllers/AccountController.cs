@@ -168,7 +168,7 @@ namespace PurchasingSystemStaging.Controllers
                             HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
 
                             // Simpan session dan role di server-side cache
-                            _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30), roleNames);
+                            _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30));
 
                             return RedirectToAction("Index", "Home");
                         }

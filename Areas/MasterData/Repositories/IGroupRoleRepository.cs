@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.Administrator.Models;
+using PurchasingSystemStaging.Areas.MasterData.Models;
 using PurchasingSystemStaging.Data;
 
-namespace PurchasingSystemStaging.Areas.Administrator.Repositories
+namespace PurchasingSystemStaging.Areas.MasterData.Repositories
 {
     public class IGroupRoleRepository
     {
