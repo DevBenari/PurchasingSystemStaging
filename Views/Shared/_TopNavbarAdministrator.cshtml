@@ -20,46 +20,36 @@
                         @if (User.Identity.Name == "superadmin@admin.com")
                         {
                             <li class="nav-item">
-                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Dashboard", new { area = "Administrator" })">
+                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Dashboard", new { area = "MasterData" })">
                                     Dashboard
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "RoleUser", new { area = "Administrator" })">
-                                    Role User
+                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "GroupRole", new { area = "MasterData" })">
+                                    Role
                                 </div>
-                            </li>
+                            </li>                            
                             <li class="nav-item">
-                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Api", new { area = "Administrator" })">
+                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Api", new { area = "MasterData" })">
                                     Get Data API
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "VarsionSystem", new { area = "Administrator" })">
-                                    Version System
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "LoggingSystem", new { area = "Administrator" })">
-                                    Logging System
-                                </div>
-                            </li>
                         }
-                        @*else
+                        else
                         {
                             @if (!string.IsNullOrEmpty(listRole))
                             {
                                 var roles = listRole.Split(',');
                                 <li class="nav-item">
-                                    <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Dashboard", new { area = "Administrator" })">
+                                    <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Dashboard", new { area = "MasterData" })">
                                         Dashboard
                                     </div>
                                 </li>
 
-                                @if (roles.Contains("ReadRoleUser"))
+                                @if (roles.Contains("ReadGroupRole"))
                                 {
                                     <li class="nav-item">
-                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "RoleUser", new { area = "Administrator" })">
+                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "GroupRole", new { area = "MasterData" })">
                                             Role
                                         </div>
                                     </li>
@@ -68,31 +58,13 @@
                                 @if (roles.Contains("ReadApi"))
                                 {
                                     <li class="nav-item">
-                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Api", new { area = "Administrator" })">
+                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Api", new { area = "MasterData" })">
                                             Get Data API
                                         </div>
                                     </li>
                                 }
-
-                                @if (roles.Contains("ReadVersionSystem"))
-                                {
-                                    <li class="nav-item">
-                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "VersionSystem", new { area = "Administrator" })">
-                                            Version System
-                                        </div>
-                                    </li>
-                                }
-
-                                @if (roles.Contains("ReadLoggingSystem"))
-                                {
-                                    <li class="nav-item">
-                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "LoggingSystem", new { area = "Administrator" })">
-                                            Logging System
-                                        </div>
-                                    </li>
-                                }
                             }
-                        }*@
+                        }
                     </ul>
                 </div>
             </div>

@@ -141,9 +141,39 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 .Where(p => p.PurchaseOrderDetailId == Id).FirstOrDefault();
             return new JsonResult(podetail);
         }
-        
+
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                ViewBag.Active = "QtyDifference";
+                // Format tanggal tanpa waktu
+                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:Warehouse/QtyDifference/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+
         [HttpGet]
-        [Authorize(Roles = "ReadQtyDifference")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "QtyDifference";
@@ -189,9 +219,35 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
             return View(model);
         }
-        
+
+        public IActionResult RedirectToCreate()
+        {
+            try
+            {
+                ViewBag.Active = "QtyDifference";
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Create:Warehouse/QtyDifference/CreateQtyDifference";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+
         [HttpGet]
-        [Authorize(Roles = "CreateQtyDifference")]
         public async Task<IActionResult> CreateQtyDifference(string poList)
         {
             ViewBag.Active = "QtyDifference";
@@ -239,7 +295,6 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "CreateQtyDifference")]
         public async Task<IActionResult> CreateQtyDifference(QtyDifference model)
         {
             ViewBag.Active = "QtyDifference";            
@@ -366,9 +421,35 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
                 return View(model);
             }
         }
-        
+
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            try
+            {
+                ViewBag.Active = "QtyDifference";
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Detail:Warehouse/QtyDifference/DetailQtyDifference/{Id}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+
         [HttpGet]
-        [Authorize(Roles = "UpdateQtyDifference")]
         public async Task<IActionResult> DetailQtyDifference(Guid Id)
         {
             ViewBag.Active = "QtyDifference";
@@ -411,7 +492,6 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "PreviewQtyDifference")]
         public async Task<IActionResult> PreviewQtyDifference(Guid Id)
         {
             var qtyDifference = await _qtyDifferenceRepository.GetQtyDifferenceById(Id);
@@ -468,7 +548,6 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             return File(stream, "application/pdf");
         }
 
-        [Authorize(Roles = "DownloadQtyDifference")]
         public async Task<IActionResult> DownloadQtyDifference(Guid Id)
         {
             var qtyDifference = await _qtyDifferenceRepository.GetQtyDifferenceById(Id);

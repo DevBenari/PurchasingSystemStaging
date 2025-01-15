@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.DataProtection;
 using PurchasingSystemStaging.Repositories;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 
 namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 {
@@ -55,7 +54,36 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [Authorize(Roles = "ReadCategory")]
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                // Format tanggal tanpa waktu
+                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:MasterData/Category/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+        
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "MasterData";
@@ -99,7 +127,32 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "CreateCategory")]
+        public IActionResult RedirectToCreate()
+        {
+            try
+            {
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Create:MasterData/Category/CreateCategory";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+        
         public async Task<ViewResult> CreateCategory()
         {
             ViewBag.Active = "MasterData";
@@ -130,7 +183,6 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "CreateCategory")]
         public async Task<IActionResult> CreateCategory(CategoryViewModel vm)
         {
             var dateNow = DateTimeOffset.Now;
@@ -198,7 +250,32 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }
         }
 
-        [Authorize(Roles = "UpdateCategory")]
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            try
+            {
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Detail:MasterData/Category/DetailCategory/{Id}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+        
         public async Task<IActionResult> DetailCategory(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -221,7 +298,6 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "UpdateCategory")]
         public async Task<IActionResult> DetailCategory(CategoryViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -266,7 +342,32 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }            
         }
 
-        [Authorize(Roles = "DeleteCategory")]
+        public IActionResult RedirectToDelete(Guid Id)
+        {
+            try
+            {
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Delete:MasterData/Category/DeleteCategory/{Id}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+        
         public async Task<IActionResult> DeleteCategory(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -287,7 +388,6 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "DeleteCategory")]
         public async Task<IActionResult> DeleteCategory(CategoryViewModel vm)
         {
             //Cek Relasi Principal dengan Produk

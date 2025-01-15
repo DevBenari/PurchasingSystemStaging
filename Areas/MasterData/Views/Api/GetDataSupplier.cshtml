@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Get Data API";
-    Layout = "~/Views/Shared/_TopNavbarAdministrator.cshtml";
+    Layout = "~/Views/Shared/_TopNavbarMasterData.cshtml";
 }
 
 <section class="content">
@@ -9,12 +9,12 @@
             <div class="card-header bg-cyan">
                 <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
             </div>
-            <form id="apiForm" action="@Url.Action("CreateObat", "Api")" method="get">
+            <form id="apiForm" action="@Url.Action("CreateSupplier", "Api")" method="get">
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-sm-6">
                             <label>Url API Code:</label>
-                            <input type="text" class="form-control" name="apiCode" placeholder="Api Code" value="https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_data_obat&return_type=json">
+                            <input type="text" class="form-control" name="apiCode" placeholder="Api Code" value="https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_supplier&return_type=json">
                         </div>
                     </div>
                 </div>
