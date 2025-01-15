@@ -24,6 +24,11 @@
                                     Dashboard
                                 </div>
                             </li>
+                            <li class="nav-item">
+                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "GroupRole", new { area = "MasterData" })">
+                                    Role
+                                </div>
+                            </li>
                             <li class="nav-item dropdown">
                                 <button class="btn btn-orange dropdown-toggle" style="color:#ffffff" data-bs-toggle="dropdown" aria-expanded="false">Users</button>
                                 <ul class="dropdown-menu dropdown-menu-dark">
@@ -76,6 +81,11 @@
                                     Calculate Min-Max Stock
                                 </div>
                             </li>
+                            <li class="nav-item">
+                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Api", new { area = "MasterData" })">
+                                    Get Data API
+                                </div>
+                            </li>
                         }
                         else
                         {
@@ -87,6 +97,14 @@
                                         Dashboard
                                     </div>
                                 </li>
+                                @if (roles.Contains("ReadGroupRole"))
+                                {
+                                    <li class="nav-item">
+                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "GroupRole", new { area = "MasterData" })">
+                                            Role
+                                        </div>
+                                    </li>
+                                }
                                 @if (roles.Any(role => role == "ReadUserActive" || role == "ReadPosition" || role == "ReadDepartment"))
                                 {
                                     <li class="nav-item dropdown">
@@ -182,6 +200,14 @@
                                     <li class="nav-item">
                                         <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "InitialStock", new { area = "MasterData" })">
                                             Calculate Min-Max Stock
+                                        </div>
+                                    </li>
+                                }
+                                if (roles.Contains("ReadApi"))
+                                {
+                                    <li class="nav-item">
+                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Api", new { area = "MasterData" })">
+                                            Get Data API
                                         </div>
                                     </li>
                                 }

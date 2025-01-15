@@ -158,10 +158,38 @@ namespace PurchasingSystemStaging.Areas.Transaction.Controllers
             };
 
             return Ok(response);
-        }       
+        }
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                // Format tanggal tanpa waktu
+                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:Transaction/UnitRequest/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
 
         [HttpGet]
-        [Authorize(Roles = "ReadUnitRequest")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "UnitRequest";
@@ -207,9 +235,34 @@ namespace PurchasingSystemStaging.Areas.Transaction.Controllers
 
             return View(model);
         }
-        
+
+        public IActionResult RedirectToCreate()
+        {
+            try
+            {
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Create:Transaction/UnitRequest/CreateUnitRequest";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+
         [HttpGet]
-        [Authorize(Roles = "CreateUnitRequest")]
         public async Task<IActionResult> CreateUnitRequest()
         {
             ViewBag.Active = "UnitRequest";
@@ -257,7 +310,6 @@ namespace PurchasingSystemStaging.Areas.Transaction.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "CreateUnitRequest")]
         public async Task<IActionResult> CreateUnitRequest(UnitRequest model)
         {
             ViewBag.Active = "UnitRequest";
@@ -364,9 +416,34 @@ namespace PurchasingSystemStaging.Areas.Transaction.Controllers
                 return View(model);
             }
         }
-        
+
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            try
+            {
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Detail:Transaction/UnitRequest/DetailUnitRequest/{Id}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+
         [HttpGet]
-        [Authorize(Roles = "UpdateUnitRequest")]
         public async Task<IActionResult> DetailUnitRequest(Guid Id)
         {
             ViewBag.Active = "UnitRequest";
@@ -422,7 +499,6 @@ namespace PurchasingSystemStaging.Areas.Transaction.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "UpdateUnitRequest")]
         public async Task<IActionResult> DetailUnitRequest(UnitRequest model)
         {
             ViewBag.Active = "UnitRequest";
@@ -513,7 +589,6 @@ namespace PurchasingSystemStaging.Areas.Transaction.Controllers
             return Json(new { redirectToUrl = Url.Action("Index", "UnitRequest") });
         }
 
-        [Authorize(Roles = "PreviewUnitRequest")]
         public async Task<IActionResult> PreviewUnitRequest(Guid Id)
         {
             var unitRequest = await _unitRequestRepository.GetUnitRequestById(Id);
@@ -574,7 +649,6 @@ namespace PurchasingSystemStaging.Areas.Transaction.Controllers
             return File(stream, "application/pdf");
         }
 
-        [Authorize(Roles = "DownloadUnitRequest")]
         public async Task<IActionResult> DownloadUnitRequest(Guid Id)
         {
             var unitRequest = await _unitRequestRepository.GetUnitRequestById(Id);

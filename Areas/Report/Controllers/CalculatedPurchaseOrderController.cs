@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PurchasingSystemStaging.Areas.MasterData.Repositories;
@@ -45,7 +44,36 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             _urlMappingService = urlMappingService;
         }
 
-        [Authorize(Roles = "ReadCalculatedPurchaseOrder")]
+        public IActionResult RedirectToIndex(int? month, int? year, string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 50)
+        {
+            try
+            {
+                // Format tanggal tanpa waktu
+                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:Report/CalculatedPurchaseOrder/Index?month={month}&year={year}&filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string encryptedPath = _protector.Protect(originalPath);
+                
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }
+        }
+
         public async Task<IActionResult> Index(int? month, int? year, string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 50)
         {
             ViewBag.Active = "Report";
@@ -134,7 +162,35 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "ClosedPurchaseOrder")]
+        public IActionResult RedirectToClosed(int? month, int? year)
+        {
+            try
+            {
+                // Bangun originalPath
+                string originalPath = $"Page:Report/CalculatedPurchaseOrder/ClosedPurchaseOrder?month={month}&year={year}";                
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Json(new { success = true, encryptedUrl = "/" + guidLikeCode });
+            }
+            catch (Exception ex)
+            {
+                // Log error jika diperlukan
+                Console.WriteLine($"Error: {ex.Message}");
+
+                // Kembalikan JSON untuk fallback
+                return Json(new { success = false, message = "Failed to encrypt URL." });
+            }
+        }
+
         public async Task<IActionResult> ClosedPurchaseOrder(int? month, int? year)
         {
             ViewBag.Active = "Report";

@@ -56,7 +56,37 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [Authorize(Roles = "ReadEmail")]
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                ViewBag.Active = "PurchaseOrder";
+                // Format tanggal tanpa waktu
+                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:Order/Email/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "PurchaseOrder";
@@ -92,10 +122,36 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             };
 
             return View(model);
-        }        
+        }
+
+        public IActionResult RedirectToCreate()
+        {
+            try
+            {
+                ViewBag.Active = "PurchaseOrder";
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Create:Order/Email/CreateEmail";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
 
         [HttpGet]
-        [Authorize(Roles = "CreateEmail")]
         public async Task<ViewResult> CreateEmail()
         {
             ViewBag.Active = "PurchaseOrder";
@@ -104,7 +160,6 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "CreateEmail")]
         public async Task<IActionResult> CreateEmail(EmailViewModel vm)
         {
             ViewBag.Active = "PurchaseOrder";

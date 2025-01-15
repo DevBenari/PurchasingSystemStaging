@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -88,10 +87,40 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
             _hostingEnvironment = hostingEnvironment;
-        }        
+        }
+
+        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                ViewBag.Active = "ApprovalQtyDifference";
+                // Format tanggal tanpa waktu
+                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
+                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
+
+                // Bangun originalPath dengan format tanggal ISO 8601
+                string originalPath = $"Page:Order/ApprovalQtyDifference/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }           
+        }
 
         [HttpGet]
-        [Authorize(Roles = "ReadApprovalQtyDifference")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "ApprovalQtyDifference";
@@ -197,9 +226,35 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             }
             return View();
         }
-        
+
+        public IActionResult RedirectToDetail(Guid Id)
+        {
+            try
+            {
+                ViewBag.Active = "ApprovalQtyDifference";
+                // Enkripsi path URL untuk "Index"
+                string originalPath = $"Detail:Order/ApprovalQtyDifference/DetailApprovalQtyDifference/{Id}";
+                string encryptedPath = _protector.Protect(originalPath);
+
+                // Hash GUID-like code (SHA256 truncated to 36 characters)
+                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Substring(0, 36);
+
+                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
+                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
+
+                return Redirect("/" + guidLikeCode);
+            }
+            catch
+            {
+                // Jika enkripsi gagal, kembalikan view
+                return Redirect(Request.Path);
+            }            
+        }
+
         [HttpGet]
-        [Authorize(Roles = "UpdateApprovalQtyDifference")]
         public async Task<ViewResult> DetailApprovalQtyDifference(Guid Id)
         {
             ViewBag.Active = "ApprovalQtyDifference";
@@ -264,7 +319,6 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "UpdateApprovalQtyDifference")]
         public async Task<IActionResult> DetailApprovalQtyDifference(ApprovalQtyDifferenceViewModel viewModel)
         {
             ViewBag.Active = "ApprovalQtyDifference";
