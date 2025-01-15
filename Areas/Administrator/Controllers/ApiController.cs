@@ -5,11 +5,11 @@ using Microsoft.CodeAnalysis.Elfie.Model.Map;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Data;
+using PurchasingSystem.Repositories;
 using System.Data;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -17,7 +17,7 @@ using System.Security.Policy;
 using System.Text;
 using static System.Net.WebRequestMethods;
 
-namespace PurchasingSystemStaging.Areas.Administrator.Controllers
+namespace PurchasingSystem.Areas.Administrator.Controllers
 {
     [Area("Administrator")]
     [Route("Administrator/[Controller]/[Action]")]

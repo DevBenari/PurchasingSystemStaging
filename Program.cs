@@ -11,18 +11,17 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using PurchasingSystemStaging.Areas.Administrator.Models;
-using PurchasingSystemStaging.Areas.Administrator.Repositories;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Areas.Report.Repositories;
-using PurchasingSystemStaging.Areas.Transaction.Repositories;
-using PurchasingSystemStaging.Areas.Warehouse.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Helpers;
-using PurchasingSystemStaging.Hubs;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.Administrator.Models;
+using PurchasingSystem.Areas.Administrator.Repositories;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Areas.Report.Repositories;
+using PurchasingSystem.Areas.Transaction.Repositories;
+using PurchasingSystem.Areas.Warehouse.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Hubs;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -82,76 +81,57 @@ builder.Services.AddSession(options =>
 });
 
 // Tambahkan layanan Data Protection
-var dataProtectionProvider = DataProtectionProvider.Create("PurchasingSystemStaging");
+var dataProtectionProvider = DataProtectionProvider.Create("PurchasingSystem");
 var dataProtector = dataProtectionProvider.CreateProtector("Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationMiddleware", "Cookies", "v2");
 
 //Script Auto Show Login Account First Time
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication("CookieAuth")
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-
-    options.Events = new JwtBearerEvents
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+    })
+    .AddCookie("CookieAuth", options =>
     {
-        OnChallenge = context =>
-        {
-            context.HandleResponse(); // Prevent default behavior
-            context.Response.Redirect("/Account/Login");
-            return Task.CompletedTask;
-        },
-        OnForbidden = context =>
-        {
-            context.Response.Redirect("/Account/AccessDenied");
-            return Task.CompletedTask;
-        }
-    };
-});
+        options.TicketDataFormat = new CustomCompressedTicketDataFormat(dataProtector);
+        options.Cookie.Name = "AuthCookie";
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied"; // Path untuk akses ditolak
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
 
-//builder.Services.AddAuthentication("CookieAuth")
-//    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-//    {
-//        options.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidateIssuer = true,
-//            ValidateAudience = true,
-//            ValidateLifetime = true,
-//            ValidateIssuerSigningKey = true,
-//            ValidIssuer = jwtSettings["Issuer"],
-//            ValidAudience = jwtSettings["Audience"],
-//            IssuerSigningKey = new SymmetricSecurityKey(key)
-//        };
-//    })
-//    .AddCookie("CookieAuth", options =>
-//    {
-//        options.TicketDataFormat = new CustomCompressedTicketDataFormat(dataProtector);
-//        options.Cookie.Name = "AuthCookie";
-//        options.LoginPath = "/Account/Login";
-//        options.LogoutPath = "/Account/Logout";
-//        options.AccessDeniedPath = "/Account/AccessDenied"; // Path untuk akses ditolak
-//        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-//        options.SlidingExpiration = true;
-//        // Tambahkan ini jika ingin menggunakan chunking
-//        options.CookieManager = new ChunkingCookieManager { };
-//    });
+        //Event untuk membuat pengguna yang sedang aktif di paksa signout saat deployment selesai
+        options.Events.OnValidatePrincipal = async context =>
+        {
+            // Logika validasi
+            if (context.Principal == null || !context.Principal.Identity.IsAuthenticated)
+            {
+                // Jika principal tidak valid, redirect ke login
+                context.RejectPrincipal();
+                await context.HttpContext.SignOutAsync("CookieAuth");
+                context.HttpContext.Response.Redirect("/Account/Login");
+            }
 
-builder.Services.AddDistributedMemoryCache();
+            await Task.CompletedTask;
+        };
+
+        // Tambahkan ini jika ingin menggunakan chunking
+        options.CookieManager = new ChunkingCookieManager { };
+    });
+
 builder.Services.AddMemoryCache();
 
 AddScope();
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
+//builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaims>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 
 #region Areas Master Data
@@ -252,7 +232,6 @@ app.UseEndpoints(endpoints =>
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 });
 
-
 app.Run();
 
 void AddScope()
@@ -341,9 +320,9 @@ static async Task SeedRolesAndSuperAdmin(WebApplication app, UserManager<Applica
                 }
             }
         }
-    }    
+    }
 
-        // Cek user superadmin@admin.com
+    // Cek user superadmin@admin.com
     var superAdminEmail = "superadmin@admin.com";
     var superAdminUser = await userManager.FindByEmailAsync(superAdminEmail);
 

@@ -8,18 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Areas.Transaction.Models;
-using PurchasingSystemStaging.Areas.Transaction.Repositories;
-using PurchasingSystemStaging.Areas.Transaction.ViewModels;
-using PurchasingSystemStaging.Areas.Warehouse.Models;
-using PurchasingSystemStaging.Areas.Warehouse.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Areas.Transaction.Models;
+using PurchasingSystem.Areas.Transaction.Repositories;
+using PurchasingSystem.Areas.Transaction.ViewModels;
+using PurchasingSystem.Areas.Warehouse.Models;
+using PurchasingSystem.Areas.Warehouse.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using QRCoder;
 using System.Drawing;
 using System.IO;
@@ -27,7 +27,7 @@ using System.Security.Cryptography;
 using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
-namespace PurchasingSystemStaging.Areas.Transaction.Controllers
+namespace PurchasingSystem.Areas.Transaction.Controllers
 {
     [Area("Transaction")]
     [Route("Transaction/[Controller]/[Action]")]

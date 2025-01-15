@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.ViewModels;
+using PurchasingSystem.Models;
+using PurchasingSystem.ViewModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace PurchasingSystemStaging.Controllers
+namespace PurchasingSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

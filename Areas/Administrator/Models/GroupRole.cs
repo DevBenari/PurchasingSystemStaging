@@ -1,8 +1,8 @@
-﻿using PurchasingSystemStaging.Repositories;
+﻿using PurchasingSystem.Repositories;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace PurchasingSystemStaging.Areas.Administrator.Models
+namespace PurchasingSystem.Areas.Administrator.Models
 {
     [Table("AspNetGroupRole", Schema = "dbo")]
     public class GroupRole : UserActivity

@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Repositories;
 
 #nullable disable
 
-namespace PurchasingSystemStaging.Migrations
+namespace PurchasingSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240725165847_initializeTermOfPayment")]
@@ -158,7 +158,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Category", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Category", b =>
                 {
                     b.Property<Guid>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -204,7 +204,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstCategory", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Discount", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Discount", b =>
                 {
                     b.Property<Guid>("DiscountId")
                         .ValueGeneratedOnAdd()
@@ -249,7 +249,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstDiscount", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Measurement", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Measurement", b =>
                 {
                     b.Property<Guid>("MeasurementId")
                         .ValueGeneratedOnAdd()
@@ -295,7 +295,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstMeasurement", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Principal", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Principal", b =>
                 {
                     b.Property<Guid>("PrincipalId")
                         .ValueGeneratedOnAdd()
@@ -353,7 +353,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstPrincipal", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.TermOfPayment", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.TermOfPayment", b =>
                 {
                     b.Property<Guid>("TermOfPaymentId")
                         .ValueGeneratedOnAdd()
@@ -399,7 +399,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstTermOfPayment", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.UserActive", b =>
                 {
                     b.Property<Guid>("UserActiveId")
                         .ValueGeneratedOnAdd()
@@ -472,7 +472,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstUserActive", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Models.ApplicationUser", b =>
+            modelBuilder.Entity("PurchasingSystem.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -558,7 +558,7 @@ namespace PurchasingSystemStaging.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", null)
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -567,7 +567,7 @@ namespace PurchasingSystemStaging.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", null)
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -582,7 +582,7 @@ namespace PurchasingSystemStaging.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", null)
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -591,7 +591,7 @@ namespace PurchasingSystemStaging.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", null)
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)

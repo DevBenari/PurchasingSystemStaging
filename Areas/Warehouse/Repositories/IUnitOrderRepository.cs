@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Areas.Warehouse.Models;
-using PurchasingSystemStaging.Data;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Areas.Warehouse.Models;
+using PurchasingSystem.Data;
 
-namespace PurchasingSystemStaging.Areas.Warehouse.Repositories
+namespace PurchasingSystem.Areas.Warehouse.Repositories
 {
     public class IUnitOrderRepository
     {

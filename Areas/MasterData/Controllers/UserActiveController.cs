@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.MasterData.ViewModels;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.MasterData.ViewModels;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
-namespace PurchasingSystemStaging.Areas.MasterData.Controllers
+namespace PurchasingSystem.Areas.MasterData.Controllers
 {
     [Area("MasterData")]
     [Route("MasterData/[Controller]/[Action]")]
@@ -337,7 +337,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             {
                 var user = await _userActiveRepository.GetUserByIdNoTracking(viewModel.UserActiveId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var userLogin = await _userManager.FindByNameAsync(viewModel.Email);
+                var userLogin = await _userManager.FindByEmailAsync(viewModel.Email);
                 var checkDuplicate = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).ToList();
 
                 if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
@@ -479,7 +479,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             // Mengambil Role yang terkait dengan user
             var userRoles = await _signInManager.UserManager.GetRolesAsync(userLogin);
 
-            if (userRoles == null)
+            if (userRoles.Count == 0)
             {
                 if (userWarehouse == null)
                 {

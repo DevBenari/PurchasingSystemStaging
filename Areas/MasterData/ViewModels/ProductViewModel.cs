@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using PurchasingSystemStaging.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PurchasingSystemStaging.Areas.MasterData.ViewModels
+namespace PurchasingSystem.Areas.MasterData.ViewModels
 {
     public class ProductViewModel
     {

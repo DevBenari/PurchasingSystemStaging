@@ -4,14 +4,14 @@
 }
 
 @using Microsoft.AspNetCore.Identity;
-@using PurchasingSystemStaging.Areas.Order.Models;
+@using PurchasingSystem.Areas.Order.Models;
 
 @{
     var listRole = Context.Session.GetString("ListRole");
     @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
 
 }
-@model PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder
+@model PurchasingSystem.Areas.Order.Models.PurchaseOrder
 
 <!-- Main content -->
 <section class="content">

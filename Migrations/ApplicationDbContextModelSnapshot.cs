@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PurchasingSystemStaging.Data;
+using PurchasingSystem.Data;
 
 #nullable disable
 
-namespace PurchasingSystemStaging.Migrations
+namespace PurchasingSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -155,7 +155,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Bank", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Bank", b =>
                 {
                     b.Property<Guid>("BankId")
                         .ValueGeneratedOnAdd()
@@ -209,7 +209,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstBank", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Category", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Category", b =>
                 {
                     b.Property<Guid>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -255,7 +255,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstCategory", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Department", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Department", b =>
                 {
                     b.Property<Guid>("DepartmentId")
                         .ValueGeneratedOnAdd()
@@ -301,7 +301,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstDepartment", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Discount", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Discount", b =>
                 {
                     b.Property<Guid>("DiscountId")
                         .ValueGeneratedOnAdd()
@@ -346,7 +346,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstDiscount", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.GroupRole", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.GroupRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -389,7 +389,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("AspNetGroupRole", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.InitialStock", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.InitialStock", b =>
                 {
                     b.Property<Guid>("InitialStockId")
                         .ValueGeneratedOnAdd()
@@ -459,7 +459,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstInitialStock", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.LeadTime", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.LeadTime", b =>
                 {
                     b.Property<Guid>("LeadTimeId")
                         .ValueGeneratedOnAdd()
@@ -501,7 +501,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstLeadTime", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Measurement", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Measurement", b =>
                 {
                     b.Property<Guid>("MeasurementId")
                         .ValueGeneratedOnAdd()
@@ -547,7 +547,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstMeasurement", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Position", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Position", b =>
                 {
                     b.Property<Guid>("PositionId")
                         .ValueGeneratedOnAdd()
@@ -595,7 +595,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstPosition", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Product", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Product", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -699,7 +699,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstProduct", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Supplier", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Supplier", b =>
                 {
                     b.Property<Guid>("SupplierId")
                         .ValueGeneratedOnAdd()
@@ -768,7 +768,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstSupplier", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.TermOfPayment", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.TermOfPayment", b =>
                 {
                     b.Property<Guid>("TermOfPaymentId")
                         .ValueGeneratedOnAdd()
@@ -814,7 +814,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstTermOfPayment", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.UnitLocation", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.UnitLocation", b =>
                 {
                     b.Property<Guid>("UnitLocationId")
                         .ValueGeneratedOnAdd()
@@ -865,7 +865,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstUnitLocation", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.UserActive", b =>
                 {
                     b.Property<Guid>("UserActiveId")
                         .ValueGeneratedOnAdd()
@@ -951,7 +951,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstUserActive", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.WarehouseLocation", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.WarehouseLocation", b =>
                 {
                     b.Property<Guid>("WarehouseLocationId")
                         .ValueGeneratedOnAdd()
@@ -1002,7 +1002,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("MstWarehouseLocation", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.ApprovalPurchaseRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.ApprovalPurchaseRequest", b =>
                 {
                     b.Property<Guid>("ApprovalId")
                         .ValueGeneratedOnAdd()
@@ -1089,7 +1089,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("OrdApprovalPurchaseRequest", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.ApprovalQtyDifference", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.ApprovalQtyDifference", b =>
                 {
                     b.Property<Guid>("ApprovalQtyDifferenceId")
                         .ValueGeneratedOnAdd()
@@ -1176,7 +1176,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("OrdApprovalQtyDifference", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.Email", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.Email", b =>
                 {
                     b.Property<Guid?>("EmailId")
                         .ValueGeneratedOnAdd()
@@ -1230,7 +1230,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("OrdPurchaseEmail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseOrder", b =>
                 {
                     b.Property<Guid>("PurchaseOrderId")
                         .ValueGeneratedOnAdd()
@@ -1329,7 +1329,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("OrdPurchaseOrder", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrderDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseOrderDetail", b =>
                 {
                     b.Property<Guid>("PurchaseOrderDetailId")
                         .ValueGeneratedOnAdd()
@@ -1407,7 +1407,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("OrdPurchaseOrderDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseRequest", b =>
                 {
                     b.Property<Guid>("PurchaseRequestId")
                         .ValueGeneratedOnAdd()
@@ -1542,7 +1542,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("OrdPurchaseRequest", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequestDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseRequestDetail", b =>
                 {
                     b.Property<Guid>("PurchaseRequestDetailId")
                         .ValueGeneratedOnAdd()
@@ -1610,7 +1610,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("OrdPurchaseRequestDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Report.Models.ClosingPurchaseOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Report.Models.ClosingPurchaseOrder", b =>
                 {
                     b.Property<Guid>("ClosingPurchaseOrderId")
                         .ValueGeneratedOnAdd()
@@ -1670,7 +1670,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("RptClosingPurchaseOrder", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Report.Models.ClosingPurchaseOrderDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Report.Models.ClosingPurchaseOrderDetail", b =>
                 {
                     b.Property<Guid>("ClosingPurchaseOrderDetailId")
                         .ValueGeneratedOnAdd()
@@ -1732,7 +1732,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("RptClosingPurchaseOrderDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Transaction.Models.UnitRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Transaction.Models.UnitRequest", b =>
                 {
                     b.Property<Guid>("UnitRequestId")
                         .ValueGeneratedOnAdd()
@@ -1818,7 +1818,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("TscUnitRequest", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Transaction.Models.UnitRequestDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Transaction.Models.UnitRequestDetail", b =>
                 {
                     b.Property<Guid>("UnitRequestDetailId")
                         .ValueGeneratedOnAdd()
@@ -1880,7 +1880,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("TscUnitRequestDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ApprovalProductReturn", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ApprovalProductReturn", b =>
                 {
                     b.Property<Guid>("ApprovalProductReturnId")
                         .ValueGeneratedOnAdd()
@@ -1958,7 +1958,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhApprovalProductReturn", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ApprovalUnitRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ApprovalUnitRequest", b =>
                 {
                     b.Property<Guid>("ApprovalUnitRequestId")
                         .ValueGeneratedOnAdd()
@@ -2046,7 +2046,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhApprovalUnitRequest", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ProductReturn", b =>
                 {
                     b.Property<Guid>("ProductReturnId")
                         .ValueGeneratedOnAdd()
@@ -2172,7 +2172,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhProductReturn", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturnDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ProductReturnDetail", b =>
                 {
                     b.Property<Guid>("ProductReturnDetailId")
                         .ValueGeneratedOnAdd()
@@ -2251,7 +2251,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhProductReturnDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.QtyDifference", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.QtyDifference", b =>
                 {
                     b.Property<Guid>("QtyDifferenceId")
                         .ValueGeneratedOnAdd()
@@ -2354,7 +2354,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhQtyDifference", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.QtyDifferenceDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.QtyDifferenceDetail", b =>
                 {
                     b.Property<Guid>("QtyDifferenceDetailId")
                         .ValueGeneratedOnAdd()
@@ -2422,7 +2422,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhQtyDifferenceDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ReceiveOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ReceiveOrder", b =>
                 {
                     b.Property<Guid>("ReceiveOrderId")
                         .ValueGeneratedOnAdd()
@@ -2503,7 +2503,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhReceiveOrder", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ReceiveOrderDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ReceiveOrderDetail", b =>
                 {
                     b.Property<Guid>("ReceivedOrderDetailId")
                         .ValueGeneratedOnAdd()
@@ -2565,7 +2565,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhReceiveOrderDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.UnitOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.UnitOrder", b =>
                 {
                     b.Property<Guid>("UnitOrderId")
                         .ValueGeneratedOnAdd()
@@ -2647,7 +2647,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhUnitOrder", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.UnitOrderDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.UnitOrderDetail", b =>
                 {
                     b.Property<Guid>("UnitOrderDetailId")
                         .ValueGeneratedOnAdd()
@@ -2712,7 +2712,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhUnitOrderDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.WarehouseTransfer", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.WarehouseTransfer", b =>
                 {
                     b.Property<Guid>("WarehouseTransferId")
                         .ValueGeneratedOnAdd()
@@ -2791,7 +2791,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhWarehouseTransfer", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.WarehouseTransferDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.WarehouseTransferDetail", b =>
                 {
                     b.Property<Guid>("WarehouseTransferDetailId")
                         .ValueGeneratedOnAdd()
@@ -2856,7 +2856,7 @@ namespace PurchasingSystemStaging.Migrations
                     b.ToTable("WrhWarehouseTransferDetail", "dbo");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Models.ApplicationUser", b =>
+            modelBuilder.Entity("PurchasingSystem.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -2951,7 +2951,7 @@ namespace PurchasingSystemStaging.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", null)
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2960,7 +2960,7 @@ namespace PurchasingSystemStaging.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", null)
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2975,7 +2975,7 @@ namespace PurchasingSystemStaging.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", null)
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2984,26 +2984,26 @@ namespace PurchasingSystemStaging.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", null)
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.InitialStock", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.InitialStock", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.LeadTime", "LeadTime")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.LeadTime", "LeadTime")
                         .WithMany()
                         .HasForeignKey("LeadTimeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Product", "Product")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Supplier", "Supplier")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3015,9 +3015,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("Supplier");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Position", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Position", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department")
                         .WithMany("Positions")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3025,29 +3025,29 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Product", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Product", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Category", "Category")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Discount", "Discount")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Discount", "Discount")
                         .WithMany()
                         .HasForeignKey("DiscountId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Measurement", "Measurement")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Measurement", "Measurement")
                         .WithMany()
                         .HasForeignKey("MeasurementId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Supplier", "Supplier")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
                         .WithMany()
                         .HasForeignKey("WarehouseLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3063,9 +3063,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("WarehouseLocation");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Supplier", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Supplier", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.LeadTime", "LeadTime")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.LeadTime", "LeadTime")
                         .WithMany()
                         .HasForeignKey("LeadTimeId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3073,9 +3073,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("LeadTime");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.UnitLocation", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.UnitLocation", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UnitManager")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UnitManager")
                         .WithMany()
                         .HasForeignKey("UnitManagerId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3083,14 +3083,14 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UnitManager");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.UserActive", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position")
                         .WithMany()
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3100,9 +3100,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("Position");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.WarehouseLocation", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.WarehouseLocation", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "WarehouseManager")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "WarehouseManager")
                         .WithMany()
                         .HasForeignKey("WarehouseManagerId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3110,20 +3110,20 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("WarehouseManager");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.ApprovalPurchaseRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.ApprovalPurchaseRequest", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
+                    b.HasOne("PurchasingSystem.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
                         .WithMany()
                         .HasForeignKey("PurchaseRequestId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove")
                         .WithMany()
                         .HasForeignKey("UserApproveId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3135,25 +3135,25 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UserApprove");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.ApprovalQtyDifference", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.ApprovalQtyDifference", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder", "PurchaseOrder")
+                    b.HasOne("PurchasingSystem.Areas.Order.Models.PurchaseOrder", "PurchaseOrder")
                         .WithMany()
                         .HasForeignKey("PurchaseOrderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.QtyDifference", "QtyDifference")
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.QtyDifference", "QtyDifference")
                         .WithMany()
                         .HasForeignKey("QtyDifferenceId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove")
                         .WithMany()
                         .HasForeignKey("UserApproveId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3167,35 +3167,35 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UserApprove");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseOrder", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
+                    b.HasOne("PurchasingSystem.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
                         .WithMany()
                         .HasForeignKey("PurchaseRequestId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.TermOfPayment", "TermOfPayment")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.TermOfPayment", "TermOfPayment")
                         .WithMany()
                         .HasForeignKey("TermOfPaymentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove1")
                         .WithMany()
                         .HasForeignKey("UserApprove1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove2")
                         .WithMany()
                         .HasForeignKey("UserApprove2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove3")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove3")
                         .WithMany()
                         .HasForeignKey("UserApprove3Id")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3213,19 +3213,19 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UserApprove3");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrderDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseOrderDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder", "PurchaseOrder")
+                    b.HasOne("PurchasingSystem.Areas.Order.Models.PurchaseOrder", "PurchaseOrder")
                         .WithMany("PurchaseOrderDetails")
                         .HasForeignKey("PurchaseOrderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.QtyDifference", null)
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.QtyDifference", null)
                         .WithMany("PurchaseOrderDetails")
                         .HasForeignKey("QtyDifferenceId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.ReceiveOrder", null)
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.ReceiveOrder", null)
                         .WithMany("PurchaseOrderDetails")
                         .HasForeignKey("ReceiveOrderId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3233,60 +3233,60 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseRequest", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department1")
                         .WithMany()
                         .HasForeignKey("Department1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department2")
                         .WithMany()
                         .HasForeignKey("Department2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department3")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department3")
                         .WithMany()
                         .HasForeignKey("Department3Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position1")
                         .WithMany()
                         .HasForeignKey("Position1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position2")
                         .WithMany()
                         .HasForeignKey("Position2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position3")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position3")
                         .WithMany()
                         .HasForeignKey("Position3Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.TermOfPayment", "TermOfPayment")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.TermOfPayment", "TermOfPayment")
                         .WithMany()
                         .HasForeignKey("TermOfPaymentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove1")
                         .WithMany()
                         .HasForeignKey("UserApprove1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove2")
                         .WithMany()
                         .HasForeignKey("UserApprove2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove3")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove3")
                         .WithMany()
                         .HasForeignKey("UserApprove3Id")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3314,9 +3314,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UserApprove3");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequestDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseRequestDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
+                    b.HasOne("PurchasingSystem.Areas.Order.Models.PurchaseRequest", "PurchaseRequest")
                         .WithMany("PurchaseRequestDetails")
                         .HasForeignKey("PurchaseRequestId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3324,9 +3324,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("PurchaseRequest");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Report.Models.ClosingPurchaseOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Report.Models.ClosingPurchaseOrder", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -3335,9 +3335,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Report.Models.ClosingPurchaseOrderDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Report.Models.ClosingPurchaseOrderDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Report.Models.ClosingPurchaseOrder", "ClosingPurchaseOrder")
+                    b.HasOne("PurchasingSystem.Areas.Report.Models.ClosingPurchaseOrder", "ClosingPurchaseOrder")
                         .WithMany("ClosingPurchaseOrderDetails")
                         .HasForeignKey("ClosingPurchaseOrderId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3345,35 +3345,35 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("ClosingPurchaseOrder");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Transaction.Models.UnitRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Transaction.Models.UnitRequest", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department1")
                         .WithMany()
                         .HasForeignKey("Department1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position1")
                         .WithMany()
                         .HasForeignKey("Position1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UnitLocation", "UnitLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UnitLocation", "UnitLocation")
                         .WithMany()
                         .HasForeignKey("UnitLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove1")
                         .WithMany()
                         .HasForeignKey("UserApprove1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
                         .WithMany()
                         .HasForeignKey("WarehouseLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3391,9 +3391,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("WarehouseLocation");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Transaction.Models.UnitRequestDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Transaction.Models.UnitRequestDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Transaction.Models.UnitRequest", "UnitRequest")
+                    b.HasOne("PurchasingSystem.Areas.Transaction.Models.UnitRequest", "UnitRequest")
                         .WithMany("UnitRequestDetails")
                         .HasForeignKey("UnitRequestId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3401,20 +3401,20 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UnitRequest");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ApprovalProductReturn", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ApprovalProductReturn", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn", "ProductReturn")
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.ProductReturn", "ProductReturn")
                         .WithMany()
                         .HasForeignKey("ProductReturnId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove")
                         .WithMany()
                         .HasForeignKey("UserApproveId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3426,30 +3426,30 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UserApprove");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ApprovalUnitRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ApprovalUnitRequest", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UnitLocation", "UnitLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UnitLocation", "UnitLocation")
                         .WithMany()
                         .HasForeignKey("UnitLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.Transaction.Models.UnitRequest", "UnitRequest")
+                    b.HasOne("PurchasingSystem.Areas.Transaction.Models.UnitRequest", "UnitRequest")
                         .WithMany()
                         .HasForeignKey("UnitRequestId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove")
                         .WithMany()
                         .HasForeignKey("UserApproveId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
                         .WithMany()
                         .HasForeignKey("WarehouseLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3465,55 +3465,55 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("WarehouseLocation");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ProductReturn", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department1")
                         .WithMany()
                         .HasForeignKey("Department1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department2")
                         .WithMany()
                         .HasForeignKey("Department2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department3")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department3")
                         .WithMany()
                         .HasForeignKey("Department3Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position1")
                         .WithMany()
                         .HasForeignKey("Position1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position2")
                         .WithMany()
                         .HasForeignKey("Position2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position3")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position3")
                         .WithMany()
                         .HasForeignKey("Position3Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove1")
                         .WithMany()
                         .HasForeignKey("UserApprove1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove2")
                         .WithMany()
                         .HasForeignKey("UserApprove2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove3")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove3")
                         .WithMany()
                         .HasForeignKey("UserApprove3Id")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3539,9 +3539,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UserApprove3");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturnDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ProductReturnDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn", "ProductReturn")
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.ProductReturn", "ProductReturn")
                         .WithMany("ProductReturnDetails")
                         .HasForeignKey("ProductReturnId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3549,45 +3549,45 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("ProductReturn");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.QtyDifference", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.QtyDifference", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department1")
                         .WithMany()
                         .HasForeignKey("Department1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Department", "Department2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Department", "Department2")
                         .WithMany()
                         .HasForeignKey("Department2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position1")
                         .WithMany()
                         .HasForeignKey("Position1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.Position", "Position2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.Position", "Position2")
                         .WithMany()
                         .HasForeignKey("Position2Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder", "PurchaseOrder")
+                    b.HasOne("PurchasingSystem.Areas.Order.Models.PurchaseOrder", "PurchaseOrder")
                         .WithMany()
                         .HasForeignKey("PurchaseOrderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove1")
                         .WithMany()
                         .HasForeignKey("UserApprove1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove2")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove2")
                         .WithMany()
                         .HasForeignKey("UserApprove2Id")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3609,9 +3609,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UserApprove2");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.QtyDifferenceDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.QtyDifferenceDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.QtyDifference", "QtyDifference")
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.QtyDifference", "QtyDifference")
                         .WithMany("QtyDifferenceDetails")
                         .HasForeignKey("QtyDifferenceId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3619,14 +3619,14 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("QtyDifference");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ReceiveOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ReceiveOrder", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder", "PurchaseOrder")
+                    b.HasOne("PurchasingSystem.Areas.Order.Models.PurchaseOrder", "PurchaseOrder")
                         .WithMany()
                         .HasForeignKey("PurchaseOrderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ReceiveById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -3637,9 +3637,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ReceiveOrderDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ReceiveOrderDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.ReceiveOrder", "ReceiveOrder")
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.ReceiveOrder", "ReceiveOrder")
                         .WithMany("ReceiveOrderDetails")
                         .HasForeignKey("ReceiveOrderId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3647,30 +3647,30 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("ReceiveOrder");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.UnitOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.UnitOrder", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UnitLocation", "UnitLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UnitLocation", "UnitLocation")
                         .WithMany()
                         .HasForeignKey("UnitLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.Transaction.Models.UnitRequest", "UnitRequest")
+                    b.HasOne("PurchasingSystem.Areas.Transaction.Models.UnitRequest", "UnitRequest")
                         .WithMany()
                         .HasForeignKey("UnitRequestId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove1")
                         .WithMany()
                         .HasForeignKey("UserApprove1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
                         .WithMany()
                         .HasForeignKey("WarehouseLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3686,9 +3686,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("WarehouseLocation");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.UnitOrderDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.UnitOrderDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.UnitOrder", "UnitOrder")
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.UnitOrder", "UnitOrder")
                         .WithMany("UnitOrderDetails")
                         .HasForeignKey("UnitOrderId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3696,30 +3696,30 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("UnitOrder");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.WarehouseTransfer", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.WarehouseTransfer", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UnitLocation", "UnitLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UnitLocation", "UnitLocation")
                         .WithMany()
                         .HasForeignKey("UnitLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("PurchasingSystem.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserAccessId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.UserActive", "UserApprove1")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.UserActive", "UserApprove1")
                         .WithMany()
                         .HasForeignKey("UserApprove1Id")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
+                    b.HasOne("PurchasingSystem.Areas.MasterData.Models.WarehouseLocation", "WarehouseLocation")
                         .WithMany()
                         .HasForeignKey("WarehouseLocationId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.UnitOrder", "WarehouseRequest")
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.UnitOrder", "WarehouseRequest")
                         .WithMany()
                         .HasForeignKey("WarehouseRequestId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3735,9 +3735,9 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("WarehouseRequest");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.WarehouseTransferDetail", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.WarehouseTransferDetail", b =>
                 {
-                    b.HasOne("PurchasingSystemStaging.Areas.Warehouse.Models.WarehouseTransfer", "WarehouseTransfer")
+                    b.HasOne("PurchasingSystem.Areas.Warehouse.Models.WarehouseTransfer", "WarehouseTransfer")
                         .WithMany("WarehouseTransferDetails")
                         .HasForeignKey("WarehouseTransferId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -3745,56 +3745,56 @@ namespace PurchasingSystemStaging.Migrations
                     b.Navigation("WarehouseTransfer");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.MasterData.Models.Department", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.MasterData.Models.Department", b =>
                 {
                     b.Navigation("Positions");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseOrder", b =>
                 {
                     b.Navigation("PurchaseOrderDetails");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Order.Models.PurchaseRequest", b =>
                 {
                     b.Navigation("PurchaseRequestDetails");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Report.Models.ClosingPurchaseOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Report.Models.ClosingPurchaseOrder", b =>
                 {
                     b.Navigation("ClosingPurchaseOrderDetails");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Transaction.Models.UnitRequest", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Transaction.Models.UnitRequest", b =>
                 {
                     b.Navigation("UnitRequestDetails");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ProductReturn", b =>
                 {
                     b.Navigation("ProductReturnDetails");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.QtyDifference", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.QtyDifference", b =>
                 {
                     b.Navigation("PurchaseOrderDetails");
 
                     b.Navigation("QtyDifferenceDetails");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.ReceiveOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.ReceiveOrder", b =>
                 {
                     b.Navigation("PurchaseOrderDetails");
 
                     b.Navigation("ReceiveOrderDetails");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.UnitOrder", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.UnitOrder", b =>
                 {
                     b.Navigation("UnitOrderDetails");
                 });
 
-            modelBuilder.Entity("PurchasingSystemStaging.Areas.Warehouse.Models.WarehouseTransfer", b =>
+            modelBuilder.Entity("PurchasingSystem.Areas.Warehouse.Models.WarehouseTransfer", b =>
                 {
                     b.Navigation("WarehouseTransferDetails");
                 });

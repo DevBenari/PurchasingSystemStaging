@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PurchasingSystemStaging.Areas.Administrator.Models;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Areas.Report.Models;
-using PurchasingSystemStaging.Areas.Transaction.Models;
-using PurchasingSystemStaging.Areas.Warehouse.Models;
-using PurchasingSystemStaging.Models;
+using PurchasingSystem.Areas.Administrator.Models;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Areas.Report.Models;
+using PurchasingSystem.Areas.Transaction.Models;
+using PurchasingSystem.Areas.Warehouse.Models;
+using PurchasingSystem.Models;
 
-namespace PurchasingSystemStaging.Data;
+namespace PurchasingSystem.Data;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

@@ -1,10 +1,10 @@
-﻿using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+﻿using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PurchasingSystemStaging.Areas.Warehouse.Models
+namespace PurchasingSystem.Areas.Warehouse.Models
 {
     [Table("WrhReceiveOrder", Schema = "dbo")]
     public class ReceiveOrder : UserActivity

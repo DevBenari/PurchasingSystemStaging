@@ -1,4 +1,4 @@
-﻿namespace PurchasingSystemStaging.Areas.Order.ViewModels
+﻿namespace PurchasingSystem.Areas.Order.ViewModels
 {
     public class PurchaseOrderDetailViewModel
     {

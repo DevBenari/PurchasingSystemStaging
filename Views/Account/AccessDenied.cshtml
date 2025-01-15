@@ -76,10 +76,20 @@
             color: #e63946;
             margin-bottom: 20px;
         }
+
+        .typing-text {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #f1faee;
+            height: 1.5rem; /* Prevent layout shift */
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
     <div class="access-denied-container">
+        <div class="typing-text" id="typing-text"></div>
         <i class="fas fa-ban"></i>
         <h1>403</h1>
         <h2>Access Denied</h2>
@@ -105,6 +115,18 @@
                     window.location.href = '/';
                 });
             });
+
+            // Typing effect
+            const text = "You are not authorized to view this page.";
+            let index = 0;
+            function typeText() {
+                if (index < text.length) {
+                    $('#typing-text').append(text.charAt(index));
+                    index++;
+                    setTimeout(typeText, 50);
+                }
+            }
+            typeText();
         });
     </script>
 </body>

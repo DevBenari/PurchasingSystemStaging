@@ -5,21 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.Administrator.Models;
-using PurchasingSystemStaging.Areas.Administrator.Repositories;
-using PurchasingSystemStaging.Areas.Administrator.ViewModels;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Hubs;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.Administrator.Models;
+using PurchasingSystem.Areas.Administrator.Repositories;
+using PurchasingSystem.Areas.Administrator.ViewModels;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Hubs;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PurchasingSystemStaging.Areas.Administrator.Controllers
+namespace PurchasingSystem.Areas.Administrator.Controllers
 {
     [Area("Administrator")]
     [Route("Administrator/[controller]/[action]")]

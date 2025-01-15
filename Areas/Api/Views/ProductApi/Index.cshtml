@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity;
-@using PurchasingSystemStaging.Models;
-@using PurchasingSystemStaging.Areas.Api.ViewModels;
+@using PurchasingSystem.Models;
+@using PurchasingSystem.Areas.Api.ViewModels;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
 @model ProductApiViewModels
@@ -56,7 +56,7 @@
                 <h1>
                     Dokumentasi API System Purchasing
                 </h1>
-                <a href="https://blm-rsmmc.com/api/api/index" class="font-sm">https://blm-rsmmc.com/api/api/index</a>
+                <a href="https://blm-rsmmc.com/Api/ProductApi/index" class="font-sm">https://blm-rsmmc.com/Api/ProductApi/index</a>
             </div>
 
             <div class="d-flex justify-content-end mb-3">
@@ -111,8 +111,8 @@
                             <pre class="bg-black text-left">
                             <code>
                                     {
-                                       "email": "andrew@gmail.com",
-                                       "password": "01Sep2024"
+                                       "email": "user@gmail.com",
+                                       "password": "01Oct2012"
                                     }
                                </code>
                            </pre>
@@ -153,7 +153,7 @@
                     </div>
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample" style="background-color:#EBF3FB;">
                         <div class="card-body">
-                            <span class="p-2 mr-1" style="background-color:#61AFFE;">GET</span> /Api/DashboadApi/GetProduct/Products
+                            <span class="p-2 mr-1" style="background-color:#61AFFE;">GET</span> /Api/ProductApi/GetProduct/Products
                         </div>
                         <h5 class="bg-white px-3 py-2 col-12">Parameters</h5>
                         <div class="px-3 py-2 col-12">
@@ -166,7 +166,7 @@
                         <h5 class="bg-white px-3 py-2">Response</h5>
                         <div class="card-body">
                             <p>Request Url</p>
-                            <p class="p-2 rounded-md text-white" style="background-color:#333333;">https://blm-rsmmc.com/Api/DashboardApi/GetProduct/Products</p>
+                            <p class="p-2 rounded-md text-white" style="background-color:#333333;">https://blm-rsmmc.com/Api/ProductApi/GetProduct/Products</p>
                             <textarea id="responseProduct" class="form-control p-2 bg-white" rows="10" readonly></textarea>
                         </div>
                     </div>
@@ -184,7 +184,7 @@
                     </div>
                     <div id="collapseThree" class="collapse row" aria-labelledby="headingThree" data-parent="#accordionExample">
                         <div class="card-body col-12">
-                            <span class="p-2 mr-1" style="background-color:#49CC90;">POST</span> /Api/DashboadApi/CreateProduct
+                            <span class="p-2 mr-1" style="background-color:#49CC90;">POST</span> /Api/ProductApi/CreateProduct
                         </div>
                         <h5 class="bg-white px-3 py-2 col-12">Parameters</h5>
                         <div class="px-3 py-2 col-12">
@@ -260,6 +260,10 @@
                                     <input type="text" id="rackNumber" class="form-control" placeholder="Enter Rack Number" requeried autocomplete="on" />
                                 </div>
                                 <div class="form-group col-6">
+                                    <label asp-for="expiredDate">Expired Date: </label>
+                                    <input type="datetime-local" id="expiredDate" class="form-control" placeholder="0001-01-01T00:00:00.000Z" value="0001-01-01T00:00:00.000Z" requeried autocomplete="off" disabled />
+                                </div>
+                                <div class="form-group col-6">
                                     <label asp-for="note">Note :</label>
                                     <input type="text" id="note" class="form-control" placeholder="Enter Note" requeried autocomplete="on" />
                                 </div>
@@ -273,7 +277,7 @@
                         <h4 class="bg-white px-3 py-2 col-12">Response</h4>
                         <div class="card-body">
                             <p>Request Url</p>
-                            <p class="p-2 rounded-md text-white" style="background-color:#333333;">https://blm-rsmmc.com/Api/DashboardApi/CreateProduct</p>
+                            <p class="p-2 rounded-md text-white" style="background-color:#333333;">https://blm-rsmmc.com/Api/ProductApi/CreateProduct</p>
                             <textarea id="responseCreateProduct" class="form-control p-2 bg-white" rows="10" readonly></textarea>
                         </div>
                     </div>
@@ -291,7 +295,7 @@
                     </div>
                     <div id="collapseFour" class="collapse row" aria-labelledby="headingFour" data-parent="#accordionExample">
                         <div class="card-body col-12">
-                            <span class="p-2 mr-1" style="background-color:#FCA130;">PUT</span>  /Api/DashboadApi/UpdateProduct
+                            <span class="p-2 mr-1" style="background-color:#FCA130;">PUT</span>  /Api/ProductApi/UpdateProduct
                         </div>
 
                         <div class="card-body col-12">
@@ -369,6 +373,10 @@
                                     <input type="text" id="updateRackNumber" class="form-control" placeholder="Enter Rack Number " requeried autocomplete="on" />
                                 </div>
                                 <div class="form-group col-6">
+                                    <label asp-for="updateExpiredDate">Expired Date: </label>
+                                    <input type="datetime-local" id="updateExpiredDate" class="form-control" placeholder="0001-01-01T00:00:00.000Z" value="0001-01-01T00:00:00.000Z" requeried autocomplete="off" disabled />
+                                </div>
+                                <div class="form-group col-6">
                                     <label asp-for="note">Note :</label>
                                     <input type="text" id="updateNote" class="form-control" placeholder="Enter Note" requeried autocomplete="on" />
                                 </div>
@@ -382,7 +390,7 @@
                         <h4 class="bg-white px-3 py-2 col-12">Response</h4>
                         <div class="card-body">
                             <p>Request Url</p>
-                            <p class="p-2 rounded-md text-white" style="background-color:#333333;"> https://blm-rsmmc.com/Api/DashboardApi/UpdateProduct</p>
+                            <p class="p-2 rounded-md text-white" style="background-color:#333333;"> https://blm-rsmmc.com/Api/ProductApi/UpdateProduct</p>
                             <textarea id="responseUpdateProduct" class="form-control p-2 bg-white" rows="10" readonly></textarea>
                         </div>
                     </div>
@@ -399,7 +407,7 @@
                     </div>
                     <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
                         <div class="card-body">
-                            <span class="bg-danger p-2 mr-1">DELETE</span> /Api/DashboadApi/DeleteProduct/{id}
+                            <span class="bg-danger p-2 mr-1">DELETE</span> /Api/ProductApi/DeleteProduct/{id}
                         </div>
                         <h5 class="bg-white px-3 py-2 col-12">Parameters</h5>
                         <div class="card-body">
@@ -415,7 +423,7 @@
                         <h4 class="bg-white px-3 py-2 col-12">Response</h4>
                         <div class="card-body">
                             <p>Request Url</p>
-                            <p class="p-2 rounded-md text-white" style="background-color:#333333;">  https://blm-rsmmc.com/Api/DashboardApi/DeleteProduct/ <span class="text-green">{id}</span></p>
+                            <p class="p-2 rounded-md text-white" style="background-color:#333333;">  https://blm-rsmmc.com/Api/ProductApi/DeleteProduct/ <span class="text-green">{id}</span></p>
                             <textarea id="responseDeleteProduct" class="form-control p-2 bg-white" rows="10" readonly></textarea>
                         </div>
                     </div>
@@ -425,339 +433,343 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-              const saveTokenBtn = document.getElementById("saveToken");
-              const logoutBtn = document.getElementById("logoutBtn");
-              const authorizeModal = document.getElementById("authorizeModal");
+                const saveTokenBtn = document.getElementById("saveToken");
+                const logoutBtn = document.getElementById("logoutBtn");
+                const authorizeModal = document.getElementById("authorizeModal");
 
-                  // Show/Hide buttons based on localStorage on modal open
-                  authorizeModal.addEventListener("show.bs.modal", function () {
-                      const token = localStorage.getItem("bearerToken");
-                      if (token) {
-                          saveTokenBtn.style.display = "none";
-                          logoutBtn.style.display = "inline-block";
-                      } else {
-                          saveTokenBtn.style.display = "inline-block";
-                          logoutBtn.style.display = "none";
-                      }
-                  });
+                // Show/Hide buttons based on localStorage on modal open
+                authorizeModal.addEventListener("show.bs.modal", function () {
+                    const token = localStorage.getItem("bearerToken");
+                    if (token) {
+                        saveTokenBtn.style.display = "none";
+                        logoutBtn.style.display = "inline-block";
+                    } else {
+                        saveTokenBtn.style.display = "inline-block";
+                        logoutBtn.style.display = "none";
+                    }
+                });
 
-                  // Handle saving the Bearer Token
-                  saveTokenBtn.addEventListener("click", function () {
-                      const token = document.getElementById("bearerToken").value.trim();
-                      if (token) {
-                          localStorage.setItem("bearerToken", token); // Save token to localStorage
-                          alert("Bearer Token saved!");
+                // Handle saving the Bearer Token
+                saveTokenBtn.addEventListener("click", function () {
+                    const token = document.getElementById("bearerToken").value.trim();
+                    if (token) {
+                        localStorage.setItem("bearerToken", token); // Save token to localStorage
+                        alert("Bearer Token saved!");
 
 
-                          // Toggle button visibility
-                          saveTokenBtn.style.display = "none";
-                          logoutBtn.style.display = "inline-block";
-                          $('#authorizeModal').modal('hide'); // Close modal
-                      } else {
-                          alert("Please enter a Bearer Token.");
-                      }
-                  });
+                        // Toggle button visibility
+                        saveTokenBtn.style.display = "none";
+                        logoutBtn.style.display = "inline-block";
+                        $('#authorizeModal').modal('hide'); // Close modal
+                    } else {
+                        alert("Please enter a Bearer Token.");
+                    }
+                });
 
-                  // Handle logout button click
-                  logoutBtn.addEventListener("click", function () {
-                      localStorage.removeItem("bearerToken"); // Remove token from localStorage
-                      alert("Logged out successfully!");
+                // Handle logout button click
+                logoutBtn.addEventListener("click", function () {
+                    localStorage.removeItem("bearerToken"); // Remove token from localStorage
+                    alert("Logged out successfully!");
 
-                      // Toggle button visibility
-                      saveTokenBtn.style.display = "inline-block";
-                      logoutBtn.style.display = "none";
+                    // Toggle button visibility
+                    saveTokenBtn.style.display = "inline-block";
+                    logoutBtn.style.display = "none";
 
-                      // Optionally refresh the page
-                      location.reload();
-                      });
+                    // Optionally refresh the page
+                    location.reload();
+                });
             });
 
-              // Clear localStorage on page refresh
-              window.addEventListener("load", function () {
-                  localStorage.removeItem("bearerToken");
-              });
-              // Handle login form submission
-              document.getElementById("loginForm").addEventListener("submit", async function (event) {
-                  event.preventDefault();
+            // Clear localStorage on page refresh
+            window.addEventListener("load", function () {
+                localStorage.removeItem("bearerToken");
+            });
+            // Handle login form submission
+            document.getElementById("loginForm").addEventListener("submit", async function (event) {
+                event.preventDefault();
 
-                  const email = document.getElementById("email").value;
-                  const password = document.getElementById("password").value;
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
 
-                  try {
-                      const response = await fetch("/api/auth/login", {
-                          method: "POST",
-                          headers: {
-                              "Content-Type": "application/json",
-                          },
-                          body: JSON.stringify({ email, password })
-                      });
+                try {
+                    const response = await fetch("/api/auth/login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
 
-                      const responseData = await response.json();
+                    const responseData = await response.json();
 
-                      // Menampilkan JSON dalam format yang rapi di textarea
-                      document.getElementById("response").textContent = JSON.stringify(responseData, null, 4);
+                    // Menampilkan JSON dalam format yang rapi di textarea
+                    document.getElementById("response").textContent = JSON.stringify(responseData, null, 4);
 
-                      if (response.ok) {
-                          alert("Login Successful!");
-                      } else {
-                          alert("Login Failed!");
-                      }
-                  } catch (error) {
-                      document.getElementById("response").textContent = "Error: " + error.message;
-                      console.error("Login error:", error);
-                  }
-              });
+                    if (response.ok) {
+                        alert("Login Successful!");
+                    } else {
+                        alert("Login Failed!");
+                    }
+                } catch (error) {
+                    document.getElementById("response").textContent = "Error: " + error.message;
+                    console.error("Login error:", error);
+                }
+            });
 
-              document.addEventListener("DOMContentLoaded", function () {
-                  // Handle reset output
-                  const resetButton = document.getElementById("resetOutput");
-                  const responseOutput = document.getElementById("response");
+            document.addEventListener("DOMContentLoaded", function () {
+                // Handle reset output
+                const resetButton = document.getElementById("resetOutput");
+                const responseOutput = document.getElementById("response");
 
-                  const resetButtonGet = document.getElementById("resetGet")
-                  const responseGet = document.getElementById("responseProduct")
+                const resetButtonGet = document.getElementById("resetGet")
+                const responseGet = document.getElementById("responseProduct")
 
-                  const resetButtonCreate = document.getElementById("resetCreateProduct")
-                  const responseCreate = document.getElementById("responseCreateProduct")
+                const resetButtonCreate = document.getElementById("resetCreateProduct")
+                const responseCreate = document.getElementById("responseCreateProduct")
 
-                  const resetButtonUpdate = document.getElementById("resetUpdate")
-                  const responseUpdate = document.getElementById("responseUpdateProduct")
+                const resetButtonUpdate = document.getElementById("resetUpdate")
+                const responseUpdate = document.getElementById("responseUpdateProduct")
 
-                  const resetButtonDelete = document.getElementById("resetDelete")
-                  const responseDelete = document.getElementById("responseDeleteProduct")
+                const resetButtonDelete = document.getElementById("resetDelete")
+                const responseDelete = document.getElementById("responseDeleteProduct")
 
-                  resetButton.addEventListener("click", function () {
-                      responseOutput.textContent = ""; // Clear the output JSON
-                      alert("Output JSON has been reset!");
-                  });
+                resetButton.addEventListener("click", function () {
+                    responseOutput.textContent = ""; // Clear the output JSON
+                    alert("Output JSON has been reset!");
+                });
 
-                  resetButtonGet.addEventListener("click", function() {
-                      responseGet.textContent = "";
-                      alert("Output JSON has been reset!");
-                  })
+                resetButtonGet.addEventListener("click", function () {
+                    responseGet.textContent = "";
+                    alert("Output JSON has been reset!");
+                })
 
-                  resetButtonCreate.addEventListener("click", function(){
-                      responseCreate.textContent = "";
-                      alert("Output JSON has been reset!");
-                  })
+                resetButtonCreate.addEventListener("click", function () {
+                    responseCreate.textContent = "";
+                    alert("Output JSON has been reset!");
+                })
 
-                  resetButtonUpdate.addEventListener("click", function() {
-                      responseUpdate.textContent = "";
-                      alert("Output JSON has been reset!");
-                  })
+                resetButtonUpdate.addEventListener("click", function () {
+                    responseUpdate.textContent = "";
+                    alert("Output JSON has been reset!");
+                })
 
-                  resetButtonDelete.addEventListener("click", function() {
-                      responseDelete.textContent = "";
-                      alert("Output JSON has been reset!");
-                  })
+                resetButtonDelete.addEventListener("click", function () {
+                    responseDelete.textContent = "";
+                    alert("Output JSON has been reset!");
+                })
 
 
-              });
+            });
 
-              // Event listener untuk tombol "Try it out"
-              $('#getProductBtn').click(function () {
-                  const token = localStorage.getItem("bearerToken");
+            // Event listener untuk tombol "Try it out"
+            $('#getProductBtn').click(function () {
+                const token = localStorage.getItem("bearerToken");
 
-                  if (!token) {
-                      alert("Please authorize first by providing a Bearer Token.");
-                      return;
-                  }
+                if (!token) {
+                    alert("Please authorize first by providing a Bearer Token.");
+                    return;
+                }
 
-                  $.ajax({
-                      url: '/Api/api/GetProduct/Products',  // Endpoint API untuk mendapatkan produk
-                      type: 'GET',
-                      headers: {
-                          'Authorization': 'Bearer ' + token  // Menambahkan Bearer Token ke header
-                      },
-                      success: function (response) {
-                          // Jika request berhasil, tampilkan data dalam format JSON
-                          $('#responseProduct').text(JSON.stringify(response, null, 4));
-                      },
-                      error: function (error) {
-                          // Menangani error jika terjadi masalah
-                          $('#responseProduct').text("Error: " + error.responseText);
-                          alert("Failed to fetch products.");
-                      }
-                  });
-              });
+                $.ajax({
+                    url: '/Api/ProductApi/GetProduct/Products',  // Endpoint API untuk mendapatkan produk
+                    type: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token  // Menambahkan Bearer Token ke header
+                    },
+                    success: function (response) {
+                        // Jika request berhasil, tampilkan data dalam format JSON
+                        // console.log(response)
+                        $('#responseProduct').text(JSON.stringify(response, null, 4));
+                    },
+                    error: function (error) {
+                        // Menangani error jika terjadi masalah
+                        $('#responseProduct').text("Error: " + error.responseText);
+                        alert("Failed to fetch products.");
+                    }
+                });
+            });
 
-              $(document).ready(function () {
-                  // URL API untuk mendapatkan data warehouse
-                  const apiURL = '/Api/api/GetWarehouseLocations';
+            $(document).ready(function () {
+                // URL API untuk mendapatkan data warehouse
+                const apiURL = '/Api/ProductApi/GetWarehouseLocations';
 
-                  // Ambil data warehouse melalui AJAX
-                  $.ajax({
-                      url: apiURL,
-                      type: 'GET',
-                      success: function (data) {
-                          // Isi dropdown dengan data warehouse
-                          const dropdown = $('#warehouseLocation');
-                          data.forEach(item => {
-                              dropdown.append(`<option value="${item.warehouseLocationId}">${item.warehouseLocationName}</option>`);
-                          });
+                // Ambil data warehouse melalui AJAX
+                $.ajax({
+                    url: apiURL,
+                    type: 'GET',
+                    success: function (data) {
+                        // Isi dropdown dengan data warehouse
+                        const dropdown = $('#warehouseLocation');
+                        data.forEach(item => {
+                            dropdown.append(`<option value="${item.warehouseLocationId}">${item.warehouseLocationName}</option>`);
+                        });
 
-                          const dropdownUpdate = $('#updateWarehouseLocation');
-                          data.forEach(item => {
-                              dropdownUpdate.append(`<option value="${item.warehouseLocationId}">${item.warehouseLocationName}</option>`)
-                          });
-                      },
-                      error: function (error) {
-                          console.error("Error fetching warehouses:", error);
-                      }
-                  });
-              });
+                        const dropdownUpdate = $('#updateWarehouseLocation');
+                        data.forEach(item => {
+                            dropdownUpdate.append(`<option value="${item.warehouseLocationId}">${item.warehouseLocationName}</option>`)
+                        });
+                    },
+                    error: function (error) {
+                        console.error("Error fetching warehouses:", error);
+                    }
+                });
+            });
 
-              document.getElementById("createProduct").addEventListener("submit", async function (event) {
-                      event.preventDefault();
+            document.getElementById("createProduct").addEventListener("submit", async function (event) {
+                event.preventDefault();
 
-                     const dropdown = document.getElementById("warehouseLocation")
-                     const selectedOptions = dropdown.options[dropdown.selectedIndex].text;
+                const dropdown = document.getElementById("warehouseLocation")
+                const selectedOptions = dropdown.options[dropdown.selectedIndex].text;
 
-                      // Ambil nilai input form
-                      const productData = {
-                          productName: document.getElementById('productName').value,
-                          supplierName: document.getElementById('supplierId').value,
-                          categoryName: document.getElementById('categoryId').value,
-                          measurementName: document.getElementById('measurementId').value,
-                          discountValue: document.getElementById('discountId').value,
-                          minStock: document.getElementById('minStock').value,
-                          maxStock: document.getElementById('maxStock').value,
-                          bufferStock: document.getElementById('bufferStock').value,
-                          stock: document.getElementById('stock').value,
-                          cogs: document.getElementById('cogs').value,
-                          buyPrice: document.getElementById('price').value,
-                          retailPrice: document.getElementById('retailPrice').value,
-                          warehouseLocationName: selectedOptions,
-                          storageLocation:document.getElementById('storageLocationId').value,
-                          rackNumber: document.getElementById('rackNumber').value,
-                          note: document.getElementById('note').value,
-                      };
+                // Ambil nilai input form
+                const productData = {
+                    productName: document.getElementById('productName').value,
+                    supplierName: document.getElementById('supplierId').value,
+                    categoryName: document.getElementById('categoryId').value,
+                    measurementName: document.getElementById('measurementId').value,
+                    discountValue: document.getElementById('discountId').value,
+                    minStock: document.getElementById('minStock').value,
+                    maxStock: document.getElementById('maxStock').value,
+                    bufferStock: document.getElementById('bufferStock').value,
+                    stock: document.getElementById('stock').value,
+                    cogs: document.getElementById('cogs').value,
+                    buyPrice: document.getElementById('price').value,
+                    retailPrice: document.getElementById('retailPrice').value,
+                    warehouseLocationName: selectedOptions,
+                    storageLocation: document.getElementById('storageLocationId').value,
+                    rackNumber: document.getElementById('rackNumber').value,
+                    expiredDate: document.getElementById('expiredDate').value || "0001-01-01T00:00:00.000Z", // Tambahkan ini
+                    note: document.getElementById('note').value,
 
-                      const token = localStorage.getItem("bearerToken");
-                      if (!token) {
-                          alert("Please authorize first by providing a Bearer Token.");
-                          return;
-                      }
+                };
 
-                      try {
-                          const response = await fetch('/Api/api/CreateProduct', {
-                                  method: "POST",
-                                  headers: {
-                                      "Content-Type": "application/json",
-                                      "Authorization": `Bearer ${token}`,
-                                  },
-                                  body: JSON.stringify(productData)
-                          })
+                const token = localStorage.getItem("bearerToken");
+                if (!token) {
+                    alert("Please authorize first by providing a Bearer Token.");
+                    return;
+                }
 
-                          const result = await response.json();
-                          if(response.ok){
-                              document.getElementById("responseCreateProduct").value = JSON.stringify(result, null, 4)
-                          }else{
-                              document.getElementById("responseCreateProduct").value = `Error: ${result.message}`;
-                              alert("Failed to create products.");
-                          }
+                try {
+                    const response = await fetch('/Api/ProductApi/CreateProduct', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(productData)
+                    })
 
-                      } catch (error) {
-                          console.log(error.message)
-                      }
-              });
+                    const result = await response.json();
+                    if (response.ok) {
+                        document.getElementById("responseCreateProduct").value = JSON.stringify(result, null, 4)
+                    } else {
+                        document.getElementById("responseCreateProduct").value = `Error: ${result.message}`;
+                        alert("Failed to create products.");
+                    }
 
-                 document.addEventListener("DOMContentLoaded", function() {
-                      document.getElementById("updateProduct").addEventListener("submit", async function (event) {
-                          event.preventDefault();
+                } catch (error) {
+                    console.log(error.message)
+                }
+            });
 
-                      const productId = document.getElementById('productId').value;
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("updateProduct").addEventListener("submit", async function (event) {
+                    event.preventDefault();
 
-                      const dropdown = document.getElementById("updateWarehouseLocation")
-                      const selectedOptions = dropdown.options[dropdown.selectedIndex].text;
+                    const productId = document.getElementById('productId').value;
 
-                      console.log(selectedOptions);
+                    const dropdown = document.getElementById("updateWarehouseLocation")
+                    const selectedOptions = dropdown.options[dropdown.selectedIndex].text;
 
-                          // Ambil nilai input form
-                          const productData = {
-                              productName: document.getElementById('updateProductName').value,
-                              supplierName: document.getElementById('updateSupplierId').value,
-                              categoryName: document.getElementById('updateCategoryId').value,
-                              measurementName: document.getElementById('updateMeasurementId').value,
-                              discountValue: document.getElementById('updateDiscountId').value,
-                              minStock: document.getElementById('updateMinStock').value,
-                              maxStock: document.getElementById('updateMaxStock').value,
-                              bufferStock: document.getElementById('updateBufferStock').value,
-                              stock: document.getElementById('updateStock').value,
-                              cogs: document.getElementById('updateCogs').value,
-                              buyPrice: document.getElementById('updatePrice').value,
-                              retailPrice: document.getElementById('updateRetailPrice').value,
-                              warehouseLocationName: selectedOptions,
-                              storageLocation: document.getElementById('updateStorageLocationId').value,
-                              rackNumber: document.getElementById('updateRackNumber').value,
-                              note: document.getElementById('updateNote').value,
-                          };
+                    console.log(selectedOptions);
 
-                          const token = localStorage.getItem("bearerToken");
-                          if (!token) {
-                              alert("Please authorize first by providing a Bearer Token.");
-                              return;
-                          }
+                    // Ambil nilai input form
+                    const productData = {
+                        productName: document.getElementById('updateProductName').value,
+                        supplierName: document.getElementById('updateSupplierId').value,
+                        categoryName: document.getElementById('updateCategoryId').value,
+                        measurementName: document.getElementById('updateMeasurementId').value,
+                        discountValue: document.getElementById('updateDiscountId').value,
+                        minStock: document.getElementById('updateMinStock').value,
+                        maxStock: document.getElementById('updateMaxStock').value,
+                        bufferStock: document.getElementById('updateBufferStock').value,
+                        stock: document.getElementById('updateStock').value,
+                        cogs: document.getElementById('updateCogs').value,
+                        buyPrice: document.getElementById('updatePrice').value,
+                        retailPrice: document.getElementById('updateRetailPrice').value,
+                        warehouseLocationName: selectedOptions,
+                        storageLocation: document.getElementById('updateStorageLocationId').value,
+                        rackNumber: document.getElementById('updateRackNumber').value,
+                        expiredDate: document.getElementById('updateExpiredDate').value || "0001-01-01T00:00:00.000Z",
+                        note: document.getElementById('updateNote').value,
+                    };
 
-                          try {
-                              const response = await fetch(`/Api/api/UpdateProduct/${productId}`, {
-                                  method: "PUT",
-                                  headers: {
-                                      "Content-Type": "application/json",
-                                      "Authorization": `Bearer ${token}`,
-                                  },
-                                  body: JSON.stringify(productData)
-                              })
+                    const token = localStorage.getItem("bearerToken");
+                    if (!token) {
+                        alert("Please authorize first by providing a Bearer Token.");
+                        return;
+                    }
 
-                              const result = await response.json();
-                              console.log(result)
-                              if (response.ok) {
-                                  document.getElementById("responseUpdateProduct").value = JSON.stringify(result, null, 4)
-                              } else {
-                                  document.getElementById("responseUpdateProduct").value = `Error: ${result.message}`;
-                                  alert("Failed to create products.");
-                              }
+                    try {
+                        const response = await fetch(`/Api/ProductApi/UpdateProduct/${productId}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                            },
+                            body: JSON.stringify(productData)
+                        })
 
-                          } catch (error) {
-                              console.log(error.message)
-                          }
-                      });
-                  });
+                        const result = await response.json();
+                        console.log(result)
+                        if (response.ok) {
+                            document.getElementById("responseUpdateProduct").value = JSON.stringify(result, null, 4)
+                        } else {
+                            document.getElementById("responseUpdateProduct").value = `Error: ${result.message}`;
+                            alert("Failed to create products.");
+                        }
 
-                  document.addEventListener("DOMContentLoaded", function () {
-                  document.getElementById("DeleteProduct").addEventListener("submit", async function (e) {
-                          e.preventDefault();
+                    } catch (error) {
+                        console.log(error.message)
+                    }
+                });
+            });
 
-                          const productId = document.getElementById("deleteProductId").value;
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("DeleteProduct").addEventListener("submit", async function (e) {
+                    e.preventDefault();
 
-                          const token = localStorage.getItem("bearerToken");
-                          if (!token) {
-                              alert("Please authorize first by providing a Bearer Token.");
-                              return;
-                          }
+                    const productId = document.getElementById("deleteProductId").value;
 
-                          try{
-                          const response = await fetch(`/Api/api/DeleteProduct/${productId}`, {
-                                  method: "DELETE",
-                                  headers: {
-                                      "Content-Type": "application/json",
-                                      "Authorization": `Bearer ${token}`,
-                                  }
-                              });
+                    const token = localStorage.getItem("bearerToken");
+                    if (!token) {
+                        alert("Please authorize first by providing a Bearer Token.");
+                        return;
+                    }
 
-                              const result = await response.json();
-                              if(response.ok){
-                                  productId.value = "";
-                                  document.getElementById("responseDeleteProduct").textContent = JSON.stringify(result, null, 4)
-                              }else{
-                                  document.getElementById("responseDeleteProduct").textContent = `Error: ${result.message}`;
-                                  alert("Failed To Delete Product");
-                              }
-                          }catch(error){
-                              console.log(error)
-                          }
+                    try {
+                        const response = await fetch(`/Api/ProductApi/DeleteProduct/${productId}`, {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                            }
+                        });
 
-                      })
-                  });
+                        const result = await response.json();
+                        if (response.ok) {
+                            productId.value = "";
+                            document.getElementById("responseDeleteProduct").textContent = JSON.stringify(result, null, 4)
+                        } else {
+                            document.getElementById("responseDeleteProduct").textContent = `Error: ${result.message}`;
+                            alert("Failed To Delete Product");
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
+
+                })
+            });
 
         </script>
         <script src="~/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

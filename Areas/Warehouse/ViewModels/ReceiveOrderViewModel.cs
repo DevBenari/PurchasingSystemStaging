@@ -1,8 +1,8 @@
-﻿using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Areas.Warehouse.Models;
+﻿using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Areas.Warehouse.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
+namespace PurchasingSystem.Areas.Warehouse.ViewModels
 {
     public class ReceiveOrderViewModel
     {

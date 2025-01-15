@@ -1,9 +1,9 @@
-﻿using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Repositories;
+﻿using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Repositories;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PurchasingSystemStaging.Areas.MasterData.Models
+namespace PurchasingSystem.Areas.MasterData.Models
 {
     [Table("MstUserActive", Schema = "dbo")]
     public class UserActive : UserActivity

@@ -1,5 +1,5 @@
 ﻿﻿@using Microsoft.AspNetCore.Identity;
-@using PurchasingSystemStaging.Models;
+@using PurchasingSystem.Models;
 
 @{
     var listRole = Context.Session.GetString("ListRole");
@@ -73,7 +73,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link" role="button">
-                                <p>Halo, @(User.FindFirst("UserNamaDepan").Value)</p>
+                                <p>Halo, @(User.FindFirst("NamaUser").Value)</p>
                             </a>
                         </li>
 
@@ -447,24 +447,7 @@
                 <b>Version</b> 5.1.1
             </div>
         </footer>
-    </div>
-
-    <script>
-        $.ajaxSetup({
-            beforeSend: function (xhr) {
-                if (window.jwtToken) {
-                    xhr.setRequestHeader('Authorization', `Bearer ${window.jwtToken}`);
-                }
-            },
-            error: function (xhr) {
-                if (xhr.status === 401) {
-                    alert('Session expired or unauthorized. Redirecting to login...');
-                    localStorage.removeItem('jwtToken');
-                    window.location.href = '/Account/Login';
-                }
-            },
-        });
-    </script>
+    </div>    
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->

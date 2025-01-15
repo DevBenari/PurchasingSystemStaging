@@ -1,12 +1,12 @@
-﻿using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Areas.Transaction.Models;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+﻿using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Areas.Transaction.Models;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PurchasingSystemStaging.Areas.Warehouse.Models
+namespace PurchasingSystem.Areas.Warehouse.Models
 {
     [Table("WrhApprovalUnitRequest", Schema = "dbo")]
     public class ApprovalUnitRequest : UserActivity

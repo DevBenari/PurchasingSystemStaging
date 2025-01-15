@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Reflection;
 
-namespace PurchasingSystemStaging.Helpers
+namespace PurchasingSystem.Helpers
 {
     public static class RoleHelper
     {

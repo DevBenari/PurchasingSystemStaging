@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace PurchasingSystemStaging.Areas.Administrator.Controllers
+namespace PurchasingSystem.Areas.Administrator.Controllers
 {
     [Area("Administrator")]
     [Route("Administrator/[Controller]/[Action]")]
