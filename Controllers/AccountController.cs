@@ -139,7 +139,11 @@ namespace PurchasingSystem.Controllers
                                                       on role.Id equals userRole.RoleId
                                                       where userRole.DepartemenId == user.Id
                                                       select role.Name).Distinct().ToList();
-                            
+
+
+                            // Kompres role menjadi string
+                            string compressedRoles = string.Join(",", roleNames);
+
                             // Create claims
                             var claims = new List<Claim>
                             {
@@ -147,14 +151,15 @@ namespace PurchasingSystem.Controllers
                                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                                 new Claim(ClaimTypes.Name, user.UserName),
                                 new Claim("KodeUser", user.KodeUser ?? string.Empty),
-                                new Claim("NamaUser", user.NamaUser ?? string.Empty)
+                                new Claim("NamaUser", user.NamaUser ?? string.Empty),
+                                new Claim("CompressedRoles", compressedRoles) // Simpan role dalam satu klaim
                             };
 
                             // Tambahkan klaim Role
-                            foreach (var role in roleNames)
-                            {
-                                claims.Add(new Claim(ClaimTypes.Role, role));
-                            }
+                            //foreach (var role in roleNames)
+                            //{
+                            //    claims.Add(new Claim(ClaimTypes.Role, role));
+                            //}
 
                             //Session akan di pertahankan jika browser di tutup tanpa di signout,
                             //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
@@ -181,9 +186,8 @@ namespace PurchasingSystem.Controllers
                             // Buat session baru
                             var sessionId = Guid.NewGuid().ToString();
                             HttpContext.Session.SetString("UserId", user.Id.ToString());
-                            HttpContext.Session.SetString("SessionId", sessionId);                            
-
-                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
+                            HttpContext.Session.SetString("SessionId", sessionId);
+                            HttpContext.Session.SetString("ListRole", string.Join(",", compressedRoles));
 
                             // Simpan session dan role di server-side cache
                             _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30));

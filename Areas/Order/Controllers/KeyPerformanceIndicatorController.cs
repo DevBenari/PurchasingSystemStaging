@@ -125,9 +125,9 @@ namespace PurchasingSystem.Areas.Order.Controllers
                     Address = user.Address,
                     Handphone = user.Handphone,
                     Email = user.Email,
-                    UserPhotoPath = user.Foto
+                    UserPhotoPath = user.Foto,
+                    IsActive = user.IsActive
                 };
-
                 return View(viewModel);
             }
             else if (user == null && checkUserLogin.NamaUser == "SuperAdmin")
@@ -136,7 +136,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                 {
                     UserActiveCode = checkUserLogin.KodeUser,
                     FullName = checkUserLogin.NamaUser,
-                    Email = checkUserLogin.Email
+                    Email = checkUserLogin.Email,
                 };
                 return View(viewModel);
             }

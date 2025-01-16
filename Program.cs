@@ -24,6 +24,7 @@ using PurchasingSystem.Models;
 using PurchasingSystem.Repositories;
 using System.Globalization;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,7 +49,17 @@ var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 builder.Services.AddHttpClient();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions =>
+        {
+            // Enable retry on failure to handle transient errors
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,          // Number of retry attempts
+                maxRetryDelay: TimeSpan.FromSeconds(10), // Delay between retries
+                errorNumbersToAdd: null   // Additional SQL error numbers to consider transient
+            );
+        });
 });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -199,6 +210,7 @@ if (!app.Environment.IsProduction())
 // Tambahkan middleware untuk dekripsi URL
 //app.UseMiddleware<DecryptUrlMiddleware>();
 
+
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
@@ -215,7 +227,32 @@ app.UseRouting();
 //Tambahan Baru
 app.UseSession();
 app.UseAuthentication();
-//app.UseMiddleware<SuperAdminMiddleware>();
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity.IsAuthenticated)
+    {
+        // Ambil klaim role yang dikompresi
+        var compressedRoles = context.User.FindFirst("CompressedRoles")?.Value;
+        if (!string.IsNullOrEmpty(compressedRoles))
+        {
+            // Dekompresi role menjadi array
+            var roles = compressedRoles.Split(',');
+
+            // Buat ClaimsIdentity baru dengan klaim role yang didekompresi
+            var claimsIdentity = new ClaimsIdentity(context.User.Identity);
+
+            foreach (var role in roles)
+            {
+                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+            }
+
+            // Ganti User di context dengan ClaimsPrincipal baru
+            context.User = new ClaimsPrincipal(claimsIdentity);
+        }
+    }
+
+    await next.Invoke();
+});
 app.UseAuthorization();
 
 app.UseFastReport();
