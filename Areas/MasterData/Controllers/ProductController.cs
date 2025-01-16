@@ -1,4 +1,5 @@
 ﻿using FastReport.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,12 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Data.SqlClient.Server;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.MasterData.ViewModels;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.MasterData.ViewModels;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -21,7 +22,7 @@ using System.Web.WebPages;
 using System.Windows.Forms;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
-namespace PurchasingSystemStaging.Areas.MasterData.Controllers
+namespace PurchasingSystem.Areas.MasterData.Controllers
 {
     [Area("MasterData")]
     [Route("MasterData/[Controller]/[Action]")]
@@ -291,36 +292,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             return Ok(response);
         }
 
-        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
-        {
-            try
-            {
-                // Format tanggal tanpa waktu
-                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
-
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/Product/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-                string encryptedPath = _protector.Protect(originalPath);                
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
-
+        [Authorize(Roles = "ReadProduct")]
         [HttpGet]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {            
@@ -364,33 +336,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
 
             return View(model);
         }
-             
-        public IActionResult RedirectToCreate()
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Create:MasterData/Product/CreateProduct";
-                string encryptedPath = _protector.Protect(originalPath);
 
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
-
+        [Authorize(Roles = "CreateProduct")]
         [HttpGet]
         public async Task<ViewResult> CreateProduct()
         {
@@ -423,6 +370,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "CreateProduct")]
         public async Task<IActionResult> CreateProduct(ProductViewModel vm)
         {
             var dateNow = DateTimeOffset.Now;
@@ -505,34 +453,9 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View(vm);
             }                       
         }
-
-        public IActionResult RedirectToDetail(Guid Id)
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Detail:MasterData/Product/DetailProduct/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
-
+       
         [HttpGet]
+        [Authorize(Roles = "UpdateProduct")]
         public async Task<IActionResult> DetailProduct(Guid Id)
         {
             ViewBag.Active = "MasterData";            
@@ -577,6 +500,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "UpdateProduct")]
         public async Task<IActionResult> DetailProduct(ProductViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -635,35 +559,10 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             }
             await FillDataVM(viewModel);
             return View(viewModel);
-        }
-
-        public IActionResult RedirectToDelete(Guid Id)
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Delete:MasterData/Product/DeleteProduct/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }            
-        }
+        }        
 
         [HttpGet]
+        [Authorize(Roles = "DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -684,6 +583,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(ProductViewModel vm)
         {
             //Hapus Data

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using PurchasingSystemStaging.Models;
+using PurchasingSystem.Models;
 
-namespace PurchasingSystemStaging.Repositories
+namespace PurchasingSystem.Repositories
 {
     public class UpdateLastActivityMiddleware
     {

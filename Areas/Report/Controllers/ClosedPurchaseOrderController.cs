@@ -1,19 +1,20 @@
 ﻿using FastReport.Data;
 using FastReport.Export.PdfSimple;
 using FastReport.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Areas.Report.Models;
-using PurchasingSystemStaging.Areas.Report.Repositories;
-using PurchasingSystemStaging.Areas.Warehouse.Models;
-using PurchasingSystemStaging.Areas.Warehouse.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Areas.Report.Models;
+using PurchasingSystem.Areas.Report.Repositories;
+using PurchasingSystem.Areas.Warehouse.Models;
+using PurchasingSystem.Areas.Warehouse.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using QRCoder;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -21,7 +22,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PurchasingSystemStaging.Areas.Report.Controllers
+namespace PurchasingSystem.Areas.Report.Controllers
 {
     [Area("Report")]
     [Route("Report/[Controller]/[Action]")]
@@ -59,38 +60,9 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
         }
-
-        public IActionResult RedirectToIndex(int? month, int? year, string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
-        {
-            try
-            {
-                // Format tanggal tanpa waktu
-                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
-
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Report/ClosedPurchaseOrder/Index?month={month}&year={year}&filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }
-        }
-
+       
         [HttpGet]
+        [Authorize(Roles = "ReadClosedPurchaseOrder")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "Report";
@@ -136,34 +108,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
 
             return View(model);
         }
-
-        public IActionResult RedirectToDetail(Guid Id)
-        {
-            try
-            {
-                ViewBag.Active = "Report";
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Detail:Report/ClosedPurchaseOrder/DetailClosedPurchaseOrder/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }
-        }
-
+        
         [HttpGet]
         public async Task<IActionResult> DetailClosedPurchaseOrder(Guid Id)
         {
@@ -193,6 +138,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "PreviewClosingPurchaseOrder")]
         public async Task<IActionResult> PreviewClosingPurchaseOrder(Guid Id)
         {
             var ClosingPurchaseOrder = await _closingPurchaseOrderRepository.GetClosingPurchaseOrderById(Id);
@@ -253,6 +199,7 @@ namespace PurchasingSystemStaging.Areas.Report.Controllers
             return File(stream, "application/pdf");
         }
 
+        [Authorize(Roles = "DownloadClosingPurchaseOrder")]
         public async Task<IActionResult> DownloadClosingPurchaseOrder(Guid Id)
         {
             var ClosingPurchaseOrder = await _closingPurchaseOrderRepository.GetClosingPurchaseOrderById(Id);

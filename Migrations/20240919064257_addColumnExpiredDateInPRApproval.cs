@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PurchasingSystemStaging.Migrations
+namespace PurchasingSystem.Migrations
 {
     public partial class addColumnExpiredDateInPRApproval : Migration
     {

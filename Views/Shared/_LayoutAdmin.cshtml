@@ -1,5 +1,5 @@
 ﻿﻿@using Microsoft.AspNetCore.Identity;
-@using PurchasingSystemStaging.Models;
+@using PurchasingSystem.Models;
 
 @{
     var listRole = Context.Session.GetString("ListRole");
@@ -73,7 +73,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link" role="button">
-                                <p>Halo, @(User.FindFirst("UserNamaDepan").Value)</p>
+                                <p>Halo, @(User.FindFirst("NamaUser").Value)</p>
                             </a>
                         </li>
 
@@ -153,98 +153,98 @@
                         {
                             <li class="@(ViewBag.Active == "Dashboard" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Home")">
-                                    <i class="nav-icon fas fa-home" style="color:#FFFFFF"></i> Dashboard
+                                    <i class="nav-icon fas fa-home" style="color:#FFFFFF"></i> <p>Dashboard</p>
                                 </div>
                             </li>
                             <li class="nav-header">Setup</li>
-                            @* <li class="@(ViewBag.Active == "Administrator" ? "nav-item menu-open active":"")">
+                            <li class="@(ViewBag.Active == "Administrator" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "Administrator" })">
-                                    <i class="nav-icon fas fa-monument" style="color:#FFFFFF"></i> Administrator
+                                    <i class="nav-icon fas fa-monument" style="color:#FFFFFF"></i> <p>Administrator</p>
                                 </div>
-                            </li> *@
+                            </li>
                             <li class="@(ViewBag.Active == "MasterData" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "MasterData" })">
-                                    <i class="nav-icon fas fa-table" style="color:#FFFFFF"></i> Master Data
+                                    <i class="nav-icon fas fa-table" style="color:#FFFFFF"></i> <p>Master Data</p>
                                 </div>
                             </li>
                             <li class="nav-header">Purchasing</li>
                             <li class="@(ViewBag.Active == "PurchaseRequest" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">
-                                    <i class="nav-icon fas fa-cart-plus" style="color:#FFFFFF"></i> Purchase Request
+                                    <i class="nav-icon fas fa-cart-plus" style="color:#FFFFFF"></i> <p>Purchase Request</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "ApprovalPurchaseRequest" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">
-                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Purchase Req
+                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> <p>Approval Purchase Req</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "PurchaseOrder" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Order" })">
-                                    <i class="nav-icon fas fa-shopping-bag" style="color:#FFFFFF"></i> Purchase Order @*<span class="float-right badge bg-info">@ViewBag.CountPurchaseRequestStatus</span>*@
+                                    <i class="nav-icon fas fa-shopping-bag" style="color:#FFFFFF"></i> <p>Purchase Order</p>
                                 </div>
                             </li>
                             <li class="nav-header">Pharmacy</li>
                             <li class="@(ViewBag.Active == "UnitRequest" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">
-                                    <i class="nav-icon fas fa-first-aid" style="color:#FFFFFF"></i> Unit Request
+                                    <i class="nav-icon fas fa-first-aid" style="color:#FFFFFF"></i> <p>Unit Request</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "ApprovalUnitRequest" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalUnitRequest", new { area = "Warehouse" })">
-                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Unit Request
+                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> <p>Approval Unit Request</p>
                                 </div>
                             </li>
                             <li class="nav-header">Warehouse Management</li>
                             <li class="@(ViewBag.Active == "ReceiveOrder" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">
-                                    <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i> Receive Order
+                                    <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i> <p>Receive Order</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "QtyDifference" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "QtyDifference", new { area = "Warehouse" })">
-                                    <i class="nav-icon fas fa-truck-loading" style="color:#FFFFFF"></i> Qty Difference
+                                    <i class="nav-icon fas fa-truck-loading" style="color:#FFFFFF"></i> <p>Qty Difference</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "ApprovalQtyDifference" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalQtyDifference", new { area = "Order" })">
-                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Qty Difference
+                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> <p>Approval Qty Difference</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "UnitOrder" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "UnitOrder", new { area = "Warehouse" })">
-                                    <i class="nav-icon fas fa-calculator" style="color:#FFFFFF"></i> Unit Order
+                                    <i class="nav-icon fas fa-calculator" style="color:#FFFFFF"></i> <p>Unit Order</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "WarehouseTransfer" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "WarehouseTransfer", new { area = "Warehouse" })">
-                                    <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> Warehouse Transfer
+                                    <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> <p>Warehouse Transfer</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "ProductReturn" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ProductReturn", new { area = "Warehouse" })">
-                                    <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> Product Return
+                                    <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> <p>Product Return</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "ApprovalProductReturn" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalProductReturn", new { area = "Warehouse" })">
-                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Product Return
+                                    <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> <p>Approval Product Return</p>
                                 </div>
                             </li>
                             <li class="nav-header">General</li>
                             <li class="@(ViewBag.Active == "StockMonitoring" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "StockMonitoring", new { area = "General" })">
-                                    <i class="nav-icon fas fa-clipboard-list" style="color:#FFFFFF"></i> Stock Monitoring
+                                    <i class="nav-icon fas fa-clipboard-list" style="color:#FFFFFF"></i> <p>Stock Monitoring</p>
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "KeyPerformanceIndikator" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "Order" })">
-                                    <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> Key Performance Indicator
+                                    <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> <p>Key Performance Indicator</p>
                                 </div>
                             </li>
                             <li class="nav-header">Reporting</li>
                             <li class="@(ViewBag.Active == "Report" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "Report" })">
-                                    <i class="nav-icon fas fa-file-alt" style="color:#FFFFFF"></i> Report
+                                    <i class="nav-icon fas fa-file-alt" style="color:#FFFFFF"></i> <p>Report</p>
                                 </div>
                             </li>
                         }
@@ -255,7 +255,7 @@
                                 var roles = listRole.Split(',');
                                 <li class="@(ViewBag.Active == "Dashboard" ? "nav-item menu-open active":"")">
                                     <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Home")">
-                                        <i class="nav-icon fas fa-home" style="color:#FFFFFF"></i> Dashboard
+                                        <i class="nav-icon fas fa-home" style="color:#FFFFFF"></i> <p>Dashboard</p>
                                     </div>
                                 </li>
 
@@ -264,20 +264,20 @@
                                     <li class="nav-header">Setup</li>                                   
                                 }
 
-                                @* if (roles.Contains("ReadGroupRole") || roles.Contains("ReadApi"))
+                                if (roles.Contains("ReadGroupRole") || roles.Contains("ReadApi"))
                                 {
                                     <li class="@(ViewBag.Active == "Administrator" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "Administrator" })">
-                                            <i class="nav-icon fas fa-monument" style="color:#FFFFFF"></i> Administrator
+                                            <i class="nav-icon fas fa-monument" style="color:#FFFFFF"></i> <p>Administrator</p>
                                         </div>
                                     </li>
-                                } *@
+                                }
 
                                 if (roles.Contains("ReadDepartment") || roles.Contains("ReadPosition") || roles.Contains("ReadUserActive") || roles.Contains("ReadSupplier") || roles.Contains("ReadProduct") || roles.Contains("ReadTermOfPayment") || roles.Contains("ReadBank") || roles.Contains("ReadUnitLocation") || roles.Contains("ReadWarehouseLocation") || roles.Contains("ReadLeadTime") || roles.Contains("ReadInitialStock"))
                                 {                                
                                     <li class="@(ViewBag.Active == "MasterData" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "MasterData" })">
-                                            <i class="nav-icon fas fa-table" style="color:#FFFFFF"></i> Master Data
+                                            <i class="nav-icon fas fa-table" style="color:#FFFFFF"></i> <p>Master Data</p>
                                         </div>
                                     </li>
                                 }
@@ -287,7 +287,7 @@
                                     <li class="nav-header">Purchasing</li>
                                     <li class="@(ViewBag.Active == "PurchaseRequest" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">
-                                            <i class="nav-icon fas fa-cart-plus" style="color:#FFFFFF"></i> Purchase Request
+                                            <i class="nav-icon fas fa-cart-plus" style="color:#FFFFFF"></i> <p>Purchase Request</p>
                                         </div>
                                     </li>
                                 }
@@ -296,7 +296,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "ApprovalPurchaseRequest" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">
-                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Purchase Req
+                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> <p>Approval Purchase Req</p>
                                         </div>
                                     </li>
                                 }
@@ -304,7 +304,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "PurchaseOrder" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "PurchaseOrder", new { area = "Order" })">
-                                            <i class="nav-icon fas fa-shopping-bag" style="color:#FFFFFF"></i> Purchase Order @*<span class="float-right badge bg-info">@ViewBag.CountPurchaseRequestStatus</span>*@
+                                            <i class="nav-icon fas fa-shopping-bag" style="color:#FFFFFF"></i> <p>Purchase Order</p>
                                         </div>
                                     </li>
                                 }
@@ -313,7 +313,7 @@
                                     <li class="nav-header">Pharmacy</li>
                                     <li class="@(ViewBag.Active == "UnitRequest" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">
-                                            <i class="nav-icon fas fa-first-aid" style="color:#FFFFFF"></i> Unit Request
+                                            <i class="nav-icon fas fa-first-aid" style="color:#FFFFFF"></i> <p>Unit Request</p>
                                         </div>
                                     </li>
                                 }
@@ -322,7 +322,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "ApprovalUnitRequest" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalUnitRequest", new { area = "Warehouse" })">
-                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Unit Request
+                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> <p>Approval Unit Request</p>
                                         </div>
                                     </li>
                                 }
@@ -331,7 +331,7 @@
                                     <li class="nav-header">Warehouse Management</li>
                                     <li class="@(ViewBag.Active == "ReceiveOrder" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ReceiveOrder", new { area = "Warehouse" })">
-                                            <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i> Receive Order
+                                            <i class="nav-icon fas fa-box-open" style="color:#FFFFFF"></i> <p>Receive Order</p>
                                         </div>
                                     </li>
                                 }
@@ -339,7 +339,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "QtyDifference" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "QtyDifference", new { area = "Warehouse" })">
-                                            <i class="nav-icon fas fa-truck-loading" style="color:#FFFFFF"></i> Qty Difference
+                                            <i class="nav-icon fas fa-truck-loading" style="color:#FFFFFF"></i> <p>Qty Difference</p>
                                         </div>
                                     </li>
                                 }
@@ -347,7 +347,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "ApprovalQtyDifference" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalQtyDifference", new { area = "Order" })">
-                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Qty Difference
+                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> <p>Approval Qty Difference</p>
                                         </div>
                                     </li>
                                 }
@@ -356,7 +356,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "UnitOrder" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "UnitOrder", new { area = "Warehouse" })">
-                                            <i class="nav-icon fas fa-calculator" style="color:#FFFFFF"></i> Unit Order
+                                            <i class="nav-icon fas fa-calculator" style="color:#FFFFFF"></i> <p>Unit Order</p>
                                         </div>
                                     </li>
                                 }
@@ -365,7 +365,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "WarehouseTransfer" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "WarehouseTransfer", new { area = "Warehouse" })">
-                                            <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> Warehouse Transfer
+                                            <i class="nav-icon fas fa-people-carry" style="color:#FFFFFF"></i> <p>Warehouse Transfer</p>
                                         </div>
                                     </li>
                                 }
@@ -374,7 +374,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "ProductReturn" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ProductReturn", new { area = "Warehouse" })">
-                                            <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> Product Return
+                                            <i class="nav-icon fas fa-dolly" style="color:#FFFFFF"></i> <p>Product Return</p>
                                         </div>
                                     </li>
                                 }
@@ -383,7 +383,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "ApprovalProductReturn" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "ApprovalProductReturn", new { area = "Warehouse" })">
-                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> Approval Product Return
+                                            <i class="nav-icon fas fa-calendar-check" style="color:#FFFFFF"></i> <p>Approval Product Return</p>
                                         </div>
                                     </li>
                                 }
@@ -393,7 +393,7 @@
                                     <li class="nav-header">General</li>
                                     <li class="@(ViewBag.Active == "StockMonitoring" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "StockMonitoring", new { area = "General" })">
-                                            <i class="nav-icon fas fa-clipboard-list" style="color:#FFFFFF"></i> Stock Monitoring
+                                            <i class="nav-icon fas fa-clipboard-list" style="color:#FFFFFF"></i> <p>Stock Monitoring</p>
                                         </div>
                                     </li>
                                 }
@@ -402,7 +402,7 @@
                                 {
                                     <li class="@(ViewBag.Active == "KeyPerformanceIndikator" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "Order" })">
-                                            <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> Key Performance Indicator
+                                            <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> <p>Key Performance Indicator</p>
                                         </div>
                                     </li>
                                 }
@@ -412,7 +412,7 @@
                                     <li class="nav-header">Reporting</li>
                                     <li class="@(ViewBag.Active == "Report" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "Report" })">
-                                            <i class="nav-icon fas fa-file-alt" style="color:#FFFFFF"></i> Report
+                                            <i class="nav-icon fas fa-file-alt" style="color:#FFFFFF"></i> <p>Report</p>
                                         </div>
                                     </li>
                                 }
@@ -447,24 +447,7 @@
                 <b>Version</b> 5.1.1
             </div>
         </footer>
-    </div>
-
-    <script>
-        $.ajaxSetup({
-            beforeSend: function (xhr) {
-                if (window.jwtToken) {
-                    xhr.setRequestHeader('Authorization', `Bearer ${window.jwtToken}`);
-                }
-            },
-            error: function (xhr) {
-                if (xhr.status === 401) {
-                    alert('Session expired or unauthorized. Redirecting to login...');
-                    localStorage.removeItem('jwtToken');
-                    window.location.href = '/Account/Login';
-                }
-            },
-        });
-    </script>
+    </div>    
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->

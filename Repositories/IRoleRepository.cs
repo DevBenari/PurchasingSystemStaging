@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace PurchasingSystemStaging.Repositories
+namespace PurchasingSystem.Repositories
 {
     public interface IRoleRepository
     {

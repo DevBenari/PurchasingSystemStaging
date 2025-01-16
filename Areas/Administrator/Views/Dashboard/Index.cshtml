@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Dashboard Administrator";
+    Layout = "~/Views/Shared/_TopNavbarAdministrator.cshtml";
+    var listRole = Context.Session.GetString("ListRole");
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-widget widget-user">
+                <div class="widget-user-header bg-info">
+                    <h1 class="widget-user-username"><b>@ViewBag.Title</b></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+    <div class="row mb-2">
+        @if (User.Identity.Name == "superadmin@admin.com")
+        {
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="cursor-pointer" data-href="@Url.Action("Index", "RoleUser", new { area = "Administrator" })">
+                    <div class="small-box " style="background-color:#347FC4">
+                        @*change color in adminlte.min.cs*@
+                        <div class="inner">
+                            <h4 class="fw-bold" style="color:#ffffff">Role User</h4>
+                            <p style="color:#ffffff">Role User</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-monument"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="cursor-pointer" data-href="@Url.Action("Index", "Api", new { area = "Administrator" })">
+                    <div class="small-box " style="background-color:#347FC4">
+                        @*change color in adminlte.min.cs*@
+                        <div class="inner">
+                            <h4 class="fw-bold" style="color:#ffffff">Get API</h4>
+                            <p style="color:#ffffff">Get API</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-monument"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="cursor-pointer" data-href="@Url.Action("Index", "Version", new { area = "Administrator" })">
+                    <div class="small-box " style="background-color:#347FC4">
+                        @*change color in adminlte.min.cs*@
+                        <div class="inner">
+                            <h4 class="fw-bold" style="color:#ffffff">Version System</h4>
+                            <p style="color:#ffffff">Version System</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-monument"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="cursor-pointer" data-href="@Url.Action("Index", "Logging", new { area = "Administrator" })">
+                    <div class="small-box " style="background-color:#347FC4">
+                        @*change color in adminlte.min.cs*@
+                        <div class="inner">
+                            <h4 class="fw-bold" style="color:#ffffff">Logging System</h4>
+                            <p style="color:#ffffff">Logging System</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-monument"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }        
+    </div>    
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+@section Scripts {
+    <style>
+        .cursor-pointer {
+            cursor: pointer; /* Tambahkan ini untuk mengubah kursor */
+        }
+    </style>
+
+    <script>
+        //Start Pengaturan Click Pada Button DIV Index
+        document.addEventListener("DOMContentLoaded", () => {
+            const rows = document.querySelectorAll("div[data-href]");
+
+            rows.forEach(row => {
+                row.addEventListener("click", () => {
+                    window.location.href = row.dataset.href;
+                });
+            });
+        });
+                            //End Pengaturan Click Pada Button DIV Index
+    </script>
+    }

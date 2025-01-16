@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Get Data API";
+    Layout = "~/Views/Shared/_TopNavbarAdministrator.cshtml";
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12 bg-white">
+            <div class="card-header bg-cyan">
+                <h3 class="card-title fw-bold" style="color:#ffffff">@ViewBag.Title</h3>
+            </div>
+            <form id="apiForm" action="@Url.Action("CreateKategoriobat", "Api")" method="get">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label>Url API Code:</label>
+                            <input type="text" class="form-control" name="apiCode" placeholder="Api Code" value="https://app.mmchospital.co.id/devel_mantap/api.php?mod=api&cmd=get_kategori_obat&return_type=json">
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-orange">
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-primary bg-indigo">
+                            <div style="color:#ffffff">Get Data</div>
+                        </button>
+                        <div class="btn btn-default" data-href="@Url.Action("Index", "Api")">Cancel</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <style>
+        .cursor-pointer {
+            cursor: pointer; /* Tambahkan ini untuk mengubah kursor */
+        }
+    </style>
+
+    <script>
+        //Start Pengaturan Click Pada Button DIV Index
+        document.addEventListener("DOMContentLoaded", () => {
+            const rows = document.querySelectorAll("div[data-href]");
+
+            rows.forEach(row => {
+                row.addEventListener("click", () => {
+                    window.location.href = row.dataset.href;
+                });
+            });
+        });
+                                    //End Pengaturan Click Pada Button DIV Index
+    </script>
+    }

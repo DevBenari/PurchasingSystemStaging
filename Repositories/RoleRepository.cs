@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
 
-namespace PurchasingSystemStaging.Repositories
+namespace PurchasingSystem.Repositories
 {
     public class RoleRepository : IRoleRepository
     {

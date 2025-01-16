@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace PurchasingSystemStaging.Repositories
+namespace PurchasingSystem.Repositories
 {
     public class SessionService : ISessionService
     {

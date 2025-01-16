@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Text;
 
-namespace PurchasingSystemStaging.Repositories
+namespace PurchasingSystem.Repositories
 {
     public static class Base62Encoder
     {

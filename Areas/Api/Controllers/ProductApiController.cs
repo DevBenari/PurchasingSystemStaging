@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.MasterData.ViewModels;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
-using PurchasingSystemStaging.ViewModels;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.MasterData.ViewModels;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
+using PurchasingSystem.ViewModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -17,7 +17,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 
-namespace PurchasingSystemStaging.Areas.Api.Controllers
+namespace PurchasingSystem.Areas.Api.Controllers
 {
     [Area("Api")]
     [Route("Api/[Controller]/[Action]")]
@@ -248,11 +248,13 @@ namespace PurchasingSystemStaging.Areas.Api.Controllers
                 RetailPrice = vm.RetailPrice,
                 StorageLocation = vm.StorageLocation,
                 RackNumber = vm.RackNumber,
-                Note = vm.Note
+                ExpiredDate = vm.ExpiredDate,
+                Note = vm.Note,
+                IsActive = true
             };
 
             // Simpan produk baru
-           var result = _productRepository.Tambah(product);
+            var result = _productRepository.Tambah(product);
 
             return Ok(new { Message = "Product created successfully!", result = result });
         }
@@ -333,6 +335,8 @@ namespace PurchasingSystemStaging.Areas.Api.Controllers
             product.Note = vm.Note;
             product.UpdateDateTime = DateTime.Now;  // Waktu update
             product.UpdateBy = new Guid(getUser.Id);  // Update by user yang login
+            product.ExpiredDate = DateTime.Now;
+            product.IsActive = true;
 
             // Mengecek apakah ada produk dengan nama yang sama (opsional, tergantung kebutuhan)
             var existingProduct = _productRepository.GetAllProduct()

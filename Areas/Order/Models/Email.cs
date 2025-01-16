@@ -1,8 +1,8 @@
-﻿using PurchasingSystemStaging.Repositories;
+﻿using PurchasingSystem.Repositories;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace PurchasingSystemStaging.Areas.Order.Models
+namespace PurchasingSystem.Areas.Order.Models
 {
     [Table("OrdPurchaseEmail", Schema = "dbo")]
     public class Email : UserActivity

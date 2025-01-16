@@ -4,14 +4,14 @@
 }
 
 @using Microsoft.AspNetCore.Identity;
-@using PurchasingSystemStaging.Areas.Order.Models;
+@using PurchasingSystem.Areas.Order.Models;
 
 @{
     var listRole = Context.Session.GetString("ListRole");
     @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
 
 }
-@model PurchasingSystemStaging.Areas.Order.Models.PurchaseRequest
+@model PurchasingSystem.Areas.Order.Models.PurchaseRequest
 
 <!-- Main content -->
 <section class="content">
@@ -305,15 +305,11 @@
                                             {
                                                 <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo fw-bold">
                                                 <a class="btn bg-indigo" id="btnubah">Change</a>
-                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
-                                                <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
+                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>                                                
                                             }
                                         }
                                     }
-                                    else
-                                    {
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
-                                    }
+                                    <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "PurchaseRequest", new { area = "Order" })">Cancel</div>
                                 }
                             </div>
 

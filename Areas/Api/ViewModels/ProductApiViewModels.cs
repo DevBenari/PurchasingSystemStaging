@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PurchasingSystemStaging.Areas.Api.ViewModels
+namespace PurchasingSystem.Areas.Api.ViewModels
 {
     public class ProductApiViewModels
     {

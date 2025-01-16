@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Data;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Data;
 
-namespace PurchasingSystemStaging.Areas.Order.Repositories
+namespace PurchasingSystem.Areas.Order.Repositories
 {
     public class IApprovalQtyDifferenceRepository
     {

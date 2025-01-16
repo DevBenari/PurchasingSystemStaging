@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PurchasingSystemStaging.Areas.Order.ViewModels
+namespace PurchasingSystem.Areas.Order.ViewModels
 {
     public class EmailViewModel
     {

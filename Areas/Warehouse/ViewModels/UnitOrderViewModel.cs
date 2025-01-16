@@ -1,6 +1,6 @@
-﻿using PurchasingSystemStaging.Areas.Warehouse.Models;
+﻿using PurchasingSystem.Areas.Warehouse.Models;
 
-namespace PurchasingSystemStaging.Areas.Warehouse.ViewModels
+namespace PurchasingSystem.Areas.Warehouse.ViewModels
 {
     public class UnitOrderViewModel
     {

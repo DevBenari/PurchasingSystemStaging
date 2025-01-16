@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace PurchasingSystemStaging.Hubs
+namespace PurchasingSystem.Hubs
 {
     public class ChatHub:Hub
     {        public async Task SendMessage(string user, string message)

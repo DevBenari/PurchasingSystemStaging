@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace PurchasingSystemStaging.Models
+namespace PurchasingSystem.Models
 {
     public class ApplicationUser : IdentityUser
     {

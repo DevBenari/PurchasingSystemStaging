@@ -4,7 +4,7 @@
     ViewBag.Title = "Login System";
 }
 
-<div class="login-wrap p-4 p-md-5">    
+<div class="login-wrap p-4 p-md-5">
     @if (TempData["Error"] != null)
     {
         <div class="col-md-12 alert alert-danger">
@@ -26,7 +26,6 @@
                 </span>
             </div>
             <!-- End Code -->
-        
             <!--    <div class="form-check form-check-inline">
                     <label>
                         <input type="checkbox" id="showPassword">
@@ -37,17 +36,17 @@
         <button type="submit" class="form-control btn btn-primary rounded submit px-3"><div style="color:white">Login</div></button>
     </form>
     @*<div class="form-check form-check-inline">
-        <label asp-for="RememberMe">
-            <input asp-for="RememberMe">
-            @Html.DisplayNameFor(m => m.RememberMe)
-        </label>
+    <label asp-for="RememberMe">
+    <input asp-for="RememberMe">
+    @Html.DisplayNameFor(m => m.RememberMe)
+    </label>
     </div>*@
     @*<div class="text-center">
-        <a href="#">Pusat Bantuan</a>
+    <a href="#">Pusat Bantuan</a>
     </div>*@
     @*<div class="text-center pt-1 mb-1 pb-1">
-        <a href="#" onclick="forgot()" id="forgotPassword">Pusat Bantuan</a>
-    </div>*@    
+    <a href="#" onclick="forgot()" id="forgotPassword">Pusat Bantuan</a>
+    </div>*@
 </div>
 
 @section Scripts {
@@ -81,39 +80,39 @@
             };
 
             @*window.onload = function () {
-                swal("Oops...", '@TempData["UserActiveMessage"]', "error");
-                document.getElementById("password").focus();
-            };*@
+        swal("Oops...", '@TempData["UserActiveMessage"]', "error");
+        document.getElementById("password").focus();
+        };*@
         </script>
     }
     else if (TempData["UserOnlineMessage"] != null)
     {
         <script>
-                window.onload = function () {
-                    swal({
-                        title: "Oops...",
-                        text: '@TempData["UserOnlineMessage"]',
-                        type: "warning"
-                    }).then(() => {
-                        // Setelah swal ditutup, fokus pada input password
-                        document.getElementById("password").focus();
-                    });
-                };
+            window.onload = function () {
+                swal({
+                    title: "Oops...",
+                    text: '@TempData["UserOnlineMessage"]',
+                    type: "warning"
+                }).then(() => {
+                    // Setelah swal ditutup, fokus pada input password
+                    document.getElementById("password").focus();
+                });
+            };
         </script>
     }
     else if (TempData["UserLockOut"] != null)
     {
         <script type="text/javascript">
-                window.onload = function () {
-                    swal({
-                        title: "Locked !",
-                        text: '@TempData["UserLockOut"]',
-                        type: "error"
-                    }).then(() => {
-                        // Setelah swal ditutup, fokus pada input password
-                        document.getElementById("password").focus();
-                    });
-                };
+            window.onload = function () {
+                swal({
+                    title: "Locked !",
+                    text: '@TempData["UserLockOut"]',
+                    type: "error"
+                }).then(() => {
+                    // Setelah swal ditutup, fokus pada input password
+                    document.getElementById("password").focus();
+                });
+            };
         </script>
     }
 

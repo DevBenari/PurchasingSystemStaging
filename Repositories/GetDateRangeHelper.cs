@@ -1,4 +1,4 @@
-﻿namespace PurchasingSystemStaging.Repositories
+﻿namespace PurchasingSystem.Repositories
 {
     public static class GetDateRangeHelper
     {

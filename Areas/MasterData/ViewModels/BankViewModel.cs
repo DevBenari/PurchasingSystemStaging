@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PurchasingSystemStaging.Areas.MasterData.ViewModels
+namespace PurchasingSystem.Areas.MasterData.ViewModels
 {
     public class BankViewModel
     {

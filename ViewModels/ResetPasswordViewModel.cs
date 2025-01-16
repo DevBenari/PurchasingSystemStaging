@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PurchasingSystemStaging.ViewModels
+namespace PurchasingSystem.ViewModels
 {
     public class ResetPasswordViewModel
     {
