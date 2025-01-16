@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
-namespace PurchasingSystemStaging.Models
+namespace PurchasingSystem.Models
 {
     public class ApplicationUserClaims : UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>
     {

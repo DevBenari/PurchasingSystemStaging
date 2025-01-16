@@ -1,4 +1,4 @@
-﻿namespace PurchasingSystemStaging.Models
+﻿namespace PurchasingSystem.Models
 {
     public class ApplicationRole
     {

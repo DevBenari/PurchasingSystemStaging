@@ -1,21 +1,22 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Areas.Warehouse.Models;
-using PurchasingSystemStaging.Areas.Warehouse.Repositories;
-using PurchasingSystemStaging.Areas.Warehouse.ViewModels;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Hubs;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Areas.Warehouse.Models;
+using PurchasingSystem.Areas.Warehouse.Repositories;
+using PurchasingSystem.Areas.Warehouse.ViewModels;
+using PurchasingSystem.Data;
+using PurchasingSystem.Hubs;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.Data.SqlClient;
 
-namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
+namespace PurchasingSystem.Areas.Warehouse.Controllers
 {
     [Area("Warehouse")]
     [Route("Warehouse/[Controller]/[Action]")]
@@ -48,6 +49,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
             _productReturnRepository = productReturnRepository;            
         }
         [HttpGet]
+        [Authorize(Roles = "ReadApprovalProductReturn")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "ApprovalProductReturn";
@@ -184,6 +186,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "UpdateApprovalProductReturn")]
         public async Task<ViewResult> DetailApprovalProductReturn(Guid Id)
         {
             ViewBag.Active = "ApprovalProductReturn";
@@ -244,6 +247,7 @@ namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "UpdateApprovalProductReturn")]
         public async Task<IActionResult> DetailApprovalProductReturn(ApprovalProductReturnViewModel viewModel)
         {
             ViewBag.Active = "ApprovalProductReturn";

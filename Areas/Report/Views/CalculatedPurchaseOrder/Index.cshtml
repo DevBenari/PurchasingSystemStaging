@@ -3,10 +3,10 @@
     Layout = "~/Views/Shared/_TopNavbarReportPurchaseOrder.cshtml";
 }
 
-@using PurchasingSystemStaging.Areas.Order.Models;
-@using PurchasingSystemStaging.Models;
-@using PurchasingSystemStaging.Repositories;
-@using static PurchasingSystemStaging.Areas.Report.Controllers.CalculatedPurchaseOrderController;
+@using PurchasingSystem.Areas.Order.Models;
+@using PurchasingSystem.Models;
+@using PurchasingSystem.Repositories;
+@using static PurchasingSystem.Areas.Report.Controllers.CalculatedPurchaseOrderController;
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
 @model Pagination<PurchaseOrderWithDetailSupplier>

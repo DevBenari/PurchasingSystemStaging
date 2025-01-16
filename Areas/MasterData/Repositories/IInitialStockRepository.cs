@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Data;
+using PurchasingSystem.Repositories;
 
-namespace PurchasingSystemStaging.Areas.MasterData.Repositories
+namespace PurchasingSystem.Areas.MasterData.Repositories
 {
     public class IInitialStockRepository
     {

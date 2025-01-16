@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "API Master Data";
+    Layout = "~/Views/Shared/_TopNavbarAdministrator.cshtml";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-widget widget-user">
+                <div class="widget-user-header bg-info">
+                    <h1 class="widget-user-username"><b>@ViewBag.Title</b></h1>
+                </div>               
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+    <div class="row mb-2">
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="cursor-pointer" data-href="@Url.Action("GetDataSupplier", "Api", new { area = "Administrator" })">
+                <div class="small-box " style="background-color:#347FC4">
+                    @*change color in adminlte.min.cs*@
+                    <div class="inner">
+                        <h4 class="fw-bold" style="color:#ffffff">Get API Supplier</h4>
+                        <p style="color:#ffffff">Get API</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-rss"></i>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="cursor-pointer" data-href="@Url.Action("GetDataSatuan", "Api", new { area = "Administrator" })">
+                <div class="small-box " style="background-color:#347FC4">
+                    @*change color in adminlte.min.cs*@
+                    <div class="inner">
+                        <h4 class="fw-bold" style="color:#ffffff">Get API Satuan</h4>
+                        <p style="color:#ffffff">Get API</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-rss"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="cursor-pointer" data-href="@Url.Action("GetDataKategoriObat", "Api", new { area = "Administrator" })">
+                <div class="small-box " style="background-color:#347FC4">
+                    @*change color in adminlte.min.cs*@
+                    <div class="inner">
+                        <h4 class="fw-bold" style="color:#ffffff">Get API Kategori Obat</h4>
+                        <p style="color:#ffffff">Get API</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-rss"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="cursor-pointer" data-href="@Url.Action("GetDataObat", "Api", new { area = "Administrator" })">
+                <div class="small-box " style="background-color:#347FC4">
+                    @*change color in adminlte.min.cs*@
+                    <div class="inner">
+                        <h4 class="fw-bold" style="color:#ffffff">Get API Obat</h4>
+                        <p style="color:#ffffff">Get API</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-rss"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="cursor-pointer" data-href="@Url.Action("GetDataDiskon", "Api", new { area = "Administrator" })">
+                <div class="small-box " style="background-color:#347FC4">
+                    @*change color in adminlte.min.cs*@
+                    <div class="inner">
+                        <h4 class="fw-bold" style="color:#ffffff">Get API Diskon</h4>
+                        <p style="color:#ffffff">Get API</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-rss"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- box -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+@section Scripts {
+    <style>
+        .cursor-pointer {
+            cursor: pointer; /* Tambahkan ini untuk mengubah kursor */
+        }
+    </style>
+
+    <script>
+        //Start Pengaturan Click Pada Button DIV Index
+        document.addEventListener("DOMContentLoaded", () => {
+            const rows = document.querySelectorAll("div[data-href]");
+
+            rows.forEach(row => {
+                row.addEventListener("click", () => {
+                    window.location.href = row.dataset.href;
+                });
+            });
+        });
+                            //End Pengaturan Click Pada Button DIV Index
+    </script>
+    }

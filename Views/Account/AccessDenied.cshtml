@@ -1,0 +1,133 @@
+﻿@{
+    Layout = null; // Jika menggunakan layout global, Anda bisa menghapus baris ini
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied</title>
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1d3557, #457b9d);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .access-denied-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+            .access-denied-container h1 {
+                font-size: 3rem;
+                margin: 0;
+                color: #e63946;
+            }
+
+            .access-denied-container h2 {
+                font-size: 1.5rem;
+                margin: 20px 0;
+                font-weight: 400;
+                color: #f1faee;
+            }
+
+            .access-denied-container p {
+                font-size: 1rem;
+                margin-bottom: 30px;
+                color: #f8f9fa;
+            }
+
+            .access-denied-container a {
+                text-decoration: none;
+                background: #e63946;
+                color: #fff;
+                padding: 10px 20px;
+                border-radius: 25px;
+                transition: 0.3s;
+                font-size: 1rem;
+            }
+
+                .access-denied-container a:hover {
+                    background: #f77f00;
+                    transform: scale(1.1);
+                    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+                }
+
+        /* Decorative */
+        .fa-ban {
+            font-size: 6rem;
+            color: #e63946;
+            margin-bottom: 20px;
+        }
+
+        .typing-text {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #f1faee;
+            height: 1.5rem; /* Prevent layout shift */
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="access-denied-container">
+        <div class="typing-text" id="typing-text"></div>
+        <i class="fas fa-ban"></i>
+        <h1>403</h1>
+        <h2>Access Denied</h2>
+        <p>Oops! You do not have the required permission to access this page.</p>
+        <a href="/" id="back-home">Go Back to Home</a>
+    </div>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Animate the button when hovered
+            $('#back-home').hover(function () {
+                $(this).css('background-color', '#2a9d8f').css('color', '#fff');
+            }, function () {
+                $(this).css('background-color', '#e63946').css('color', '#fff');
+            });
+
+            // Fade out the page on click
+            $('#back-home').click(function (e) {
+                e.preventDefault();
+                $('body').fadeOut(500, function () {
+                    window.location.href = '/';
+                });
+            });
+
+            // Typing effect
+            const text = "You are not authorized to view this page.";
+            let index = 0;
+            function typeText() {
+                if (index < text.length) {
+                    $('#typing-text').append(text.charAt(index));
+                    index++;
+                    setTimeout(typeText, 50);
+                }
+            }
+            typeText();
+        });
+    </script>
+</body>
+</html>

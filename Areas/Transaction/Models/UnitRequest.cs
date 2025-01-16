@@ -1,11 +1,11 @@
-﻿using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+﻿using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PurchasingSystemStaging.Areas.Transaction.Models
+namespace PurchasingSystem.Areas.Transaction.Models
 {
     [Table("TscUnitRequest", Schema = "dbo")]
     public class UnitRequest : UserActivity

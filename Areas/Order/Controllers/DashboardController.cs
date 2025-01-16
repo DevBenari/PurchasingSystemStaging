@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 
-namespace PurchasingSystemStaging.Areas.Order.Controllers
+namespace PurchasingSystem.Areas.Order.Controllers
 {
     [Area("Order")]
     [Route("Order/[Controller]/[Action]")]

@@ -10,7 +10,7 @@
     @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
 
 }
-@model PurchasingSystemStaging.Areas.Transaction.Models.UnitRequest
+@model PurchasingSystem.Areas.Transaction.Models.UnitRequest
 
 <!-- Tempusdominus Bootstrap 4 -->
 <link rel="stylesheet" href="~/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
@@ -244,29 +244,27 @@
                             <div>
                                 @if (User.Identity.Name == "superadmin@admin.com")
                                 {
-                                    <a class="btn bg-indigo" id="btnubah">Change</a>                                    
+                                    <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo fw-bold">
+                                    <a class="btn bg-indigo" id="btnubah">Change</a>
+                                    <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                     <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
                                 }
                                 else
                                 {
                                     @if (Model.ApproveStatusUser1 == null)
-                                    {                                        
-                                        <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
+                                    {
                                         @if (!string.IsNullOrEmpty(listRole))
                                         {
                                             var roles = listRole.Split(',');
                                             if (roles.Contains("UpdateUnitRequest"))
                                             {
+                                                <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
                                                 <a class="btn bg-indigo" id="btnubah">Change</a>
+                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
                                             }
-                                            <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>                                            
                                         }
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
                                     }
-                                    else
-                                    {                                        
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
-                                    }
+                                    <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">Cancel</div>
                                 }
                             </div>
 
@@ -340,7 +338,7 @@
 
                 // Aktifkan AJAX di Select2
                 ajax: {
-                    url: '@Url.Action("GetProductsPaged", "PurchaseRequest")', // ganti ke Controller/Action sesuai
+                    url: '@Url.Action("GetProductsPaged", "UnitRequest")', // ganti ke Controller/Action sesuai
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {

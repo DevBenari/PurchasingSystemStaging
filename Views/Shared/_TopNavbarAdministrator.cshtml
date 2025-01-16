@@ -26,11 +26,26 @@
                             </li>
                             <li class="nav-item">
                                 <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "RoleUser", new { area = "Administrator" })">
-                                    Role
+                                    Role User
                                 </div>
-                            </li>                                                        
+                            </li>
+                            <li class="nav-item">
+                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "Api", new { area = "Administrator" })">
+                                    Get Data API
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "VarsionSystem", new { area = "Administrator" })">
+                                    Version System
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "LoggingSystem", new { area = "Administrator" })">
+                                    Logging System
+                                </div>
+                            </li>
                         }
-                        @* else
+                        @*else
                         {
                             @if (!string.IsNullOrEmpty(listRole))
                             {
@@ -41,10 +56,10 @@
                                     </div>
                                 </li>
 
-                                @if (roles.Contains("ReadGroupRole"))
+                                @if (roles.Contains("ReadRoleUser"))
                                 {
                                     <li class="nav-item">
-                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "GroupRole", new { area = "Administrator" })">
+                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "RoleUser", new { area = "Administrator" })">
                                             Role
                                         </div>
                                     </li>
@@ -58,8 +73,26 @@
                                         </div>
                                     </li>
                                 }
+
+                                @if (roles.Contains("ReadVersionSystem"))
+                                {
+                                    <li class="nav-item">
+                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "VersionSystem", new { area = "Administrator" })">
+                                            Version System
+                                        </div>
+                                    </li>
+                                }
+
+                                @if (roles.Contains("ReadLoggingSystem"))
+                                {
+                                    <li class="nav-item">
+                                        <div class="btn btn-orange" style="color:#ffffff" data-href="@Url.Action("Index", "LoggingSystem", new { area = "Administrator" })">
+                                            Logging System
+                                        </div>
+                                    </li>
+                                }
                             }
-                        } *@
+                        }*@
                     </ul>
                 </div>
             </div>

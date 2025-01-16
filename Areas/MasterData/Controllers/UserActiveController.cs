@@ -1,16 +1,18 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using FastReport.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.MasterData.ViewModels;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.MasterData.ViewModels;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
@@ -18,7 +20,7 @@ using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
-namespace PurchasingSystemStaging.Areas.MasterData.Controllers
+namespace PurchasingSystem.Areas.MasterData.Controllers
 {
     [Area("MasterData")]
     [Route("MasterData/[Controller]/[Action]")]
@@ -78,37 +80,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             return Json(new SelectList(position, "PositionId", "PositionName"));
         }
 
-        public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
-        {
-            try
-            {
-                // Format tanggal tanpa waktu
-                string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-                string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
-
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:MasterData/UserActive/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }
-        }
-
         [HttpGet]
+        [Authorize(Roles = "ReadUserActive")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "MasterData";
@@ -152,33 +125,8 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             return View(model);
         }
 
-        public IActionResult RedirectToCreate()
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Create:MasterData/UserActive/CreateUserActive";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }
-        }
-
         [HttpGet]
+        [Authorize(Roles = "CreateUserActive")]
         public async Task<ViewResult> CreateUserActive()
         {
             ViewBag.Active = "MasterData";
@@ -213,6 +161,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "CreateUserActive")]
         public async Task<IActionResult> CreateUserActive(UserActiveViewModel vm)
         {
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -340,34 +289,9 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
                 return View(vm);
             }
         }
-
-        public IActionResult RedirectToDetail(Guid Id)
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Detail:MasterData/UserActive/DetailUserActive/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }
-        }
-
+        
         [HttpGet]
+        [Authorize(Roles = "UpdateUserActive")]
         public async Task<IActionResult> DetailUserActive(Guid Id)
         {
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -403,6 +327,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "UpdateUserActive")]
         public async Task<IActionResult> DetailUserActive(UserActiveViewModel viewModel)
         {
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
@@ -412,7 +337,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             {
                 var user = await _userActiveRepository.GetUserByIdNoTracking(viewModel.UserActiveId);
                 var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                var userLogin = await _userManager.FindByNameAsync(viewModel.Email);
+                var userLogin = await _userManager.FindByEmailAsync(viewModel.Email);
                 var checkDuplicate = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).ToList();
 
                 if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)
@@ -514,35 +439,10 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             ViewBag.Department = new SelectList(await _departmentRepository.GetDepartments(), "DepartmentId", "DepartmentName", SortOrder.Ascending);
             ViewBag.Position = new SelectList(await _positionRepository.GetPositions(), "PositionId", "PositionName", SortOrder.Ascending);
             return View(viewModel);
-        }
-
-        public IActionResult RedirectToDelete(Guid Id)
-        {
-            try
-            {
-                // Enkripsi path URL untuk "Index"
-                string originalPath = $"Delete:MasterData/UserActive/DeleteUserActive/{Id}";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return Redirect(Request.Path);
-            }
-        }
+        }        
 
         [HttpGet]
+        [Authorize(Roles = "DeleteUserActive")]
         public async Task<IActionResult> DeleteUserActive(Guid Id)
         {
             ViewBag.Active = "MasterData";
@@ -564,6 +464,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "DeleteUserActive")]
         public async Task<IActionResult> DeleteUserActive(UserActiveViewModel vm)
         {
             //Cek Relasi
@@ -578,7 +479,7 @@ namespace PurchasingSystemStaging.Areas.MasterData.Controllers
             // Mengambil Role yang terkait dengan user
             var userRoles = await _signInManager.UserManager.GetRolesAsync(userLogin);
 
-            if (userRoles == null)
+            if (userRoles.Count == 0)
             {
                 if (userWarehouse == null)
                 {

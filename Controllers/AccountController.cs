@@ -6,17 +6,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
-using PurchasingSystemStaging.ViewModels;
+using Microsoft.IdentityModel.Tokens;
+using PurchasingSystem.Areas.Administrator.Repositories;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
+using PurchasingSystem.ViewModels;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PurchasingSystemStaging.Controllers
+namespace PurchasingSystem.Controllers
 {
     public class AccountController : Controller
     {
@@ -31,6 +34,7 @@ namespace PurchasingSystemStaging.Controllers
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
+        private readonly IConfiguration _configuration;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -43,7 +47,8 @@ namespace PurchasingSystemStaging.Controllers
             ILogger<AccountController> logger,
 
             IDataProtectionProvider provider,
-            UrlMappingService urlMappingService)
+            UrlMappingService urlMappingService,
+            IConfiguration configuration)
         {
             _applicationDbContext = applicationDbContext;
             _signInManager = signInManager;
@@ -56,15 +61,16 @@ namespace PurchasingSystemStaging.Controllers
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
+            _configuration = configuration;
         }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public IActionResult Index()
-        {            
+        {
             return View();
-        }        
-      
-        [AllowAnonymous]        
+        }
+
+        [AllowAnonymous]
         public async Task<IActionResult> Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -87,13 +93,13 @@ namespace PurchasingSystemStaging.Controllers
             {
                 var response = new LoginViewModel();
                 return View(response);
-            }            
+            }
         }
 
         [HttpPost]
-        [AllowAnonymous]        
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
-        {            
+        {
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -127,6 +133,16 @@ namespace PurchasingSystemStaging.Controllers
                         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
                         if (result.Succeeded)
                         {
+                            // Ambil role dari database                            
+                            List<string> roleNames = (from role in _roleRepository.GetRoles()
+                                                      join userRole in _groupRoleRepository.GetAllGroupRole()
+                                                      on role.Id equals userRole.RoleId
+                                                      where userRole.DepartemenId == user.Id
+                                                      select role.Name).Distinct().ToList();
+
+                            // Kompres role menjadi string
+                            string compressedRoles = string.Join(",", roleNames);
+
                             // Create claims
                             var claims = new List<Claim>
                             {
@@ -134,8 +150,15 @@ namespace PurchasingSystemStaging.Controllers
                                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                                 new Claim(ClaimTypes.Name, user.UserName),
                                 new Claim("KodeUser", user.KodeUser ?? string.Empty),
-                                new Claim("NamaUser", user.NamaUser ?? string.Empty)
+                                new Claim("NamaUser", user.NamaUser ?? string.Empty),
+                                new Claim("CompressedRoles", compressedRoles) // Simpan role dalam satu klaim
                             };
+
+                            // Tambahkan klaim Role
+                            //foreach (var role in roleNames)
+                            //{
+                            //    claims.Add(new Claim(ClaimTypes.Role, role));
+                            //}
 
                             //Session akan di pertahankan jika browser di tutup tanpa di signout,
                             //maka ketika masuk ke browser akan langsung di arahkan ke dashboard
@@ -163,17 +186,8 @@ namespace PurchasingSystemStaging.Controllers
                             var sessionId = Guid.NewGuid().ToString();
                             HttpContext.Session.SetString("UserId", user.Id.ToString());
                             HttpContext.Session.SetString("SessionId", sessionId);
-                            var userId = _userActiveRepository.GetAllUserLogin()
-                                    .FirstOrDefault(u => u.UserName == model.Email)?.Id;
 
-                            // Ambil role dari database                            
-                            List<string> roleNames = (from role in _roleRepository.GetRoles()
-                                                      join userRole in _groupRoleRepository.GetAllGroupRole()
-                                                      on role.Id equals userRole.RoleId
-                                                      where userRole.DepartemenId == user.Id
-                                                      select role.Name).Distinct().ToList();
-
-                            HttpContext.Session.SetString("ListRole", string.Join(",", roleNames));
+                            HttpContext.Session.SetString("ListRole", string.Join(",", compressedRoles));
 
                             // Simpan session dan role di server-side cache
                             _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30));
@@ -206,7 +220,7 @@ namespace PurchasingSystemStaging.Controllers
                     }
                     else if (user.IsActive == true && _sessionService.IsSessionActive(user.Id))
                     {
-                        TempData["UserOnlineMessage"] = "Sorry, your account is online, please wait until the session expires!";                       
+                        TempData["UserOnlineMessage"] = "Sorry, your account is online, please wait until the session expires!";
 
                         return View(model);
                     }
@@ -225,9 +239,15 @@ namespace PurchasingSystemStaging.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
-        {           
+        {
             // Hapus session dari server-side storage
             var userId = HttpContext.Session.GetString("UserId");
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="08/01/2024 22:55:44" ReportInfo.Modified="01/10/2025 09:17:15" ReportInfo.CreatorVersion="2025.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/01/2024 22:55:44" ReportInfo.Modified="01/16/2025 12:52:01" ReportInfo.CreatorVersion="2025.1.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGCgiDglzYkeDnnIBok3ESB9mNK+9rs5wIh5oJerocnviMKiQoAm+sRo5RiFAf7b2MWXhP2dCUZQZteG8PJHep+hHNyHfQtuh+IIq0htocafPrzY3nLYzL0A5BrzMKDbb7CtDRHMXXyzA91mWab1p7J/IuJ+YxghJwyRilIwL0lAo0A5zXMOp/BgLYyrx5goaEpsnakp0GWaQ2161ZjFTZT1Is3R4+dI5+Tymz731h55Fy3KnSV24k8n9YTTCVomm">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqxo5ia/cYUqo97e0judmpyiT7Aj0I0+VDb9QsQCXno/E/4ctxwACwyLTYB+Azq/2TFSnX35Dsa36stce+hQSB1k9oR4IUppRAVf3PSpnyyUcA/d/8G9XjuKqe+r+LmPVGruvysAFre6T5V/mm/iXEwJDL0b2r2AOMhpMyHIu8QyhP4guWepE4TMuZqRXb6qEhd7LfFTDC0eyBXHaEgVY1Fph+vbRTn1/vgfCPezCq13uiqysKSKnEbMdkwPTqgiNm">
       <TableDataSource Name="OrdPurchaseRequestDetail" DataType="System.Int32" Enabled="true" TableName="OrdPurchaseRequestDetail" SelectCommand="exec GetPurchaseRequestDetailById @PurchaseRequestId">
         <Column Name="PurchaseRequestDetailId" DataType="System.Guid"/>
         <Column Name="PurchaseRequestId" DataType="System.Guid"/>

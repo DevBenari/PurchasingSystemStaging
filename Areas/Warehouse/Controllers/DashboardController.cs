@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Data;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Data;
 
-namespace PurchasingSystemStaging.Areas.Warehouse.Controllers
+namespace PurchasingSystem.Areas.Warehouse.Controllers
 {
     [Area("Warehouse")]
     [Route("Warehouse/[Controller]/[Action]")]

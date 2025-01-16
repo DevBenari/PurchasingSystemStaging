@@ -4,14 +4,14 @@
 }
 
 @using Microsoft.AspNetCore.Identity;
-@using PurchasingSystemStaging.Areas.Warehouse.Models;
+@using PurchasingSystem.Areas.Warehouse.Models;
 
 @{
     var listRole = Context.Session.GetString("ListRole");
     @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
 
 }
-@model PurchasingSystemStaging.Areas.Warehouse.Models.ProductReturn
+@model PurchasingSystem.Areas.Warehouse.Models.ProductReturn
 
 <!-- Tempusdominus Bootstrap 4 -->
 <link rel="stylesheet" href="~/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
@@ -143,7 +143,7 @@
                                         }
                                     </div>
                                 </div>
-                                <div class="col-md-1">
+                                @* <div class="col-md-1">
                                     <span>Min Stock</span>
                                     <input autocomplete="off" class="form-control" id="minstock" type="text" placeholder="Min Stock" readonly>
                                 </div>
@@ -154,7 +154,7 @@
                                 <div class="col-md-2">
                                     <span>Buffer Stock</span>
                                     <input autocomplete="off" class="form-control" id="bufferstock" type="text" placeholder="Buffer Stock" readonly>
-                                </div>
+                                </div> *@
                             </div>
                             <div class="form-group row" id="descriptionProduct">
                                 <div class="col-md-2">
@@ -322,15 +322,11 @@
                                             {
                                                 <input type="button" value="Save" id="submit" class="btn btn-primary bg-indigo float-left fw-bold">
                                                 <a class="btn bg-indigo" id="btnubah">Change</a>
-                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>
-                                                <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "ProductReturn", new { area = "Warehouse" })">Cancel</div>
+                                                <a class="btn btn-default" id="btnbatalubah">Cancel Change</a>                                                
                                             }
                                         }
                                     }
-                                    else
-                                    {
-                                        <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "ProductReturn", new { area = "Warehouse" })">Cancel</div>
-                                    }
+                                    <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "ProductReturn", new { area = "Warehouse" })">Cancel</div>
                                 }                                
                             </div>
 

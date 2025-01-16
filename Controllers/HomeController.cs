@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.MasterData.ViewModels;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Areas.Transaction.Repositories;
-using PurchasingSystemStaging.Areas.Warehouse.Repositories;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Hubs;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
-using PurchasingSystemStaging.ViewModels;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.MasterData.ViewModels;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Areas.Transaction.Repositories;
+using PurchasingSystem.Areas.Warehouse.Repositories;
+using PurchasingSystem.Data;
+using PurchasingSystem.Hubs;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
+using PurchasingSystem.ViewModels;
 using System.Diagnostics;
 using System.Net;
 using System.Security.Claims;
@@ -32,7 +32,7 @@ using Controller = Microsoft.AspNetCore.Mvc.Controller;
 using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
 
-namespace PurchasingSystemStaging.Controllers
+namespace PurchasingSystem.Controllers
 {
     public class HomeController : Controller
     {
@@ -111,32 +111,6 @@ namespace PurchasingSystemStaging.Controllers
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
             _hostingEnvironment = hostingEnvironment;
-        }
-
-        public IActionResult RedirectToIndex()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Home/Index";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
         }
 
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
@@ -272,33 +246,7 @@ namespace PurchasingSystemStaging.Controllers
                 return View(dashboard);
             }
         }
-
-        public IActionResult RedirectToProfile()
-        {
-            try
-            {
-                // Bangun originalPath dengan format tanggal ISO 8601
-                string originalPath = $"Page:Home/MyProfile";
-                string encryptedPath = _protector.Protect(originalPath);
-
-                // Hash GUID-like code (SHA256 truncated to 36 characters)
-                string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-                    .Replace('+', '-')
-                    .Replace('/', '_')
-                    .Substring(0, 36);
-
-                // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-                _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-                return Redirect("/" + guidLikeCode);
-            }
-            catch
-            {
-                // Jika enkripsi gagal, kembalikan view
-                return View();
-            }            
-        }
-
+        
         [HttpGet]
         public IActionResult MyProfile()
         {

@@ -11,15 +11,15 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using PurchasingSystemStaging.Areas.MasterData.Models;
-using PurchasingSystemStaging.Areas.MasterData.Repositories;
-using PurchasingSystemStaging.Areas.Order.Models;
-using PurchasingSystemStaging.Areas.Order.Repositories;
-using PurchasingSystemStaging.Areas.Order.ViewModels;
-using PurchasingSystemStaging.Data;
-using PurchasingSystemStaging.Hubs;
-using PurchasingSystemStaging.Models;
-using PurchasingSystemStaging.Repositories;
+using PurchasingSystem.Areas.MasterData.Models;
+using PurchasingSystem.Areas.MasterData.Repositories;
+using PurchasingSystem.Areas.Order.Models;
+using PurchasingSystem.Areas.Order.Repositories;
+using PurchasingSystem.Areas.Order.ViewModels;
+using PurchasingSystem.Data;
+using PurchasingSystem.Hubs;
+using PurchasingSystem.Models;
+using PurchasingSystem.Repositories;
 using QRCoder;
 using System.Data;
 using System.Drawing;
@@ -27,7 +27,7 @@ using System.Security.Cryptography;
 using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
-namespace PurchasingSystemStaging.Areas.Order.Controllers
+namespace PurchasingSystem.Areas.Order.Controllers
 {
     [Area("Order")]
     [Route("Order/[Controller]/[Action]")]
@@ -184,38 +184,9 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
 
             return Ok(response);
         }
-
-        //public IActionResult RedirectToIndex(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
-        //{
-        //    try
-        //    {
-        //        // Format tanggal tanpa waktu
-        //        string startDateString = startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : "";
-        //        string endDateString = endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : "";
-
-        //        // Bangun originalPath dengan format tanggal ISO 8601
-        //        string originalPath = $"Page:Order/PurchaseRequest/Index?filterOptions={filterOptions}&searchTerm={searchTerm}&startDate={startDateString}&endDate={endDateString}&page={page}&pageSize={pageSize}";
-        //        string encryptedPath = _protector.Protect(originalPath);
-
-        //        // Hash GUID-like code (SHA256 truncated to 36 characters)
-        //        string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-        //            .Replace('+', '-')
-        //            .Replace('/', '_')
-        //            .Substring(0, 36);
-
-        //        // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-        //        _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-        //        return Redirect("/" + guidLikeCode);
-        //    }
-        //    catch
-        //    {
-        //        // Jika enkripsi gagal, kembalikan view
-        //        return Redirect(Request.Path);
-        //    }            
-        //}
-
+       
         [HttpGet]
+        [Authorize(Roles = "ReadPurchaseRequest")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -309,34 +280,9 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                 return View(model);
             }
         }
-
-        //public IActionResult RedirectToCreate()
-        //{
-        //    try
-        //    {
-        //        // Enkripsi path URL untuk "Index"
-        //        string originalPath = $"Create:Order/PurchaseRequest/CreatePurchaseRequest";
-        //        string encryptedPath = _protector.Protect(originalPath);
-
-        //        // Hash GUID-like code (SHA256 truncated to 36 characters)
-        //        string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-        //            .Replace('+', '-')
-        //            .Replace('/', '_')
-        //            .Substring(0, 36);
-
-        //        // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-        //        _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-        //        return Redirect("/" + guidLikeCode);
-        //    } 
-        //    catch
-        //    {
-        //        // Jika enkripsi gagal, kembalikan view
-        //        return Redirect(Request.Path);
-        //    }            
-        //}        
-
+        
         [HttpGet]
+        [Authorize(Roles = "CreatePurchaseRequest")]
         public async Task<IActionResult> CreatePurchaseRequest(string searchTerm)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -381,6 +327,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         }        
 
         [HttpPost]
+        [Authorize(Roles = "CreatePurchaseRequest")]
         public async Task<IActionResult> CreatePurchaseRequest(PurchaseRequest model)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -567,34 +514,9 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
                 return View(model);
             }
         }
-
-        //public IActionResult RedirectToDetail(Guid Id)
-        //{
-        //    try
-        //    {
-        //        // Enkripsi path URL untuk "Index"
-        //        string originalPath = $"Detail:Order/PurchaseRequest/DetailPurchaseRequest/{Id}";
-        //        string encryptedPath = _protector.Protect(originalPath);
-
-        //        // Hash GUID-like code (SHA256 truncated to 36 characters)
-        //        string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-        //            .Replace('+', '-')
-        //            .Replace('/', '_')
-        //            .Substring(0, 36);
-
-        //        // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-        //        _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-        //        return Redirect("/" + guidLikeCode);
-        //    }
-        //    catch
-        //    {
-        //        // Jika enkripsi gagal, kembalikan view
-        //        return Redirect(Request.Path);
-        //    }            
-        //}
-
+       
         [HttpGet]
+        [Authorize(Roles = "UpdatePurchaseRequest")]
         public async Task<IActionResult> DetailPurchaseRequest(Guid Id)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -664,6 +586,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "UpdatePurchaseRequest")]
         public async Task<IActionResult> DetailPurchaseRequest(PurchaseRequest model)
         {
             ViewBag.Active = "PurchaseRequest";
@@ -748,32 +671,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             return Json(new { redirectToUrl = Url.Action("Index", "PurchaseRequest") });
         }
 
-        //public IActionResult RedirectToPrint(Guid Id)
-        //{
-        //    try
-        //    {
-        //        // Enkripsi path URL untuk "Index"
-        //        string originalPath = $"Detail:Order/PurchaseRequest/PrintPurchaseRequest/{Id}";
-        //        string encryptedPath = _protector.Protect(originalPath);
-
-        //        // Hash GUID-like code (SHA256 truncated to 36 characters)
-        //        string guidLikeCode = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(encryptedPath)))
-        //            .Replace('+', '-')
-        //            .Replace('/', '_')
-        //            .Substring(0, 36);
-
-        //        // Simpan mapping GUID-like code ke encryptedPath di penyimpanan sementara (misalnya, cache)
-        //        _urlMappingService.InMemoryMapping[guidLikeCode] = encryptedPath;
-
-        //        return Redirect("/" + guidLikeCode);
-        //    }
-        //    catch
-        //    {
-        //        // Jika enkripsi gagal, kembalikan view
-        //        return Redirect(Request.Path);
-        //    }
-        //}
-
+        [Authorize(Roles = "PreviewPurchaseRequest")]
         public async Task<IActionResult> PreviewPurchaseRequest(Guid Id)
         {
             var purchaseRequest = await _purchaseRequestRepository.GetPurchaseRequestById(Id);
@@ -839,6 +737,7 @@ namespace PurchasingSystemStaging.Areas.Order.Controllers
             return File(stream, "application/pdf");
         }
 
+        [Authorize(Roles = "DownloadPurchaseRequest")]
         public async Task<IActionResult> DownloadPurchaseRequest(Guid Id)
         {
             var purchaseRequest = await _purchaseRequestRepository.GetPurchaseRequestById(Id);
