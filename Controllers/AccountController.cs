@@ -140,6 +140,7 @@ namespace PurchasingSystem.Controllers
                                                       where userRole.DepartemenId == user.Id
                                                       select role.Name).Distinct().ToList();
 
+
                             // Kompres role menjadi string
                             string compressedRoles = string.Join(",", roleNames);
 
@@ -186,7 +187,6 @@ namespace PurchasingSystem.Controllers
                             var sessionId = Guid.NewGuid().ToString();
                             HttpContext.Session.SetString("UserId", user.Id.ToString());
                             HttpContext.Session.SetString("SessionId", sessionId);
-
                             HttpContext.Session.SetString("ListRole", string.Join(",", compressedRoles));
 
                             // Simpan session dan role di server-side cache
