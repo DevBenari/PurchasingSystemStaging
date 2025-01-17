@@ -74,7 +74,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link" role="button">
-                            <p>Hallo, @(User.FindFirst(ClaimTypes.Anonymous).Value)</p>
+                            <p>Hallo, @(User.FindFirst(ClaimTypes.Name).Value)</p>
                             </a>
                         </li>
 
