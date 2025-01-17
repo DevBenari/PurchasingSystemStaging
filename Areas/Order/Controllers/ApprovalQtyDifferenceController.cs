@@ -115,7 +115,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }            
 
-            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (getUserLogin.Email == "superadmin@admin.com")
             {
@@ -209,7 +209,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
 
             var QtyDifferenceRequest = await _approvalQtyDifferenceRepository.GetApprovalById(Id);
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (QtyDifferenceRequest == null)
             {
@@ -270,7 +270,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
 
             if (ModelState.IsValid)
             {
-                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
                 var approvalQtyDiff = await _approvalQtyDifferenceRepository.GetApprovalByIdNoTracking(viewModel.ApprovalQtyDifferenceId);
                 var checkQtyDiff = _qtyDifferenceRepository.GetAllQtyDifference().Where(c => c.QtyDifferenceId == viewModel.QtyDifferenceId).FirstOrDefault();

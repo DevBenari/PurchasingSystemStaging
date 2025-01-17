@@ -138,7 +138,7 @@ namespace PurchasingSystem.Areas.Report.Controllers
         {
             ViewBag.Active = "Report";
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             // Default ke bulan dan tahun saat ini jika tidak ada input
             var currentMonth = DateTime.Now.Month;

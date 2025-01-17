@@ -107,7 +107,7 @@ namespace PurchasingSystem.Areas.Warehouse.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
-            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (getUserLogin.Email == "superadmin@admin.com")
             {
@@ -173,7 +173,7 @@ namespace PurchasingSystem.Areas.Warehouse.Controllers
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
 
             var ApprovalRequest = await _approvalUnitRequestRepository.GetApprovalRequestById(Id);
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (ApprovalRequest == null)
             {
@@ -231,7 +231,7 @@ namespace PurchasingSystem.Areas.Warehouse.Controllers
 
             if (ModelState.IsValid)
             {
-                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
                 var approvalUnitReq = await _approvalUnitRequestRepository.GetApprovalRequestByIdNoTracking(viewModel.ApprovalUnitRequestId);
                 var checkUnitReq = _unitRequestRepository.GetAllUnitRequest().Where(c => c.UnitRequestId == viewModel.UnitRequestId).FirstOrDefault();

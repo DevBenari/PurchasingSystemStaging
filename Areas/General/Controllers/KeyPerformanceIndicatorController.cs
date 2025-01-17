@@ -65,7 +65,7 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
 
             var data = _purchaseRequestRepository.GetAllPurchaseRequest();
 
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
             var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).ToList();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
@@ -111,7 +111,7 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
         public async Task<IActionResult> PostData(Selected model)
         {
             ViewBag.Active = "KeyPerformanceIndikator";
-            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
             var user = await _userManager.GetUserAsync(User);
             var userId = new Guid(user.Id);
@@ -179,7 +179,7 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
         public async Task<IActionResult> KpiJson(Selected model)
         {
             ViewBag.Active = "KeyPerformanceIndikator";
-            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (getUserLogin.Email == "superadmin@admin.com")
             {
@@ -233,7 +233,7 @@ namespace PurchasingSystemStaging.Areas.General.Controllers
         {
             //ViewBag.Active("chartJson");
             // GET USER ACTIVE ID FROM MSTUSERACTIVE
-            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
 
             // GET CURRENT MONTH AND YEAR 

@@ -121,7 +121,7 @@ namespace PurchasingSystem.Controllers
                 }
                 else
                 {
-                    var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
+                    var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
@@ -149,8 +149,8 @@ namespace PurchasingSystem.Controllers
                             {
                                 new Claim(ClaimTypes.Email, user.Email),
                                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                                new Claim(ClaimTypes.Name, user.NamaUser),
-                                new Claim(ClaimTypes.Anonymous, user.KodeUser),
+                                new Claim(ClaimTypes.Name, user.UserName),
+                                new Claim(ClaimTypes.Anonymous, user.NamaUser),
                                 //new Claim("KodeUser", user.KodeUser ?? string.Empty),
                                 //new Claim("NamaUser", user.NamaUser ?? string.Empty),
                                 new Claim("CompressedRoles", compressedRoles) // Simpan role dalam satu klaim

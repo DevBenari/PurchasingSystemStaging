@@ -106,7 +106,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
         public async Task<IActionResult> CreateEmail(EmailViewModel vm)
         {
             ViewBag.Active = "PurchaseOrder";
-            var getUser = _userActiveRepository.GetAllUserLogin().FirstOrDefault(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value);
+            var getUser = _userActiveRepository.GetAllUserLogin().FirstOrDefault(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value);
 
             if (ModelState.IsValid)
             {

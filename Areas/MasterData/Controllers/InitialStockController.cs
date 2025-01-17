@@ -125,7 +125,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
         [Authorize(Roles = "CreateInitialStock")]
         public async Task<IActionResult> CreateInitialStock(InitialStockViewModel vm)
         {            
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getProduct = _productRepository.GetAllProduct().Where(p => p.ProductId == vm.ProductId).FirstOrDefault();
             var getSupplier = _SupplierRepository.GetAllSupplier().Where(p => p.SupplierId == vm.SupplierId).FirstOrDefault();
 
