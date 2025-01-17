@@ -173,6 +173,48 @@
                 </div>
                 @*ini adalah end section get Product *@
 
+                @*ini adalah section get Product By Name and By Code *@
+
+                <div class="card rounded-lg" style="background-color:#EBF3FB;">
+                    <div class="card-header" id="headingSix">
+                        <h2 class="mb-0">
+                            <button class="btn btn-block text-left collapsed text-black" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                <h3>Get Product By Name And Code </h3>
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <span class=" p-2 mr-1" style="background-color:#61AFFE;">GET</span> /Api/ProductApi/GetByName/{name}
+                        </div>
+                        <h5 class="bg-white px-3 py-2 col-12">Parameters</h5>
+                        <div class="card-body">
+                            <form id="GetProductByName">
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label for="productId">Product Name:</label>
+                                        <input type="text" id="getProductByName" class="form-control" placeholder="Enter Product Name..." />
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label for="productCode">Product Code:</label>
+                                        <input type="text" id="getProductCode" class="form-control" placeholder="Enter Product Name..." />
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-secondary mt-1" id="ProductByName">Try it out</button>
+                                <button type="reset" class="btn btn-secondary mt-1" id="resetByName">Reset</button>
+                            </form>
+                        </div>
+                        <h4 class="bg-white px-3 py-2 col-12">Response</h4>
+                        <div class="card-body">
+                            <p>Request Url</p>
+                            <p class="p-2 rounded-md text-white" style="background-color:#333333;">  https://blm-rsmmc.com/Api/ProductApi/GetByName/ <span class="text-green">{name}</span></p>
+                            <textarea id="responseGetProductName" class="form-control p-2 bg-white" rows="10" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                @*ini adalah akhir dari section get Product By Name and By Code *@
+
                 @*ini adalah section Create Product *@
                 <div class="card rounded-lg" style="background-color:#E8F6F0;">
                     <div class="card-header" id="headingThree">
@@ -203,11 +245,15 @@
                                 </div>
                                 <div class="form-group col-6">
                                     <label asp-for="supplierId">Supplier :</label>
-                                    <input type="text" id="supplierId" class="form-control" placeholder="Enter Supplier" requeried autocomplete="on" />
+                                    <select id="supplierId" class="form-control" required>
+                                        <option value="" disabled selected>Select a supplier</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-6">
                                     <label asp-for="categoryId">Category Product :</label>
-                                    <input type="text" id="categoryId" class="form-control" placeholder="Enter Category" requeried autocomplete="on" />
+                                    <select id="categoryId" class="form-control" required>
+                                        <option value="" disabled selected>Select a category</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-6">
                                     <label asp-for="measurementId">Measurement :</label>
@@ -316,11 +362,15 @@
                                 </div>
                                 <div class="form-group col-6">
                                     <label asp-for="supplierId">Supplier :</label>
-                                    <input type="text" id="updateSupplierId" class="form-control" placeholder="Enter Supplier" requeried autocomplete="on" />
+                                    <select id="updateSupplierId" class="form-control" required>
+                                        <option value="" disabled selected>Select a supplier</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-6">
                                     <label asp-for="categoryId">Category Product :</label>
-                                    <input type="text" id="updateCategoryId" class="form-control" placeholder="Enter Category" requeried autocomplete="on" />
+                                    <select id="updateCategoryId" class="form-control" required>
+                                        <option value="" disabled selected>Select a category</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-6">
                                     <label asp-for="measurementId">Measurement :</label>
@@ -533,6 +583,9 @@
                 const resetButtonDelete = document.getElementById("resetDelete")
                 const responseDelete = document.getElementById("responseDeleteProduct")
 
+                const resetButtonByName = document.getElementById("resetByName")
+                const resetByNameAndCode = document.getElementById("responseGetProductName");
+
                 resetButton.addEventListener("click", function () {
                     responseOutput.textContent = ""; // Clear the output JSON
                     alert("Output JSON has been reset!");
@@ -544,12 +597,12 @@
                 })
 
                 resetButtonCreate.addEventListener("click", function () {
-                    responseCreate.textContent = "";
+                    responseCreate.value = "";
                     alert("Output JSON has been reset!");
                 })
 
                 resetButtonUpdate.addEventListener("click", function () {
-                    responseUpdate.textContent = "";
+                    responseUpdate.value = "";
                     alert("Output JSON has been reset!");
                 })
 
@@ -557,6 +610,12 @@
                     responseDelete.textContent = "";
                     alert("Output JSON has been reset!");
                 })
+
+                resetButtonByName.addEventListener("click", function () {
+                    resetByNameAndCode.textContent = ""; // Gunakan textContent
+                    alert("Output JSON has been reset!");
+                });
+
 
 
             });
@@ -615,17 +674,69 @@
                 });
             });
 
+            $(document).ready(function () {
+                const apiURL = '/Api/ProductApi/GetSuppliers';
+
+                $.ajax({
+                    url: apiURL,
+                    type: 'GET',
+                    success: function (data) {
+                        const dropdownSupplier = $('#supplierId');
+                        data.forEach(item => {
+                            dropdownSupplier.append(`<option value="${item.supplierId}">${item.supplierName}</option>`);
+                        });
+
+                        const dropdownUpdate = $(`#updateSupplierId`);
+                        data.forEach(item => {
+                            dropdownUpdate.append(`<option value="${item.supplierId}">${item.supplierName}</option>`)
+                        });
+                    },
+                    error: function (error) {
+                        console.error("Error fetching supplier:", error);
+                    }
+                });
+            });
+
+            $(document).ready(function () {
+                const apiURL = `/Api/ProductApi/GetCategories`;
+
+                $.ajax({
+                    url: apiURL,
+                    type: 'GET',
+                    success: function(data) {
+                        const dropdownCategory = $('#categoryId');
+                        data.forEach(item => {
+                            dropdownCategory.append(`<option value="${item.categoryId}">${item.categoryName}</option>`);
+                        });
+
+                        const dropdownUpdate = $(`#updateCategoryId`);
+                        data.forEach(item => {
+                            dropdownUpdate.append(`<option value="${item.categoryId}">${item.categoryName}</option>`)
+                        });
+                    },
+                    error: function (error) {
+                        console.error("Error fetching category:", error);
+                    }
+                })
+            })
+
             document.getElementById("createProduct").addEventListener("submit", async function (event) {
                 event.preventDefault();
 
-                const dropdown = document.getElementById("warehouseLocation")
+                const dropdown = document.getElementById("warehouseLocation");
                 const selectedOptions = dropdown.options[dropdown.selectedIndex].text;
+
+                const dropdownSupplier = document.getElementById(`supplierId`)
+                const selectSupplier = dropdownSupplier.options[dropdownSupplier.selectedIndex].text;
+
+                const dropdownCategory = document.getElementById(`categoryId`)
+                const selectCategory = dropdownCategory.options[dropdownCategory.selectedIndex].text;
 
                 // Ambil nilai input form
                 const productData = {
                     productName: document.getElementById('productName').value,
-                    supplierName: document.getElementById('supplierId').value,
-                    categoryName: document.getElementById('categoryId').value,
+                    supplierName: selectSupplier,
+                    categoryName: selectCategory,
                     measurementName: document.getElementById('measurementId').value,
                     discountValue: document.getElementById('discountId').value,
                     minStock: document.getElementById('minStock').value,
@@ -676,19 +787,29 @@
                 document.getElementById("updateProduct").addEventListener("submit", async function (event) {
                     event.preventDefault();
 
-                    const productId = document.getElementById('productId').value;
+                    const productId = document.getElementById('productId').value.trim();
 
-                    const dropdown = document.getElementById("updateWarehouseLocation")
-                    const selectedOptions = dropdown.options[dropdown.selectedIndex].text;
+                    // Validasi Product ID
+                    if (!productId) {
+                        alert("Product ID is required.");
+                        return;
+                    }
 
-                    console.log(selectedOptions);
+                    const dropdown = document.getElementById("updateWarehouseLocation");
+                    const selectedOptions = dropdown.options[dropdown.selectedIndex]?.text || "";
+
+                    const dropdownSupplier = document.getElementById("updateSupplierId");
+                    const selectSupplier = dropdownSupplier.options[dropdownSupplier.selectedIndex]?.text || "";
+
+                    const dropdownCategory = document.getElementById("updateCategoryId");
+                    const selectCategory = dropdownCategory.options[dropdownCategory.selectedIndex]?.text || "";
 
                     // Ambil nilai input form
                     const productData = {
-                        productName: document.getElementById('updateProductName').value,
-                        supplierName: document.getElementById('updateSupplierId').value,
-                        categoryName: document.getElementById('updateCategoryId').value,
-                        measurementName: document.getElementById('updateMeasurementId').value,
+                        productName: document.getElementById('updateProductName').value.trim(),
+                        supplierName: selectSupplier.trim(),
+                        categoryName: selectCategory.trim(),
+                        measurementName: document.getElementById('updateMeasurementId').value.trim(),
                         discountValue: document.getElementById('updateDiscountId').value,
                         minStock: document.getElementById('updateMinStock').value,
                         maxStock: document.getElementById('updateMaxStock').value,
@@ -697,11 +818,11 @@
                         cogs: document.getElementById('updateCogs').value,
                         buyPrice: document.getElementById('updatePrice').value,
                         retailPrice: document.getElementById('updateRetailPrice').value,
-                        warehouseLocationName: selectedOptions,
-                        storageLocation: document.getElementById('updateStorageLocationId').value,
-                        rackNumber: document.getElementById('updateRackNumber').value,
+                        warehouseLocationName: selectedOptions.trim(),
+                        storageLocation: document.getElementById('updateStorageLocationId').value.trim(),
+                        rackNumber: document.getElementById('updateRackNumber').value.trim(),
                         expiredDate: document.getElementById('updateExpiredDate').value || "0001-01-01T00:00:00.000Z",
-                        note: document.getElementById('updateNote').value,
+                        note: document.getElementById('updateNote').value.trim(),
                     };
 
                     const token = localStorage.getItem("bearerToken");
@@ -717,23 +838,36 @@
                                 "Content-Type": "application/json",
                                 "Authorization": `Bearer ${token}`,
                             },
-                            body: JSON.stringify(productData)
-                        })
+                            body: JSON.stringify(productData),
+                        });
 
-                        const result = await response.json();
-                        console.log(result)
-                        if (response.ok) {
-                            document.getElementById("responseUpdateProduct").value = JSON.stringify(result, null, 4)
-                        } else {
-                            document.getElementById("responseUpdateProduct").value = `Error: ${result.message}`;
-                            alert("Failed to create products.");
+                        const textResponse = await response.text(); // Baca respons sebagai teks terlebih dahulu
+                        console.log("Raw Response:", textResponse);
+
+                        // Cobalah parsing respons menjadi JSON jika memungkinkan
+                        let result;
+                        try {
+                            result = JSON.parse(textResponse);
+                        } catch (err) {
+                            console.error("Error parsing JSON:", err);
+                            document.getElementById("responseUpdateProduct").value = `Invalid JSON response: ${textResponse}`;
+                            alert("Invalid server response.");
+                            return;
                         }
 
+                        if (response.ok) {
+                            document.getElementById("responseUpdateProduct").value = JSON.stringify(result, null, 4);
+                        } else {
+                            document.getElementById("responseUpdateProduct").value = `Error: ${result.message || textResponse}`;
+                            alert("Failed to update the product.");
+                        }
                     } catch (error) {
-                        console.log(error.message)
+                        console.error("Error:", error.message);
                     }
+
                 });
             });
+
 
             document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("DeleteProduct").addEventListener("submit", async function (e) {
@@ -770,6 +904,89 @@
 
                 })
             });
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("GetProductByName").addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    const productName = document.getElementById("getProductByName").value.trim();
+
+                    if (!productName) {
+                        alert("Product Code is found");
+                        return;
+                    }
+
+                    const token = localStorage.getItem("bearerToken");
+                    if (!token) {
+                        alert("Please authorize first by providing a Bearer Token.");
+                        return;
+                    }
+
+                    try {
+                        const baseUrl = window.location.origin;
+                        const response = await fetch(`${baseUrl}/Api/ProductApi/GetByName/${encodeURIComponent(productName)}`, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                            }
+                        });
+
+                        const result = await response.json();
+                        if (response.ok) {
+                            document.getElementById("responseGetProductName").textContent = JSON.stringify(result, null, 4);
+                        } else {
+                            document.getElementById("responseGetProductName").textContent = `Error: ${result.message}`;
+                            alert("Failed to get product by name.");
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("GetProductByName").addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    const productCode = document.getElementById("getProductCode").value.trim();
+
+                    if (!productCode) {
+                        alert("Product Name is found");
+                        return;
+                    }
+
+                    const token = localStorage.getItem("bearerToken");
+                    if (!token) {
+                        alert("Please authorize first by providing a Bearer Token.");
+                        return;
+                    }
+
+                    try {
+                        const baseUrl = window.location.origin;
+                        const response = await fetch(`${baseUrl}/Api/ProductApi/GetByProductCode/${encodeURIComponent(productCode)}`, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                            }
+                        });
+
+                        const result = await response.json();
+                        if (response.ok) {
+                            document.getElementById("responseGetProductName").textContent = JSON.stringify(result, null, 4);
+                        } else {
+                            document.getElementById("responseGetProductName").textContent = `Error: ${result.message}`;
+                            alert("Failed to get product by code.");
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+
+                    
+
 
         </script>
         <script src="~/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
