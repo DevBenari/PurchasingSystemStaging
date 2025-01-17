@@ -148,9 +148,10 @@ namespace PurchasingSystem.Controllers
                             {
                                 new Claim(ClaimTypes.Email, user.Email),
                                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                                new Claim(ClaimTypes.Name, user.UserName),
-                                new Claim("KodeUser", user.KodeUser ?? string.Empty),
-                                new Claim("NamaUser", user.NamaUser ?? string.Empty),
+                                new Claim(ClaimTypes.Name, user.NamaUser),
+                                new Claim(ClaimTypes.Anonymous, user.KodeUser),
+                                //new Claim("KodeUser", user.KodeUser ?? string.Empty),
+                                //new Claim("NamaUser", user.NamaUser ?? string.Empty),
                                 new Claim("CompressedRoles", compressedRoles) // Simpan role dalam satu klaim
                             };
 

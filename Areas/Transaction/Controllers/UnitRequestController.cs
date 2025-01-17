@@ -22,9 +22,7 @@ using PurchasingSystem.Models;
 using PurchasingSystem.Repositories;
 using QRCoder;
 using System.Drawing;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystem.Areas.Transaction.Controllers
@@ -186,7 +184,7 @@ namespace PurchasingSystem.Areas.Transaction.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
-            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
 
             var data = await _unitRequestRepository.GetAllUnitRequestPageSize(searchTerm, page, pageSize, startDate, endDate);
@@ -215,7 +213,7 @@ namespace PurchasingSystem.Areas.Transaction.Controllers
             ViewBag.Active = "UnitRequest";
 
             _signInManager.IsSignedIn(User);
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
 
             ViewBag.UnitLocation = new SelectList(await _unitLocationRepository.GetUnitLocations(), "UnitLocationId", "UnitLocationName", SortOrder.Ascending);            
             ViewBag.WarehouseLocation = new SelectList(await _warehouseLocationRepository.GetWarehouseLocations(), "WarehouseLocationId", "WarehouseLocationName", SortOrder.Ascending);            
@@ -284,7 +282,7 @@ namespace PurchasingSystem.Areas.Transaction.Controllers
                 }
             }
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
 
             if (ModelState.IsValid)
             {
@@ -427,7 +425,7 @@ namespace PurchasingSystem.Areas.Transaction.Controllers
         {
             ViewBag.Active = "UnitRequest";
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
 
             if (ModelState.IsValid)
             {

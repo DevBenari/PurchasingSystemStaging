@@ -9,8 +9,7 @@ using PurchasingSystem.Areas.Report.Repositories;
 using PurchasingSystem.Data;
 using PurchasingSystem.Repositories;
 using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
 
 namespace PurchasingSystem.Areas.Report.Controllers
 {
@@ -139,7 +138,7 @@ namespace PurchasingSystem.Areas.Report.Controllers
         {
             ViewBag.Active = "Report";
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
 
             // Default ke bulan dan tahun saat ini jika tidak ada input
             var currentMonth = DateTime.Now.Month;

@@ -13,9 +13,7 @@ using System.Net;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using Microsoft.AspNetCore.DataProtection;
 using PurchasingSystem.Repositories;
-using System.Security.Cryptography;
-using System.Text;
-using PurchasingSystem.Areas.MasterData.Models;
+using System.Security.Claims;
 
 namespace PurchasingSystem.Areas.Order.Controllers
 {
@@ -108,7 +106,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
         public async Task<IActionResult> CreateEmail(EmailViewModel vm)
         {
             ViewBag.Active = "PurchaseOrder";
-            var getUser = _userActiveRepository.GetAllUserLogin().FirstOrDefault(u => u.UserName == User.Identity.Name);
+            var getUser = _userActiveRepository.GetAllUserLogin().FirstOrDefault(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value);
 
             if (ModelState.IsValid)
             {

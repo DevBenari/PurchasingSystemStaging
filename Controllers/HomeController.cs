@@ -137,10 +137,10 @@ namespace PurchasingSystem.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
             var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).ToList();
-            var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
+            var user = _userActiveRepository.GetAllUser().Where(u => u.Email == checkUserLogin.Email).FirstOrDefault();
             var data = await _productRepository
                 .GetAllProductPageSize(searchTerm, page, pageSize, startDate, endDate)
                 /*.Where(p => p.Stock < p.MinStock).ToList()*/;
@@ -250,7 +250,7 @@ namespace PurchasingSystem.Controllers
         [HttpGet]
         public IActionResult MyProfile()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
 
             if (user != null)
@@ -299,7 +299,7 @@ namespace PurchasingSystem.Controllers
 
                 // Cari user yang sedang login
                 var checkUserLogin = _userActiveRepository.GetAllUserLogin()
-                    .FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    .FirstOrDefault(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value);
                 var user = _userActiveRepository.GetAllUser()
                     .FirstOrDefault(u => u.FullName == checkUserLogin.NamaUser);
 
@@ -412,7 +412,7 @@ namespace PurchasingSystem.Controllers
 
         public IActionResult GetPRByApprove()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
 
             var getAllData = _approvalRepository.GetAllApproval();
@@ -436,7 +436,7 @@ namespace PurchasingSystem.Controllers
 
         public IActionResult GetUnitRequestMonitoring()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
 
             var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
@@ -459,7 +459,7 @@ namespace PurchasingSystem.Controllers
 
         public IActionResult GetQtyDiffMonitoring()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
 
             var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
@@ -541,7 +541,7 @@ namespace PurchasingSystem.Controllers
         [HttpGet]        
         public IActionResult CountNotifikasi()
         {
-            var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
 
             if (getUserId.Email == "superadmin@admin.com")
             {

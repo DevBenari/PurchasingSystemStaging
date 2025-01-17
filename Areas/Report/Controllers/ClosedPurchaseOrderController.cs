@@ -87,7 +87,7 @@ namespace PurchasingSystem.Areas.Report.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
-            //var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            //var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Email).Value).FirstOrDefault();
             //var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
 
             var data = await _closingPurchaseOrderRepository.GetAllClosingPurchaseOrderPageSize(searchTerm, page, pageSize, startDate, endDate);
