@@ -1,5 +1,6 @@
 ﻿﻿@using Microsoft.AspNetCore.Identity;
 @using PurchasingSystem.Models;
+@using System.Security.Claims;
 
 @{
     var listRole = Context.Session.GetString("ListRole");
@@ -69,11 +70,11 @@
                 </li>
                 @if (signInManager.IsSignedIn(User))
                 {
-                    var user = await signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                    var user = await signInManager.UserManager.FindByNameAsync(User.FindFirst(ClaimTypes.Name).Value);
 
                         <li class="nav-item">
                             <a class="nav-link" role="button">
-                                <p>Halo, @(User.FindFirst("NamaUser").Value)</p>
+                            <p>Hallo, @(User.FindFirst(ClaimTypes.Name).Value)</p>
                             </a>
                         </li>
 
@@ -237,7 +238,7 @@
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "KeyPerformanceIndikator" ? "nav-item menu-open active":"")">
-                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "Order" })">
+                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "General" })">
                                     <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> <p>Key Performance Indicator</p>
                                 </div>
                             </li>
@@ -401,7 +402,7 @@
                                 if (roles.Contains("ReadKeyPerformanceIndicator"))
                                 {
                                     <li class="@(ViewBag.Active == "KeyPerformanceIndikator" ? "nav-item menu-open active":"")">
-                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "Order" })">
+                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "General" })">
                                             <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> <p>Key Performance Indicator</p>
                                         </div>
                                     </li>
@@ -440,8 +441,8 @@
         </aside>*@
         <!-- /.control-sidebar -->
         <!-- Main Footer -->
-        <footer class="main-footer position-relative">
-            <strong>Copyright &copy; 2025 <a href="~/admin/dashboard/">BLM Pharmacy E-Purchasing System</a>.</strong>
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2025 <a href="/">BLM Pharmacy E-Purchasing System</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
                 <b>Version</b> 5.1.1

@@ -31,6 +31,8 @@ using System.Web.Mvc;
 using Controller = Microsoft.AspNetCore.Mvc.Controller;
 using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
+using PurchasingSystem.Areas.Administrator.Repositories;
+using Microsoft.AspNetCore.Authentication;
 
 namespace PurchasingSystem.Controllers
 {
@@ -56,6 +58,8 @@ namespace PurchasingSystem.Controllers
         private readonly IWarehouseTransferRepository _warehouseTransferRepository;
         private readonly IApprovalProductReturnRepository _approvalProductReturnRepository;
         private readonly IProductReturnRepository _productReturnRepository;
+        private readonly IRoleRepository _roleRepository;
+        private readonly IGroupRoleRepository _groupRoleRepository;
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
@@ -68,6 +72,8 @@ namespace PurchasingSystem.Controllers
             IHubContext<ChatHub> hubContext,
             IPurchaseRequestRepository purchaseRequestRepository,
             IUserActiveRepository userActiveRepository,
+            IRoleRepository roleRepository,
+            IGroupRoleRepository groupRoleRepository,
             IDepartmentRepository departmentRepository,
             IPositionRepository positionRepository,
             IProductRepository productRepository,
@@ -107,6 +113,8 @@ namespace PurchasingSystem.Controllers
             _warehouseTransferRepository = wehouseTransferRepository;
             _approvalProductReturnRepository = approvalProductReturnRepository;
             _productReturnRepository = productReturnRepository;
+            _roleRepository = roleRepository;
+            _groupRoleRepository = groupRoleRepository;
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
@@ -137,10 +145,10 @@ namespace PurchasingSystem.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
             var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).ToList();
-            var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
+            var user = _userActiveRepository.GetAllUser().Where(u => u.Email == checkUserLogin.Email).FirstOrDefault();
             var data = await _productRepository
                 .GetAllProductPageSize(searchTerm, page, pageSize, startDate, endDate)
                 /*.Where(p => p.Stock < p.MinStock).ToList()*/;
@@ -250,7 +258,7 @@ namespace PurchasingSystem.Controllers
         [HttpGet]
         public IActionResult MyProfile()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
 
             if (user != null)
@@ -299,7 +307,7 @@ namespace PurchasingSystem.Controllers
 
                 // Cari user yang sedang login
                 var checkUserLogin = _userActiveRepository.GetAllUserLogin()
-                    .FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    .FirstOrDefault(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value);
                 var user = _userActiveRepository.GetAllUser()
                     .FirstOrDefault(u => u.FullName == checkUserLogin.NamaUser);
 
@@ -412,7 +420,7 @@ namespace PurchasingSystem.Controllers
 
         public IActionResult GetPRByApprove()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
 
             var getAllData = _approvalRepository.GetAllApproval();
@@ -436,7 +444,7 @@ namespace PurchasingSystem.Controllers
 
         public IActionResult GetUnitRequestMonitoring()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
 
             var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
@@ -459,7 +467,7 @@ namespace PurchasingSystem.Controllers
 
         public IActionResult GetQtyDiffMonitoring()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
 
             var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
@@ -495,7 +503,7 @@ namespace PurchasingSystem.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)    
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -510,28 +518,66 @@ namespace PurchasingSystem.Controllers
                 return RedirectToAction("MyProfile");
             }
 
-            var result = await _userManager.RemovePasswordAsync(user);
-            if (result.Succeeded)
+            // Reset password
+            var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+            if (removePasswordResult.Succeeded)
             {
-                result = await _userManager.AddPasswordAsync(user, model.NewPassword);  
-            }
+                var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword);
 
-            if (result.Succeeded)
-            {
-                TempData["MessageSuccess"] = "Password changed successfully.";
-                await _signInManager.RefreshSignInAsync(user);
-                return RedirectToAction("MyProfile");
-            }
+                if (addPasswordResult.Succeeded)
+                {
+                    // Rebuild compressed roles
+                    var roleNames = (from role in _roleRepository.GetRoles()
+                                     join userRole in _groupRoleRepository.GetAllGroupRole()
+                                     on role.Id equals userRole.RoleId
+                                     where userRole.DepartemenId == user.Id
+                                     select role.Name).Distinct().ToList();
 
-            foreach (var error in result.Errors)
+                    string compressedRoles = string.Join(",", roleNames);
+
+                    // Refresh sign-in and add updated claims
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.Anonymous, user.NamaUser),
+                        new Claim("CompressedRoles", compressedRoles) // Update compressed roles
+                    };
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = true, // Cookie akan bertahan setelah browser ditutup
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Masa berlaku cookie
+                    };
+
+                    // Create new claims identity
+                    var identity = new ClaimsIdentity(claims, "Identity.Application");
+                    var principal = new ClaimsPrincipal(identity);
+                    await HttpContext.SignInAsync("Identity.Application", principal, authProperties);
+
+                    TempData["MessageSuccess"] = "Password changed successfully.";
+                    return RedirectToAction("MyProfile");
+                }
+
+                foreach (var error in addPasswordResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            else
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                foreach (var error in removePasswordResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
             TempData["MessageFailed"] = "Failed to change password.";
             return RedirectToAction("MyProfile");
         }
-        
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -541,7 +587,7 @@ namespace PurchasingSystem.Controllers
         [HttpGet]        
         public IActionResult CountNotifikasi()
         {
-            var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (getUserId.Email == "superadmin@admin.com")
             {
