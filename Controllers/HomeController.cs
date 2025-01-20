@@ -595,8 +595,8 @@ namespace PurchasingSystem.Controllers
             } 
             else 
             {
-                var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveId;
-                var getUserActiveCode = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveCode;
+                var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.Email == getUserId.Email).FirstOrDefault().UserActiveId;
+                var getUserActiveCode = _userActiveRepository.GetAllUser().Where(u => u.Email == getUserId.Email).FirstOrDefault().UserActiveCode;
                 var loggerDataPR = new List<object>();
                 var loggerDataQtyDiff = new List<object>();
                 var loggerDataUnitReq = new List<object>();

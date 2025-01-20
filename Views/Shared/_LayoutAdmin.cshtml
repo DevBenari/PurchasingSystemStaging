@@ -94,7 +94,7 @@
 
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
-                    @if (User.Identity.Name == "superadmin@admin.com")
+                    @if (User.FindFirst(ClaimTypes.Name).Value == "superadmin@admin.com")
                     {
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; max-width: 400px; overflow-y: auto;" id="loggerContainer" hidden></div>
                     }
@@ -111,7 +111,7 @@
                 <!-- Navbar Search -->
                 @if (signInManager.IsSignedIn(User))
                 {
-                    var user = await signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                    var user = await signInManager.UserManager.FindByNameAsync(User.FindFirst(ClaimTypes.Name).Value);
                     
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -150,7 +150,7 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
-                        @if (User.Identity.Name == "superadmin@admin.com")
+                        @if (User.FindFirst(ClaimTypes.Name).Value == "superadmin@admin.com")
                         {
                             <li class="@(ViewBag.Active == "Dashboard" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Home")">
