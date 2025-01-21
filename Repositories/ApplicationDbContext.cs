@@ -9,6 +9,7 @@ using PurchasingSystem.Areas.Report.Models;
 using PurchasingSystem.Areas.Transaction.Models;
 using PurchasingSystem.Areas.Warehouse.Models;
 using PurchasingSystem.Models;
+using PurchasingSystemStaging.Areas.Administrator.Models;
 
 namespace PurchasingSystem.Data;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -34,6 +35,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Department> Departments { get; set; }
     public DbSet<Position> Positions { get; set; }
     public DbSet<GroupRole> GroupRoles { get; set; }
+    public DbSet<GroupUser> GroupUsers { get; set; }
     #endregion
 
     #region Areas Order
