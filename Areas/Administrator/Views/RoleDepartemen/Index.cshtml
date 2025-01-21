@@ -101,7 +101,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 bg-white">
+                    <div class="col-md-6 bg-white">
                         <div class="col-md-12" id="div2">
                             <a href="#" class="btn btn-primary btn-block mb-3">Create Role Departemen</a>
                             <div class="card">
@@ -125,7 +125,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 bg-white">
+                    <div class="col-md-3 bg-white">
                         <div class="col-md-12" id="div1">
                             <a href="#" class="btn bg-info btn-block mb-3">All Role Menu</a>
                             <div class="card">
@@ -222,7 +222,7 @@
                 console.log("ini 2 = " + itemId);
             }
         } else {
-            alert("User Belum Dipilih.");
+            alert("Position Belum Dipilih.");
         }
         moveToDiv1(itemId, folderCurrentConcurrencyStamp)
         changeIconsToX();
@@ -498,7 +498,7 @@
                 console.log('Elemen folderItem dan newFolderItem tidak ditemukan');
             }
         } else {
-            alert("Sorry, please select a user first !!!");
+            alert("Sorry, please select a Position first !!!");
         }
 
         changeIconsToX();
@@ -564,7 +564,7 @@
                     folderList.appendChild(newFolderList.firstChild);
                 }
                 // Mengubah teks tombol ke arah kanan (->)
-                this.innerHTML = 'Move All &rarr;';
+                this.innerHTML = '&larr; Move All ';
             }
         }
     });

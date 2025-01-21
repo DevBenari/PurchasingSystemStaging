@@ -133,7 +133,7 @@ namespace PurchasingSystemStaging.Areas.Administrator.Controllers
                     }
                 }
 
-                TempData["SuccessMessage"] = "Role successfully assigned to user";
+                TempData["SuccessMessage"] = "Role successfully assigned to Position";
                 return RedirectToAction("Index"); // atau aksi lain sesuai kebutuhan
             }
         }

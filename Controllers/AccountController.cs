@@ -100,7 +100,7 @@ namespace PurchasingSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
@@ -121,7 +121,8 @@ namespace PurchasingSystem.Controllers
                 }
                 else
                 {
-                    var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
+                    //var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
+                    var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
@@ -134,11 +135,13 @@ namespace PurchasingSystem.Controllers
                         if (result.Succeeded)
                         {
                             // Ambil role dari database                            
-                            List<string> roleNames = (from role in _roleRepository.GetRoles()
-                                                      join userRole in _groupRoleRepository.GetAllGroupRole()
-                                                      on role.Id equals userRole.RoleId
-                                                      where userRole.DepartemenId == user.Id
-                                                      select role.Name).Distinct().ToList();
+                            List<string> roleNames = (from userRole in _applicationDbContext.UserRoles // UserRoles merujuk pada tabel AspNetUserRoles
+                                                      join role in _applicationDbContext.Roles // Roles merujuk pada tabel AspNetRoles
+                                                      on userRole.RoleId equals role.Id // Gabungkan berdasarkan RoleId
+                                                      where userRole.UserId == user.Id // Filter berdasarkan UserId
+                                                      select role.Name) // Ambil nama role
+                                                     .Distinct() // Ambil role yang unik
+                                                     .ToList();
 
                             // Kompres role menjadi string
                             string compressedRoles = string.Join(",", roleNames);
@@ -149,8 +152,7 @@ namespace PurchasingSystem.Controllers
                                 new Claim(ClaimTypes.Email, user.Email),
                                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                                 new Claim(ClaimTypes.Name, user.UserName),
-                                new Claim("KodeUser", user.KodeUser ?? string.Empty),
-                                new Claim("NamaUser", user.NamaUser ?? string.Empty),
+                                new Claim(ClaimTypes.Anonymous, user.NamaUser),
                                 new Claim("CompressedRoles", compressedRoles) // Simpan role dalam satu klaim
                             };
 
@@ -168,7 +170,7 @@ namespace PurchasingSystem.Controllers
                                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Masa berlaku cookie
                             };
 
-                            // Gunakan `SignInAsync` langsung untuk klaim minimal
+                            // Gunakan SignInAsync langsung untuk klaim minimal
                             var identity = new ClaimsIdentity(claims, "Identity.Application");
                             var principal = new ClaimsPrincipal(identity);
                             await HttpContext.SignInAsync("Identity.Application", principal, authProperties);
@@ -186,7 +188,6 @@ namespace PurchasingSystem.Controllers
                             var sessionId = Guid.NewGuid().ToString();
                             HttpContext.Session.SetString("UserId", user.Id.ToString());
                             HttpContext.Session.SetString("SessionId", sessionId);
-
                             HttpContext.Session.SetString("ListRole", string.Join(",", compressedRoles));
 
                             // Simpan session dan role di server-side cache

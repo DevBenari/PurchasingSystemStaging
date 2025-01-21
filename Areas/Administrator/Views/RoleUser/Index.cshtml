@@ -22,7 +22,7 @@
                 @{
                     var user = await signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 }
-                @if (user?.Email == "superadmin@admin.com")
+                @* @if (user?.Email == "superadmin@admin.com")
                 {
                     <form id="createRoleForm" asp-controller="RoleUser" asp-action="CreateRoleUserNavbar" method="post">
                         <div class="row">
@@ -43,7 +43,7 @@
                     </form>
                 }
                 else
-                {
+                { *@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card card-widget widget-user">
@@ -57,11 +57,11 @@
                             <!-- /.card -->
                         </div>
                     </div>
-                }
+               @*  } *@
 
                 <!-- Card Body for Role Menus -->
                 <div class="row">
-                    <div class="col-md-4 bg-white">
+                    <div class="col-md-3 bg-white">
                         <div class="col-md-12" id="div0">
                             <a href="#" class="btn bg-info btn-block mb-3">All User</a>
                             <!-- DIRECT CHAT -->
@@ -101,36 +101,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 bg-white">
-                        <div class="col-md-12" id="div1">
-                            <a href="#" class="btn bg-info btn-block mb-3">All Role Menu</a>
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">
-                                        <div class="input-group">
-                                            <input type="text" id="searchMenu" name="message" placeholder="Search Menu" class="form-control">
-                                            <span class="input-group-append">
-                                                <!-- Tombol Search dihapus -->
-                                            </span>
-                                        </div>
-                                    </h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-success float-left fw-bold" id="moveButton">
-                                            Move All &rarr;
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card-body p-0 direct-chat-messages" style="height:800px;">
-                                    <ul class="nav nav-pills flex-column" id="folderList">
-                                    </ul>
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <!-- /.card -->
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 bg-white">
+                    <div class="col-md-6 bg-white">
                         <div class="col-md-12" id="div2">
                             <a href="#" class="btn btn-primary btn-block mb-3">Create Role User</a>
                             <div class="card">
@@ -153,6 +124,37 @@
                             <!-- /.card -->
                         </div>
                     </div>
+
+                    <div class="col-md-3 bg-white">
+                        <div class="col-md-12" id="div1">
+                            <a href="#" class="btn bg-info btn-block mb-3">All Role Menu</a>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <div class="input-group">
+                                            <input type="text" id="searchMenu" name="message" placeholder="Search Menu" class="form-control">
+                                            <span class="input-group-append">
+                                                <!-- Tombol Search dihapus -->
+                                            </span>
+                                        </div>
+                                    </h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-success float-left fw-bold" id="moveButton">
+                                            &larr; Move All
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0 direct-chat-messages" style="height:800px;">
+                                    <ul class="nav nav-pills flex-column" id="folderList">
+                                    </ul>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+
+                    <!-- /.col md -->
                 </div>
                 <!-- /.row -->
             </div>
@@ -559,14 +561,14 @@
                     newFolderList.appendChild(folderList.firstChild);
                 }
                 // Mengubah teks tombol ke arah kiri (<-)
-                this.innerHTML = '&larr; Move All';
+                this.innerHTML = '&rarr; Move All';
             } else if (newFolderList.childElementCount > 0) {
                 // Jika folderList kosong, pindahkan semua elemen dari newFolderList ke folderList
                 while (newFolderList.firstChild) {
                     folderList.appendChild(newFolderList.firstChild);
                 }
                 // Mengubah teks tombol ke arah kanan (->)
-                this.innerHTML = 'Move All &rarr;';
+                this.innerHTML = ' &larr; Move All';
             }
         }
     });
