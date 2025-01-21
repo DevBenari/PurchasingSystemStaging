@@ -69,6 +69,93 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
         //    return Json(new SelectList(leadtime, "LeadTimeId", "LeadTimeValue"));
         //}
 
+        public async Task<IActionResult> GetSuppliersPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Suppliers
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.SupplierName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.SupplierName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            var results = items.Select(p => new {
+                id = p.SupplierId.ToString(),
+                text = p.SupplierName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
+
+        public async Task<IActionResult> GetProductsPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Products
+                .Include(p => p.Supplier)
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.ProductName.Contains(term) || p.Supplier.SupplierName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.ProductName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            // Hasil: di Select2 butuh { id, text }
+            // "text" kita isi gabungan ProductName + '|' + SupplierName
+            var results = items.Select(p => new {
+                id = p.ProductId,
+                text = p.ProductName + " | " + p.Supplier.SupplierName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
+
         [Authorize(Roles = "ReadInitialStock")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
         {
