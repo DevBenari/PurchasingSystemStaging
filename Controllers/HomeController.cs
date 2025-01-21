@@ -249,12 +249,12 @@ namespace PurchasingSystem.Controllers
                     WarehouseTransferId = y.Key,
                     CountOfWarehouseTransfers = y.Count()
                 }).ToList();
-                ViewBag.CountWarehouseTransfer = countWarehouseTransfer.Count;                
+                ViewBag.CountWarehouseTransfer = countWarehouseTransfer.Count;
 
                 return View(dashboard);
             }
         }
-        
+
         [HttpGet]
         public IActionResult MyProfile()
         {
@@ -584,7 +584,7 @@ namespace PurchasingSystem.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [HttpGet]        
+        [HttpGet]
         public IActionResult CountNotifikasi()
         {
             var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
@@ -592,8 +592,8 @@ namespace PurchasingSystem.Controllers
             if (getUserId.Email == "superadmin@admin.com")
             {
                 return Json(new { success = true });
-            } 
-            else 
+            }
+            else
             {
                 var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.Email == getUserId.Email).FirstOrDefault().UserActiveId;
                 var getUserActiveCode = _userActiveRepository.GetAllUser().Where(u => u.Email == getUserId.Email).FirstOrDefault().UserActiveCode;
@@ -630,7 +630,7 @@ namespace PurchasingSystem.Controllers
 
                 foreach (var logger in DataPR)
                 {
-                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    if (logger.ApproveStatusUser1 == null && logger.UserApprove1Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -643,7 +643,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataPR.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.UserApprove2Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -656,7 +656,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataPR.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.UserApprove3Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User3" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -673,7 +673,7 @@ namespace PurchasingSystem.Controllers
 
                 foreach (var logger in DataQtyDiff)
                 {
-                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    if (logger.ApproveStatusUser1 == null && logger.UserApprove1Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalQtyDifferenceRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.QtyDifferenceId == logger.QtyDifferenceId).FirstOrDefault().ApprovalQtyDifferenceId;
 
@@ -686,7 +686,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataQtyDiff.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.UserApprove2Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalQtyDifferenceRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.QtyDifferenceId == logger.QtyDifferenceId).FirstOrDefault().ApprovalQtyDifferenceId;
 
@@ -703,7 +703,7 @@ namespace PurchasingSystem.Controllers
 
                 foreach (var logger in DataUnitReq)
                 {
-                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    if (logger.ApproveStatusUser1 == null && logger.UserApprove1Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.UnitRequestId == logger.UnitRequestId).FirstOrDefault().ApprovalUnitRequestId;
 
@@ -720,7 +720,7 @@ namespace PurchasingSystem.Controllers
 
                 foreach (var logger in DataProductReturn)
                 {
-                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    if (logger.ApproveStatusUser1 == null && logger.UserApprove1Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
 
@@ -733,7 +733,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataProductReturn.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.UserApprove2Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
 
@@ -746,7 +746,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataProductReturn.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.UserApprove3Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User3" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
 
@@ -766,17 +766,17 @@ namespace PurchasingSystem.Controllers
                     var totalNotification = 0;
                     return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq, loggerDataJsonProductReturn = loggerDataProductReturn });
                 }
-                else 
+                else
                 {
                     var totalNotification = DataPR.Count + DataQtyDiff.Count + DataUnitReq.Count + DataProductReturn.Count;
                     return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq, loggerDataJsonProductReturn = loggerDataProductReturn });
-                }                
-            }                       
+                }
+            }
         }
 
         private string ProcessUploadFile(UserActiveViewModel model)
         {
-            if(model.Foto == null)
+            if (model.Foto == null)
             {
                 return null;
             }
