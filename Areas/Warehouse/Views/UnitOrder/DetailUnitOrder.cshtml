@@ -135,7 +135,10 @@
                     <div class="card-body">
                         @if (User.Identity.Name == "superadmin@admin.com")
                         {
-                            <div class="btn btn-success" data-href="@Url.Action("TransferUnit", "UnitOrder", new { area = "Warehouse", id = Model.UnitOrderId })">Transfer</div>
+                            @if (Model.Status == "In Order")
+                            {
+                                <div class="btn btn-success" data-href="@Url.Action("TransferUnit", "UnitOrder", new { area = "Warehouse", id = Model.UnitOrderId })">Transfer</div>
+                            }                            
                             <div class="btn btn-default" id="btnbatal" data-href="@Url.Action("Index", "UnitOrder", new { area = "Warehouse" })">Cancel</div>
                         }
                         else
