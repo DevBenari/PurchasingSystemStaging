@@ -45,7 +45,7 @@
 
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <link media="screen" rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.3.8/sweetalert2.min.css" />
     <link media="screen" rel="stylesheet" href='https://cdn.jsdelivr.net/sweetalert2/6.3.8/sweetalert2.css' />
     <script type="text/javascript" src="https://cdn.jsdelivr.net/sweetalert2/6.3.8/sweetalert2.min.js"></script>
@@ -72,21 +72,21 @@
                 {
                     var user = await signInManager.UserManager.FindByNameAsync(User.FindFirst(ClaimTypes.Name).Value);
 
-                        <li class="nav-item">
-                            <a class="nav-link" role="button">
-                            <p>Hallo, @(User.FindFirst(ClaimTypes.Name).Value)</p>
-                            </a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" role="button">
+                            <p>Hallo, @(User.FindFirst(ClaimTypes.Anonymous).Value)</p>
+                        </a>
+                    </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" role="button">
+                    <li class="nav-item">
+                        <a class="nav-link" role="button">
                             @if (user.IsOnline == true)
                             {
                                 <p><i class='fas fa-circle' style='color:greenyellow'></i> Online</p>
                             }
-                            </a>
-                        </li>
-                }                
+                        </a>
+                    </li>
+                }
             </ul>
 
             <!-- Right navbar links -->
@@ -94,25 +94,25 @@
 
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
-                    @if (User.Identity.Name == "superadmin@admin.com")
+                    @if (User.FindFirst(ClaimTypes.Name).Value == "superadmin@admin.com")
                     {
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; max-width: 400px; overflow-y: auto;" id="loggerContainer" hidden></div>
                     }
                     else
                     {
-                            <a class="nav-link" data-toggle="dropdown" href="#">
-                                <i class="far fa-bell"></i>
-                                <span class="badge badge-danger navbar-badge" id="notifikasiCount"></span>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; max-width: 400px; overflow-y: auto;" id="loggerContainer"></div>
-                    }                    
+                        <a class="nav-link" data-toggle="dropdown" href="#">
+                            <i class="far fa-bell"></i>
+                            <span class="badge badge-danger navbar-badge" id="notifikasiCount"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; max-width: 400px; overflow-y: auto;" id="loggerContainer"></div>
+                    }
                 </li>
 
                 <!-- Navbar Search -->
                 @if (signInManager.IsSignedIn(User))
                 {
-                    var user = await signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                    
+                    var user = await signInManager.UserManager.FindByNameAsync(User.FindFirst(ClaimTypes.Name).Value);
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Setting
@@ -150,7 +150,7 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
-                        @if (User.Identity.Name == "superadmin@admin.com")
+                        @if (User.FindFirst(ClaimTypes.Name).Value == "superadmin@admin.com")
                         {
                             <li class="@(ViewBag.Active == "Dashboard" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Home")">
@@ -262,7 +262,7 @@
 
                                 if (roles.Contains("ReadDepartment") || roles.Contains("ReadPosition") || roles.Contains("ReadUserActive") || roles.Contains("ReadSupplier") || roles.Contains("ReadProduct") || roles.Contains("ReadTermOfPayment") || roles.Contains("ReadBank") || roles.Contains("ReadUnitLocation") || roles.Contains("ReadWarehouseLocation") || roles.Contains("ReadLeadTime") || roles.Contains("ReadInitialStock"))
                                 {
-                                    <li class="nav-header">Setup</li>                                   
+                                    <li class="nav-header">Setup</li>
                                 }
 
                                 if (roles.Contains("ReadGroupRole") || roles.Contains("ReadApi"))
@@ -275,7 +275,7 @@
                                 }
 
                                 if (roles.Contains("ReadDepartment") || roles.Contains("ReadPosition") || roles.Contains("ReadUserActive") || roles.Contains("ReadSupplier") || roles.Contains("ReadProduct") || roles.Contains("ReadTermOfPayment") || roles.Contains("ReadBank") || roles.Contains("ReadUnitLocation") || roles.Contains("ReadWarehouseLocation") || roles.Contains("ReadLeadTime") || roles.Contains("ReadInitialStock"))
-                                {                                
+                                {
                                     <li class="@(ViewBag.Active == "MasterData" ? "nav-item menu-open active":"")">
                                         <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "Dashboard", new { area = "MasterData" })">
                                             <i class="nav-icon fas fa-table" style="color:#FFFFFF"></i> <p>Master Data</p>
@@ -418,7 +418,7 @@
                                     </li>
                                 }
                             }
-                        }                        
+                        }
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -432,12 +432,12 @@
         </div>
         @if (IsSectionDefined("Scripts"))
         {
-            @RenderSection("Scripts", required: true)            
+            @RenderSection("Scripts", required: true)
         }
 
         @*<!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
+        <!-- Control sidebar content goes here -->
         </aside>*@
         <!-- /.control-sidebar -->
         <!-- Main Footer -->
@@ -448,7 +448,7 @@
                 <b>Version</b> 5.1.1
             </div>
         </footer>
-    </div>    
+    </div>
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->
@@ -470,7 +470,7 @@
         $.widget.bridge('uibutton', $.ui.button)
     </script>
     <!-- InputMask -->
-    <script src="~/admin/plugins/inputmask/jquery.inputmask.min.js"></script>   
+    <script src="~/admin/plugins/inputmask/jquery.inputmask.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="~/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- ChartJS -->
@@ -532,7 +532,7 @@
                 // Tampilkan notifikasi swal
                 swal({
                     title: "Session Expired",
-                    text: "Your session has ended.",                    
+                    text: "Your session has ended.",
                     type: "info",
                     confirmButtonText: "Okay"
                 });
@@ -568,7 +568,7 @@
             });
         });
         //End Pengaturan Click Pada Button DIV Index
-    </script>    
+    </script>
 
     <script>
         // Inisialisasi koneksi SignalR
@@ -675,17 +675,17 @@
                                 var urlPR = '@Url.Action("DetailApprovalPurchaseRequest", "ApprovalPurchaseRequest", new { area = "Order", id = "__id__" })'.replace("__id__", item.approvalId);
                                 var content =
                                     `<a href="${urlPR}" class="dropdown-item cursor-pointer">
-                                        <div class="media">
-                                            <div class="media-body">
-                                                <div class="info-box-content">
-                                                    <p class="text-sm text-muted">Approval Purchase Request</p>
-                                                    <h3 class="dropdown-item-title" style="color:#347FC4"><b>${item.purchaseRequestNumber} Has Been Created</b></h3>
-                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                <div class="media">
+                                                    <div class="media-body">
+                                                        <div class="info-box-content">
+                                                            <p class="text-sm text-muted">Approval Purchase Request</p>
+                                                            <h3 class="dropdown-item-title" style="color:#347FC4"><b>${item.purchaseRequestNumber} Has Been Created</b></h3>
+                                                            <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <div class="dropdown-divider"></div>`;
+                                            </a>
+                                            <div class="dropdown-divider"></div>`;
 
                                 // Append ke loggerContainer
                                 $("#loggerContainer").append(content);
@@ -694,17 +694,17 @@
                                 var urlQtyDiff = '@Url.Action("DetailApprovalQtyDifference", "ApprovalQtyDifference", new { area = "Order", id = "__id__" })'.replace("__id__", item.approvalId);
                                 var content =
                                     `<a href="${urlQtyDiff}" class="dropdown-item cursor-pointer">
-                                        <div class="media">
-                                            <div class="media-body">
-                                                <div class="info-box-content">
-                                                    <p class="text-sm text-muted">Approval Qty Difference</p>
-                                                    <h3 class="dropdown-item-title" style="color:#758E4F"><b>${item.qtyDifferenceNumber} Has Been Created</b></h3>
-                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                <div class="media">
+                                                    <div class="media-body">
+                                                        <div class="info-box-content">
+                                                            <p class="text-sm text-muted">Approval Qty Difference</p>
+                                                            <h3 class="dropdown-item-title" style="color:#758E4F"><b>${item.qtyDifferenceNumber} Has Been Created</b></h3>
+                                                            <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <div class="dropdown-divider"></div>`;
+                                            </a>
+                                            <div class="dropdown-divider"></div>`;
 
                                 // Append ke loggerContainer
                                 $("#loggerContainer").append(content);
@@ -713,17 +713,17 @@
                                 var urlUnitReq = '@Url.Action("DetailApprovalUnitRequest", "ApprovalUnitRequest", new { area = "Warehouse", id = "__id__" })'.replace("__id__", item.approvalId);
                                 var content =
                                     `<a href="${urlUnitReq}" class="dropdown-item cursor-pointer">
-                                        <div class="media">
-                                            <div class="media-body">
-                                                <div class="info-box-content">
-                                                    <p class="text-sm text-muted">Approval Unit Request</p>
-                                                    <h3 class="dropdown-item-title" style="color:#F26419"><b>${item.unitRequestNumber} Has Been Created</b></h3>
-                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                <div class="media">
+                                                    <div class="media-body">
+                                                        <div class="info-box-content">
+                                                            <p class="text-sm text-muted">Approval Unit Request</p>
+                                                            <h3 class="dropdown-item-title" style="color:#F26419"><b>${item.unitRequestNumber} Has Been Created</b></h3>
+                                                            <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <div class="dropdown-divider"></div>`;
+                                            </a>
+                                            <div class="dropdown-divider"></div>`;
 
                                 // Append ke loggerContainer
                                 $("#loggerContainer").append(content);
@@ -732,17 +732,17 @@
                                 var urlPRN = '@Url.Action("DetailApprovalProductReturn", "ApprovalProductReturn", new { area = "Warehouse", id = "__id__" })'.replace("__id__", item.approvalId);
                                 var content =
                                     `<a href="${urlPRN}" class="dropdown-item cursor-pointer">
-                                                <div class="media">
-                                                    <div class="media-body">
-                                                        <div class="info-box-content">
-                                                            <p class="text-sm text-muted">Approval Product Return</p>
-                                                            <h3 class="dropdown-item-title" style="color:#A7D477"><b>${item.productReturnNumber} Has Been Created</b></h3>
-                                                            <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                        <div class="media">
+                                                            <div class="media-body">
+                                                                <div class="info-box-content">
+                                                                    <p class="text-sm text-muted">Approval Product Return</p>
+                                                                    <h3 class="dropdown-item-title" style="color:#A7D477"><b>${item.productReturnNumber} Has Been Created</b></h3>
+                                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-divider"></div>`;
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>`;
 
                                 // Append ke loggerContainer
                                 $("#loggerContainer").append(content);

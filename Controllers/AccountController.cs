@@ -100,7 +100,7 @@ namespace PurchasingSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
@@ -121,7 +121,8 @@ namespace PurchasingSystem.Controllers
                 }
                 else
                 {
-                    var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+                    //var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
+                    var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "Invalid Login Attempt. ");
@@ -150,7 +151,7 @@ namespace PurchasingSystem.Controllers
                                 new Claim(ClaimTypes.Email, user.Email),
                                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                                 new Claim(ClaimTypes.Name, user.UserName),
-                                new Claim(ClaimTypes.Anonymous, user.NamaUser),                                
+                                new Claim(ClaimTypes.Anonymous, user.NamaUser),
                                 new Claim("CompressedRoles", compressedRoles) // Simpan role dalam satu klaim
                             };
 
