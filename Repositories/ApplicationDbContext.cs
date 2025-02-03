@@ -9,7 +9,7 @@ using PurchasingSystem.Areas.Report.Models;
 using PurchasingSystem.Areas.Transaction.Models;
 using PurchasingSystem.Areas.Warehouse.Models;
 using PurchasingSystem.Models;
-using PurchasingSystemStaging.Areas.Administrator.Models;
+using PurchasingSystem.Areas.Administrator.Models;
 
 namespace PurchasingSystem.Data;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

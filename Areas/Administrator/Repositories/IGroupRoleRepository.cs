@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PurchasingSystem.Areas.Administrator.Models;
 using PurchasingSystem.Data;
-using PurchasingSystemStaging.Areas.Administrator.Models;
+using PurchasingSystem.Areas.Administrator.Models;
 
 namespace PurchasingSystem.Areas.Administrator.Repositories
 {
