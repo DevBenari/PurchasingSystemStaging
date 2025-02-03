@@ -367,3 +367,7 @@ FodyWeavers.xsd
 /.gitignore
 /appsettings.json
 /.gitignore
+
+# Ignore versioning files
+gitversion.txt
+version.txt

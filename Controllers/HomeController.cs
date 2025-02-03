@@ -421,70 +421,128 @@ namespace PurchasingSystem.Controllers
         public IActionResult GetPRByApprove()
         {
             var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
-            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
-
-            var getAllData = _approvalRepository.GetAllApproval();
-            var waiting = getAllData.Where(app => app.Status.StartsWith("User") && app.UserApproveId == getUserActive.UserActiveId || app.Status.StartsWith("Waiting") && app.UserApproveId == getUserActive.UserActiveId).Count();
-            var rejected = getAllData.Where(app => app.Status == "Reject" && app.UserApproveId == getUserActive.UserActiveId).Count();
-            var completed = getAllData.Where(app => app.Status == "Approve" && app.UserApproveId == getUserActive.UserActiveId).Count();
-            var totalPRData = getAllData.Where(app => app.UserApproveId == getUserActive.UserActiveId).Count();
-
-            var result = new
+            if (checkUserLogin.NamaUser == "SuperAdmin")
             {
-                Waiting = waiting,
-                Rejected = rejected,
-                Completed = completed,
-                TotalPRData = totalPRData,
-                DataUser = getUserActive,
-            };
+                var getAllData = _approvalRepository.GetAllApproval();
+                var waiting = getAllData.Where(app => app.Status.StartsWith("User")).Count();
+                var rejected = getAllData.Where(app => app.Status == "Reject").Count();
+                var completed = getAllData.Where(app => app.Status == "Approve").Count();
+                var totalPRData = getAllData.Count();
 
-            return Json(result);
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalPRData = totalPRData
+                };
 
+                return Json(result);
+            }
+            else
+            {
+                var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+                var getAllData = _approvalRepository.GetAllApproval();
+                var waiting = getAllData.Where(app => app.Status.StartsWith("User") && app.UserApproveId == getUserActive.UserActiveId || app.Status.StartsWith("Waiting") && app.UserApproveId == getUserActive.UserActiveId).Count();
+                var rejected = getAllData.Where(app => app.Status == "Reject" && app.UserApproveId == getUserActive.UserActiveId).Count();
+                var completed = getAllData.Where(app => app.Status == "Approve" && app.UserApproveId == getUserActive.UserActiveId).Count();
+                var totalPRData = getAllData.Where(app => app.UserApproveId == getUserActive.UserActiveId).Count();
+
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalPRData = totalPRData,
+                    DataUser = getUserActive,
+                };
+
+                return Json(result);
+            }
         }
 
         public IActionResult GetUnitRequestMonitoring()
         {
             var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
-            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
-
-            var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
-            var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var totalUnitRequest = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
-
-            var result = new
+            if (checkUserLogin.NamaUser == "SuperAdmin")
             {
-                Waiting = waiting,
-                Rejected = rejected,
-                Completed = completed,
-                TotalUnitRequest = totalUnitRequest,
-            };
+                var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
+                var waiting = getAllData.Where(status => status.Status == "Waiting Approval").Count();
+                var rejected = getAllData.Where(status => status.Status == "Reject").Count();
+                var completed = getAllData.Where(status => status.Status == "Approve").Count();
+                var totalUnitRequest = getAllData.Count();
 
-            return Json(result);
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalUnitRequest = totalUnitRequest,
+                };
 
+                return Json(result);
+            }
+            else
+            {
+                var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+                var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
+                var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var totalUnitRequest = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
+
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalUnitRequest = totalUnitRequest,
+                };
+
+                return Json(result);
+            }
         }
 
         public IActionResult GetQtyDiffMonitoring()
         {
             var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
-            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
-
-            var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
-            var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var totalQtyDifference = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
-
-            var result = new
+            if (checkUserLogin.NamaUser == "SuperAdmin")
             {
-                Waiting = waiting,
-                Rejected = rejected,
-                Completed = completed,
-                TotalQtyDifference = totalQtyDifference
-            };
+                var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
+                var waiting = getAllData.Where(status => status.Status == "Waiting Approval").Count();
+                var rejected = getAllData.Where(status => status.Status == "Reject").Count();
+                var completed = getAllData.Where(status => status.Status == "Approve").Count();
+                var totalQtyDifference = getAllData.Count();
 
-            return Json(result);
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalQtyDifference = totalQtyDifference
+                };
+
+                return Json(result);
+            }
+            else
+            {
+                var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+                var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
+                var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var totalQtyDifference = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
+
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalQtyDifference = totalQtyDifference
+                };
+
+                return Json(result);
+            }                
         }
 
 
