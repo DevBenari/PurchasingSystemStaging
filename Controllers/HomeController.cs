@@ -31,6 +31,8 @@ using System.Web.Mvc;
 using Controller = Microsoft.AspNetCore.Mvc.Controller;
 using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
+using PurchasingSystem.Areas.Administrator.Repositories;
+using Microsoft.AspNetCore.Authentication;
 
 namespace PurchasingSystem.Controllers
 {
@@ -56,6 +58,8 @@ namespace PurchasingSystem.Controllers
         private readonly IWarehouseTransferRepository _warehouseTransferRepository;
         private readonly IApprovalProductReturnRepository _approvalProductReturnRepository;
         private readonly IProductReturnRepository _productReturnRepository;
+        private readonly IRoleRepository _roleRepository;
+        private readonly IGroupRoleRepository _groupRoleRepository;
 
         private readonly IDataProtector _protector;
         private readonly UrlMappingService _urlMappingService;
@@ -68,6 +72,8 @@ namespace PurchasingSystem.Controllers
             IHubContext<ChatHub> hubContext,
             IPurchaseRequestRepository purchaseRequestRepository,
             IUserActiveRepository userActiveRepository,
+            IRoleRepository roleRepository,
+            IGroupRoleRepository groupRoleRepository,
             IDepartmentRepository departmentRepository,
             IPositionRepository positionRepository,
             IProductRepository productRepository,
@@ -107,6 +113,8 @@ namespace PurchasingSystem.Controllers
             _warehouseTransferRepository = wehouseTransferRepository;
             _approvalProductReturnRepository = approvalProductReturnRepository;
             _productReturnRepository = productReturnRepository;
+            _roleRepository = roleRepository;
+            _groupRoleRepository = groupRoleRepository;
 
             _protector = provider.CreateProtector("UrlProtector");
             _urlMappingService = urlMappingService;
@@ -137,10 +145,10 @@ namespace PurchasingSystem.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
             var userLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.IsOnline == true).ToList();
-            var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
+            var user = _userActiveRepository.GetAllUser().Where(u => u.Email == checkUserLogin.Email).FirstOrDefault();
             var data = await _productRepository
                 .GetAllProductPageSize(searchTerm, page, pageSize, startDate, endDate)
                 /*.Where(p => p.Stock < p.MinStock).ToList()*/;
@@ -241,16 +249,16 @@ namespace PurchasingSystem.Controllers
                     WarehouseTransferId = y.Key,
                     CountOfWarehouseTransfers = y.Count()
                 }).ToList();
-                ViewBag.CountWarehouseTransfer = countWarehouseTransfer.Count;                
+                ViewBag.CountWarehouseTransfer = countWarehouseTransfer.Count;
 
                 return View(dashboard);
             }
         }
-        
+
         [HttpGet]
         public IActionResult MyProfile()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var user = _userActiveRepository.GetAllUser().Where(u => u.FullName == checkUserLogin.NamaUser).FirstOrDefault();
 
             if (user != null)
@@ -299,7 +307,7 @@ namespace PurchasingSystem.Controllers
 
                 // Cari user yang sedang login
                 var checkUserLogin = _userActiveRepository.GetAllUserLogin()
-                    .FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    .FirstOrDefault(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value);
                 var user = _userActiveRepository.GetAllUser()
                     .FirstOrDefault(u => u.FullName == checkUserLogin.NamaUser);
 
@@ -412,71 +420,129 @@ namespace PurchasingSystem.Controllers
 
         public IActionResult GetPRByApprove()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
-
-            var getAllData = _approvalRepository.GetAllApproval();
-            var waiting = getAllData.Where(app => app.Status.StartsWith("User") && app.UserApproveId == getUserActive.UserActiveId || app.Status.StartsWith("Waiting") && app.UserApproveId == getUserActive.UserActiveId).Count();
-            var rejected = getAllData.Where(app => app.Status == "Reject" && app.UserApproveId == getUserActive.UserActiveId).Count();
-            var completed = getAllData.Where(app => app.Status == "Approve" && app.UserApproveId == getUserActive.UserActiveId).Count();
-            var totalPRData = getAllData.Where(app => app.UserApproveId == getUserActive.UserActiveId).Count();
-
-            var result = new
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
+            if (checkUserLogin.NamaUser == "SuperAdmin")
             {
-                Waiting = waiting,
-                Rejected = rejected,
-                Completed = completed,
-                TotalPRData = totalPRData,
-                DataUser = getUserActive,
-            };
+                var getAllData = _approvalRepository.GetAllApproval();
+                var waiting = getAllData.Where(app => app.Status.StartsWith("User")).Count();
+                var rejected = getAllData.Where(app => app.Status == "Reject").Count();
+                var completed = getAllData.Where(app => app.Status == "Approve").Count();
+                var totalPRData = getAllData.Count();
 
-            return Json(result);
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalPRData = totalPRData
+                };
 
+                return Json(result);
+            }
+            else
+            {
+                var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+                var getAllData = _approvalRepository.GetAllApproval();
+                var waiting = getAllData.Where(app => app.Status.StartsWith("User") && app.UserApproveId == getUserActive.UserActiveId || app.Status.StartsWith("Waiting") && app.UserApproveId == getUserActive.UserActiveId).Count();
+                var rejected = getAllData.Where(app => app.Status == "Reject" && app.UserApproveId == getUserActive.UserActiveId).Count();
+                var completed = getAllData.Where(app => app.Status == "Approve" && app.UserApproveId == getUserActive.UserActiveId).Count();
+                var totalPRData = getAllData.Where(app => app.UserApproveId == getUserActive.UserActiveId).Count();
+
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalPRData = totalPRData,
+                    DataUser = getUserActive,
+                };
+
+                return Json(result);
+            }
         }
 
         public IActionResult GetUnitRequestMonitoring()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
-
-            var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
-            var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var totalUnitRequest = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
-
-            var result = new
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
+            if (checkUserLogin.NamaUser == "SuperAdmin")
             {
-                Waiting = waiting,
-                Rejected = rejected,
-                Completed = completed,
-                TotalUnitRequest = totalUnitRequest,
-            };
+                var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
+                var waiting = getAllData.Where(status => status.Status == "Waiting Approval").Count();
+                var rejected = getAllData.Where(status => status.Status == "Reject").Count();
+                var completed = getAllData.Where(status => status.Status == "Approve").Count();
+                var totalUnitRequest = getAllData.Count();
 
-            return Json(result);
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalUnitRequest = totalUnitRequest,
+                };
 
+                return Json(result);
+            }
+            else
+            {
+                var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+                var getAllData = _approvalUnitRequestRepository.GetAllApprovalRequest();
+                var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var totalUnitRequest = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
+
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalUnitRequest = totalUnitRequest,
+                };
+
+                return Json(result);
+            }
         }
 
         public IActionResult GetQtyDiffMonitoring()
         {
-            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
-
-            var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
-            var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
-            var totalQtyDifference = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
-
-            var result = new
+            var checkUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
+            if (checkUserLogin.NamaUser == "SuperAdmin")
             {
-                Waiting = waiting,
-                Rejected = rejected,
-                Completed = completed,
-                TotalQtyDifference = totalQtyDifference
-            };
+                var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
+                var waiting = getAllData.Where(status => status.Status == "Waiting Approval").Count();
+                var rejected = getAllData.Where(status => status.Status == "Reject").Count();
+                var completed = getAllData.Where(status => status.Status == "Approve").Count();
+                var totalQtyDifference = getAllData.Count();
 
-            return Json(result);
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalQtyDifference = totalQtyDifference
+                };
+
+                return Json(result);
+            }
+            else
+            {
+                var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == checkUserLogin.KodeUser).FirstOrDefault();
+                var getAllData = _approvalQtyDifferenceRepository.GetAllApproval();
+                var waiting = getAllData.Where(status => status.Status == "Waiting Approval" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var rejected = getAllData.Where(status => status.Status == "Reject" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var completed = getAllData.Where(status => status.Status == "Approve" && status.UserApproveId == getUserActive.UserActiveId).Count();
+                var totalQtyDifference = getAllData.Where(status => status.UserApproveId == getUserActive.UserActiveId).Count();
+
+                var result = new
+                {
+                    Waiting = waiting,
+                    Rejected = rejected,
+                    Completed = completed,
+                    TotalQtyDifference = totalQtyDifference
+                };
+
+                return Json(result);
+            }                
         }
 
 
@@ -495,7 +561,7 @@ namespace PurchasingSystem.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)    
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -510,47 +576,85 @@ namespace PurchasingSystem.Controllers
                 return RedirectToAction("MyProfile");
             }
 
-            var result = await _userManager.RemovePasswordAsync(user);
-            if (result.Succeeded)
+            // Reset password
+            var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+            if (removePasswordResult.Succeeded)
             {
-                result = await _userManager.AddPasswordAsync(user, model.NewPassword);  
-            }
+                var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword);
 
-            if (result.Succeeded)
-            {
-                TempData["MessageSuccess"] = "Password changed successfully.";
-                await _signInManager.RefreshSignInAsync(user);
-                return RedirectToAction("MyProfile");
-            }
+                if (addPasswordResult.Succeeded)
+                {
+                    // Rebuild compressed roles
+                    var roleNames = (from role in _roleRepository.GetRoles()
+                                     join userRole in _groupRoleRepository.GetAllGroupRole()
+                                     on role.Id equals userRole.RoleId
+                                     where userRole.DepartemenId == user.Id
+                                     select role.Name).Distinct().ToList();
 
-            foreach (var error in result.Errors)
+                    string compressedRoles = string.Join(",", roleNames);
+
+                    // Refresh sign-in and add updated claims
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.Anonymous, user.NamaUser),
+                        new Claim("CompressedRoles", compressedRoles) // Update compressed roles
+                    };
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = true, // Cookie akan bertahan setelah browser ditutup
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Masa berlaku cookie
+                    };
+
+                    // Create new claims identity
+                    var identity = new ClaimsIdentity(claims, "Identity.Application");
+                    var principal = new ClaimsPrincipal(identity);
+                    await HttpContext.SignInAsync("Identity.Application", principal, authProperties);
+
+                    TempData["MessageSuccess"] = "Password changed successfully.";
+                    return RedirectToAction("MyProfile");
+                }
+
+                foreach (var error in addPasswordResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            else
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                foreach (var error in removePasswordResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
             TempData["MessageFailed"] = "Failed to change password.";
             return RedirectToAction("MyProfile");
         }
-        
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [HttpGet]        
+        [HttpGet]
         public IActionResult CountNotifikasi()
         {
-            var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserId = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (getUserId.Email == "superadmin@admin.com")
             {
                 return Json(new { success = true });
-            } 
-            else 
+            }
+            else
             {
-                var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveId;
-                var getUserActiveCode = _userActiveRepository.GetAllUser().Where(u => u.UserActiveCode == getUserId.KodeUser).FirstOrDefault().UserActiveCode;
+                var getUserActiveId = _userActiveRepository.GetAllUser().Where(u => u.Email == getUserId.Email).FirstOrDefault().UserActiveId;
+                var getUserActiveCode = _userActiveRepository.GetAllUser().Where(u => u.Email == getUserId.Email).FirstOrDefault().UserActiveCode;
                 var loggerDataPR = new List<object>();
                 var loggerDataQtyDiff = new List<object>();
                 var loggerDataUnitReq = new List<object>();
@@ -584,7 +688,7 @@ namespace PurchasingSystem.Controllers
 
                 foreach (var logger in DataPR)
                 {
-                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    if (logger.ApproveStatusUser1 == null && logger.UserApprove1Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -597,7 +701,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataPR.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.UserApprove2Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -610,7 +714,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataPR.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.UserApprove3Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User3" && u.PurchaseRequestNumber == logger.PurchaseRequestNumber).FirstOrDefault().ApprovalId;
 
@@ -627,7 +731,7 @@ namespace PurchasingSystem.Controllers
 
                 foreach (var logger in DataQtyDiff)
                 {
-                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    if (logger.ApproveStatusUser1 == null && logger.UserApprove1Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalQtyDifferenceRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.QtyDifferenceId == logger.QtyDifferenceId).FirstOrDefault().ApprovalQtyDifferenceId;
 
@@ -640,7 +744,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataQtyDiff.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.UserApprove2Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalQtyDifferenceRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.QtyDifferenceId == logger.QtyDifferenceId).FirstOrDefault().ApprovalQtyDifferenceId;
 
@@ -657,7 +761,7 @@ namespace PurchasingSystem.Controllers
 
                 foreach (var logger in DataUnitReq)
                 {
-                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    if (logger.ApproveStatusUser1 == null && logger.UserApprove1Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalUnitRequestRepository.GetAllApprovalRequest().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.UnitRequestId == logger.UnitRequestId).FirstOrDefault().ApprovalUnitRequestId;
 
@@ -674,7 +778,7 @@ namespace PurchasingSystem.Controllers
 
                 foreach (var logger in DataProductReturn)
                 {
-                    if (logger.ApproveStatusUser1 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    if (logger.ApproveStatusUser1 == null && logger.UserApprove1Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User1" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
 
@@ -687,7 +791,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataProductReturn.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == null && logger.UserApprove2Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User2" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
 
@@ -700,7 +804,7 @@ namespace PurchasingSystem.Controllers
                         };
                         loggerDataProductReturn.Add(detail);
                     }
-                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.ApplicationUser.KodeUser == getUserActiveCode)
+                    else if (logger.ApproveStatusUser1 == "Approve" && logger.ApproveStatusUser2 == "Approve" && logger.ApproveStatusUser3 == null && logger.UserApprove3Id == getUserActiveId)
                     {
                         var getUserApproveId = _approvalProductReturnRepository.GetAllApproval().Where(u => u.UserApproveId == getUserActiveId && u.ApprovalStatusUser == "User3" && u.ProductReturnNumber == logger.ProductReturnNumber).FirstOrDefault().ApprovalProductReturnId;
 
@@ -720,17 +824,17 @@ namespace PurchasingSystem.Controllers
                     var totalNotification = 0;
                     return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq, loggerDataJsonProductReturn = loggerDataProductReturn });
                 }
-                else 
+                else
                 {
                     var totalNotification = DataPR.Count + DataQtyDiff.Count + DataUnitReq.Count + DataProductReturn.Count;
                     return Json(new { success = true, totalJsonAllNotification = totalNotification, loggerDataJsonPR = loggerDataPR, loggerDataJsonQtyDiff = loggerDataQtyDiff, loggerDataJsonUnitReq = loggerDataUnitReq, loggerDataJsonProductReturn = loggerDataProductReturn });
-                }                
-            }                       
+                }
+            }
         }
 
         private string ProcessUploadFile(UserActiveViewModel model)
         {
-            if(model.Foto == null)
+            if (model.Foto == null)
             {
                 return null;
             }

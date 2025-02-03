@@ -11,9 +11,7 @@ using PurchasingSystem.Data;
 using PurchasingSystem.Models;
 using PurchasingSystem.Repositories;
 using System.Data.SqlClient;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystem.Areas.MasterData.Controllers
@@ -258,7 +256,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
                 }
             }
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (ModelState.IsValid)
             {
@@ -351,7 +349,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
             if (ModelState.IsValid)
             {
                 var Supplier = await _supplierRepository.GetSupplierByIdNoTracking(viewModel.SupplierId);
-                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
                 if (Supplier.IsActive == false)
                 {

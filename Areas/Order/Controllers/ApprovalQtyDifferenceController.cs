@@ -20,8 +20,7 @@ using PurchasingSystem.Data;
 using PurchasingSystem.Hubs;
 using PurchasingSystem.Models;
 using PurchasingSystem.Repositories;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystem.Areas.Order.Controllers
@@ -116,7 +115,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }            
 
-            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (getUserLogin.Email == "superadmin@admin.com")
             {
@@ -210,7 +209,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
             ViewBag.User = new SelectList(_userManager.Users, nameof(ApplicationUser.Id), nameof(ApplicationUser.NamaUser), SortOrder.Ascending);
 
             var QtyDifferenceRequest = await _approvalQtyDifferenceRepository.GetApprovalById(Id);
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (QtyDifferenceRequest == null)
             {
@@ -271,7 +270,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
 
             if (ModelState.IsValid)
             {
-                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
                 var approvalQtyDiff = await _approvalQtyDifferenceRepository.GetApprovalByIdNoTracking(viewModel.ApprovalQtyDifferenceId);
                 var checkQtyDiff = _qtyDifferenceRepository.GetAllQtyDifference().Where(c => c.QtyDifferenceId == viewModel.QtyDifferenceId).FirstOrDefault();
@@ -345,18 +344,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                     //Jika semua sudah Approve langsung Generate Purchase Order
                     if (checkQtyDiff.ApproveStatusUser1 == "Approve" && checkQtyDiff.ApproveStatusUser2 == "Approve")
                     {
-                        checkQtyDiff.Status = viewModel.Status;
-
-                        _applicationDbContext.Entry(checkQtyDiff).State = EntityState.Modified;
-                        _applicationDbContext.SaveChanges();
-
-                        var updateStatusPo = _purchaseOrderRepository.GetAllPurchaseOrder().Where(p => p.PurchaseOrderId == checkQtyDiff.PurchaseOrderId).FirstOrDefault();
-                        if (updateStatusPo != null)
-                        {
-                            updateStatusPo.Status = "Cancelled";
-                            _applicationDbContext.Entry(updateStatusPo).State = EntityState.Modified;
-                            _applicationDbContext.SaveChanges();
-                        }
+                        checkQtyDiff.Status = viewModel.Status;                        
 
                         //var openQtyDiff = _qtyDifferenceRepository.GetAllQtyDifference().FirstOrDefault();
                         var getPO = _purchaseOrderRepository.GetAllPurchaseOrder().Where(p => p.PurchaseOrderId == checkQtyDiff.PurchaseOrderId).FirstOrDefault();
@@ -389,6 +377,9 @@ namespace PurchasingSystem.Areas.Order.Controllers
 
                         foreach (var item in getPO.PurchaseOrderDetails)
                         {
+                            var getProduct = _applicationDbContext.Products.Where(p => p.ProductCode == item.ProductNumber).FirstOrDefault();
+                            var getDiscount = getProduct.Discount.DiscountValue;
+
                             if (getPO.PurchaseOrderDetails.Count != 0)
                             {
                                 foreach (var itemQtyDiff in getQtyDiff.QtyDifferenceDetails)
@@ -405,8 +396,8 @@ namespace PurchasingSystem.Areas.Order.Controllers
                                             Measurement = item.Measurement,
                                             Qty = item.Qty,
                                             Price = Math.Truncate(item.Price),
-                                            Discount = item.Discount,
-                                            SubTotal = Math.Truncate(item.SubTotal)
+                                            Discount = Convert.ToInt32(item.Qty * item.Price) * (getDiscount / 100),
+                                            SubTotal = Math.Truncate(Convert.ToDecimal(item.Qty * item.Price) - Convert.ToDecimal(item.Qty * item.Price) * (getDiscount / 100))
                                         });
                                     }
                                     else if (itemQtyDiff.ProductName == item.ProductName && itemQtyDiff.QtyReceive != item.Qty)
@@ -421,8 +412,8 @@ namespace PurchasingSystem.Areas.Order.Controllers
                                             Measurement = item.Measurement,
                                             Qty = itemQtyDiff.QtyReceive,
                                             Price = Math.Truncate(item.Price),
-                                            Discount = item.Discount,
-                                            SubTotal = Math.Truncate((itemQtyDiff.QtyReceive * item.Price) - (item.Discount))
+                                            Discount = Convert.ToInt32(item.Qty * item.Price) * (getDiscount / 100),
+                                            SubTotal = Math.Truncate(Convert.ToDecimal(itemQtyDiff.QtyReceive * item.Price) - Convert.ToDecimal(itemQtyDiff.QtyReceive * item.Price) * (getDiscount / 100))
                                         });
                                     }
                                 }
@@ -459,6 +450,17 @@ namespace PurchasingSystem.Areas.Order.Controllers
 
                         _approvalQtyDifferenceRepository.Update(approvalQtyDiff);
                         _applicationDbContext.SaveChanges();
+
+                        _applicationDbContext.Entry(checkQtyDiff).State = EntityState.Modified;
+                        _applicationDbContext.SaveChanges();
+
+                        var updateStatusPo = _purchaseOrderRepository.GetAllPurchaseOrder().Where(p => p.PurchaseOrderId == checkQtyDiff.PurchaseOrderId).FirstOrDefault();
+                        if (updateStatusPo != null)
+                        {
+                            updateStatusPo.Status = "Cancelled";
+                            _applicationDbContext.Entry(updateStatusPo).State = EntityState.Modified;
+                            _applicationDbContext.SaveChanges();
+                        }
 
                         TempData["SuccessMessage"] = "Approve And Success Create New Purchase Order";
                         return RedirectToAction("Index", "ApprovalQtyDifference");

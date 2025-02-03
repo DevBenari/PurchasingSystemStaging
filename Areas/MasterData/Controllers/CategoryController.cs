@@ -9,8 +9,7 @@ using PurchasingSystem.Data;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using Microsoft.AspNetCore.DataProtection;
 using PurchasingSystem.Repositories;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
 namespace PurchasingSystem.Areas.MasterData.Controllers
@@ -155,7 +154,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
                 }
             }
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (ModelState.IsValid)
             {
@@ -227,7 +226,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
             if (ModelState.IsValid)
             {
                 var Category = await _categoryRepository.GetCategoryByIdNoTracking(viewModel.CategoryId);
-                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
                 var checkDuplicate = _categoryRepository.GetAllCategory().Where(d => d.CategoryName == viewModel.CategoryName).ToList();
 
                 if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)

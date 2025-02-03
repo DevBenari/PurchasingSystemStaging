@@ -23,8 +23,7 @@ using PurchasingSystem.Repositories;
 using QRCoder;
 using System.Data;
 using System.Drawing;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystem.Areas.Warehouse.Controllers
@@ -168,7 +167,7 @@ namespace PurchasingSystem.Areas.Warehouse.Controllers
                 (startDate, endDate) = GetDateRangeHelper.GetDateRange(filterOptions);
             }
 
-            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
 
             var data = await _qtyDifferenceRepository.GetAllQtyDifferencePageSize(searchTerm, page, pageSize, startDate, endDate);
@@ -199,7 +198,7 @@ namespace PurchasingSystem.Areas.Warehouse.Controllers
             //Pembelian Pembelian = await _pembelianRepository.GetAllPembelian().Where(p => p.PembelianNumber == );
 
             _signInManager.IsSignedIn(User);
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             
             ViewBag.Product = new SelectList(await _productRepository.GetProducts(), "ProductId", "ProductName", SortOrder.Ascending);
             ViewBag.Approval = new SelectList(await _userActiveRepository.GetUserActives(), "UserActiveId", "FullName", SortOrder.Ascending);
@@ -266,7 +265,7 @@ namespace PurchasingSystem.Areas.Warehouse.Controllers
                 }
             }
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (ModelState.IsValid)
             {

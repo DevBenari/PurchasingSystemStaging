@@ -41,7 +41,7 @@
                                 <div class="form-group row" id="listproduct">
                                     <div class="col-sm-12">
                                         <label class="col-sm-3 col-form-label" asp-for="ProductId">Product</label>
-                                        <select asp-for="ProductId" data-placeholder="--Choose Product--" asp-items="@ViewBag.Product" class="form-control select2bs4" style="width: 100%;" id="ProductList">
+                                        <select id="productDropdown" asp-for="ProductId" class="form-control select2bs4" style="width: 100%;">
                                             <option value="" hidden disabled selected>--Choose Product--</option>
                                         </select>
                                         <span asp-validation-for="ProductId" class="text-danger"></span>
@@ -50,7 +50,7 @@
                                 <div class="form-group row" id="listSupplier">
                                     <div class="col-sm-12">
                                         <label class="col-sm-3 col-form-label" asp-for="SupplierId">Supplier</label>
-                                        <select asp-for="SupplierId" data-placeholder="--Choose Supplier--" asp-items="@ViewBag.Supplier" class="form-control select2bs4" style="width: 100%;" id="SupplierList">
+                                        <select id="supplierDropdown" asp-for="SupplierId" class="form-control select2bs4" style="width: 100%;">
                                             <option value="" hidden disabled selected>--Choose Supplier--</option>
                                         </select>
                                         <span asp-validation-for="SupplierId" class="text-danger"></span>
@@ -108,42 +108,6 @@
                         </div>                        
                     </div>
                 </div>
-
-                <!-- /.end button footer -->
-                @section Scripts {
-                    <script>
-                        $(function () {
-                            //Initialize Select2 Elements
-                            $('.select2bs4').select2({
-                                theme: 'bootstrap4'
-                            })
-                        })
-                    </script>
-
-                    <script>
-                        $("#listproduct").hide();
-                        $("#listSupplier").hide();
-                        
-                        $("#generateby").change(function () {
-                            if ($(this).val() == "Product") {
-                                $("#listproduct").show();
-                            }
-                            else {
-                                $("#listproduct").hide();
-                                $('#ProductList').select2('val', 'selectedIndex', 0);
-                                $("#ProductList").data('placeholder');
-                            }
-
-                            if ($(this).val() == "Supplier") {
-                                $("#listSupplier").show();
-                            } else {
-                                $("#listSupplier").hide();
-                                $('#SupplierList').select2('val', 'selectedIndex', 0);
-                                $("#SupplierList").data('placeholder');
-                            }
-                        });
-                    </script>                    
-                }
             </form>
         </div>
         @if (TempData["WarningMessage"] != null)
@@ -158,3 +122,113 @@
     <!-- /.row -->
 </section>
 <!-- /.content -->
+
+@section Scripts {
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        })
+    </script>
+
+    <script>
+        $("#listproduct").hide();
+        $("#listSupplier").hide();
+
+        $("#generateby").change(function () {
+            if ($(this).val() == "Product") {
+                $("#listproduct").show();
+            }
+            else {
+                $("#listproduct").hide();
+                $('#ProductList').select2('val', 'selectedIndex', 0);
+                $("#ProductList").data('placeholder');
+            }
+
+            if ($(this).val() == "Supplier") {
+                $("#listSupplier").show();
+            } else {
+                $("#listSupplier").hide();
+                $('#SupplierList').select2('val', 'selectedIndex', 0);
+                $("#SupplierList").data('placeholder');
+            }
+        });
+    </script>
+
+    <script>
+        $(function () {
+            // Inisialisasi Select2
+            $('#productDropdown').select2({
+                theme: 'bootstrap4',
+                placeholder: "--Choose Product--",
+                allowClear: true,
+
+                // Aktifkan AJAX di Select2
+                ajax: {
+                    url: '@Url.Action("GetProductsPaged", "InitialStock")', // ganti ke Controller/Action sesuai
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        // params.term => teks yang diketik user
+                        // params.page => halaman ke berapa (dimulai dari 1)
+                        var query = {
+                            term: params.term || "",
+                            page: params.page || 1,
+                            pageSize: 10
+                        };
+                        return query;
+                    },
+                    processResults: function (data, params) {
+                        // data => response JSON dari server
+                        // params.page => halaman ke berapa
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        };
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(function () {
+            // Inisialisasi Supplier
+            $('#supplierDropdown').select2({
+                theme: 'bootstrap4',
+                placeholder: "--Choose Supplier--",
+                allowClear: true,
+
+                ajax: {
+                    url: '@Url.Action("GetSuppliersPaged", "InitialStock")',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            term: params.term || "",
+                            page: params.page || 1,
+                            pageSize: 10
+                        };
+                        return query;
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        };
+                    }
+                }
+            });
+        });
+    </script>
+}

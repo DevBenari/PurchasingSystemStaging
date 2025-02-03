@@ -17,8 +17,7 @@ using PurchasingSystem.Areas.Warehouse.ViewModels;
 using PurchasingSystem.Data;
 using PurchasingSystem.Models;
 using PurchasingSystem.Repositories;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
 
 namespace PurchasingSystem.Areas.Warehouse.Controllers
 {
@@ -211,7 +210,7 @@ namespace PurchasingSystem.Areas.Warehouse.Controllers
 
             _signInManager.IsSignedIn(User);
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             WarehouseTransfer wtf = new WarehouseTransfer();
 
@@ -284,7 +283,7 @@ namespace PurchasingSystem.Areas.Warehouse.Controllers
 
             _signInManager.IsSignedIn(User);
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             string getWarehouseTransferNumber = Request.Form["TRNumber"];
 

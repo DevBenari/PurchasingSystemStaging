@@ -14,6 +14,7 @@ using PurchasingSystem.Data;
 using PurchasingSystem.Models;
 using PurchasingSystem.Repositories;
 using System.Data;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -189,7 +190,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
                 }
             }
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (ModelState.IsValid)
             {
@@ -336,7 +337,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userActiveRepository.GetUserByIdNoTracking(viewModel.UserActiveId);
-                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
                 var userLogin = await _userManager.FindByEmailAsync(viewModel.Email);
                 var checkDuplicate = _userActiveRepository.GetAllUser().Where(d => d.UserActiveCode == viewModel.UserActiveCode).ToList();
 

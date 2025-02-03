@@ -12,9 +12,7 @@ using PurchasingSystem.Areas.MasterData.ViewModels;
 using PurchasingSystem.Data;
 using PurchasingSystem.Models;
 using PurchasingSystem.Repositories;
-using System.Security.Cryptography;
-using System.Text;
-using System.Windows.Forms;
+using System.Security.Claims;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystem.Areas.MasterData.Controllers
@@ -70,6 +68,93 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
         //    var leadtime = _applicationDbContext.Suppliers.Where(p => p.LeadTimeId == Id).ToList();
         //    return Json(new SelectList(leadtime, "LeadTimeId", "LeadTimeValue"));
         //}
+
+        public async Task<IActionResult> GetSuppliersPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Suppliers
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.SupplierName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.SupplierName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            var results = items.Select(p => new {
+                id = p.SupplierId.ToString(),
+                text = p.SupplierName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
+
+        public async Task<IActionResult> GetProductsPaged(string term, int page = 1, int pageSize = 10)
+        {
+            // Mulai query, include relasi Supplier
+            var query = _applicationDbContext.Products
+                .Include(p => p.Supplier)
+                .AsQueryable();
+
+            // Filter pencarian (jika user ketik di Select2)
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                // Misal: filter by product name
+                query = query.Where(p => p.ProductName.Contains(term) || p.Supplier.SupplierName.Contains(term));
+            }
+
+            // Total data
+            int totalCount = await query.CountAsync();
+
+            // Paging
+            query = query.OrderBy(p => p.ProductName)
+                         .Skip((page - 1) * pageSize)
+                         .Take(pageSize);
+
+            var items = await query.ToListAsync();
+
+            // Hasil: di Select2 butuh { id, text }
+            // "text" kita isi gabungan ProductName + '|' + SupplierName
+            var results = items.Select(p => new {
+                id = p.ProductId,
+                text = p.ProductName + " | " + p.Supplier.SupplierName
+            });
+
+            bool more = (page * pageSize) < totalCount;
+
+            var response = new
+            {
+                results = results,
+                pagination = new
+                {
+                    more = more
+                }
+            };
+
+            return Ok(response);
+        }
 
         [Authorize(Roles = "ReadInitialStock")]
         public async Task<IActionResult> Index(string filterOptions = "", string searchTerm = "", DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, int page = 1, int pageSize = 10)
@@ -127,7 +212,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
         [Authorize(Roles = "CreateInitialStock")]
         public async Task<IActionResult> CreateInitialStock(InitialStockViewModel vm)
         {            
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
             var getProduct = _productRepository.GetAllProduct().Where(p => p.ProductId == vm.ProductId).FirstOrDefault();
             var getSupplier = _SupplierRepository.GetAllSupplier().Where(p => p.SupplierId == vm.SupplierId).FirstOrDefault();
 

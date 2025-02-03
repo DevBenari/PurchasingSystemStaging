@@ -9,8 +9,7 @@ using PurchasingSystem.Areas.MasterData.ViewModels;
 using PurchasingSystem.Data;
 using PurchasingSystem.Models;
 using PurchasingSystem.Repositories;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PurchasingSystem.Areas.MasterData.Controllers
@@ -152,7 +151,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
                 }
             }
 
-            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
 
             if (ModelState.IsValid)
             {
@@ -224,7 +223,7 @@ namespace PurchasingSystem.Areas.MasterData.Controllers
             if (ModelState.IsValid)
             {
                 var Department = await _departmentRepository.GetDepartmentByIdNoTracking(viewModel.DepartmentId);
-                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
                 var checkDuplicate = _departmentRepository.GetAllDepartment().Where(d => d.DepartmentName == viewModel.DepartmentName).ToList();
 
                 if (checkDuplicate.Count == 0 || checkDuplicate.Count == 1)

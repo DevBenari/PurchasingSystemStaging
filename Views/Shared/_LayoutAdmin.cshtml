@@ -137,8 +137,9 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color:#347FC4">
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
-                <span class="logo-mini"><b>RS</b></span>
-                <span class="brand-text fw-bold" style="color:#FFFFFF">MMC</span>
+                <img src="~/admin/dist/img/logo-loader-mmc.png" class="brand-image" style="opacity: .8" />
+                @* <span class="logo-mini"><b>RS</b></span> *@
+                <span class="brand-text fw-bold" style="color:#FFFFFF">RS MMC</span>
             </a>
 
             <!-- Sidebar -->
@@ -720,6 +721,25 @@
                                                 </div>
                                             </a>
                                             <div class="dropdown-divider"></div>`;
+
+                                // Append ke loggerContainer
+                                $("#loggerContainer").append(content);
+                            }
+                            else if (item.productReturnNumber != undefined) {
+                                var urlPRN = '@Url.Action("DetailApprovalProductReturn", "ApprovalProductReturn", new { area = "Warehouse", id = "__id__" })'.replace("__id__", item.approvalId);
+                                var content =
+                                    `<a href="${urlPRN}" class="dropdown-item cursor-pointer">
+                                                        <div class="media">
+                                                            <div class="media-body">
+                                                                <div class="info-box-content">
+                                                                    <p class="text-sm text-muted">Approval Product Return</p>
+                                                                    <h3 class="dropdown-item-title" style="color:#A7D477"><b>${item.productReturnNumber} Has Been Created</b></h3>
+                                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>`;
 
                                 // Append ke loggerContainer
                                 $("#loggerContainer").append(content);
