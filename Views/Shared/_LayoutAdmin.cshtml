@@ -50,7 +50,6 @@
     <link media="screen" rel="stylesheet" href='https://cdn.jsdelivr.net/sweetalert2/6.3.8/sweetalert2.css' />
     <script type="text/javascript" src="https://cdn.jsdelivr.net/sweetalert2/6.3.8/sweetalert2.min.js"></script>
 
-    @*Fontawesome Jquery*@
     <script src="https://kit.fontawesome.com/c3423d6308.js" crossorigin="anonymous"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -452,7 +451,6 @@
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->
-    @*<script src="~/admin/plugins/jquery/jquery.min.js"></script>*@
     <!-- Select2 -->
     <script src="~/admin/plugins/select2/js/select2.full.min.js"></script>
     <script src="~/admin/plugins/select2/js/select2.full.js"></script>
@@ -494,9 +492,8 @@
     <!-- AdminLTE App -->
     <script src="~/admin/dist/js/adminlte.js"></script>
     <script src="~/admin/dist/js/signalr.min.js"></script>
-    @*<script src="~/admin/dist/js/notificationsignalr.js"></script>*@
 
-    @*UI Normal*@
+
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.bootstrap4.min.js"></script>
 
@@ -630,7 +627,7 @@
                             // fixedTimePart -> "15:14"
 
                             // Gabungkan kembali
-                            const newDateString = `${datePart} ${fixedTimePart}`;
+                            const newDateString = ${datePart} ${fixedTimePart};
                             // newDateString -> "24/12/2024 15:14"
 
                             // --------------------------------------------------
@@ -641,7 +638,7 @@
                             const [hour, minute] = fixedTimePart.split(':');
 
                             // Bentuk string ISO 8601: "YYYY-MM-DDTHH:mm:ss"
-                            const isoString = `${year}-${month}-${day}T${hour}:${minute}:00`;
+                            const isoString = ${year}-${month}-${day}T${hour}:${minute}:00;
                             // Contoh hasil -> "2024-12-24T15:14:00"
 
                             // Buat object Date dari string ISO
@@ -667,12 +664,12 @@
                             const year = item.dateObj.getFullYear();
                             const hours = String(item.dateObj.getHours()).padStart(2, '0');
                             const minutes = String(item.dateObj.getMinutes()).padStart(2, '0');
-                            item.dateObj = `${day}/${month}/${year} ${hours}:${minutes}`; // Simpan dalam format dd-mm-yyyy
+                            item.dateObj = ${day}/${month}/${year} ${hours}:${minutes}; // Simpan dalam format dd-mm-yyyy
                         });
 
                         combineData.forEach(item => {
                             if (item.purchaseRequestNumber != undefined) {
-                                var urlPR = '@Url.Action("DetailApprovalPurchaseRequest", "ApprovalPurchaseRequest", new { area = "Order", id = "__id__" })'.replace("__id__", item.approvalId);
+                                var urlPR = '@Url.Action("DetailApprovalPurchaseRequest", "ApprovalPurchaseRequest", new { area = "Order", id = "_id" })'.replace("id_", item.approvalId);
                                 var content =
                                     `<a href="${urlPR}" class="dropdown-item cursor-pointer">
                                                 <div class="media">
@@ -691,7 +688,7 @@
                                 $("#loggerContainer").append(content);
                             }
                             else if (item.qtyDifferenceNumber != undefined) {
-                                var urlQtyDiff = '@Url.Action("DetailApprovalQtyDifference", "ApprovalQtyDifference", new { area = "Order", id = "__id__" })'.replace("__id__", item.approvalId);
+                                var urlQtyDiff = '@Url.Action("DetailApprovalQtyDifference", "ApprovalQtyDifference", new { area = "Order", id = "_id" })'.replace("id_", item.approvalId);
                                 var content =
                                     `<a href="${urlQtyDiff}" class="dropdown-item cursor-pointer">
                                                 <div class="media">
@@ -710,7 +707,7 @@
                                 $("#loggerContainer").append(content);
                             }
                             else if (item.unitRequestNumber != undefined) {
-                                var urlUnitReq = '@Url.Action("DetailApprovalUnitRequest", "ApprovalUnitRequest", new { area = "Warehouse", id = "__id__" })'.replace("__id__", item.approvalId);
+                                var urlUnitReq = '@Url.Action("DetailApprovalUnitRequest", "ApprovalUnitRequest", new { area = "Warehouse", id = "_id" })'.replace("id_", item.approvalId);
                                 var content =
                                     `<a href="${urlUnitReq}" class="dropdown-item cursor-pointer">
                                                 <div class="media">
@@ -747,27 +744,46 @@
                                 // Append ke loggerContainer
                                 $("#loggerContainer").append(content);
                             }
+                            else if (item.productReturnNumber != undefined) {
+                                var urlPRN = '@Url.Action("DetailApprovalProductReturn", "ApprovalProductReturn", new { area = "Warehouse", id = "_id" })'.replace("id_", item.approvalId);
+                                var content =
+                                    `<a href="${urlPRN}" class="dropdown-item cursor-pointer">
+                                                        <div class="media">
+                                                            <div class="media-body">
+                                                                <div class="info-box-content">
+                                                                    <p class="text-sm text-muted">Approval Product Return</p>
+                                                                    <h3 class="dropdown-item-title" style="color:#A7D477"><b>${item.productReturnNumber} Has Been Created</b></h3>
+                                                                    <p class="text-sm text-muted">By ${item.createdBy} || ${item.dateObj}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>`;
+
+                                // Append ke loggerContainer
+                                $("#loggerContainer").append(content);
+                            }
                         });
 
                         // Menambahkan tautan "See All Messages" setelah loop
                         if (loggerDataPR.length > 0 && loggerDataQtyDiff.length == 0 && loggerDataUnitReq.length == 0 && loggerDataProductReturn.length == 0) {
                             var footerLink =
-                                `<a href="${'@Url.Action("Index", "Approval", new { area = "Order" })'}" class="dropdown-item dropdown-footer"><strong>See All Messages</strong></a>`;
+                                <a href="${'@Url.Action("Index", "Approval", new { area = "Order" })'}" class="dropdown-item dropdown-footer"><strong>See All Messages</strong></a>;
                         } else if (loggerDataQtyDiff.length > 0 && loggerDataPR.length == 0 && loggerDataUnitReq.length == 0 && loggerDataProductReturn.length == 0) {
                             var footerLink =
-                                `<a href="${'@Url.Action("Index", "ApprovalQtyDifference", new { area = "Order" })'}" class="dropdown-item dropdown-footer"><strong>See All Messages</strong></a>`;
+                                <a href="${'@Url.Action("Index", "ApprovalQtyDifference", new { area = "Order" })'}" class="dropdown-item dropdown-footer"><strong>See All Messages</strong></a>;
                         } else if (loggerDataUnitReq.length > 0 && loggerDataPR.length == 0 && loggerDataQtyDiff.length == 0 && loggerDataProductReturn.length == 0) {
                             var footerLink =
-                                `<a href="${'@Url.Action("Index", "ApprovalUnitRequest", new { area = "Warehouse" })'}" class="dropdown-item dropdown-footer"><strong>See All Message</strong></a>`;
+                                <a href="${'@Url.Action("Index", "ApprovalUnitRequest", new { area = "Warehouse" })'}" class="dropdown-item dropdown-footer"><strong>See All Message</strong></a>;
                         } else if (loggerDataProductReturn.length > 0 && loggerDataPR.length == 0 && loggerDataQtyDiff.length == 0 && loggerDataUnitReq.length == 0) {
                             var footerLink =
-                                `<a href="${'@Url.Action("Index", "ApprovalProductReturn", new { area = "Warehouse" })'}" class="dropdown-item dropdown-footer"><strong>See All Message</strong></a>`;
+                                <a href="${'@Url.Action("Index", "ApprovalProductReturn", new { area = "Warehouse" })'}" class="dropdown-item dropdown-footer"><strong>See All Message</strong></a>;
                         } else if (loggerDataPR.length > 0 || loggerDataQtyDiff.length > 0 || loggerDataUnitReq.length > 0 || loggerDataProductReturn.length > 0) {
                             var footerLink =
-                                `<a href="#" class="dropdown-item dropdown-footer"><strong>Select data to your needs</strong></a>`;
+                                <a href="#" class="dropdown-item dropdown-footer"><strong>Select data to your needs</strong></a>;
                         } else {
                             var footerLink =
-                                `<a href="#" class="dropdown-item dropdown-footer"><strong>No Messages</strong></a>`;
+                                <a href="#" class="dropdown-item dropdown-footer"><strong>No Messages</strong></a>;
                         }
                         $("#loggerContainer").append(footerLink);
                     } else {
