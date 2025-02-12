@@ -32663,6 +32663,17 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
   font-weight: 700;
 }
 
+    .info-box .info-box-footer {
+        background-color: rgba(0, 0, 0, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        display: block;
+        padding: 3px 0;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        z-index: 10;
+    }
+
 .info-box .progress-description,
 .info-box .info-box-text {
   display: block;

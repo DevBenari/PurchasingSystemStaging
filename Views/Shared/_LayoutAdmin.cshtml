@@ -237,7 +237,7 @@
                                 </div>
                             </li>
                             <li class="@(ViewBag.Active == "KeyPerformanceIndikator" ? "nav-item menu-open active":"")">
-                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "Order" })">
+                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "General" })">
                                     <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> <p>Key Performance Indicator</p>
                                 </div>
                             </li>
@@ -401,7 +401,7 @@
                                 if (roles.Contains("ReadKeyPerformanceIndicator"))
                                 {
                                     <li class="@(ViewBag.Active == "KeyPerformanceIndikator" ? "nav-item menu-open active":"")">
-                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "Order" })">
+                                        <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "KeyPerformanceIndicator", new { area = "General" })">
                                             <i class="nav-icon fa-solid fa-key" style="color:#FFFFFF"></i> <p>Key Performance Indicator</p>
                                         </div>
                                     </li>

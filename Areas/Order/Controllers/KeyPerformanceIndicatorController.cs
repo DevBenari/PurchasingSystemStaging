@@ -27,7 +27,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-namespace PurchasingSystem.Areas.Order.Controllers
+namespace PurchasingSystemStaging.Areas.Order.Controllers
 {
     [Area("Order")]
     [Route("Order/[Controller]/[Action]")]
@@ -60,7 +60,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _applicationDbContext = applicationDbContext;
-            _approvalRepository = approvalRepository;   
+            _approvalRepository = approvalRepository;
             _purchaseOrderRepository = purchaseOrderRepository;
             _purchaseRequestRepository = purchaseRequestRepository;
             _userActiveRepository = userActiveRepository;
@@ -92,10 +92,11 @@ namespace PurchasingSystem.Areas.Order.Controllers
             {
                 // Jika enkripsi gagal, kembalikan view
                 return Redirect(Request.Path);
-            }            
+            }
         }
 
         [HttpGet]
+
         public IActionResult Index()
         {
             ViewBag.Active = "KeyPerformanceIndikator";
@@ -141,7 +142,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                 return View(viewModel);
             }
 
-            return View();
+            return View("Error");
         }
 
         [HttpPost]
@@ -217,56 +218,48 @@ namespace PurchasingSystem.Areas.Order.Controllers
         {
             ViewBag.Active = "KeyPerformanceIndikator";
             var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
+            var user = await _userManager.GetUserAsync(User);
+            var userId = new Guid(user.Id);
+            var change = model.FirstName;
+            var current = "";
+            var formatDate = "";
 
-            if (getUserLogin.Email == "superadmin@admin.com")
+            if (change == null || change == "month")
             {
-                return View();
+                DateTime dateTime = DateTime.Now;
+                current = dateTime.ToString("MMMM yyyy");
+                formatDate = "MMMM yyyy";
             }
             else
             {
-                var getUserActive = _userActiveRepository.GetAllUser().Where(c => c.UserActiveCode == getUserLogin.KodeUser).FirstOrDefault();
-                var user = await _userManager.GetUserAsync(User);
-                var userId = new Guid(user.Id);
-                var change = model.FirstName;
-                var current = "";
-                var formatDate = "";
+                DateTime dateTime = DateTime.Now;
+                current = dateTime.ToString("yyyy");
+                formatDate = "yyyy";
+            }
 
-                if (change == null || change == "month")
-                {
-                    DateTime dateTime = DateTime.Now;
-                    current = dateTime.ToString("MMMM yyyy");
-                    formatDate = "MMMM yyyy";
-                }
-                else
-                {
-                    DateTime dateTime = DateTime.Now;
-                    current = dateTime.ToString("yyyy");
-                    formatDate = "yyyy";
-                }
+            var getApproval = _approvalRepository.GetAllApproval().Where(a => a.UserApproveId == getUserActive.UserActiveId && a.CreateDateTime.ToString(formatDate) == current);
+            var getPurchaseOrder = _purchaseOrderRepository.GetAllPurchaseOrder().Where(a => a.UserApprove1Id == getUserActive.UserActiveId || a.UserApprove2Id == getUserActive.UserActiveId || a.UserApprove3Id == getUserActive.UserActiveId && a.CreateDateTime.ToString(formatDate) == current);
+            var fiveStar = getApproval.Count(x => x.RemainingDay > 0);
+            var fourStar = getApproval.Count(x => x.RemainingDay == 0);
+            var threeStar = getPurchaseOrder.Count(x => x.Status != "In Order");
+            var twoStar = getApproval.Count(x => x.RemainingDay == -14);
+            var oneStar = getApproval.Count(x => x.RemainingDay < -30);
+            var data = getApproval.Count();
 
-                var getApproval = _approvalRepository.GetAllApproval().Where(a => a.UserApproveId == getUserActive.UserActiveId && a.CreateDateTime.ToString(formatDate) == current);
-                var getPurchaseOrder = _purchaseOrderRepository.GetAllPurchaseOrder().Where(a => a.UserApprove1Id == getUserActive.UserActiveId || a.UserApprove2Id == getUserActive.UserActiveId || a.UserApprove3Id == getUserActive.UserActiveId && a.CreateDateTime.ToString(formatDate) == current);
-                var fiveStar = getApproval.Count(x => x.RemainingDay > 0);
-                var fourStar = getApproval.Count(x => x.RemainingDay == 0);
-                var threeStar = getPurchaseOrder.Count(x => x.Status != "In Order");
-                var twoStar = getApproval.Count(x => x.RemainingDay == -14);
-                var oneStar = getApproval.Count(x => x.RemainingDay < -30);
-                var data = getApproval.Count();
-
-                var kpiRate = new
-                {
-                    Data = data,
-                    FiveStart = fiveStar,
-                    FourStar = fourStar,
-                    ThreeStar = threeStar,
-                    TwoStar = twoStar,
-                    OneStar = oneStar
-                };
-                return Json(kpiRate);
-            }            
+            var kpiRate = new
+            {
+                Data = 0,
+                FiveStart = 0,
+                FourStar = 0,
+                ThreeStar = 0,
+                TwoStar = 0,
+                OneStar = 0
+            };
+            return Json(kpiRate);
         }
 
-            public async Task<IActionResult> ChartJson()
+        public async Task<IActionResult> ChartJson()
         {
             //ViewBag.Active("chartJson");
             // GET USER ACTIVE ID FROM MSTUSERACTIVE

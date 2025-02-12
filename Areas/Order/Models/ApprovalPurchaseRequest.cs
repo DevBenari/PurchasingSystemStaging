@@ -38,5 +38,9 @@ namespace PurchasingSystem.Areas.Order.Models
     public class Selected
     {
         public string FirstName { set; get; }
+        public string Position { set; get; }
+        public string User { set; get; }
+        public string Month { set; get; }
+        public string Year { set; get; }
     }
 }

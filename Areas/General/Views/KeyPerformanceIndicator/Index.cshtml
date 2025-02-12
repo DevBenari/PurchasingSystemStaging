@@ -1,0 +1,719 @@
+﻿@{
+    ViewData["Title"] = "Key Perfomances Indicator";
+    Layout = "~/Views/Shared/_TopNavbarKpi.cshtml";
+}
+
+@using Microsoft.AspNetCore.Identity;
+@using PurchasingSystem.Areas.MasterData.Models;
+@using PurchasingSystem.Models;
+@using PurchasingSystem.Repositories
+
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> signInManager
+
+<!-- Main content -->
+<section class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Widget: user widget style 1 -->
+            <div class="card card-widget widget-user">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header bg-info">
+                    <h1 class="widget-user-username"><b>@ViewBag.Title</b></h1>
+                </div>
+            </div>
+            <!-- /.widget-user -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 d-flex align-items-stretch flex-column">
+            <div class="card bg-light d-flex flex-fill">
+                <div class="card-body pt-0">
+                    <div class="row">
+                        <div class="col-2 text-center" style="margin-top: 15px;">
+                            @* <img src="@photoPath" asp-append-version="true" width="100%" height="100%" alt="user-avatar" class="img-circle img-fluid" />  *@
+                        </div>
+                        <div class="col-10" style="margin-top: 15px;">
+                            <h2 class="lead text-center" style="margin-top: 20px;"><b>@(User.FindFirst("NamaUser").Value)</b></h2>
+                            <p class="text-center">Sofware Development</p>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group" style="margin-top: 3%;" id="formMonth">
+                                        <select class="form-control" style="width: 100%;" id="selectMonth">
+                                            <option selected="true" value="null" disabled="disabled">-- Month Selection --</option>
+                                            <option value="01">Januari</option>
+                                            <option value="02">Februari</option>
+                                            <option value="03">Maret</option>
+                                            <option value="04">April</option>
+                                            <option value="05">Mei</option>
+                                            <option value="06">Juni</option>
+                                            <option value="07">Juli</option>
+                                            <option value="08">Agustus</option>
+                                            <option value="09">September</option>
+                                            <option value="10">Oktober</option>
+                                            <option value="11">November</option>
+                                            <option value="12">Desember</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group" style="margin-top: 3%;" id="formYear">
+                                        <select class="form-control selectYears" style="width: 100%;" id="selectYear">
+                                            <option selected="true" value="null" disabled="disabled">-- Year Selection --</option>
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group" style="margin-top: 3%;">
+                                        <select class="form-control" style="width: 100%;" id="selectPosition">
+                                            <option selected="true" value="null" disabled="disabled">-- Position Selection --</option>
+                                            <option value="Head">Head</option>
+                                            <option value="Staff">Staff</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group" style="margin-top: 3%;" id="formSelected">
+                                        <select class="form-control select2" style="width: 100%;" id="selectUser">
+                                            <option selected="true" value="null" disabled="disabled">-- User Selection --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="col">
+                        <div class="container">
+                            <div class="inner">
+                                <div class="rating">
+                                    <span class="rating-num">4.0</span>
+                                    <div class="rating-stars">
+                                        <span><i class="fa-solid fa-star active"></i></span>
+                                        <span><i class="fa-solid fa-star active"></i></span>
+                                        <span><i class="fa-solid fa-star active"></i></span>
+                                        <span><i class="fa-solid fa-star active"></i></span>
+                                        <span><i class="fa-solid fa-star"></i></span>
+                                    </div>
+                                    <div class=" rating-users text-center">
+                                        <div class="justify-content-center">
+                                            <i class="fa-solid fa-file-signature"></i>&nbsp;<span id="total-task"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="histo">
+                                    <div class="five histo-rate">
+                                        <span class="histo-star">
+                                            <i class="fa-solid fa-star active"></i> 5
+                                        </span>
+                                        <span class="bar-block">
+                                            <span id="bar-five" class="bar">
+                                                <span class="text-absolute">566,784</span>&nbsp;
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                    <div class="four histo-rate">
+                                        <span class="histo-star">
+                                            <i class="fa-solid fa-star active"></i> 4
+                                        </span>
+                                        <span class="bar-block">
+                                            <span id="bar-four" class="bar">
+                                                <span class="text-absolute">171,298</span>&nbsp;
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                    <div class="three histo-rate">
+                                        <span class="histo-star">
+                                            <i class="fa-solid fa-star active"></i> 3
+                                        </span>
+                                        <span class="bar-block">
+                                            <span id="bar-three" class="bar">
+                                                <span class="text-absolute">94,940</span>&nbsp;
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                    <div class="two histo-rate">
+                                        <span class="histo-star">
+                                            <i class="fa-solid fa-star active"></i> 2
+                                        </span>
+                                        <span class="bar-block">
+                                            <span id="bar-two" class="bar">
+                                                <span class="text-absolute">44,525</span>&nbsp;
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                    <div class="one histo-rate">
+                                        <span class="histo-star">
+                                            <i class="fa-solid fa-star active"></i> 1
+                                        </span>
+                                        <span class="bar-block">
+                                            <span id="bar-one" class="bar">
+                                                <span class="text-absolute">136,457</span>&nbsp;
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+            </div>
+        </div> *@
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 col-sm-4 col-12">
+            <div class="info-box">
+                <span class="info-box-icon"> <i class="fa-solid fa-file-pen"></i> </span>
+                <div class="info-box-content">
+                    <span class="info-box-text" style="border-bottom: 1px solid black;"><b>Create Approvals</b></span>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>PR</b></h8> <span class="info-box-number" id="totalCreatedPR">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Unit Request</b></h8> <span class="info-box-number" id="totalCreatedUR">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>QTY Different</b></h8> <span class="info-box-number" id="totalCreatedQD">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Product Return</b></h8> <span class="info-box-number" id="totalCreatedPN">0</span>
+                    </div>
+                </div>
+            </div> <!-- /.info-box -->
+        </div> <!-- /.col -->
+        <div class="col-md-3 col-sm-4 col-12">
+            <div class="info-box">
+                <span class="info-box-icon"> <i class="fa-solid fa-file-circle-question"></i> </span>
+                <div class="info-box-content">
+                    <span class="info-box-text" style="border-bottom: 1px solid black;"><b>Waiting Approvals</b></span>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>PR</b></h8> <span class="info-box-number" id="totalWaitingPR">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Unit Request</b></h8> <span class="info-box-number" id="totalWaitingUR">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>QTY Different</b></h8> <span class="info-box-number" id="totalWaitingQD">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Product Return</b></h8> <span class="info-box-number" id="totalWaitingPN">0</span>
+                    </div>
+                </div>
+            </div> <!-- /.info-box -->
+        </div> <!-- /.col -->
+        <div class="col-md-3 col-sm-4 col-12">
+            <div class="info-box">
+                <span class="info-box-icon"> <i class="fa-solid fa-file-circle-check"></i></span>
+                <div class="info-box-content">
+                    <div class="info-box-content">
+                        <span class="info-box-text" style="border-bottom: 1px solid black;"><b> Approved </b></span>
+                        <div class="d-flex justify-content-between">
+                            <h8 class="info-box-text"><b>PR</b></h8> <span class="info-box-number" id="totalApprovedPR">0</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h8 class="info-box-text"><b>Unit Request</b></h8> <span class="info-box-number" id="totalApprovedUR">0</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h8 class="info-box-text"><b>QTY Different</b></h8> <span class="info-box-number" id="totalApprovedQD">0</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h8 class="info-box-text"><b>Product Return</b></h8> <span class="info-box-number" id="totalApprovedPN">0</span>
+                        </div>
+                    </div>
+                </div> <!-- /.info-box-content -->
+            </div> <!-- /.info-box -->
+        </div> <!-- /.col -->
+        <div class="col-md-3 col-sm-4 col-12">
+            <div class="info-box">
+                <span class="info-box-icon"><i class="fa-solid fa-file-circle-xmark"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text" style="border-bottom: 1px solid black;"><b> Rejected/ Cancelled </b></span>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>PR</b></h8> <span class="info-box-number" id="totalRejectedPR">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Unit Request</b></h8> <span class="info-box-number" id="totalRejectedUR">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>QTY Different</b></h8> <span class="info-box-number" id="totalRejectedQD">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Product Return</b></h8> <span class="info-box-number" id="totalRejectedPN">0</span>
+                    </div>
+                </div>
+            </div> <!-- /.info-box -->
+        </div> <!-- /.col -->
+        @* <div class="col-md-2 col-sm-4 col-12">
+            <div class="info-box">
+                <span class="info-box-icon"> <i class="fa-solid fa-file-circle-question"></i> </span>
+                <div class="info-box-content">
+                    <span class="info-box-text" style="border-bottom: 1px solid black;"><b>Grand Total</b></span>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Create</b></h8> <span class="info-box-number" id="data_waiting">90</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Waiting</b></h8> <span class="info-box-number" id="data_waiting">10</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Approved</b></h8> <span class="info-box-number" id="data_waiting">10</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h8 class="info-box-text"><b>Rejected</b></h8> <span class="info-box-number" id="data_waiting">10</span>
+                    </div>
+                </div>
+            </div> <!-- /.info-box -->
+        </div> <!-- /.col --> *@
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body">
+                    @*  <h4 class="border-bottom">Approved Performance Monthly</h4> *@
+                    <div id="chartCreate"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body">
+                    @*  <h4 class="border-bottom">Approved Performance Monthly</h4> *@
+                    <div id="chartWaiting"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body">
+                    @*  <h4 class="border-bottom">Approved Performance Monthly</h4> *@
+                    <div id="chartApproved"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body">
+                    @*  <h4 class="border-bottom">Approved Performance Monthly</h4> *@
+                    <div id="chartCircle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+</section>
+<style>
+    <link media="screen" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" / >
+
+    .card-body {
+        font-family: 'Roboto', Helvetica;
+        color: #737373;
+        font-weight: 300;
+    }
+
+    .container {
+        /* width: 400px; */
+        /* margin: 0 auto; */
+        /* margin-top: 3em; */
+        background-color: #EFEFEF;
+        padding: 4px;
+    }
+
+    .inner {
+        padding: 1em;
+        background-color: white;
+        overflow: hidden;
+        /* position: relative; */
+        /* -webkit-border-radius: 4px;  */
+        /* -moz-border-radius: 4px;  */
+        /* border-radius: 4px;  */
+    }
+
+    .rating {
+        float: left; /* menentukan posisi class rating */
+        width: 45%;
+        margin-right: 5%;
+        text-align: center;
+    }
+
+    .rating-num {
+        color: #333333;
+        font-size: 72px;
+        font-weight: 100;
+        line-height: 1em;
+    }
+
+    .rating-stars {
+        font-size: 20px;
+        color: #E3E3E3;
+        margin-bottom: .5em;
+    }
+
+        .rating-stars .active {
+            color: #737373;
+        }
+
+    .rating-users {
+        font-size: 14px;
+    }
+
+    .histo {
+        float: right;
+        width: 50%;
+        font-size: 13px;
+    }
+
+    .histo-star {
+        float: left;
+        padding: 3px;
+    }
+
+    .histo-rate {
+        width: 100%;
+        /* display: inline-block; */
+        clear: both;
+    }
+
+    .bar-block {
+        margin-left: 5px;
+        /* color: black; */
+        /* display: block; */
+        float: left;
+        width: 75%;
+        /* position: relative; */
+    }
+
+    .bar {
+        padding: 4px;
+        display: block;
+    }
+
+    .text-absolute {
+        position: absolute;
+    }
+
+    #bar-five {
+        width: 0;
+        background-color: #9FC05A;
+    }
+
+    #bar-four {
+        width: 0;
+        background-color: #ADD633;
+    }
+
+    #bar-three {
+        width: 0;
+        background-color: #FFD834;
+    }
+
+    #bar-two {
+        width: 0;
+        background-color: #FFB234;
+    }
+
+    #bar-one {
+        width: 0;
+        background-color: #FF8B5A;
+    }
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js" integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.1.7/js/dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#selectPosition').on('change', function () {
+            let selectedPosition = $(this).val();
+            show_position(selectedPosition);
+        });
+
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= currentYear - 5; year--) {
+            $('#selectYear').append(`<option value="${year}">${year}</option>`);
+        }
+
+        let selectedMonth = "";
+        let selectedYear = "";
+        let selectedUser = "";
+
+        function handleChange(event) {
+            const elementId = event.target.id;
+            const selectedValue = event.target.value;
+
+            // Simpan nilai berdasarkan elemen yang dipilih
+            if (elementId === "selectMonth") {
+                selectedMonth = selectedValue;
+            } else if (elementId === "selectYear") {
+                selectedYear = selectedValue;
+            } else if (elementId === "selectUser") {
+                selectedUser = selectedValue;
+            }
+
+            // Tampilkan hasil hanya jika kedua nilai sudah dipilih
+            if (selectedMonth && selectedYear && selectedUser) {
+                show_data(selectedMonth, selectedYear, selectedUser)
+            }
+        }
+
+        // Tambahkan event listener ke kedua elemen
+        $('#selectMonth, #selectYear, #selectUser').on('change', handleChange);
+    });
+
+    function show_position(selectedPosition) {
+        //Pastikan parameter dikirim dengan benar
+        $.post('@Url.Action("JsonPosition")', { Position: selectedPosition }, function (r) {
+            let html = "";
+            r.forEach(function (item) {
+                html += `<option value="${item.email}"> ${item.fullName} - ${item.position.positionName}</option>`;
+            });
+            $('#selectUser').append(html);
+        })
+    }
+
+    function show_data(selectedMonth, selectedYear, selectedUser) {
+        $.post('@Url.Action("JsonCount")', { Month: selectedMonth, Year: selectedYear, User: selectedUser }, function (r) {
+            // console.log(r);
+            // Created
+            let totalCreatedPR = r.dataCreated.totalCreatedPR;
+            let totalCreatedUR = r.dataCreated.totalCreatedUR;
+            let totalCreatedQD = r.dataCreated.totalCreatedQD;
+            let totalCreatedPN = r.dataCreated.totalCreatedPN;
+            $('#totalCreatedPR').text(totalCreatedPR);
+            $('#totalCreatedUR').text(totalCreatedUR);
+            $('#totalCreatedQD').text(totalCreatedQD);
+            $('#totalCreatedPN').text(totalCreatedPN);
+
+            // Waiting
+            let totalWaitingPR = r.dataWaiting.totalWaitingPR;
+            let totalWaitingUR = r.dataWaiting.totalWaitingUR;
+            let totalWaitingQD = r.dataWaiting.totalWaitingQD;
+            let totalWaitingPN = r.dataWaiting.totalWaitingPN;
+            $('#totalWaitingPR').text(totalWaitingPR);
+            $('#totalWaitingUR').text(totalWaitingUR);
+            $('#totalWaitingQD').text(totalWaitingQD);
+            $('#totalWaitingPN').text(totalWaitingPN);
+
+            // Approve
+            let totalApprovedPR = r.dataApproved.totalApprovedPR;
+            let totalApprovedUR = r.dataApproved.totalApprovedUR;
+            let totalApprovedQD = r.dataApproved.totalApprovedQD;
+            let totalApprovedPN = r.dataApproved.totalApprovedPN;
+            $('#totalApprovedPR').text(totalApprovedPR);
+            $('#totalApprovedUR').text(totalApprovedUR);
+            $('#totalApprovedQD').text(totalApprovedQD);
+            $('#totalApprovedPN').text(totalApprovedPN);
+
+            // Rejected
+            let totalRejectedPR = r.dataRejected.totalRejectedPR;
+            let totalRejectedUR = r.dataRejected.totalRejectedUR;
+            let totalRejectedQD = r.dataRejected.totalRejectedQD;
+            let totalRejectedPN = r.dataRejected.totalRejectedPN;
+            $('#totalRejectedPR').text(totalRejectedPR);
+            $('#totalRejectedUR').text(totalRejectedUR);
+            $('#totalRejectedQD').text(totalRejectedQD);
+            $('#totalRejectedPN').text(totalRejectedPN);
+
+            $("#chartCreate").empty();
+            $("#chartWaiting").empty();
+            $("#chartApproved").empty();
+            $("#chartCircle").empty();
+
+            var options = {
+                chart: {
+                    type: 'donut', // Tipe chart donut
+                    height: 400
+                },
+                series: [totalCreatedPR, totalCreatedUR, totalCreatedQD, totalCreatedPN], // Data nilai
+                labels: ["Purchase Request", "Unit Request", "Qty Different", "Product Return"], // Label untuk
+                dataLabels: {
+                    enabled: true, // Aktifkan data labels
+                    style: {
+                        fontSize: '14px', // Ukuran font data labels
+                        fontWeight: 'bold'
+                    },
+                    dropShadow: {
+                        enabled: true // Tambahkan efek bayangan
+                    },
+                    formatter: function (val, opts) {
+                        return opts.w.config.series[opts.seriesIndex];
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " units";
+                        }
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%' // Ukuran lubang tengah
+                        },
+                        dataLabels: {
+                            offset: -10 // Menyesuaikan posisi label agar berada di atas segmen
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom' // Posisi legend di bawah
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chartCreate"), options);
+            chart.render();
+
+            var options = {
+                chart: {
+                    type: 'donut', // Tipe chart donut
+                    height: 400
+                },
+                series: [totalWaitingPR, totalWaitingUR, totalWaitingQD, totalWaitingPN], // Data nilai
+                labels: ["Purchase Request", "Unit Request", "Qty Different", "Product Return"], // Label untuk
+                dataLabels: {
+                    enabled: true, // Aktifkan data labels
+                    style: {
+                        fontSize: '14px', // Ukuran font data labels
+                        fontWeight: 'bold'
+                    },
+                    dropShadow: {
+                        enabled: true // Tambahkan efek bayangan
+                    },
+                    formatter: function (val, opts) {
+                        return opts.w.config.series[opts.seriesIndex];
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " units";
+                        }
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%' // Ukuran lubang tengah
+                        },
+                        dataLabels: {
+                            offset: -10 // Menyesuaikan posisi label agar berada di atas segmen
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom' // Posisi legend di bawah
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chartWaiting"), options);
+            chart.render();
+
+            var options = {
+                chart: {
+                    type: 'donut', // Tipe chart donut
+                    height: 400
+                },
+                series: [totalApprovedPR, totalApprovedUR, totalApprovedQD, totalApprovedPN], // Data nilai
+                labels: ["Purchase Request", "Unit Request", "Qty Different", "Product Return"], // Label untuk
+                dataLabels: {
+                    enabled: true, // Aktifkan data labels
+                    style: {
+                        fontSize: '14px', // Ukuran font data labels
+                        fontWeight: 'bold'
+                    },
+                    dropShadow: {
+                        enabled: true // Tambahkan efek bayangan
+                    },
+                    formatter: function (val, opts) {
+                        return opts.w.config.series[opts.seriesIndex];
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " units";
+                        }
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%' // Ukuran lubang tengah
+                        },
+                        dataLabels: {
+                            offset: -10 // Menyesuaikan posisi label agar berada di atas segmen
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom' // Posisi legend di bawah
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chartApproved"), options);
+            chart.render();
+
+            var options = {
+                chart: {
+                    type: 'donut', // Tipe chart donut
+                    height: 400
+                },
+                series: [totalRejectedPR, totalRejectedUR, totalRejectedQD, totalRejectedPN], // Data nilai
+                labels: ["Purchase Request", "Unit Request", "Qty Different", "Product Return"], // Label untuk
+                dataLabels: {
+                    enabled: true, // Aktifkan data labels
+                    style: {
+                        fontSize: '14px', // Ukuran font data labels
+                        fontWeight: 'bold'
+                    },
+                    dropShadow: {
+                        enabled: true // Tambahkan efek bayangan
+                    },
+                    formatter: function (val, opts) {
+                        return opts.w.config.series[opts.seriesIndex];
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " units";
+                        }
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%' // Ukuran lubang tengah
+                        },
+                        dataLabels: {
+                            offset: -10 // Menyesuaikan posisi label agar berada di atas segmen
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom' // Posisi legend di bawah
+                }
+            };
+
+            // Inisialisasi dan render chart
+            var chart = new ApexCharts(document.querySelector("#chartCircle"), options);
+            chart.render();
+        })
+    }
+
+    // function show_data(selectedMonth, selectedYear, selectedUser) {
+    //     console.log(selectedMonth, selectedYear, selectedUser);
+    // }
+</script>
+<!-- /.content -->
