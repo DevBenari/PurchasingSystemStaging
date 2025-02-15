@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Add Role User";
+    ViewData["Title"] = "Add Role Departemen";
     Layout = "~/Views/Shared/_TopNavbarAdministrator.cshtml";
 }
 
@@ -22,7 +22,7 @@
                 @{
                     var user = await signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 }
-                @* @if (user?.Email == "superadmin@admin.com")
+                @if (user?.Email == "superadmin@admin.com")
                 {
                     <form id="createRoleForm" asp-controller="RoleUser" asp-action="CreateRoleUserNavbar" method="post">
                         <div class="row">
@@ -43,13 +43,13 @@
                     </form>
                 }
                 else
-                { *@
+                {
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card card-widget widget-user">
                                 <div class="card-header">
                                     <div class="widget-user-header">
-                                        <h1 class="widget-user-username"><b>Seed Role User</b></h1>
+                                        <h1 class="widget-user-username"><b>Seed Role Departemen</b></h1>
                                     </div>
                                 </div>
                                 <!-- /.card-header -->
@@ -57,13 +57,13 @@
                             <!-- /.card -->
                         </div>
                     </div>
-               @*  } *@
+                }
 
                 <!-- Card Body for Role Menus -->
                 <div class="row">
                     <div class="col-md-3 bg-white">
                         <div class="col-md-12" id="div0">
-                            <a href="#" class="btn bg-info btn-block mb-3">All User</a>
+                            <a href="#" class="btn bg-info btn-block mb-3">All Departemen</a>
                             <!-- DIRECT CHAT -->
                             <div class="card direct-chat direct-chat-primary">
                                 <div class="card-header">
@@ -103,12 +103,12 @@
 
                     <div class="col-md-6 bg-white">
                         <div class="col-md-12" id="div2">
-                            <a href="#" class="btn btn-primary btn-block mb-3">Create Role User</a>
+                            <a href="#" class="btn btn-primary btn-block mb-3">Create Role Departemen</a>
                             <div class="card">
-                                <form enctype="multipart/form-data" asp-controller="RoleUser" asp-action="CreateRoleUser" method="post">
+                                <form enctype="multipart/form-data" asp-controller="RoleDepartemen" asp-action="CreateRolePosition" method="post">
                                     <div class="card-header">
                                         <h3 class="card-title" id="menuTitle">Menu</h3>
-                                        <input type="hidden" name="UserId" id="UserId">
+                                        <input type="hidden" name="DepartemenId" id="DepartemenId">
                                         <div class="card-tools">
                                             <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold">
                                                 Update Role
@@ -154,7 +154,6 @@
                         </div>
                     </div>
 
-                    <!-- /.col md -->
                 </div>
                 <!-- /.row -->
             </div>
@@ -223,7 +222,7 @@
                 console.log("ini 2 = " + itemId);
             }
         } else {
-            alert("User Belum Dipilih.");
+            alert("Position Belum Dipilih.");
         }
         moveToDiv1(itemId, folderCurrentConcurrencyStamp)
         changeIconsToX();
@@ -246,18 +245,17 @@
         }
     }
 
-    function roleData(Email, NameUser) {
+    function roleData(Position, NameUser) {
         $.ajax({
-            url: '@Url.Action("LoadRoles", "RoleUser")',
+            url: '@Url.Action("LoadRoles", "RoleDepartemen")',
             method: 'GET',
-            data: { Email: Email },
+            data: { Position: Position },
             success: function (data) {
                 $('#folderList').empty();
                 $('#newFolderList').empty();
-                console.log(NameUser);
-                console.log(Email);
+
                 document.getElementById("menuTitle").textContent = NameUser;
-                document.getElementById("UserId").value = Email;
+                document.getElementById("DepartemenId").value = Position;
 
                 let folderContent = '';  // Menyimpan konten folderList
                 let folderArrayBody = '';  // Menyimpan list item untuk setiap folder
@@ -294,7 +292,7 @@
 
                     folderArrayBody += `
                                     <li class="nav-item" id="${role.name}">
-                                        <input type="hidden" name="DepartemenId" value="${role.id}">
+                                        <input type="hidden" name="RoleId" value="${role.id}">
                                         <a href="#" class="nav-link" onclick="moveToDiv2('${role.name}','${role.concurrencyStamp}')">
                                             <i class="fas fa-inbox"></i> ${role.name}
                                             <span class="float-right" id="inboxIcon"></span>
@@ -343,7 +341,7 @@
 
                     newFolderArrayBody += `
                                     <li class="nav-item" id="${role.name}">
-                                        <input type="hidden" name="DepartemenId" value="${role.id}">
+                                        <input type="hidden" name="RoleId" value="${role.id}">
                                         <a href="#" class="nav-link" onclick="moveToDiv2('${role.name}','${role.concurrencyStamp}')">
                                             <i class="fas fa-inbox"></i> ${role.name}
                                             <span class="float-right" id="inboxIcon"></span>
@@ -377,21 +375,19 @@
 
     function userData() {
         $.ajax({
-            url: '@Url.Action("LoadUser", "RoleUser")',
+            url: '@Url.Action("LoadPosition", "RoleDepartemen")',
             method: 'GET',
             success: function (data) {
                 $('#userList').empty();
                 $.each(data, function (index, user) {
-                    var foto = user.foto ? user.foto : 'user.jpg';
                     $('#userList').append(`
                                 <li style="background-color: #347FC4; cursor: pointer;">
                                     <a href="#">
-                                        <img class="contacts-list-img" src="/UserPhoto/${foto}" alt="User Avatar">
-                                        <input type="hidden" name="nmUser" value="${user.namaUser}" />
-                                        <input type="hidden" name="kdUser" value="${user.email}" />
+                                        <input type="hidden" name="nmUser" value="${user.positionName}" />
+                                        <input type="hidden" name="kdUser" value="${user.positionCode}" />
                                         <div class="contacts-list-info">
                                             <span class="contacts-list-name">
-                                                ${user.namaUser}
+                                                ${user.positionName}
                                             </span>
                                         </div>
                                     </a>
@@ -502,7 +498,7 @@
                 console.log('Elemen folderItem dan newFolderItem tidak ditemukan');
             }
         } else {
-            alert("Sorry, please select a user first !!!");
+            alert("Sorry, please select a Position first !!!");
         }
 
         changeIconsToX();
@@ -568,7 +564,7 @@
                     folderList.appendChild(newFolderList.firstChild);
                 }
                 // Mengubah teks tombol ke arah kanan (->)
-                this.innerHTML = ' &larr; Move All';
+                this.innerHTML = '&larr; Move All ';
             }
         }
     });

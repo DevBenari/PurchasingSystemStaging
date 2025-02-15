@@ -135,11 +135,13 @@ namespace PurchasingSystem.Controllers
                         if (result.Succeeded)
                         {
                             // Ambil role dari database                            
-                            List<string> roleNames = (from role in _roleRepository.GetRoles()
-                                                      join userRole in _groupRoleRepository.GetAllGroupRole()
-                                                      on role.Id equals userRole.RoleId
-                                                      where userRole.DepartemenId == user.Id
-                                                      select role.Name).Distinct().ToList();
+                            List<string> roleNames = (from userRole in _applicationDbContext.UserRoles // UserRoles merujuk pada tabel AspNetUserRoles
+                                                      join role in _applicationDbContext.Roles // Roles merujuk pada tabel AspNetRoles
+                                                      on userRole.RoleId equals role.Id // Gabungkan berdasarkan RoleId
+                                                      where userRole.UserId == user.Id // Filter berdasarkan UserId
+                                                      select role.Name) // Ambil nama role
+                                                     .Distinct() // Ambil role yang unik
+                                                     .ToList();
 
 
                             // Kompres role menjadi string
@@ -169,7 +171,7 @@ namespace PurchasingSystem.Controllers
                                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Masa berlaku cookie
                             };
 
-                            // Gunakan `SignInAsync` langsung untuk klaim minimal
+                            // Gunakan SignInAsync langsung untuk klaim minimal
                             var identity = new ClaimsIdentity(claims, "Identity.Application");
                             var principal = new ClaimsPrincipal(identity);
                             await HttpContext.SignInAsync("Identity.Application", principal, authProperties);

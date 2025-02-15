@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PurchasingSystem.Areas.Administrator.Models;
 using PurchasingSystem.Data;
+using PurchasingSystem.Areas.Administrator.Models;
 
 namespace PurchasingSystem.Areas.Administrator.Repositories
 {
@@ -23,6 +24,12 @@ namespace PurchasingSystem.Areas.Administrator.Repositories
             _context.GroupRoles.Add(role);
             _context.SaveChanges();
             return role;
+        }
+        public GroupUser TambahGroup(GroupUser userGroup)
+        {
+            _context.GroupUsers.Add(userGroup);
+            _context.SaveChanges();
+            return userGroup;
         }
 
         public void DeleteByDepartmentId(string departemenId)
