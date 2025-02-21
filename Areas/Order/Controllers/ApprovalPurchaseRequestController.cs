@@ -413,7 +413,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                             updateStatusUser1.ApproveBy = getUser.NamaUser;
                             updateStatusUser1.ApprovalTime = diffDate.Days.ToString() + " Day";
                             updateStatusUser1.Message = viewModel.Message;
-                            updateStatusUser1.Signature = getUser.Id;
+                            updateStatusUser1.Signature = getUser.Id + ".png";
 
                             _applicationDbContext.Entry(updateStatusUser1).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -455,7 +455,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                             updateStatusUser2.ApproveBy = getUser.NamaUser;
                             updateStatusUser2.ApprovalTime = diffDate.Days.ToString() + " Day";
                             updateStatusUser2.Message = viewModel.Message;
-                            updateStatusUser2.Signature = getUser.Id;
+                            updateStatusUser2.Signature = getUser.Id + ".png";
 
                             _applicationDbContext.Entry(updateStatusUser2).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -496,7 +496,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                             updateStatusUser3.ApproveBy = getUser.NamaUser;
                             updateStatusUser3.ApprovalTime = diffDate.Days.ToString() + " Day";
                             updateStatusUser3.Message = viewModel.Message;
-                            updateStatusUser3.Signature = getUser.Id;
+                            updateStatusUser3.Signature = getUser.Id + ".png";
 
                             _applicationDbContext.Entry(updateStatusUser3).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();

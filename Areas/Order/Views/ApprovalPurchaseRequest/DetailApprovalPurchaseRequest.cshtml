@@ -236,14 +236,14 @@
                         @if (ViewBag.Signature != null && ViewBag.Signature)
                         {
                             <div class="text-center" id="signatureImageContainer">
-                                <img src="@Url.Content($"~/Signature/{ViewBag.UserIdLog}.png")" alt="Signature" class="img-thumbnail mt-2" width="400" height="200" />
+                                <img src="@Url.Content($"~/Signature/{ViewBag.UserIdLog}.png")" alt="Signature" width="400" height="200" />
                                 <br />
                                 <button type="button" id="clearSignature" class="btn btn-danger mt-2">Clear</button>
                             </div>
                         }
                         <!-- Jika tanda tangan belum ada, tampilkan canvas untuk menggambar tanda tangan baru -->
                         <div id="signatureCanvasContainer" style="display:@(ViewBag.Signature == null || !ViewBag.Signature ? "block" : "none");">
-                            <canvas id="signatureCanvas" width="400" height="200" style="border:1px solid #bcc1c6;"></canvas>
+                            <canvas id="signatureCanvas" width="400" height="200" class="img-thumbnail mt-2" style="border:1px solid #bcc1c6;"></canvas>
                             <br />
                             <button type="button" id="clearCanvas" class="btn btn-danger">Clear</button>
                         </div>
