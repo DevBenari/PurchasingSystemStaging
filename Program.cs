@@ -83,6 +83,13 @@ builder.Services.AddMvc(options =>
 
 builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "PurchasingSystemSession";
+});
+
+
 // konfigurasi session 
 builder.Services.AddSession(options =>
 {

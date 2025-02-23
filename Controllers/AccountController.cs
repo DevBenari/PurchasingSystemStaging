@@ -100,8 +100,6 @@ namespace PurchasingSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
             if (ModelState.IsValid)
             {
                 if (User.Identity.IsAuthenticated)
@@ -192,7 +190,7 @@ namespace PurchasingSystem.Controllers
                             HttpContext.Session.SetString("ListRole", string.Join(",", compressedRoles));
 
                             // Simpan session dan role di server-side cache
-                            _sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30));
+                            //_sessionService.CreateSession(user.Id, sessionId, DateTime.UtcNow.AddMinutes(30));
 
                             return RedirectToAction("Index", "Home");
                         }

@@ -90,7 +90,6 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
                     @if (User.FindFirst(ClaimTypes.Name).Value == "superadmin@admin.com")
@@ -184,6 +183,11 @@
                                 </div>
                             </li>
                             <li class="nav-header">Pharmacy</li>
+                            <li class="@(ViewBag.Active == "AddPurchaseRequest" ? "nav-item menu-open active":"")">
+                                <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("AddPurchaseRequest", "PurchaseRequestPharmacy", new { area = "Transaction" })">
+                                    <i class="nav-icon fas fa-first-aid" style="color:#FFFFFF"></i> <p>Add Purchase Request</p>
+                                </div>
+                            </li>
                             <li class="@(ViewBag.Active == "UnitRequest" ? "nav-item menu-open active":"")">
                                 <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("Index", "UnitRequest", new { area = "Transaction" })">
                                     <i class="nav-icon fas fa-first-aid" style="color:#FFFFFF"></i> <p>Unit Request</p>
@@ -317,6 +321,12 @@
                                         </div>
                                     </li>
                                 }
+
+                                <li class="@(ViewBag.Active == "AddPurchaseRequest" ? "nav-item menu-open active":"")">
+                                    <div class="nav-link cursor-pointer" style="color:#ffffff" is-active-route data-href="@Url.Action("AddPurchaseRequest", "PurchaseRequestPharmacy", new { area = "Transaction" })">
+                                        <i class="nav-icon fas fa-first-aid" style="color:#FFFFFF"></i> <p>Add Purchase Request</p>
+                                    </div>
+                                </li>
 
                                 if (roles.Contains("ReadApprovalUnitRequest"))
                                 {

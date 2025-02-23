@@ -53,7 +53,6 @@ namespace PurchasingSystem.Areas.Order.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
 
-
         public PurchaseRequestController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
