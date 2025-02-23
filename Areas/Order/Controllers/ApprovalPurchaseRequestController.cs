@@ -329,6 +329,11 @@ namespace PurchasingSystem.Areas.Order.Controllers
 
             var Approval = await _approvalRepository.GetApprovalById(Id);
             var getUser = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
+            ViewBag.UserIdLog = getUser.Id;
+            // Signature
+            var signatureFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Signature", $"{getUser.Id}.png");
+            ViewBag.Signature = System.IO.File.Exists(signatureFilePath);
+
 
             if (Approval == null)
             {
@@ -408,6 +413,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                             updateStatusUser1.ApproveBy = getUser.NamaUser;
                             updateStatusUser1.ApprovalTime = diffDate.Days.ToString() + " Day";
                             updateStatusUser1.Message = viewModel.Message;
+                            updateStatusUser1.Signature = getUser.Id + ".png";
 
                             _applicationDbContext.Entry(updateStatusUser1).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -449,6 +455,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                             updateStatusUser2.ApproveBy = getUser.NamaUser;
                             updateStatusUser2.ApprovalTime = diffDate.Days.ToString() + " Day";
                             updateStatusUser2.Message = viewModel.Message;
+                            updateStatusUser2.Signature = getUser.Id + ".png";
 
                             _applicationDbContext.Entry(updateStatusUser2).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -489,6 +496,7 @@ namespace PurchasingSystem.Areas.Order.Controllers
                             updateStatusUser3.ApproveBy = getUser.NamaUser;
                             updateStatusUser3.ApprovalTime = diffDate.Days.ToString() + " Day";
                             updateStatusUser3.Message = viewModel.Message;
+                            updateStatusUser3.Signature = getUser.Id + ".png";
 
                             _applicationDbContext.Entry(updateStatusUser3).State = EntityState.Modified;
                             _applicationDbContext.SaveChanges();
@@ -602,6 +610,37 @@ namespace PurchasingSystem.Areas.Order.Controllers
             }
 
             return View();
-        }        
+        }
+
+        [HttpPost]
+        public IActionResult CreateSignature(string UserAccessId, string ApprovalId, string SignatureData)
+        {
+            var getUserLogin = _userActiveRepository.GetAllUserLogin().Where(u => u.UserName == User.FindFirst(ClaimTypes.Name).Value).FirstOrDefault();
+            if (!string.IsNullOrEmpty(SignatureData))
+            {
+                // Proses data tanda tangan dan ubah ke byte array
+                var base64Data = SignatureData.Replace("data:image/png;base64,", "");
+                var byteArray = Convert.FromBase64String(base64Data);
+
+                // Tentukan path file berdasarkan ApprovalId
+                var fileName = $"{getUserLogin.Id}.png";
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Signature", fileName);
+
+                // Cek apakah file sudah ada, jika ada maka hapus terlebih dahulu
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
+                // Simpan gambar tanda tangan sebagai file
+                System.IO.File.WriteAllBytes(filePath, byteArray);
+
+                return RedirectToAction("DetailApprovalPurchaseRequest", "ApprovalPurchaseRequest", new { id = ApprovalId });
+            }
+
+            // Jika tidak ada SignatureData, redirect ke Index
+            return RedirectToAction("Index");
+        }
+
     }
 }
