@@ -22,6 +22,7 @@ namespace PurchasingSystem.Areas.Order.ViewModels
         public string? Note { get; set; }
         public int QtyTotal { get; set; }
         public decimal GrandTotal { get; set; }
+        public string? Signature { get; set; }
         public List<PurchaseRequestDetail> PurchaseRequestDetails { get; set; }
     }
 }

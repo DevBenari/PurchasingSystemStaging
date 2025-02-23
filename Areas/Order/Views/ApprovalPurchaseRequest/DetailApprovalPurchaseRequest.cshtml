@@ -78,6 +78,19 @@
                             <span asp-validation-for="Message" class="text-danger"></span>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Signature</label>
+                        <div class="col-sm-10">
+                            <button type="button" class="btn btn-primary float-left fw-bold" data-toggle="modal" data-target="#signatureModal" id="btnSignature" value="Signature">
+                                Signature
+                            </button>
+                            <span class="text-danger"></span>
+                            @* <div class="col-sm-10">
+                                <img src="@Url.Content("~/Signature/" + Model.UserAccessId + ".png")" alt="Signature Image" class="img-thumbnail mt-2" width="100" height="50" />
+                                <span class="text-danger"></span>
+                            </div> *@
+                        </div>
+                    </div>
 
                     <div class="card card-default">
                         <div class="card-header bg-cyan">
@@ -140,8 +153,11 @@
                                     var roles = listRole.Split(',');
                                     if (roles.Contains("UpdateApprovalQtyDifference"))
                                     {
-                                        <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
-                                        <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
+                                        if (ViewBag.Signature)
+                                        {
+                                            <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
+                                            <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
+                                        }
                                     }
                                 }
                                 <div class="btn btn-default" data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
@@ -153,8 +169,11 @@
                                     var roles = listRole.Split(',');
                                     if (roles.Contains("UpdateApprovalQtyDifference"))
                                     {
-                                        <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
-                                        <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
+                                        if (ViewBag.Signature)
+                                        {
+                                            <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
+                                            <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
+                                        }
                                     }
                                 }
                                 <div class="btn btn-default" data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
@@ -166,8 +185,11 @@
                                     var roles = listRole.Split(',');
                                     if (roles.Contains("UpdateApprovalQtyDifference"))
                                     {
-                                        <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
-                                        <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
+                                        if (ViewBag.Signature)
+                                        {
+                                            <button type="submit" class="btn btn-primary bg-indigo float-left fw-bold" id="btnapprove" value="Approve"><div style="color:#ffffff">Approve</div></button>
+                                            <button type="submit" class="btn btn-primary bg-danger float-left fw-bold" id="btnreject" value="Reject"><div style="color:#ffffff">Reject</div></button>
+                                        }
                                     }
                                 }
                                 <div class="btn btn-default" data-href="@Url.Action("Index", "ApprovalPurchaseRequest", new { area = "Order" })">Cancel</div>
@@ -192,7 +214,53 @@
         }
     </div>
     <!-- /.row -->
+    <!-- /.Pop up -->
+    <!-- Modal untuk Signature -->
+    <div class="modal fade" id="signatureModal" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signatureModalLabel">Signature</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="signatureForm" method="post" action="@Url.Action("CreateSignature", "ApprovalPurchaseRequest")" class="needs-validation" novalidate="">
+                        <!-- Input tersembunyi untuk ApprovalId -->
+                        <input type="hidden" name="ApprovalId" value="@Model.ApprovalId" />
+                        <input type="hidden" name="UserAccessId" value="@Model.UserAccessId" />
+                        <input type="hidden" name="SignatureData" id="signatureData" />
+
+                        <!-- Jika tanda tangan sudah ada, tampilkan gambar tanda tangan -->
+                        @if (ViewBag.Signature != null && ViewBag.Signature)
+                        {
+                            <div class="text-center" id="signatureImageContainer">
+                                <img src="@Url.Content($"~/Signature/{ViewBag.UserIdLog}.png")" alt="Signature" width="400" height="200" />
+                                <br />
+                                <button type="button" id="clearSignature" class="btn btn-danger mt-2">Clear</button>
+                            </div>
+                        }
+                        <!-- Jika tanda tangan belum ada, tampilkan canvas untuk menggambar tanda tangan baru -->
+                        <div id="signatureCanvasContainer" style="display:@(ViewBag.Signature == null || !ViewBag.Signature ? "block" : "none");">
+                            <canvas id="signatureCanvas" width="400" height="200" class="img-thumbnail mt-2" style="border:1px solid #bcc1c6;"></canvas>
+                            <br />
+                            <button type="button" id="clearCanvas" class="btn btn-danger">Clear</button>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- End Modal Signature -->
 </section>
+
 <!-- /.content -->
 @section Scripts {
     <script>
@@ -218,4 +286,79 @@
             });            
         });
     </script>
+
+    <!-- /.Pop up -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const canvas = document.getElementById('signatureCanvas');
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+
+            // Function to start drawing
+            const startDrawing = (e) => {
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX, e.offsetY);
+            };
+
+            // Function to draw on canvas
+            const draw = (e) => {
+                if (drawing) {
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.stroke();
+                }
+            };
+
+            // Function to stop drawing
+            const stopDrawing = () => drawing = false;
+
+            // Event listeners for drawing on canvas
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseleave', stopDrawing);
+
+            // Clear the canvas when clear button is clicked
+            document.getElementById('clearCanvas').addEventListener('click', () => ctx.clearRect(0, 0, canvas.width, canvas.height));
+
+            // On form submit, add signature data (canvas image) to the hidden input
+            document.getElementById('signatureForm').addEventListener('submit', function (e) {
+                // Get the canvas image data (Base64 string)
+                const signatureData = canvas.toDataURL('image/png');
+                document.getElementById('signatureData').value = signatureData;
+            });
+        });
+
+    </script>
+
+    <script>
+        // Menangani tombol Clear Signature
+        document.getElementById('clearSignature')?.addEventListener('click', function () {
+            // Menghapus gambar tanda tangan yang ada
+            var signatureImg = document.querySelector('#signatureImageContainer img');
+            if (signatureImg) {
+                signatureImg.style.display = 'none';  // Menyembunyikan gambar
+            } 
+            var clearSignatureBtn = document.getElementById('clearSignature');
+            clearSignatureBtn.style.display = 'none';
+
+            // Menampilkan canvas untuk menggambar tanda tangan baru
+            var canvasContainer = document.getElementById('signatureCanvasContainer');
+            canvasContainer.style.display = 'block';  // Menampilkan canvas
+
+            // Menghapus data signature di hidden input
+            document.getElementById('signatureData').value = '';
+        });
+
+        // Menangani tombol Clear untuk Canvas
+        document.getElementById('clearCanvas')?.addEventListener('click', function () {
+            var canvas = document.getElementById('signatureCanvas');
+            var context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas
+
+            // Menghapus data signature di hidden input
+            document.getElementById('signatureData').value = '';
+        });
+    </script>
+
 }
